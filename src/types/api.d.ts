@@ -131,6 +131,558 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create an account
+         * @description Sets an HttpOnly refresh cookie scoped to /api/v1/auth. The refresh token is never returned in the body — JavaScript must not be able to read it.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: email */
+                        email: string;
+                        password: string;
+                        name: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Account created and signed in */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                accessToken: string;
+                                /** @description Access token lifetime in seconds */
+                                expiresIn: number;
+                                user: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: email */
+                                    email: string;
+                                    name: string;
+                                    avatarUrl: string | null;
+                                    bio: string | null;
+                                    /** @enum {string} */
+                                    role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                    locale: string;
+                                    /** Format: uuid */
+                                    ownerProfileId: string | null;
+                                    /** @enum {string|null} */
+                                    ownerStatus: "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | null;
+                                    homeLatitude: number | null;
+                                    homeLongitude: number | null;
+                                    createdAt: string;
+                                };
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Email already registered */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sign in
+         * @description Sets an HttpOnly refresh cookie scoped to /api/v1/auth. The refresh token is never returned in the body — JavaScript must not be able to read it. Responds identically for an unknown email and a wrong password, in the same amount of time, so account existence cannot be probed.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: email */
+                        email: string;
+                        password: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Signed in */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                accessToken: string;
+                                /** @description Access token lifetime in seconds */
+                                expiresIn: number;
+                                user: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: email */
+                                    email: string;
+                                    name: string;
+                                    avatarUrl: string | null;
+                                    bio: string | null;
+                                    /** @enum {string} */
+                                    role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                    locale: string;
+                                    /** Format: uuid */
+                                    ownerProfileId: string | null;
+                                    /** @enum {string|null} */
+                                    ownerStatus: "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | null;
+                                    homeLatitude: number | null;
+                                    homeLongitude: number | null;
+                                    createdAt: string;
+                                };
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Account suspended or banned */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Rotate the session
+         * @description Exchanges the refresh cookie for a new access token and a new refresh cookie. Every rotation retires the previous token. Presenting an already-rotated token outside a short race window is treated as theft and revokes the entire token family — the client should sign the user out on AUTH_REFRESH_REUSE_DETECTED rather than retrying.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Session rotated */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                accessToken: string;
+                                /** @description Access token lifetime in seconds */
+                                expiresIn: number;
+                                user: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: email */
+                                    email: string;
+                                    name: string;
+                                    avatarUrl: string | null;
+                                    bio: string | null;
+                                    /** @enum {string} */
+                                    role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                    locale: string;
+                                    /** Format: uuid */
+                                    ownerProfileId: string | null;
+                                    /** @enum {string|null} */
+                                    ownerStatus: "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | null;
+                                    homeLatitude: number | null;
+                                    homeLongitude: number | null;
+                                    createdAt: string;
+                                };
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Invalid, expired, or reused refresh token */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sign out of this device
+         * @description Always succeeds, even without a valid session — never an oracle for token validity.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Signed out */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @enum {boolean} */
+                                loggedOut: true;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/logout-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign out everywhere */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description All sessions revoked */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @enum {boolean} */
+                                loggedOut: true;
+                                sessions: number;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Current user */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The signed-in user */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: email */
+                                email: string;
+                                name: string;
+                                avatarUrl: string | null;
+                                bio: string | null;
+                                /** @enum {string} */
+                                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                locale: string;
+                                /** Format: uuid */
+                                ownerProfileId: string | null;
+                                /** @enum {string|null} */
+                                ownerStatus: "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | null;
+                                homeLatitude: number | null;
+                                homeLongitude: number | null;
+                                createdAt: string;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update profile */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        name?: string;
+                        bio?: string;
+                        /** Format: uri */
+                        avatarUrl?: string;
+                        /** @enum {string} */
+                        locale?: "vi" | "en";
+                        homeLatitude?: number;
+                        homeLongitude?: number;
+                    };
+                };
+            };
+            responses: {
+                /** @description Updated user */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: email */
+                                email: string;
+                                name: string;
+                                avatarUrl: string | null;
+                                bio: string | null;
+                                /** @enum {string} */
+                                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                locale: string;
+                                /** Format: uuid */
+                                ownerProfileId: string | null;
+                                /** @enum {string|null} */
+                                ownerStatus: "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | null;
+                                homeLatitude: number | null;
+                                homeLongitude: number | null;
+                                createdAt: string;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -146,6 +698,49 @@ export interface components {
                     message: string;
                 }[];
                 requestId: string;
+            };
+        };
+        SessionUser: {
+            /** Format: uuid */
+            id: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            avatarUrl: string | null;
+            bio: string | null;
+            /** @enum {string} */
+            role: "USER" | "PLACE_OWNER" | "ADMIN";
+            locale: string;
+            /** Format: uuid */
+            ownerProfileId: string | null;
+            /** @enum {string|null} */
+            ownerStatus: "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | null;
+            homeLatitude: number | null;
+            homeLongitude: number | null;
+            createdAt: string;
+        };
+        AuthResult: {
+            accessToken: string;
+            /** @description Access token lifetime in seconds */
+            expiresIn: number;
+            user: {
+                /** Format: uuid */
+                id: string;
+                /** Format: email */
+                email: string;
+                name: string;
+                avatarUrl: string | null;
+                bio: string | null;
+                /** @enum {string} */
+                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                locale: string;
+                /** Format: uuid */
+                ownerProfileId: string | null;
+                /** @enum {string|null} */
+                ownerStatus: "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | null;
+                homeLatitude: number | null;
+                homeLongitude: number | null;
+                createdAt: string;
             };
         };
         HealthReport: {

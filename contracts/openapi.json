@@ -50,6 +50,14 @@
     }
   ],
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Short-lived access token. Held in memory by the client, never in localStorage."
+      }
+    },
     "schemas": {
       "ErrorResponse": {
         "type": "object",
@@ -101,6 +109,197 @@
         "required": [
           "success",
           "error"
+        ]
+      },
+      "SessionUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "bio": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "USER",
+              "PLACE_OWNER",
+              "ADMIN"
+            ]
+          },
+          "locale": {
+            "type": "string"
+          },
+          "ownerProfileId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "ownerStatus": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "PENDING",
+              "APPROVED",
+              "REJECTED",
+              "SUSPENDED"
+            ]
+          },
+          "homeLatitude": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "homeLongitude": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "name",
+          "avatarUrl",
+          "bio",
+          "role",
+          "locale",
+          "ownerProfileId",
+          "ownerStatus",
+          "homeLatitude",
+          "homeLongitude",
+          "createdAt"
+        ]
+      },
+      "AuthResult": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "number",
+            "description": "Access token lifetime in seconds"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "name": {
+                "type": "string"
+              },
+              "avatarUrl": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "bio": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "USER",
+                  "PLACE_OWNER",
+                  "ADMIN"
+                ]
+              },
+              "locale": {
+                "type": "string"
+              },
+              "ownerProfileId": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uuid"
+              },
+              "ownerStatus": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "PENDING",
+                  "APPROVED",
+                  "REJECTED",
+                  "SUSPENDED"
+                ]
+              },
+              "homeLatitude": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "homeLongitude": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "createdAt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "name",
+              "avatarUrl",
+              "bio",
+              "role",
+              "locale",
+              "ownerProfileId",
+              "ownerStatus",
+              "homeLatitude",
+              "homeLongitude",
+              "createdAt"
+            ]
+          }
+        },
+        "required": [
+          "accessToken",
+          "expiresIn",
+          "user"
         ]
       },
       "HealthReport": {
@@ -345,6 +544,1094 @@
                     "success",
                     "data"
                   ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Create an account",
+        "description": "Sets an HttpOnly refresh cookie scoped to /api/v1/auth. The refresh token is never returned in the body — JavaScript must not be able to read it.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 254,
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 128
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  }
+                },
+                "required": [
+                  "email",
+                  "password",
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account created and signed in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string"
+                        },
+                        "expiresIn": {
+                          "type": "number",
+                          "description": "Access token lifetime in seconds"
+                        },
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "email": {
+                              "type": "string",
+                              "format": "email"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "avatarUrl": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "bio": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "role": {
+                              "type": "string",
+                              "enum": [
+                                "USER",
+                                "PLACE_OWNER",
+                                "ADMIN"
+                              ]
+                            },
+                            "locale": {
+                              "type": "string"
+                            },
+                            "ownerProfileId": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "uuid"
+                            },
+                            "ownerStatus": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "enum": [
+                                "PENDING",
+                                "APPROVED",
+                                "REJECTED",
+                                "SUSPENDED"
+                              ]
+                            },
+                            "homeLatitude": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "homeLongitude": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "createdAt": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "email",
+                            "name",
+                            "avatarUrl",
+                            "bio",
+                            "role",
+                            "locale",
+                            "ownerProfileId",
+                            "ownerStatus",
+                            "homeLatitude",
+                            "homeLongitude",
+                            "createdAt"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "accessToken",
+                        "expiresIn",
+                        "user"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Email already registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Sign in",
+        "description": "Sets an HttpOnly refresh cookie scoped to /api/v1/auth. The refresh token is never returned in the body — JavaScript must not be able to read it. Responds identically for an unknown email and a wrong password, in the same amount of time, so account existence cannot be probed.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 254,
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signed in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string"
+                        },
+                        "expiresIn": {
+                          "type": "number",
+                          "description": "Access token lifetime in seconds"
+                        },
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "email": {
+                              "type": "string",
+                              "format": "email"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "avatarUrl": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "bio": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "role": {
+                              "type": "string",
+                              "enum": [
+                                "USER",
+                                "PLACE_OWNER",
+                                "ADMIN"
+                              ]
+                            },
+                            "locale": {
+                              "type": "string"
+                            },
+                            "ownerProfileId": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "uuid"
+                            },
+                            "ownerStatus": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "enum": [
+                                "PENDING",
+                                "APPROVED",
+                                "REJECTED",
+                                "SUSPENDED"
+                              ]
+                            },
+                            "homeLatitude": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "homeLongitude": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "createdAt": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "email",
+                            "name",
+                            "avatarUrl",
+                            "bio",
+                            "role",
+                            "locale",
+                            "ownerProfileId",
+                            "ownerStatus",
+                            "homeLatitude",
+                            "homeLongitude",
+                            "createdAt"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "accessToken",
+                        "expiresIn",
+                        "user"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Account suspended or banned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Rotate the session",
+        "description": "Exchanges the refresh cookie for a new access token and a new refresh cookie. Every rotation retires the previous token. Presenting an already-rotated token outside a short race window is treated as theft and revokes the entire token family — the client should sign the user out on AUTH_REFRESH_REUSE_DETECTED rather than retrying.",
+        "responses": {
+          "200": {
+            "description": "Session rotated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string"
+                        },
+                        "expiresIn": {
+                          "type": "number",
+                          "description": "Access token lifetime in seconds"
+                        },
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "email": {
+                              "type": "string",
+                              "format": "email"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "avatarUrl": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "bio": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "role": {
+                              "type": "string",
+                              "enum": [
+                                "USER",
+                                "PLACE_OWNER",
+                                "ADMIN"
+                              ]
+                            },
+                            "locale": {
+                              "type": "string"
+                            },
+                            "ownerProfileId": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "uuid"
+                            },
+                            "ownerStatus": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "enum": [
+                                "PENDING",
+                                "APPROVED",
+                                "REJECTED",
+                                "SUSPENDED"
+                              ]
+                            },
+                            "homeLatitude": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "homeLongitude": {
+                              "type": [
+                                "number",
+                                "null"
+                              ]
+                            },
+                            "createdAt": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "email",
+                            "name",
+                            "avatarUrl",
+                            "bio",
+                            "role",
+                            "locale",
+                            "ownerProfileId",
+                            "ownerStatus",
+                            "homeLatitude",
+                            "homeLongitude",
+                            "createdAt"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "accessToken",
+                        "expiresIn",
+                        "user"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid, expired, or reused refresh token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Sign out of this device",
+        "description": "Always succeeds, even without a valid session — never an oracle for token validity.",
+        "responses": {
+          "200": {
+            "description": "Signed out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "loggedOut": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        }
+                      },
+                      "required": [
+                        "loggedOut"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout-all": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Sign out everywhere",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All sessions revoked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "loggedOut": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        },
+                        "sessions": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "loggedOut",
+                        "sessions"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Current user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The signed-in user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "avatarUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "bio": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "USER",
+                            "PLACE_OWNER",
+                            "ADMIN"
+                          ]
+                        },
+                        "locale": {
+                          "type": "string"
+                        },
+                        "ownerProfileId": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "uuid"
+                        },
+                        "ownerStatus": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "PENDING",
+                            "APPROVED",
+                            "REJECTED",
+                            "SUSPENDED"
+                          ]
+                        },
+                        "homeLatitude": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "homeLongitude": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "email",
+                        "name",
+                        "avatarUrl",
+                        "bio",
+                        "role",
+                        "locale",
+                        "ownerProfileId",
+                        "ownerStatus",
+                        "homeLatitude",
+                        "homeLongitude",
+                        "createdAt"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Update profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "bio": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "avatarUrl": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "format": "uri"
+                  },
+                  "locale": {
+                    "type": "string",
+                    "enum": [
+                      "vi",
+                      "en"
+                    ]
+                  },
+                  "homeLatitude": {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  "homeLongitude": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "avatarUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "bio": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "USER",
+                            "PLACE_OWNER",
+                            "ADMIN"
+                          ]
+                        },
+                        "locale": {
+                          "type": "string"
+                        },
+                        "ownerProfileId": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "uuid"
+                        },
+                        "ownerStatus": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "PENDING",
+                            "APPROVED",
+                            "REJECTED",
+                            "SUSPENDED"
+                          ]
+                        },
+                        "homeLatitude": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "homeLongitude": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "email",
+                        "name",
+                        "avatarUrl",
+                        "bio",
+                        "role",
+                        "locale",
+                        "ownerProfileId",
+                        "ownerStatus",
+                        "homeLatitude",
+                        "homeLongitude",
+                        "createdAt"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
