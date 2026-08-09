@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Fails when src/types/api.d.ts has drifted from contracts/openapi.json.
+      # Since the repos are separate, this generated file is the only thing
+      # keeping client types honest about the server's actual shape.
+      #
+      # It checks the types against the *pinned* contract, not the live API —
+      # picking up a newer contract is a deliberate `npm run contract:sync`
+      # commit, so an API change can never silently alter this build.
+      - name: Verify generated API types are current
+        run: npm run codegen:check
+
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build

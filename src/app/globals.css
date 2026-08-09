@@ -1,0 +1,152 @@
+@import 'tailwindcss';
+
+/*
+ * Gonoplan design tokens (docs/03-platform.md §5).
+ *
+ * Tailwind v4 is CSS-first: everything in @theme becomes both a CSS custom
+ * property and a utility class, so `--color-primary` yields `bg-primary`,
+ * `text-primary`, `border-primary` with no config file. One source of truth.
+ */
+@theme {
+  /* ─── Brand ─────────────────────────────────────────────────────────── */
+  --color-primary: #6c5ce7;
+  --color-primary-soft: #a29bfe;
+  --color-primary-tint: #f0edff;
+
+  /* Warm counterweight. A purple-only palette reads like a SaaS dashboard;
+     the map, category markers and CTAs need a colour that is not the brand. */
+  --color-accent: #ff7a59;
+  --color-accent-tint: #fff1ec;
+
+  /* ─── Semantic ──────────────────────────────────────────────────────── */
+  --color-success: #00c48c;
+  --color-warning: #ffb020;
+  --color-danger: #ff5a5f;
+
+  /* ─── Surfaces ──────────────────────────────────────────────────────── */
+  --color-background: #f7f7fb;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #f0f0f6;
+
+  /* ─── Text ──────────────────────────────────────────────────────────── */
+  --color-ink: #1f1f29;
+  --color-ink-muted: #6e6e80;
+  --color-ink-subtle: #9a9aad;
+  --color-border: #ececf3;
+
+  /* ─── Radii ─────────────────────────────────────────────────────────── */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  /* ─── Soft-3D depth ─────────────────────────────────────────────────── */
+  /* Layered shadows rather than glassmorphism, which §16 rules out. Each
+     level pairs a tight contact shadow with a wide ambient one — that pairing
+     is what reads as physical depth instead of a flat grey blur. */
+  --shadow-sm: 0 1px 2px rgb(31 31 41 / 0.04), 0 1px 3px rgb(31 31 41 / 0.06);
+  --shadow-md: 0 2px 4px rgb(31 31 41 / 0.04), 0 8px 16px rgb(31 31 41 / 0.08);
+  --shadow-lg: 0 4px 8px rgb(31 31 41 / 0.04), 0 16px 32px rgb(31 31 41 / 0.1);
+  --shadow-xl: 0 8px 16px rgb(31 31 41 / 0.04), 0 24px 48px rgb(31 31 41 / 0.12);
+  --shadow-primary: 0 8px 24px rgb(108 92 231 / 0.28);
+  --shadow-sheet: 0 -8px 32px rgb(31 31 41 / 0.12);
+
+  /* ─── Motion ────────────────────────────────────────────────────────── */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ─── Layout ────────────────────────────────────────────────────────── */
+  --spacing-nav: 4.5rem;
+}
+
+/*
+ * Mobile shell.
+ *
+ * These are not stylistic choices — each one fixes a specific mobile browser
+ * behaviour that would otherwise break the app on a real phone.
+ */
+@layer base {
+  html {
+    /* 100vh on iOS Safari includes the area behind the URL bar, so a
+       full-height layout overflows by ~60px. dvh tracks the visible viewport. */
+    height: 100dvh;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    height: 100dvh;
+    background-color: var(--color-background);
+    color: var(--color-ink);
+    /* Stops iOS rubber-band scrolling from dragging the whole app when the
+       user pans the map or over-scrolls a bottom sheet. */
+    overscroll-behavior-y: none;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Never suppress focus rings outright — keyboard and switch-control users
+     depend on them. Showing them only for keyboard navigation keeps touch
+     interactions clean without giving up accessibility. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  button,
+  [role='button'] {
+    touch-action: manipulation; /* removes the 300ms double-tap-zoom delay */
+  }
+}
+
+@layer utilities {
+  /* Safe areas: the notch, the home indicator, and landscape bezels. */
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .px-safe {
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+  /* The home indicator is ~34px on notched iPhones and 0 everywhere else.
+     Floating UI needs a floor so it doesn't sit flush against the screen edge
+     on Android and desktop, where the inset is zero. */
+  .pb-safe-float {
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 0.75rem);
+  }
+  /* Scroll clearance for content behind the floating nav. Must stay in step
+     with .pb-safe-float or the last card ends up under the bar. */
+  .pb-nav {
+    padding-bottom: calc(var(--spacing-nav) + max(env(safe-area-inset-bottom, 0px), 0.75rem));
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* §17: motion confirms an action, it never delays one — and it always yields
+   to a user who has asked the system for less of it. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
