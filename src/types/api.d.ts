@@ -683,6 +683,1575 @@ export interface paths {
         };
         trace?: never;
     };
+    "/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Category tree
+         * @description Two-level category tree with approved-place counts. Counts include places filed under a subcategory, so a parent total is never smaller than the sum of its children.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Categories */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                slug: string;
+                                name: string;
+                                nameVi: string;
+                                /** @description Sprite key for the marker and chip icon */
+                                iconKey: string;
+                                colorHex: string;
+                                /** @description Approved, non-deleted places in this category */
+                                placeCount: number;
+                                children: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    slug: string;
+                                    name: string;
+                                    nameVi: string;
+                                    /** @description Sprite key for the marker and chip icon */
+                                    iconKey: string;
+                                    colorHex: string;
+                                    /** @description Approved, non-deleted places in this category */
+                                    placeCount: number;
+                                }[];
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Internal error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/places": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List places
+         * @description Location-scoped and cursor-paginated. There is no way to request every place: a radius (max 50 km) and a limit (max 100) are always applied. Falls back to the Ho Chi Minh City centre when no coordinates are given.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    lat?: number | null;
+                    lng?: number | null;
+                    radius?: number;
+                    category?: string;
+                    priceRange?: string;
+                    minRating?: number | null;
+                    openNow?: boolean | null;
+                    sort?: "recommended" | "nearest" | "rating" | "popular" | "newest";
+                    limit?: number;
+                    cursor?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Matching places, nearest first */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                slug: string;
+                                name: string;
+                                description: string | null;
+                                category: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    slug: string;
+                                    name: string;
+                                    colorHex: string;
+                                };
+                                latitude: number;
+                                longitude: number;
+                                address: string;
+                                province: string;
+                                district: string | null;
+                                /** @enum {string|null} */
+                                priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                averageRating: number;
+                                reviewCount: number;
+                                saveCount: number;
+                                distanceM: number | null;
+                                isOpenNow: boolean;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Submit a place
+         * @description Always lands in PENDING, including for administrators — §9 requires review before anything is published, and an admin bypass would mean the most phishable account is also the one that can publish unreviewed.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        name: string;
+                        description?: string;
+                        /** Format: uuid */
+                        categoryId: string;
+                        /** Format: uuid */
+                        subcategoryId?: string;
+                        latitude: number;
+                        longitude: number;
+                        address: string;
+                        province: string;
+                        district?: string;
+                        ward?: string;
+                        phone?: string;
+                        /** Format: uri */
+                        website?: string;
+                        /** @default {} */
+                        socialLinks?: {
+                            /** Format: uri */
+                            facebook?: string;
+                            /** Format: uri */
+                            instagram?: string;
+                            /** Format: uri */
+                            tiktok?: string;
+                        };
+                        /** @enum {string} */
+                        priceRange?: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY";
+                        openingHours?: {
+                            /** @description 0 = Sunday, matching PostgreSQL EXTRACT(DOW) */
+                            dayOfWeek: number;
+                            opensAt: string;
+                            closesAt: string;
+                            /** @default false */
+                            isClosed?: boolean;
+                        }[];
+                    };
+                };
+            };
+            responses: {
+                /** @description Submitted for review */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                slug: string;
+                                /** @enum {string} */
+                                status: "PENDING" | "APPROVED";
+                                message: string;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/places/nearby": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Nearby places
+         * @description Distance-ranked. Uses ST_DWithin against the GiST index, then a KNN sort.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    lat?: number | null;
+                    lng?: number | null;
+                    radius?: number;
+                    category?: string;
+                    openNow?: boolean | null;
+                    limit?: number;
+                    cursor?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Nearby places */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                slug: string;
+                                name: string;
+                                description: string | null;
+                                category: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    slug: string;
+                                    name: string;
+                                    colorHex: string;
+                                };
+                                latitude: number;
+                                longitude: number;
+                                address: string;
+                                province: string;
+                                district: string | null;
+                                /** @enum {string|null} */
+                                priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                averageRating: number;
+                                reviewCount: number;
+                                saveCount: number;
+                                distanceM: number | null;
+                                isOpenNow: boolean;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/places/map": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Map markers for a viewport
+         * @description Returns a deliberately minimal marker shape rather than full cards — a viewport can hold hundreds of markers whose detail the user cannot read. Fetch the card on marker tap. `meta.capped` is true when the viewport held more than the limit, so the client can prompt the user to zoom in.
+         */
+        get: {
+            parameters: {
+                query: {
+                    bbox: string;
+                    category?: string;
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Markers */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                latitude: number;
+                                longitude: number;
+                                /** Format: uuid */
+                                categoryId: string;
+                                /** @enum {string|null} */
+                                priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                bayesianRating: number;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/places/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search places
+         * @description Combines weighted full-text search with trigram word similarity, both diacritic-insensitive: "ca phe", "cà phê" and "marbl" all match. Searches our own catalogue, never a third-party places API.
+         */
+        get: {
+            parameters: {
+                query: {
+                    q: string;
+                    lat?: number | null;
+                    lng?: number | null;
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Search results, most relevant first */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                slug: string;
+                                name: string;
+                                description: string | null;
+                                category: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    slug: string;
+                                    name: string;
+                                    colorHex: string;
+                                };
+                                latitude: number;
+                                longitude: number;
+                                address: string;
+                                province: string;
+                                district: string | null;
+                                /** @enum {string|null} */
+                                priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                averageRating: number;
+                                reviewCount: number;
+                                saveCount: number;
+                                distanceM: number | null;
+                                isOpenNow: boolean;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/places/{idOrSlug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Place detail
+         * @description Accepts a UUID or a slug. A non-approved place is visible only to its owner, its submitter, or an admin; everyone else receives 404 rather than 403, since 403 would confirm the place exists and allow pending submissions to be enumerated.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    lat?: number | null;
+                    lng?: number | null;
+                };
+                header?: never;
+                path: {
+                    idOrSlug: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Place detail */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                slug: string;
+                                name: string;
+                                description: string | null;
+                                category: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    slug: string;
+                                    name: string;
+                                    colorHex: string;
+                                };
+                                latitude: number;
+                                longitude: number;
+                                address: string;
+                                province: string;
+                                district: string | null;
+                                /** @enum {string|null} */
+                                priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                averageRating: number;
+                                reviewCount: number;
+                                saveCount: number;
+                                distanceM: number | null;
+                                isOpenNow: boolean;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                                ward: string | null;
+                                phone: string | null;
+                                website: string | null;
+                                socialLinks: {
+                                    [key: string]: string;
+                                };
+                                timezone: string;
+                                /** @enum {string} */
+                                status: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "DELETED";
+                                rejectionReason: string | null;
+                                subcategory: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    slug: string;
+                                    name: string;
+                                } | null;
+                                images: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    url: string;
+                                    blurhash: string | null;
+                                    isCover: boolean;
+                                }[];
+                                openingHours: {
+                                    dayOfWeek: number;
+                                    opensAt: string;
+                                    closesAt: string;
+                                    crossesMidnight: boolean;
+                                    isClosed: boolean;
+                                }[];
+                                /** @description Always false for unauthenticated callers */
+                                isSaved: boolean;
+                                /** @description Whether the caller may submit changes */
+                                canEdit: boolean;
+                                hasPendingRevision: boolean;
+                                publishedAt: string | null;
+                                createdAt: string;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/places/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete a place
+         * @description Soft delete. The row survives so reviews, saves and audit history remain intact and attributable.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Deleted */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @enum {boolean} */
+                                deleted: true;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Edit a place
+         * @description An owner editing a published listing creates a PlaceRevision and receives 202 — the live listing is untouched until an admin approves. Editing a place still awaiting its first approval applies directly and returns 200. Administrators always write directly. The slug is immutable after publication, since changing it breaks every shared link.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        name?: string;
+                        description?: string;
+                        /** Format: uuid */
+                        categoryId?: string;
+                        /** Format: uuid */
+                        subcategoryId?: string;
+                        latitude?: number;
+                        longitude?: number;
+                        address?: string;
+                        province?: string;
+                        district?: string;
+                        ward?: string;
+                        phone?: string;
+                        /** Format: uri */
+                        website?: string;
+                        /** @default {} */
+                        socialLinks?: {
+                            /** Format: uri */
+                            facebook?: string;
+                            /** Format: uri */
+                            instagram?: string;
+                            /** Format: uri */
+                            tiktok?: string;
+                        };
+                        /** @enum {string} */
+                        priceRange?: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY";
+                        openingHours?: {
+                            /** @description 0 = Sunday, matching PostgreSQL EXTRACT(DOW) */
+                            dayOfWeek: number;
+                            opensAt: string;
+                            closesAt: string;
+                            /** @default false */
+                            isClosed?: boolean;
+                        }[];
+                    };
+                };
+            };
+            responses: {
+                /** @description Applied directly */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                revisionId: string | null;
+                                /** @description True when an admin edited directly; false when queued for review */
+                                applied: boolean;
+                                message: string;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Queued for review; the live listing is unchanged */
+                202: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                revisionId: string | null;
+                                /** @description True when an admin edited directly; false when queued for review */
+                                applied: boolean;
+                                message: string;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description A revision is already awaiting review */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/admin/places/pending": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Places awaiting review */
+        get: {
+            parameters: {
+                query?: {
+                    limit?: number;
+                    cursor?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Pending submissions, oldest first */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                slug: string;
+                                status: string;
+                                rejectionReason?: string | null;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/places/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Approve and publish a place
+         * @description Refuses if the administrator submitted the place themselves. publishedAt is set only on first approval, so re-approving after a suspension does not push an old listing back into "newest". Writes an AdminAction row in the same transaction.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Published */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                slug: string;
+                                status: string;
+                                rejectionReason?: string | null;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Already approved */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/places/{id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reject a place
+         * @description The reason is stored on the place so the submitter can see what to fix.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        reason: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Rejected */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                slug: string;
+                                status: string;
+                                rejectionReason?: string | null;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/places/{id}/suspend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Suspend a published place
+         * @description Removes it from public results without destroying its reviews or history.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        reason: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Suspended */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                slug: string;
+                                status: string;
+                                rejectionReason?: string | null;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/revisions/pending": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Owner edits awaiting review */
+        get: {
+            parameters: {
+                query?: {
+                    limit?: number;
+                    cursor?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Pending revisions with the proposed changes */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                [key: string]: unknown;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/revisions/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Apply a pending revision
+         * @description Applies the stored diff to the live listing and audits it in one transaction.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Applied */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @enum {boolean} */
+                                applied: true;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Already reviewed */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/revisions/{id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Discard a pending revision
+         * @description A no-op against the live listing — which is the point of storing proposed changes separately rather than applying them optimistically and restoring on rejection.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        reason: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Discarded */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @enum {boolean} */
+                                applied: false;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Audit log
+         * @description Append-only. Every ban, approval, rejection, suspension and deletion writes a row in the same transaction as the change, so a moderation dispute has evidence either way.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    limit?: number;
+                    targetId?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Audit entries, newest first */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                [key: string]: unknown;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -742,6 +2311,146 @@ export interface components {
                 homeLongitude: number | null;
                 createdAt: string;
             };
+        };
+        Category: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            name: string;
+            nameVi: string;
+            /** @description Sprite key for the marker and chip icon */
+            iconKey: string;
+            colorHex: string;
+            /** @description Approved, non-deleted places in this category */
+            placeCount: number;
+        };
+        CategoryTreeNode: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            name: string;
+            nameVi: string;
+            /** @description Sprite key for the marker and chip icon */
+            iconKey: string;
+            colorHex: string;
+            /** @description Approved, non-deleted places in this category */
+            placeCount: number;
+            children: {
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                name: string;
+                nameVi: string;
+                /** @description Sprite key for the marker and chip icon */
+                iconKey: string;
+                colorHex: string;
+                /** @description Approved, non-deleted places in this category */
+                placeCount: number;
+            }[];
+        };
+        PlaceCard: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            name: string;
+            description: string | null;
+            category: {
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                name: string;
+                colorHex: string;
+            };
+            latitude: number;
+            longitude: number;
+            address: string;
+            province: string;
+            district: string | null;
+            /** @enum {string|null} */
+            priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+            averageRating: number;
+            reviewCount: number;
+            saveCount: number;
+            distanceM: number | null;
+            isOpenNow: boolean;
+            coverImageUrl: string | null;
+            coverBlurhash: string | null;
+        };
+        PlaceDetail: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            name: string;
+            description: string | null;
+            category: {
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                name: string;
+                colorHex: string;
+            };
+            latitude: number;
+            longitude: number;
+            address: string;
+            province: string;
+            district: string | null;
+            /** @enum {string|null} */
+            priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+            averageRating: number;
+            reviewCount: number;
+            saveCount: number;
+            distanceM: number | null;
+            isOpenNow: boolean;
+            coverImageUrl: string | null;
+            coverBlurhash: string | null;
+            ward: string | null;
+            phone: string | null;
+            website: string | null;
+            socialLinks: {
+                [key: string]: string;
+            };
+            timezone: string;
+            /** @enum {string} */
+            status: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "DELETED";
+            rejectionReason: string | null;
+            subcategory: {
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                name: string;
+            } | null;
+            images: {
+                /** Format: uuid */
+                id: string;
+                url: string;
+                blurhash: string | null;
+                isCover: boolean;
+            }[];
+            openingHours: {
+                dayOfWeek: number;
+                opensAt: string;
+                closesAt: string;
+                crossesMidnight: boolean;
+                isClosed: boolean;
+            }[];
+            /** @description Always false for unauthenticated callers */
+            isSaved: boolean;
+            /** @description Whether the caller may submit changes */
+            canEdit: boolean;
+            hasPendingRevision: boolean;
+            publishedAt: string | null;
+            createdAt: string;
+        };
+        MapMarker: {
+            /** Format: uuid */
+            id: string;
+            latitude: number;
+            longitude: number;
+            /** Format: uuid */
+            categoryId: string;
+            /** @enum {string|null} */
+            priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+            bayesianRating: number;
         };
         HealthReport: {
             /** @enum {string} */

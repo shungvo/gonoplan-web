@@ -302,6 +302,578 @@
           "user"
         ]
       },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "nameVi": {
+            "type": "string"
+          },
+          "iconKey": {
+            "type": "string",
+            "description": "Sprite key for the marker and chip icon"
+          },
+          "colorHex": {
+            "type": "string"
+          },
+          "placeCount": {
+            "type": "integer",
+            "description": "Approved, non-deleted places in this category"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "nameVi",
+          "iconKey",
+          "colorHex",
+          "placeCount"
+        ]
+      },
+      "CategoryTreeNode": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "nameVi": {
+            "type": "string"
+          },
+          "iconKey": {
+            "type": "string",
+            "description": "Sprite key for the marker and chip icon"
+          },
+          "colorHex": {
+            "type": "string"
+          },
+          "placeCount": {
+            "type": "integer",
+            "description": "Approved, non-deleted places in this category"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "nameVi": {
+                  "type": "string"
+                },
+                "iconKey": {
+                  "type": "string",
+                  "description": "Sprite key for the marker and chip icon"
+                },
+                "colorHex": {
+                  "type": "string"
+                },
+                "placeCount": {
+                  "type": "integer",
+                  "description": "Approved, non-deleted places in this category"
+                }
+              },
+              "required": [
+                "id",
+                "slug",
+                "name",
+                "nameVi",
+                "iconKey",
+                "colorHex",
+                "placeCount"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "nameVi",
+          "iconKey",
+          "colorHex",
+          "placeCount",
+          "children"
+        ]
+      },
+      "PlaceCard": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "colorHex": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "slug",
+              "name",
+              "colorHex"
+            ]
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "address": {
+            "type": "string"
+          },
+          "province": {
+            "type": "string"
+          },
+          "district": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "priceRange": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "BUDGET",
+              "MODERATE",
+              "EXPENSIVE",
+              "LUXURY"
+            ]
+          },
+          "averageRating": {
+            "type": "number"
+          },
+          "reviewCount": {
+            "type": "integer"
+          },
+          "saveCount": {
+            "type": "integer"
+          },
+          "distanceM": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "isOpenNow": {
+            "type": "boolean"
+          },
+          "coverImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverBlurhash": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "description",
+          "category",
+          "latitude",
+          "longitude",
+          "address",
+          "province",
+          "district",
+          "priceRange",
+          "averageRating",
+          "reviewCount",
+          "saveCount",
+          "distanceM",
+          "isOpenNow",
+          "coverImageUrl",
+          "coverBlurhash"
+        ]
+      },
+      "PlaceDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "colorHex": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "slug",
+              "name",
+              "colorHex"
+            ]
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "address": {
+            "type": "string"
+          },
+          "province": {
+            "type": "string"
+          },
+          "district": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "priceRange": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "BUDGET",
+              "MODERATE",
+              "EXPENSIVE",
+              "LUXURY"
+            ]
+          },
+          "averageRating": {
+            "type": "number"
+          },
+          "reviewCount": {
+            "type": "integer"
+          },
+          "saveCount": {
+            "type": "integer"
+          },
+          "distanceM": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "isOpenNow": {
+            "type": "boolean"
+          },
+          "coverImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverBlurhash": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ward": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "phone": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "website": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "socialLinks": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING",
+              "APPROVED",
+              "REJECTED",
+              "SUSPENDED",
+              "DELETED"
+            ]
+          },
+          "rejectionReason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "subcategory": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "slug",
+              "name"
+            ]
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "blurhash": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "isCover": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "url",
+                "blurhash",
+                "isCover"
+              ]
+            }
+          },
+          "openingHours": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "dayOfWeek": {
+                  "type": "integer"
+                },
+                "opensAt": {
+                  "type": "string"
+                },
+                "closesAt": {
+                  "type": "string"
+                },
+                "crossesMidnight": {
+                  "type": "boolean"
+                },
+                "isClosed": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "dayOfWeek",
+                "opensAt",
+                "closesAt",
+                "crossesMidnight",
+                "isClosed"
+              ]
+            }
+          },
+          "isSaved": {
+            "type": "boolean",
+            "description": "Always false for unauthenticated callers"
+          },
+          "canEdit": {
+            "type": "boolean",
+            "description": "Whether the caller may submit changes"
+          },
+          "hasPendingRevision": {
+            "type": "boolean"
+          },
+          "publishedAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "description",
+          "category",
+          "latitude",
+          "longitude",
+          "address",
+          "province",
+          "district",
+          "priceRange",
+          "averageRating",
+          "reviewCount",
+          "saveCount",
+          "distanceM",
+          "isOpenNow",
+          "coverImageUrl",
+          "coverBlurhash",
+          "ward",
+          "phone",
+          "website",
+          "socialLinks",
+          "timezone",
+          "status",
+          "rejectionReason",
+          "subcategory",
+          "images",
+          "openingHours",
+          "isSaved",
+          "canEdit",
+          "hasPendingRevision",
+          "publishedAt",
+          "createdAt"
+        ]
+      },
+      "MapMarker": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "categoryId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "priceRange": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "BUDGET",
+              "MODERATE",
+              "EXPENSIVE",
+              "LUXURY"
+            ]
+          },
+          "bayesianRating": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "latitude",
+          "longitude",
+          "categoryId",
+          "priceRange",
+          "bayesianRating"
+        ]
+      },
       "HealthReport": {
         "type": "object",
         "properties": {
@@ -1628,6 +2200,3173 @@
           },
           "401": {
             "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Category tree",
+        "description": "Two-level category tree with approved-place counts. Counts include places filed under a subcategory, so a parent total is never smaller than the sum of its children.",
+        "responses": {
+          "200": {
+            "description": "Categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "nameVi": {
+                            "type": "string"
+                          },
+                          "iconKey": {
+                            "type": "string",
+                            "description": "Sprite key for the marker and chip icon"
+                          },
+                          "colorHex": {
+                            "type": "string"
+                          },
+                          "placeCount": {
+                            "type": "integer",
+                            "description": "Approved, non-deleted places in this category"
+                          },
+                          "children": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "nameVi": {
+                                  "type": "string"
+                                },
+                                "iconKey": {
+                                  "type": "string",
+                                  "description": "Sprite key for the marker and chip icon"
+                                },
+                                "colorHex": {
+                                  "type": "string"
+                                },
+                                "placeCount": {
+                                  "type": "integer",
+                                  "description": "Approved, non-deleted places in this category"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "slug",
+                                "name",
+                                "nameVi",
+                                "iconKey",
+                                "colorHex",
+                                "placeCount"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "slug",
+                          "name",
+                          "nameVi",
+                          "iconKey",
+                          "colorHex",
+                          "placeCount",
+                          "children"
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/places": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "List places",
+        "description": "Location-scoped and cursor-paginated. There is no way to request every place: a radius (max 50 km) and a limit (max 100) are always applied. Falls back to the Ho Chi Minh City centre when no coordinates are given.",
+        "parameters": [
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -90,
+              "maximum": 90
+            },
+            "required": false,
+            "name": "lat",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -180,
+              "maximum": 180
+            },
+            "required": false,
+            "name": "lng",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 50000,
+              "default": 5000
+            },
+            "required": false,
+            "name": "radius",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "category",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "priceRange",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 5
+            },
+            "required": false,
+            "name": "minRating",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "required": false,
+            "name": "openNow",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "recommended",
+                "nearest",
+                "rating",
+                "popular",
+                "newest"
+              ],
+              "default": "recommended"
+            },
+            "required": false,
+            "name": "sort",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "required": false,
+            "name": "cursor",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching places, nearest first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "category": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "slug": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "colorHex": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "slug",
+                              "name",
+                              "colorHex"
+                            ]
+                          },
+                          "latitude": {
+                            "type": "number"
+                          },
+                          "longitude": {
+                            "type": "number"
+                          },
+                          "address": {
+                            "type": "string"
+                          },
+                          "province": {
+                            "type": "string"
+                          },
+                          "district": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "priceRange": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "enum": [
+                              "BUDGET",
+                              "MODERATE",
+                              "EXPENSIVE",
+                              "LUXURY"
+                            ]
+                          },
+                          "averageRating": {
+                            "type": "number"
+                          },
+                          "reviewCount": {
+                            "type": "integer"
+                          },
+                          "saveCount": {
+                            "type": "integer"
+                          },
+                          "distanceM": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "isOpenNow": {
+                            "type": "boolean"
+                          },
+                          "coverImageUrl": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "coverBlurhash": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "slug",
+                          "name",
+                          "description",
+                          "category",
+                          "latitude",
+                          "longitude",
+                          "address",
+                          "province",
+                          "district",
+                          "priceRange",
+                          "averageRating",
+                          "reviewCount",
+                          "saveCount",
+                          "distanceM",
+                          "isOpenNow",
+                          "coverImageUrl",
+                          "coverBlurhash"
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Submit a place",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Always lands in PENDING, including for administrators — §9 requires review before anything is published, and an admin bypass would mean the most phishable account is also the one that can publish unreviewed.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 120
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "subcategoryId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "latitude": {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  "address": {
+                    "type": "string",
+                    "minLength": 4,
+                    "maxLength": 300
+                  },
+                  "province": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "district": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "ward": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "phone": {
+                    "type": "string",
+                    "maxLength": 30
+                  },
+                  "website": {
+                    "type": "string",
+                    "maxLength": 300,
+                    "format": "uri"
+                  },
+                  "socialLinks": {
+                    "type": "object",
+                    "properties": {
+                      "facebook": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "instagram": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "tiktok": {
+                        "type": "string",
+                        "format": "uri"
+                      }
+                    },
+                    "default": {}
+                  },
+                  "priceRange": {
+                    "type": "string",
+                    "enum": [
+                      "BUDGET",
+                      "MODERATE",
+                      "EXPENSIVE",
+                      "LUXURY"
+                    ]
+                  },
+                  "openingHours": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "dayOfWeek": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6,
+                          "description": "0 = Sunday, matching PostgreSQL EXTRACT(DOW)"
+                        },
+                        "opensAt": {
+                          "type": "string",
+                          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                        },
+                        "closesAt": {
+                          "type": "string",
+                          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                        },
+                        "isClosed": {
+                          "type": "boolean",
+                          "default": false
+                        }
+                      },
+                      "required": [
+                        "dayOfWeek",
+                        "opensAt",
+                        "closesAt"
+                      ],
+                      "description": "One entry per shift. Split hours are two entries for the same day. A closing time at or before the opening time is stored as crossing midnight."
+                    },
+                    "maxItems": 21
+                  }
+                },
+                "required": [
+                  "name",
+                  "categoryId",
+                  "latitude",
+                  "longitude",
+                  "address",
+                  "province"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Submitted for review",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "PENDING",
+                            "APPROVED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "slug",
+                        "status",
+                        "message"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/places/nearby": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Nearby places",
+        "description": "Distance-ranked. Uses ST_DWithin against the GiST index, then a KNN sort.",
+        "parameters": [
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -90,
+              "maximum": 90
+            },
+            "required": false,
+            "name": "lat",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -180,
+              "maximum": 180
+            },
+            "required": false,
+            "name": "lng",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 50000,
+              "default": 5000
+            },
+            "required": false,
+            "name": "radius",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "category",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "required": false,
+            "name": "openNow",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "required": false,
+            "name": "cursor",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Nearby places",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "category": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "slug": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "colorHex": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "slug",
+                              "name",
+                              "colorHex"
+                            ]
+                          },
+                          "latitude": {
+                            "type": "number"
+                          },
+                          "longitude": {
+                            "type": "number"
+                          },
+                          "address": {
+                            "type": "string"
+                          },
+                          "province": {
+                            "type": "string"
+                          },
+                          "district": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "priceRange": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "enum": [
+                              "BUDGET",
+                              "MODERATE",
+                              "EXPENSIVE",
+                              "LUXURY"
+                            ]
+                          },
+                          "averageRating": {
+                            "type": "number"
+                          },
+                          "reviewCount": {
+                            "type": "integer"
+                          },
+                          "saveCount": {
+                            "type": "integer"
+                          },
+                          "distanceM": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "isOpenNow": {
+                            "type": "boolean"
+                          },
+                          "coverImageUrl": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "coverBlurhash": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "slug",
+                          "name",
+                          "description",
+                          "category",
+                          "latitude",
+                          "longitude",
+                          "address",
+                          "province",
+                          "district",
+                          "priceRange",
+                          "averageRating",
+                          "reviewCount",
+                          "saveCount",
+                          "distanceM",
+                          "isOpenNow",
+                          "coverImageUrl",
+                          "coverBlurhash"
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/places/map": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Map markers for a viewport",
+        "description": "Returns a deliberately minimal marker shape rather than full cards — a viewport can hold hundreds of markers whose detail the user cannot read. Fetch the card on marker tap. `meta.capped` is true when the viewport held more than the limit, so the client can prompt the user to zoom in.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "bbox",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "category",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 300
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Markers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "latitude": {
+                            "type": "number"
+                          },
+                          "longitude": {
+                            "type": "number"
+                          },
+                          "categoryId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "priceRange": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "enum": [
+                              "BUDGET",
+                              "MODERATE",
+                              "EXPENSIVE",
+                              "LUXURY"
+                            ]
+                          },
+                          "bayesianRating": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "latitude",
+                          "longitude",
+                          "categoryId",
+                          "priceRange",
+                          "bayesianRating"
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/places/search": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Search places",
+        "description": "Combines weighted full-text search with trigram word similarity, both diacritic-insensitive: \"ca phe\", \"cà phê\" and \"marbl\" all match. Searches our own catalogue, never a third-party places API.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "required": true,
+            "name": "q",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -90,
+              "maximum": 90
+            },
+            "required": false,
+            "name": "lat",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -180,
+              "maximum": 180
+            },
+            "required": false,
+            "name": "lng",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30,
+              "default": 15
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results, most relevant first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "category": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "slug": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "colorHex": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "slug",
+                              "name",
+                              "colorHex"
+                            ]
+                          },
+                          "latitude": {
+                            "type": "number"
+                          },
+                          "longitude": {
+                            "type": "number"
+                          },
+                          "address": {
+                            "type": "string"
+                          },
+                          "province": {
+                            "type": "string"
+                          },
+                          "district": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "priceRange": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "enum": [
+                              "BUDGET",
+                              "MODERATE",
+                              "EXPENSIVE",
+                              "LUXURY"
+                            ]
+                          },
+                          "averageRating": {
+                            "type": "number"
+                          },
+                          "reviewCount": {
+                            "type": "integer"
+                          },
+                          "saveCount": {
+                            "type": "integer"
+                          },
+                          "distanceM": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "isOpenNow": {
+                            "type": "boolean"
+                          },
+                          "coverImageUrl": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "coverBlurhash": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "slug",
+                          "name",
+                          "description",
+                          "category",
+                          "latitude",
+                          "longitude",
+                          "address",
+                          "province",
+                          "district",
+                          "priceRange",
+                          "averageRating",
+                          "reviewCount",
+                          "saveCount",
+                          "distanceM",
+                          "isOpenNow",
+                          "coverImageUrl",
+                          "coverBlurhash"
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/places/{idOrSlug}": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Place detail",
+        "description": "Accepts a UUID or a slug. A non-approved place is visible only to its owner, its submitter, or an admin; everyone else receives 404 rather than 403, since 403 would confirm the place exists and allow pending submissions to be enumerated.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "idOrSlug",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "required": false,
+            "name": "lat",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "required": false,
+            "name": "lng",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Place detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "category": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "slug": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "colorHex": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "slug",
+                            "name",
+                            "colorHex"
+                          ]
+                        },
+                        "latitude": {
+                          "type": "number"
+                        },
+                        "longitude": {
+                          "type": "number"
+                        },
+                        "address": {
+                          "type": "string"
+                        },
+                        "province": {
+                          "type": "string"
+                        },
+                        "district": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "priceRange": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "BUDGET",
+                            "MODERATE",
+                            "EXPENSIVE",
+                            "LUXURY"
+                          ]
+                        },
+                        "averageRating": {
+                          "type": "number"
+                        },
+                        "reviewCount": {
+                          "type": "integer"
+                        },
+                        "saveCount": {
+                          "type": "integer"
+                        },
+                        "distanceM": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "isOpenNow": {
+                          "type": "boolean"
+                        },
+                        "coverImageUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverBlurhash": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "ward": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "phone": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "website": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "socialLinks": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "timezone": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "DRAFT",
+                            "PENDING",
+                            "APPROVED",
+                            "REJECTED",
+                            "SUSPENDED",
+                            "DELETED"
+                          ]
+                        },
+                        "rejectionReason": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "subcategory": {
+                          "type": [
+                            "object",
+                            "null"
+                          ],
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "slug": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "slug",
+                            "name"
+                          ]
+                        },
+                        "images": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "url": {
+                                "type": "string"
+                              },
+                              "blurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "isCover": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "url",
+                              "blurhash",
+                              "isCover"
+                            ]
+                          }
+                        },
+                        "openingHours": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "dayOfWeek": {
+                                "type": "integer"
+                              },
+                              "opensAt": {
+                                "type": "string"
+                              },
+                              "closesAt": {
+                                "type": "string"
+                              },
+                              "crossesMidnight": {
+                                "type": "boolean"
+                              },
+                              "isClosed": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "dayOfWeek",
+                              "opensAt",
+                              "closesAt",
+                              "crossesMidnight",
+                              "isClosed"
+                            ]
+                          }
+                        },
+                        "isSaved": {
+                          "type": "boolean",
+                          "description": "Always false for unauthenticated callers"
+                        },
+                        "canEdit": {
+                          "type": "boolean",
+                          "description": "Whether the caller may submit changes"
+                        },
+                        "hasPendingRevision": {
+                          "type": "boolean"
+                        },
+                        "publishedAt": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "slug",
+                        "name",
+                        "description",
+                        "category",
+                        "latitude",
+                        "longitude",
+                        "address",
+                        "province",
+                        "district",
+                        "priceRange",
+                        "averageRating",
+                        "reviewCount",
+                        "saveCount",
+                        "distanceM",
+                        "isOpenNow",
+                        "coverImageUrl",
+                        "coverBlurhash",
+                        "ward",
+                        "phone",
+                        "website",
+                        "socialLinks",
+                        "timezone",
+                        "status",
+                        "rejectionReason",
+                        "subcategory",
+                        "images",
+                        "openingHours",
+                        "isSaved",
+                        "canEdit",
+                        "hasPendingRevision",
+                        "publishedAt",
+                        "createdAt"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/places/{id}": {
+      "patch": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Edit a place",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "An owner editing a published listing creates a PlaceRevision and receives 202 — the live listing is untouched until an admin approves. Editing a place still awaiting its first approval applies directly and returns 200. Administrators always write directly. The slug is immutable after publication, since changing it breaks every shared link.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 120
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "subcategoryId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "latitude": {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  "address": {
+                    "type": "string",
+                    "minLength": 4,
+                    "maxLength": 300
+                  },
+                  "province": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "district": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "ward": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "phone": {
+                    "type": "string",
+                    "maxLength": 30
+                  },
+                  "website": {
+                    "type": "string",
+                    "maxLength": 300,
+                    "format": "uri"
+                  },
+                  "socialLinks": {
+                    "type": "object",
+                    "properties": {
+                      "facebook": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "instagram": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "tiktok": {
+                        "type": "string",
+                        "format": "uri"
+                      }
+                    },
+                    "default": {}
+                  },
+                  "priceRange": {
+                    "type": "string",
+                    "enum": [
+                      "BUDGET",
+                      "MODERATE",
+                      "EXPENSIVE",
+                      "LUXURY"
+                    ]
+                  },
+                  "openingHours": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "dayOfWeek": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 6,
+                          "description": "0 = Sunday, matching PostgreSQL EXTRACT(DOW)"
+                        },
+                        "opensAt": {
+                          "type": "string",
+                          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                        },
+                        "closesAt": {
+                          "type": "string",
+                          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                        },
+                        "isClosed": {
+                          "type": "boolean",
+                          "default": false
+                        }
+                      },
+                      "required": [
+                        "dayOfWeek",
+                        "opensAt",
+                        "closesAt"
+                      ],
+                      "description": "One entry per shift. Split hours are two entries for the same day. A closing time at or before the opening time is stored as crossing midnight."
+                    },
+                    "maxItems": 21
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Applied directly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "revisionId": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "uuid"
+                        },
+                        "applied": {
+                          "type": "boolean",
+                          "description": "True when an admin edited directly; false when queued for review"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "revisionId",
+                        "applied",
+                        "message"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Queued for review; the live listing is unchanged",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "revisionId": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "uuid"
+                        },
+                        "applied": {
+                          "type": "boolean",
+                          "description": "True when an admin edited directly; false when queued for review"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "revisionId",
+                        "applied",
+                        "message"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A revision is already awaiting review",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Delete a place",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Soft delete. The row survives so reviews, saves and audit history remain intact and attributable.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deleted": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        }
+                      },
+                      "required": [
+                        "deleted"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/places/pending": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Places awaiting review",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false,
+            "name": "cursor",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pending submissions, oldest first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "rejectionReason": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "slug",
+                          "status"
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Administrator access required — re-verified against the database, not the token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/places/{id}/approve": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Approve and publish a place",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Refuses if the administrator submitted the place themselves. publishedAt is set only on first approval, so re-approving after a suspension does not push an old listing back into \"newest\". Writes an AdminAction row in the same transaction.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "rejectionReason": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "slug",
+                        "status"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Administrator access required — re-verified against the database, not the token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Already approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/places/{id}/reject": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Reject a place",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "The reason is stored on the place so the submitter can see what to fix.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 4,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "reason"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rejected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "rejectionReason": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "slug",
+                        "status"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Administrator access required — re-verified against the database, not the token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/places/{id}/suspend": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Suspend a published place",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Removes it from public results without destroying its reviews or history.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 4,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "reason"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Suspended",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "rejectionReason": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "slug",
+                        "status"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Administrator access required — re-verified against the database, not the token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/revisions/pending": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Owner edits awaiting review",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false,
+            "name": "cursor",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pending revisions with the proposed changes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": {}
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Administrator access required — re-verified against the database, not the token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/revisions/{id}/approve": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Apply a pending revision",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Applies the stored diff to the live listing and audits it in one transaction.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Applied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "applied": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        }
+                      },
+                      "required": [
+                        "applied"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Administrator access required — re-verified against the database, not the token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Already reviewed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/revisions/{id}/reject": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Discard a pending revision",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "A no-op against the live listing — which is the point of storing proposed changes separately rather than applying them optimistically and restoring on rejection.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 4,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "reason"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Discarded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "applied": {
+                          "type": "boolean",
+                          "enum": [
+                            false
+                          ]
+                        }
+                      },
+                      "required": [
+                        "applied"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Administrator access required — re-verified against the database, not the token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/actions": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Audit log",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Append-only. Every ban, approval, rejection, suspension and deletion writes a row in the same transaction as the change, so a moderation dispute has evidence either way.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false,
+            "name": "targetId",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Audit entries, newest first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": {}
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Administrator access required — re-verified against the database, not the token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
             "content": {
               "application/json": {
                 "schema": {
