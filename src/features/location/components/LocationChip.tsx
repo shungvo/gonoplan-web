@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils/cn';
  * Every branch is a designed state — including refusal. §34: if the user says
  * no, the app keeps working and offers to let them pick a city instead.
  */
-export function LocationChip() {
+export function LocationChip({ onPickLocation }: { onPickLocation?: () => void } = {}) {
   const { status, source, coordinates, label, requestLocation } = useLocationStore();
 
   useEffect(() => {
@@ -39,7 +39,15 @@ export function LocationChip() {
   return (
     <button
       type="button"
-      onClick={() => void requestLocation()}
+      onClick={() => {
+        // Re-prompting after a denial does nothing — the browser remembers it.
+        // Offer the manual picker instead of a button that appears broken.
+        if (isDenied && onPickLocation) {
+          onPickLocation();
+          return;
+        }
+        void requestLocation();
+      }}
       className={cn(
         'inline-flex max-w-full items-center gap-1.5 rounded-full px-3 py-1.5',
         'text-sm font-medium transition-colors active:scale-[0.98]',

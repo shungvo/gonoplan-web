@@ -12,6 +12,12 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored MapLibre worker bundle, published by
+    // scripts/copy-maplibre-worker.mjs. Minified third-party output — linting
+    // it produces a thousand warnings about code we do not own or edit.
+    "public/maplibre/**",
+    // Generated from the API contract; never hand-edited.
+    "src/types/api.d.ts",
   ]),
 ]);
 

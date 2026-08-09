@@ -1,16 +1,14 @@
 import { Search } from 'lucide-react';
 import { LocationChip } from '@/features/location/components/LocationChip';
-import { ApiStatus } from '@/features/health/components/ApiStatus';
+import { HomeMap } from '@/features/map/components/HomeMap';
 import { PlaceCardSkeleton } from '@/components/ui/Skeleton';
 
 /**
  * Home (§14).
  *
- * Phase 1 renders the shell — greeting, location state, search affordance and
- * the recommendation rail — with the map and live data arriving in Phases 5-6.
- * Building the shell first means the mobile layout problems (safe areas, dvh,
- * nav clearance, scroll containment) are solved before a WebGL canvas is
- * competing for the same touch events.
+ * The map is now real. Recommendation rails arrive in Phase 12; their skeletons
+ * stay so the layout is already the final one and nothing shifts when data
+ * lands.
  */
 export default function HomePage() {
   return (
@@ -38,13 +36,10 @@ export default function HomePage() {
         </button>
       </header>
 
-      {/* Map placeholder — Phase 5 replaces this with the MapLibre canvas.
-          Reserving the exact final height now keeps the layout from shifting
-          when the map arrives. */}
       <section className="mt-5 px-5" aria-label="Map">
-        <div className="relative flex h-56 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-primary-tint via-surface to-accent-tint shadow-md">
-          <p className="text-sm font-medium text-ink-subtle">Map · Phase 5</p>
-        </div>
+        {/* A fixed height reserved up front: the map mounts asynchronously, and
+            letting it size itself would shift everything below it on load. */}
+        <HomeMap className="h-72" />
       </section>
 
       <section className="mt-7" aria-label="Popular near you">
@@ -57,13 +52,6 @@ export default function HomePage() {
           <PlaceCardSkeleton />
           <PlaceCardSkeleton />
         </div>
-      </section>
-
-      <section className="mt-8 px-5" aria-label="System status">
-        <h2 className="mb-3 text-sm font-semibold tracking-wide text-ink-muted uppercase">
-          Phase 1 · Setup
-        </h2>
-        <ApiStatus />
       </section>
 
       <div className="h-8" />

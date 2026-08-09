@@ -12,7 +12,9 @@
     "test": "vitest run",
     "contract:sync": "node scripts/sync-contract.mjs",
     "codegen": "openapi-typescript contracts/openapi.json -o src/types/api.d.ts",
-    "codegen:check": "npm run codegen && git diff --exit-code src/types/api.d.ts"
+    "codegen:check": "npm run codegen && git diff --exit-code src/types/api.d.ts",
+    "predev": "node scripts/copy-maplibre-worker.mjs",
+    "prebuild": "node scripts/copy-maplibre-worker.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",
@@ -20,6 +22,7 @@
     "@tanstack/react-query-devtools": "^5.101.4",
     "clsx": "^2.1.1",
     "lucide-react": "^1.31.0",
+    "maplibre-gl": "^6.2.0",
     "motion": "^13.0.0",
     "next": "16.3.0",
     "react": "19.2.8",

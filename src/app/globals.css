@@ -138,6 +138,68 @@
   }
 }
 
+/* ─── Map ───────────────────────────────────────────────────────────────── */
+
+/* The "you are here" dot. A DOM marker rather than a symbol layer because
+   there is exactly one of them and it needs a CSS animation. */
+.gonoplan-user-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  border: 3px solid #fff;
+  box-shadow: var(--shadow-primary);
+  position: relative;
+}
+
+.gonoplan-user-dot::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  opacity: 0.25;
+  animation: gonoplan-pulse 2.4s ease-out infinite;
+}
+
+@keyframes gonoplan-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.35;
+  }
+  70% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* MapLibre's default control chrome is desktop-shaped and clashes with the
+   floating UI. The custom controls in MapCanvas replace it. */
+.maplibregl-ctrl-bottom-left,
+.maplibregl-ctrl-top-right {
+  display: none;
+}
+
+/* Attribution is legally required, so it is kept — but constrained to a single
+   discreet line instead of wrapping across the map. */
+.maplibregl-ctrl-attrib {
+  font-size: 10px;
+  line-height: 1.6;
+  border-radius: 8px 0 0 0;
+  max-width: 100%;
+}
+
+.maplibregl-ctrl-attrib-inner {
+  display: block;
+  max-width: 60vw;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 /* §17: motion confirms an action, it never delays one — and it always yields
    to a user who has asked the system for less of it. */
 @media (prefers-reduced-motion: reduce) {
