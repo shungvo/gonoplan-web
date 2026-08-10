@@ -29,14 +29,18 @@ export function PlacePageClient({ idOrSlug }: { idOrSlug: string }) {
   };
 
   return (
-    <div className="px-safe">
-      {/* Floats over the hero (§21). Backdrop blur keeps it legible against
-          both a photo and the gradient fallback. */}
+    <div className="px-safe relative">
+      {/*
+        Floats over the hero (§21) and scrolls away with it.
+        `fixed` kept it pinned over the body copy, where it sat directly on top
+        of the "Reviews" heading. It belongs to the hero; once the user is
+        reading, the swipe-back gesture and the bottom nav are the way out.
+      */}
       <button
         type="button"
         onClick={goBack}
         aria-label="Back"
-        className="fixed top-[calc(env(safe-area-inset-top,0px)+0.75rem)] left-4 z-10 flex size-10 items-center justify-center rounded-full bg-surface/85 text-ink shadow-md backdrop-blur-md active:scale-95"
+        className="bg-surface/85 text-ink absolute top-[calc(env(safe-area-inset-top,0px)+0.75rem)] left-4 z-10 flex size-10 items-center justify-center rounded-full shadow-md backdrop-blur-md active:scale-95"
       >
         <ArrowLeft className="size-5" aria-hidden />
       </button>

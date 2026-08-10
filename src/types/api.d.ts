@@ -1595,6 +1595,679 @@ export interface paths {
         };
         trace?: never;
     };
+    "/places/{placeId}/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List reviews for a place
+         * @description Cursor paginated. `hasVoted` and `isMine` reflect the caller when authenticated and are false otherwise; `canEdit` is computed server-side so the client never renders an edit affordance the API will refuse.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    sort?: "recent" | "helpful" | "rating_high" | "rating_low";
+                    limit?: number;
+                    cursor?: string;
+                };
+                header?: never;
+                path: {
+                    placeId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Reviews */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                rating: number;
+                                content: string | null;
+                                helpfulCount: number;
+                                createdAt: string;
+                                updatedAt: string;
+                                author: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    avatarUrl: string | null;
+                                };
+                                images: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    url: string;
+                                    blurhash: string | null;
+                                }[];
+                                reply: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    content: string;
+                                    createdAt: string;
+                                    businessName: string;
+                                } | null;
+                                isMine: boolean;
+                                hasVoted: boolean;
+                                canEdit: boolean;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Write a review
+         * @description A rating alone is a complete review; text is optional. One review per user per place, enforced by a unique constraint rather than a pre-flight check. Place rating aggregates are recomputed from the review rows in the same transaction, behind a row lock, so concurrent reviews cannot lose each other.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    placeId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        rating: number;
+                        content?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Review created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                rating: number;
+                                content: string | null;
+                                helpfulCount: number;
+                                createdAt: string;
+                                updatedAt: string;
+                                author: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    avatarUrl: string | null;
+                                };
+                                images: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    url: string;
+                                    blurhash: string | null;
+                                }[];
+                                reply: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    content: string;
+                                    createdAt: string;
+                                    businessName: string;
+                                } | null;
+                                isMine: boolean;
+                                hasVoted: boolean;
+                                canEdit: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Own business, or place not open for reviews */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Already reviewed by this user */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/places/{placeId}/reviews/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Rating summary and review eligibility
+         * @description Returns the star breakdown plus whether the caller may review, and why not if they may not. The rules — one per person, never your own business, only approved places — are server policy, so the client is told rather than left to infer them.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    placeId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Summary */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                averageRating: number;
+                                reviewCount: number;
+                                /** @description Count per star, keyed "1".."5" */
+                                breakdown: {
+                                    [key: string]: number;
+                                };
+                                /** Format: uuid */
+                                myReviewId: string | null;
+                                canReview: boolean;
+                                cannotReviewReason: string | null;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reviews/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete a review
+         * @description Author or admin. Unlike editing this is never time-limited — you can always withdraw what you said. An admin deleting someone else's review writes an audit row.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Deleted */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @enum {boolean} */
+                                deleted: true;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Edit your review
+         * @description Author only, within 24 hours of posting. The window stops a five-star review being quietly rewritten to one star months after it has already shaped the rating.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        rating?: number;
+                        content?: string | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description Updated */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                rating: number;
+                                content: string | null;
+                                helpfulCount: number;
+                                createdAt: string;
+                                updatedAt: string;
+                                author: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    avatarUrl: string | null;
+                                };
+                                images: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    url: string;
+                                    blurhash: string | null;
+                                }[];
+                                reply: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    content: string;
+                                    createdAt: string;
+                                    businessName: string;
+                                } | null;
+                                isMine: boolean;
+                                hasVoted: boolean;
+                                canEdit: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Not the author, or the edit window has closed */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/reviews/{id}/helpful": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark a review helpful
+         * @description Idempotent. The count is derived from vote rows constrained by UNIQUE(review_id, user_id), never incremented, so repeated taps cannot inflate it. You cannot vote on your own review.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Voted */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                helpfulCount: number;
+                                hasVoted: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        /** Remove your helpful vote */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Vote removed */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                helpfulCount: number;
+                                hasVoted: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reviews/{id}/reply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reply as the business
+         * @description Only the business that owns the reviewed place, compared against the token rather than the request body. One reply per review; posting again edits it.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        content: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Reply saved */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @enum {boolean} */
+                                replied: true;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        /** Remove the business reply */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Reply removed */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @enum {boolean} */
+                                deleted: true;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/places/pending": {
         parameters: {
             query?: never;
@@ -2504,6 +3177,49 @@ export interface components {
             /** @enum {string|null} */
             priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
             bayesianRating: number;
+        };
+        Review: {
+            /** Format: uuid */
+            id: string;
+            rating: number;
+            content: string | null;
+            helpfulCount: number;
+            createdAt: string;
+            updatedAt: string;
+            author: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                avatarUrl: string | null;
+            };
+            images: {
+                /** Format: uuid */
+                id: string;
+                url: string;
+                blurhash: string | null;
+            }[];
+            reply: {
+                /** Format: uuid */
+                id: string;
+                content: string;
+                createdAt: string;
+                businessName: string;
+            } | null;
+            isMine: boolean;
+            hasVoted: boolean;
+            canEdit: boolean;
+        };
+        ReviewSummary: {
+            averageRating: number;
+            reviewCount: number;
+            /** @description Count per star, keyed "1".."5" */
+            breakdown: {
+                [key: string]: number;
+            };
+            /** Format: uuid */
+            myReviewId: string | null;
+            canReview: boolean;
+            cannotReviewReason: string | null;
         };
         HealthReport: {
             /** @enum {string} */

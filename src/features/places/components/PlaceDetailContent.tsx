@@ -3,6 +3,7 @@
 import { Globe, MapPin, Navigation, Phone, Share2 } from 'lucide-react';
 import { PlaceImage } from './PlaceImage';
 import { OpeningHours } from './OpeningHours';
+import { ReviewSection } from '@/features/reviews/components/ReviewSection';
 import { Rating, PriceRange } from '@/components/ui/Rating';
 import { Button } from '@/components/ui/Button';
 import { formatDistance } from '@/lib/geo/grid';
@@ -160,17 +161,7 @@ export function PlaceDetailContent({
           </section>
         )}
 
-        <section className="mt-5 border-t border-border pt-4">
-          <div className="flex items-baseline justify-between">
-            <h2 className="text-sm font-semibold text-ink">Reviews</h2>
-            <span className="text-xs font-medium text-ink-subtle">Phase 8</span>
-          </div>
-          <p className="mt-2 text-sm text-ink-muted">
-            {place.reviewCount > 0
-              ? `${String(place.reviewCount)} people have rated this place ${place.averageRating.toFixed(1)}.`
-              : 'No reviews yet — be the first to write one.'}
-          </p>
-        </section>
+        <ReviewSection placeId={place.id} placeName={place.name} />
 
         <div className="h-8" />
       </div>
