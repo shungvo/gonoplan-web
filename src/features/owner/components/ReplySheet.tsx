@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { ApiError } from '@/lib/api/errors';
 import { fieldClass } from '@/components/ui/field';
+import { BottomSheet } from '@/components/ui/BottomSheet';
 import { replyToReview, type OwnerReview } from '../api';
 
 const MAX_LENGTH = 1000;
@@ -18,22 +19,16 @@ export function ReplySheet({
   onClose: () => void;
 }) {
   return (
-    <Drawer.Root
+    <BottomSheet
       open={review !== null}
       onOpenChange={(open) => {
         if (!open) onClose();
       }}
     >
-      <Drawer.Portal>
-        <Drawer.Overlay className="bg-ink/40 fixed inset-0 z-50 backdrop-blur-[2px]" />
-        <Drawer.Content className="px-safe border-border bg-surface shadow-sheet fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-xl border-t focus:outline-none">
-          <div className="bg-border mx-auto mt-3 h-1 w-10 shrink-0 rounded-full" />
-          {/* Keyed per review so the textarea never opens carrying the previous
-              reply's draft. */}
-          {review && <ReplyForm key={review.id} review={review} onDone={onClose} />}
-        </Drawer.Content>
-      </Drawer.Portal>
-    </Drawer.Root>
+      {/* Keyed per review so the textarea never opens carrying the previous
+          reply's draft. */}
+      {review && <ReplyForm key={review.id} review={review} onDone={onClose} />}
+    </BottomSheet>
   );
 }
 

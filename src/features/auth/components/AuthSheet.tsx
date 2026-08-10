@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { ApiError } from '@/lib/api/errors';
 import { fieldClass } from '@/components/ui/field';
+import { BottomSheet } from '@/components/ui/BottomSheet';
 import { useSessionStore } from '../store';
 import { login, register } from '../api';
 
@@ -22,11 +23,7 @@ export function AuthSheet({
   reason?: string | undefined;
 }) {
   return (
-    <Drawer.Root open={open} onOpenChange={onOpenChange}>
-      <Drawer.Portal>
-        <Drawer.Overlay className="bg-ink/40 fixed inset-0 z-50 backdrop-blur-[2px]" />
-        <Drawer.Content className="px-safe border-border bg-surface shadow-sheet fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-xl border-t focus:outline-none">
-          <div className="bg-border mx-auto mt-3 h-1 w-10 shrink-0 rounded-full" />
+    <BottomSheet open={open} onOpenChange={onOpenChange}>
           {open && (
             <AuthForm
               reason={reason}
@@ -35,9 +32,7 @@ export function AuthSheet({
               }}
             />
           )}
-        </Drawer.Content>
-      </Drawer.Portal>
-    </Drawer.Root>
+    </BottomSheet>
   );
 }
 

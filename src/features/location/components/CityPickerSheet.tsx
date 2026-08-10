@@ -6,7 +6,7 @@ import { MapPin, Search, Navigation } from 'lucide-react';
 import { CITIES, searchCities, type City } from '../cities';
 import { useLocationStore } from '../store';
 import { Button } from '@/components/ui/Button';
-import { cn } from '@/lib/utils/cn';
+import { BottomSheet } from '@/components/ui/BottomSheet';
 
 interface CityPickerSheetProps {
   open: boolean;
@@ -35,19 +35,7 @@ export function CityPickerSheet({ open, onOpenChange }: CityPickerSheetProps) {
   };
 
   return (
-    <Drawer.Root open={open} onOpenChange={onOpenChange}>
-      <Drawer.Portal>
-        <Drawer.Overlay className="fixed inset-0 z-50 bg-ink/40 backdrop-blur-[2px]" />
-        <Drawer.Content
-          className={cn(
-            'fixed inset-x-0 bottom-0 z-50 flex h-[82dvh] flex-col',
-            'rounded-t-xl border-t border-border bg-surface shadow-sheet',
-            'px-safe',
-          )}
-        >
-          {/* A visible grab handle: the sheet is draggable, and nothing else
-              on screen says so. */}
-          <div className="mx-auto mt-3 h-1 w-10 shrink-0 rounded-full bg-border" />
+    <BottomSheet open={open} onOpenChange={onOpenChange} className="h-[82dvh]">
 
           <div className="px-5 pt-4 pb-3">
             <Drawer.Title className="text-xl font-semibold tracking-tight text-ink">
@@ -127,9 +115,7 @@ export function CityPickerSheet({ open, onOpenChange }: CityPickerSheetProps) {
               </ul>
             )}
           </div>
-        </Drawer.Content>
-      </Drawer.Portal>
-    </Drawer.Root>
+    </BottomSheet>
   );
 }
 

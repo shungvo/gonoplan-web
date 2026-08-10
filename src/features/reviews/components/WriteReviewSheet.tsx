@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { useCreateReview, useUpdateReview } from '../hooks/useReviews';
 import { ApiError } from '@/lib/api/errors';
 import { fieldClass } from '@/components/ui/field';
+import { BottomSheet } from '@/components/ui/BottomSheet';
 import type { Review } from '../api';
 
 const MAX_LENGTH = 2000;
@@ -26,11 +27,7 @@ export function WriteReviewSheet({
   existing?: Review | null;
 }) {
   return (
-    <Drawer.Root open={open} onOpenChange={onOpenChange}>
-      <Drawer.Portal>
-        <Drawer.Overlay className="bg-ink/40 fixed inset-0 z-50 backdrop-blur-[2px]" />
-        <Drawer.Content className="px-safe border-border bg-surface shadow-sheet fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-xl border-t focus:outline-none">
-          <div className="bg-border mx-auto mt-3 h-1 w-10 shrink-0 rounded-full" />
+    <BottomSheet open={open} onOpenChange={onOpenChange}>
 
           {/*
             Remounted per target rather than syncing state from props in an
@@ -49,9 +46,7 @@ export function WriteReviewSheet({
               }}
             />
           )}
-        </Drawer.Content>
-      </Drawer.Portal>
-    </Drawer.Root>
+    </BottomSheet>
   );
 }
 

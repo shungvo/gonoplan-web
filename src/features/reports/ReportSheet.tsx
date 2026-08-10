@@ -10,6 +10,7 @@ import { ApiError } from '@/lib/api/errors';
 import { api } from '@/lib/api/client';
 import { cn } from '@/lib/utils/cn';
 import { fieldClass } from '@/components/ui/field';
+import { BottomSheet } from '@/components/ui/BottomSheet';
 
 type Reason = 'CLOSED_PERMANENTLY' | 'INCORRECT_INFO' | 'DUPLICATE' | 'SPAM' | 'INAPPROPRIATE' | 'OTHER';
 
@@ -47,11 +48,7 @@ export function ReportSheet({
   onOpenChange: (open: boolean) => void;
 }) {
   return (
-    <Drawer.Root open={open} onOpenChange={onOpenChange}>
-      <Drawer.Portal>
-        <Drawer.Overlay className="bg-ink/40 fixed inset-0 z-50 backdrop-blur-[2px]" />
-        <Drawer.Content className="px-safe border-border bg-surface shadow-sheet fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-xl border-t focus:outline-none">
-          <div className="bg-border mx-auto mt-3 h-1 w-10 shrink-0 rounded-full" />
+    <BottomSheet open={open} onOpenChange={onOpenChange}>
           {/* Keyed on the place so the form never opens carrying the previous
               report's selection. */}
           {open && (
@@ -64,9 +61,7 @@ export function ReportSheet({
               }}
             />
           )}
-        </Drawer.Content>
-      </Drawer.Portal>
-    </Drawer.Root>
+    </BottomSheet>
   );
 }
 
