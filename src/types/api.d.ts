@@ -184,7 +184,7 @@ export interface paths {
                                     avatarUrl: string | null;
                                     bio: string | null;
                                     /** @enum {string} */
-                                    role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                    role: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
                                     locale: string;
                                     /** Format: uuid */
                                     ownerProfileId: string | null;
@@ -290,7 +290,7 @@ export interface paths {
                                     avatarUrl: string | null;
                                     bio: string | null;
                                     /** @enum {string} */
-                                    role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                    role: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
                                     locale: string;
                                     /** Format: uuid */
                                     ownerProfileId: string | null;
@@ -388,7 +388,7 @@ export interface paths {
                                     avatarUrl: string | null;
                                     bio: string | null;
                                     /** @enum {string} */
-                                    role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                    role: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
                                     locale: string;
                                     /** Format: uuid */
                                     ownerProfileId: string | null;
@@ -568,7 +568,7 @@ export interface paths {
                                 avatarUrl: string | null;
                                 bio: string | null;
                                 /** @enum {string} */
-                                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                role: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
                                 locale: string;
                                 /** Format: uuid */
                                 ownerProfileId: string | null;
@@ -643,7 +643,7 @@ export interface paths {
                                 avatarUrl: string | null;
                                 bio: string | null;
                                 /** @enum {string} */
-                                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                role: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
                                 locale: string;
                                 /** Format: uuid */
                                 ownerProfileId: string | null;
@@ -900,6 +900,7 @@ export interface paths {
                             /** @default false */
                             isClosed?: boolean;
                         }[];
+                        imageKeys?: string[];
                     };
                 };
             };
@@ -1515,6 +1516,7 @@ export interface paths {
                             /** @default false */
                             isClosed?: boolean;
                         }[];
+                        imageKeys?: string[];
                     };
                 };
             };
@@ -5359,7 +5361,7 @@ export interface paths {
                 query?: {
                     query?: string;
                     status?: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
-                    role?: "USER" | "PLACE_OWNER" | "ADMIN";
+                    role?: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
                     limit?: number;
                     cursor?: string;
                 };
@@ -5385,7 +5387,7 @@ export interface paths {
                                 name: string;
                                 avatarUrl: string | null;
                                 /** @enum {string} */
-                                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                role: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
                                 /** @enum {string} */
                                 status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
                                 createdAt: string;
@@ -5476,7 +5478,7 @@ export interface paths {
                                 name: string;
                                 avatarUrl: string | null;
                                 /** @enum {string} */
-                                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                role: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
                                 /** @enum {string} */
                                 status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
                                 createdAt: string;
@@ -5679,7 +5681,7 @@ export interface paths {
                                 name: string;
                                 avatarUrl: string | null;
                                 /** @enum {string} */
-                                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                role: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
                                 /** @enum {string} */
                                 status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
                                 createdAt: string;
@@ -5784,7 +5786,7 @@ export interface paths {
                                 name: string;
                                 avatarUrl: string | null;
                                 /** @enum {string} */
-                                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                role: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
                                 /** @enum {string} */
                                 status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
                                 createdAt: string;
@@ -6518,6 +6520,106 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/users/{id}/role": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Grant or revoke the reviewer badge
+         * @description Promotes a contributor to `REVIEWER`, or takes it back.
+         *
+         *     **This grants no new capability.** Every signed-in user could already submit a place, and a reviewer's submission is still queued for approval like anyone else's. What the rank changes is the moderator's side: the queue can be sorted by who has a track record, so the submissions most likely to be good get looked at first, and readers can see whose contribution a listing was.
+         *
+         *     Deliberately narrow. `ADMIN` is not grantable here — promoting someone to admin from the same screen that promotes a good contributor is one mis-click from handing over the ban button — and `PLACE_OWNER` is not either, because it comes from owner verification, which checks that someone actually runs the business.
+         *
+         *     An admin cannot change their own role (400, or the last admin could lock everyone out) or another admin's (403). Setting the role a user already has is a no-op rather than a conflict: two moderators reaching the same conclusion is agreement.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        role: "USER" | "REVIEWER";
+                        reason: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description The user, with their new role */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: Record<string, never>;
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Not a grantable role, or the admin targeting themselves */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -6544,7 +6646,7 @@ export interface components {
             avatarUrl: string | null;
             bio: string | null;
             /** @enum {string} */
-            role: "USER" | "PLACE_OWNER" | "ADMIN";
+            role: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
             locale: string;
             /** Format: uuid */
             ownerProfileId: string | null;
@@ -6567,7 +6669,7 @@ export interface components {
                 avatarUrl: string | null;
                 bio: string | null;
                 /** @enum {string} */
-                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                role: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
                 locale: string;
                 /** Format: uuid */
                 ownerProfileId: string | null;
@@ -7082,7 +7184,7 @@ export interface components {
             name: string;
             avatarUrl: string | null;
             /** @enum {string} */
-            role: "USER" | "PLACE_OWNER" | "ADMIN";
+            role: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
             /** @enum {string} */
             status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
             createdAt: string;
@@ -7100,7 +7202,7 @@ export interface components {
             name: string;
             avatarUrl: string | null;
             /** @enum {string} */
-            role: "USER" | "PLACE_OWNER" | "ADMIN";
+            role: "USER" | "REVIEWER" | "PLACE_OWNER" | "ADMIN";
             /** @enum {string} */
             status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
             createdAt: string;

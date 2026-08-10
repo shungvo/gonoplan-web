@@ -83,12 +83,12 @@ export function PlaceSheet({ placeId, onClose }: PlaceSheetProps) {
 function PlaceSheetSkeleton() {
   return (
     <div>
-      <div className="h-48 w-full animate-pulse bg-surface-sunken" />
+      <div className="bg-surface-sunken h-48 w-full animate-pulse" />
       <div className="space-y-3 px-5 pt-4">
-        <div className="h-5 w-24 animate-pulse rounded-full bg-surface-sunken" />
-        <div className="h-7 w-3/4 animate-pulse rounded bg-surface-sunken" />
-        <div className="h-4 w-1/2 animate-pulse rounded bg-surface-sunken" />
-        <div className="h-14 w-full animate-pulse rounded-lg bg-surface-sunken" />
+        <div className="bg-surface-sunken h-5 w-24 animate-pulse rounded-full" />
+        <div className="bg-surface-sunken h-7 w-3/4 animate-pulse rounded" />
+        <div className="bg-surface-sunken h-4 w-1/2 animate-pulse rounded" />
+        <div className="bg-surface-sunken h-14 w-full animate-pulse rounded-lg" />
       </div>
     </div>
   );

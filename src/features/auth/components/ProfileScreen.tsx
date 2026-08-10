@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { ChevronRight, LogOut, Shield, Store, User } from 'lucide-react';
+import { ChevronRight, LogOut, MapPinPlus, Shield, Store, User } from 'lucide-react';
 import { AuthSheet } from './AuthSheet';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -94,6 +94,23 @@ export function ProfileScreen() {
                 )}
               </div>
             )}
+
+            {/*
+              Above the business entry, because far more people have somewhere
+              to suggest than have a business to claim. Everyone sees it: any
+              signed-in user may submit, and every submission is reviewed.
+            */}
+            <button
+              type="button"
+              onClick={() => {
+                router.push('/places/new');
+              }}
+              className="bg-surface mt-3 flex w-full items-center gap-2.5 rounded-lg p-3.5 text-left shadow-sm active:scale-[0.99]"
+            >
+              <MapPinPlus className="text-primary size-4 shrink-0" aria-hidden />
+              <span className="text-ink flex-1 text-sm font-medium">Add a place</span>
+              <ChevronRight className="text-ink-subtle size-4 shrink-0" aria-hidden />
+            </button>
 
             {/* Shown to everyone, not only existing owners: this is how a
                 business discovers it can claim its listing (§24). */}

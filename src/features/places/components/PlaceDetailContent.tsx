@@ -8,6 +8,7 @@ import { OpeningHours } from './OpeningHours';
 import { ReviewSection } from '@/features/reviews/components/ReviewSection';
 import { RouteToPlace } from '@/features/geo/components/RouteToPlace';
 import { PhotoStack } from './PhotoStack';
+import { RichText } from '@/components/ui/RichText';
 import { SaveButton } from '@/features/favorites/components/SaveButton';
 import { AuthSheet } from '@/features/auth/components/AuthSheet';
 import { ReportSheet } from '@/features/reports/ReportSheet';
@@ -44,7 +45,7 @@ export function PlaceDetailContent({
    * once expanded the element no longer overflows, and re-measuring would hide
    * the control that gets you back.
    */
-  const measureAbout = useCallback((node: HTMLParagraphElement | null) => {
+  const measureAbout = useCallback((node: HTMLDivElement | null) => {
     if (node && !node.classList.contains('line-clamp-3')) return;
     if (node) setAboutClamped(node.scrollHeight > node.clientHeight + 1);
   }, []);
@@ -264,15 +265,14 @@ export function PlaceDetailContent({
                 expand it, which is the one outcome worse than showing it all.
                 The measurement runs in a callback ref rather than an effect,
                 so it happens when the node attaches instead of after a paint. */}
-            <p
-              ref={measureAbout}
-              className={cn(
-                'text-ink-muted mt-2 text-sm leading-relaxed whitespace-pre-line',
-                !aboutExpanded && 'line-clamp-3',
-              )}
-            >
-              {place.description}
-            </p>
+            {/* Rendered from Markdown into React elements, never through
+                `dangerouslySetInnerHTML`. Descriptions are user-submitted and
+                this page carries a session, so HTML from a client here would
+                be a stored-XSS. Plain-text descriptions written before the
+                editor existed render unchanged. */}
+            <div ref={measureAbout} className={cn('mt-2', !aboutExpanded && 'line-clamp-3')}>
+              <RichText source={place.description} />
+            </div>
             {(aboutClamped || aboutExpanded) && (
               <button
                 type="button"

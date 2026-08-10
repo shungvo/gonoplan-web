@@ -27,12 +27,12 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
       type="button"
       onClick={() => onSelect?.(place)}
       className={cn(
-        'w-[16.5rem] shrink-0 overflow-hidden rounded-lg bg-surface text-left shadow-md',
+        'bg-surface w-[16.5rem] shrink-0 overflow-hidden rounded-lg text-left shadow-md',
         'transition-transform duration-150 ease-[var(--ease-out-soft)] active:scale-[0.98]',
         className,
       )}
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-sunken">
+      <div className="bg-surface-sunken relative aspect-[4/3] w-full overflow-hidden">
         <PlaceImage
           url={place.coverImageUrl}
           blurhash={place.coverBlurhash}
@@ -54,7 +54,7 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
         {/* Only shown when open. A "Closed" badge on every card at 2am makes the
             whole screen look shut; absence reads as neutral. */}
         {place.isOpenNow && (
-          <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 rounded-full bg-surface/90 px-2 py-1 text-[0.6875rem] font-semibold text-success backdrop-blur-sm">
+          <span className="bg-surface/90 text-success absolute top-2.5 right-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[0.6875rem] font-semibold backdrop-blur-sm">
             <Clock className="size-3" aria-hidden />
             Open
           </span>
@@ -62,7 +62,7 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
       </div>
 
       <div className="p-3.5">
-        <h3 className="truncate text-[0.9375rem] leading-snug font-semibold text-primary">
+        <h3 className="text-primary truncate text-[0.9375rem] leading-snug font-semibold">
           {place.name}
         </h3>
 
@@ -71,7 +71,7 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
           <PriceRange value={place.priceRange} />
         </div>
 
-        <p className="mt-1.5 truncate text-xs text-ink-subtle">
+        <p className="text-ink-subtle mt-1.5 truncate text-xs">
           {place.distanceM !== null && <span>{formatDistance(place.distanceM)} · </span>}
           {place.district ?? place.province}
         </p>
@@ -83,12 +83,12 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
 /** Matches PlaceCard's exact dimensions so nothing shifts when data lands. */
 export function PlaceCardSkeleton() {
   return (
-    <div className="w-[16.5rem] shrink-0 overflow-hidden rounded-lg bg-surface shadow-md">
-      <div className="aspect-[4/3] w-full animate-pulse bg-surface-sunken" />
+    <div className="bg-surface w-[16.5rem] shrink-0 overflow-hidden rounded-lg shadow-md">
+      <div className="bg-surface-sunken aspect-[4/3] w-full animate-pulse" />
       <div className="space-y-2 p-3.5">
-        <div className="h-4 w-3/4 animate-pulse rounded bg-surface-sunken" />
-        <div className="h-3 w-1/2 animate-pulse rounded bg-surface-sunken" />
-        <div className="h-3 w-2/5 animate-pulse rounded bg-surface-sunken" />
+        <div className="bg-surface-sunken h-4 w-3/4 animate-pulse rounded" />
+        <div className="bg-surface-sunken h-3 w-1/2 animate-pulse rounded" />
+        <div className="bg-surface-sunken h-3 w-2/5 animate-pulse rounded" />
       </div>
     </div>
   );

@@ -149,6 +149,7 @@
             "type": "string",
             "enum": [
               "USER",
+              "REVIEWER",
               "PLACE_OWNER",
               "ADMIN"
             ]
@@ -246,6 +247,7 @@
                 "type": "string",
                 "enum": [
                   "USER",
+                  "REVIEWER",
                   "PLACE_OWNER",
                   "ADMIN"
                 ]
@@ -2388,6 +2390,7 @@
             "type": "string",
             "enum": [
               "USER",
+              "REVIEWER",
               "PLACE_OWNER",
               "ADMIN"
             ]
@@ -2468,6 +2471,7 @@
             "type": "string",
             "enum": [
               "USER",
+              "REVIEWER",
               "PLACE_OWNER",
               "ADMIN"
             ]
@@ -3737,6 +3741,7 @@
                               "type": "string",
                               "enum": [
                                 "USER",
+                                "REVIEWER",
                                 "PLACE_OWNER",
                                 "ADMIN"
                               ]
@@ -3947,6 +3952,7 @@
                               "type": "string",
                               "enum": [
                                 "USER",
+                                "REVIEWER",
                                 "PLACE_OWNER",
                                 "ADMIN"
                               ]
@@ -4131,6 +4137,7 @@
                               "type": "string",
                               "enum": [
                                 "USER",
+                                "REVIEWER",
                                 "PLACE_OWNER",
                                 "ADMIN"
                               ]
@@ -4435,6 +4442,7 @@
                           "type": "string",
                           "enum": [
                             "USER",
+                            "REVIEWER",
                             "PLACE_OWNER",
                             "ADMIN"
                           ]
@@ -4626,6 +4634,7 @@
                           "type": "string",
                           "enum": [
                             "USER",
+                            "REVIEWER",
                             "PLACE_OWNER",
                             "ADMIN"
                           ]
@@ -5311,6 +5320,15 @@
                       "description": "One entry per shift. Split hours are two entries for the same day. A closing time at or before the opening time is stored as crossing midnight."
                     },
                     "maxItems": 21
+                  },
+                  "imageKeys": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 512
+                    },
+                    "maxItems": 8
                   }
                 },
                 "required": [
@@ -6673,6 +6691,15 @@
                       "description": "One entry per shift. Split hours are two entries for the same day. A closing time at or before the opening time is stored as crossing midnight."
                     },
                     "maxItems": 21
+                  },
+                  "imageKeys": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 512
+                    },
+                    "maxItems": 8
                   }
                 }
               }
@@ -14040,6 +14067,7 @@
               "type": "string",
               "enum": [
                 "USER",
+                "REVIEWER",
                 "PLACE_OWNER",
                 "ADMIN"
               ]
@@ -14108,6 +14136,7 @@
                             "type": "string",
                             "enum": [
                               "USER",
+                              "REVIEWER",
                               "PLACE_OWNER",
                               "ADMIN"
                             ]
@@ -14284,6 +14313,7 @@
                           "type": "string",
                           "enum": [
                             "USER",
+                            "REVIEWER",
                             "PLACE_OWNER",
                             "ADMIN"
                           ]
@@ -14710,6 +14740,7 @@
                           "type": "string",
                           "enum": [
                             "USER",
+                            "REVIEWER",
                             "PLACE_OWNER",
                             "ADMIN"
                           ]
@@ -14889,6 +14920,7 @@
                           "type": "string",
                           "enum": [
                             "USER",
+                            "REVIEWER",
                             "PLACE_OWNER",
                             "ADMIN"
                           ]
@@ -16197,6 +16229,143 @@
           },
           "400": {
             "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users/{id}/role": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Grant or revoke the reviewer badge",
+        "description": "Promotes a contributor to `REVIEWER`, or takes it back.\n\n**This grants no new capability.** Every signed-in user could already submit a place, and a reviewer's submission is still queued for approval like anyone else's. What the rank changes is the moderator's side: the queue can be sorted by who has a track record, so the submissions most likely to be good get looked at first, and readers can see whose contribution a listing was.\n\nDeliberately narrow. `ADMIN` is not grantable here — promoting someone to admin from the same screen that promotes a good contributor is one mis-click from handing over the ban button — and `PLACE_OWNER` is not either, because it comes from owner verification, which checks that someone actually runs the business.\n\nAn admin cannot change their own role (400, or the last admin could lock everyone out) or another admin's (403). Setting the role a user already has is a no-op rather than a conflict: two moderators reaching the same conclusion is agreement.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "USER",
+                      "REVIEWER"
+                    ]
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "role",
+                  "reason"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The user, with their new role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not a grantable role, or the admin targeting themselves",
             "content": {
               "application/json": {
                 "schema": {

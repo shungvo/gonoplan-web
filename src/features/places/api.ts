@@ -57,3 +57,39 @@ export function searchPlaces(query: string, origin?: Coordinates | null): Promis
     },
   });
 }
+
+export const PRICE_RANGES = ['BUDGET', 'MODERATE', 'EXPENSIVE', 'LUXURY'] as const;
+export type PriceRange = (typeof PRICE_RANGES)[number];
+
+export interface SubmitPlaceInput {
+  name: string;
+  categoryId: string;
+  latitude: number;
+  longitude: number;
+  address: string;
+  province: string;
+  description?: string;
+  district?: string;
+  phone?: string;
+  website?: string;
+  priceRange?: PriceRange;
+  /** Keys from `/uploads/confirm`, never URLs. The first becomes the cover. */
+  imageKeys?: string[];
+}
+
+export interface SubmissionResult {
+  id: string;
+  slug: string;
+  status: 'PENDING' | 'APPROVED';
+  message: string;
+}
+
+/**
+ * Submits a place for review.
+ *
+ * Always lands PENDING — there is no client-visible path to publishing
+ * directly, whatever role the submitter has.
+ */
+export function submitPlace(input: SubmitPlaceInput): Promise<SubmissionResult> {
+  return api.post<SubmissionResult>('/places', input);
+}

@@ -36,9 +36,9 @@ export function PlaceGrid({
       <div className={cn('grid grid-cols-2 gap-3 px-5', className)}>
         {Array.from({ length: 4 }, (_, index) => (
           <div key={index} className="space-y-2">
-            <div className="aspect-square w-full animate-pulse rounded-lg bg-surface-sunken" />
-            <div className="h-4 w-3/4 animate-pulse rounded bg-surface-sunken" />
-            <div className="h-3 w-1/2 animate-pulse rounded bg-surface-sunken" />
+            <div className="bg-surface-sunken aspect-square w-full animate-pulse rounded-lg" />
+            <div className="bg-surface-sunken h-4 w-3/4 animate-pulse rounded" />
+            <div className="bg-surface-sunken h-3 w-1/2 animate-pulse rounded" />
           </div>
         ))}
       </div>
@@ -75,7 +75,7 @@ export function PlaceGrid({
               </span>
 
               {place.isOpenNow && (
-                <span className="absolute bottom-2.5 left-2.5 inline-flex items-center gap-1 rounded-full bg-surface/90 px-2 py-1 text-[0.625rem] font-semibold text-success backdrop-blur-sm">
+                <span className="bg-surface/90 text-success absolute bottom-2.5 left-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[0.625rem] font-semibold backdrop-blur-sm">
                   <Clock className="size-2.5" aria-hidden />
                   Open
                 </span>
@@ -98,7 +98,7 @@ export function PlaceGrid({
             onClick={() => onSelect?.(place)}
             className="mt-2 block w-full text-left"
           >
-            <h3 className="line-clamp-2 text-[0.875rem] leading-snug font-semibold text-primary">
+            <h3 className="text-primary line-clamp-2 text-[0.875rem] leading-snug font-semibold">
               {place.name}
             </h3>
 
@@ -108,7 +108,7 @@ export function PlaceGrid({
             </div>
 
             {place.distanceM !== null && (
-              <p className="mt-0.5 truncate text-xs text-ink-subtle">
+              <p className="text-ink-subtle mt-0.5 truncate text-xs">
                 {formatDistance(place.distanceM)} · {place.district ?? place.province}
               </p>
             )}

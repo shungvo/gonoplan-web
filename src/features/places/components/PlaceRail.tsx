@@ -41,13 +41,13 @@ export function PlaceRail({
   return (
     <section className={cn('', className)} aria-label={title}>
       <div className="flex items-baseline justify-between gap-3 px-5">
-        <h2 className="text-lg font-semibold tracking-tight text-ink">{title}</h2>
-        {note && <span className="shrink-0 text-xs font-medium text-ink-subtle">{note}</span>}
+        <h2 className="text-ink text-lg font-semibold tracking-tight">{title}</h2>
+        {note && <span className="text-ink-subtle shrink-0 text-xs font-medium">{note}</span>}
       </div>
 
       {isEmpty ? (
-        <div className="mx-5 mt-3 rounded-lg bg-surface p-5 text-center shadow-sm">
-          <p className="text-sm text-ink-muted">{emptyMessage}</p>
+        <div className="bg-surface mx-5 mt-3 rounded-lg p-5 text-center shadow-sm">
+          <p className="text-ink-muted text-sm">{emptyMessage}</p>
           {action && <div className="mt-3 flex justify-center">{action}</div>}
         </div>
       ) : (
@@ -56,7 +56,7 @@ export function PlaceRail({
         // load the rail silently scrolled itself 20px and every first card sat
         // flush against the screen while its own heading stayed inset. Scroll
         // padding moves the snap position instead of the card.
-        <div className="scrollbar-none mt-3 flex snap-x snap-mandatory scroll-pl-5 gap-3 overflow-x-auto px-5 pb-1">
+        <div className="mt-3 flex snap-x snap-mandatory scroll-pl-5 scrollbar-none gap-3 overflow-x-auto px-5 pb-1">
           {isPending
             ? Array.from({ length: 3 }, (_, index) => (
                 <div key={index} className="snap-start">
@@ -65,11 +65,7 @@ export function PlaceRail({
               ))
             : places?.map((place, index) => (
                 <div key={place.id} className="snap-start">
-                  <PlaceCard
-                    place={place}
-                    onSelect={onSelect}
-                    priority={priority && index === 0}
-                  />
+                  <PlaceCard place={place} onSelect={onSelect} priority={priority && index === 0} />
                 </div>
               ))}
         </div>

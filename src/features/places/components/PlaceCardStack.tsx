@@ -80,7 +80,7 @@ export function PlaceCardStack({
   if (isPending) {
     return (
       <div className={cn('px-5', className)}>
-        <div className="h-56 w-full animate-pulse rounded-lg bg-surface-sunken" />
+        <div className="bg-surface-sunken h-56 w-full animate-pulse rounded-lg" />
       </div>
     );
   }
@@ -195,7 +195,7 @@ export function PlaceCardStack({
                 {/* The scrim is the only reason white text over an unknown
                     photograph is safe. Without it the name is legible on a
                     dusk shot and invisible on a beach. */}
-                <span className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/25 to-transparent" />
+                <span className="from-ink/80 via-ink/25 absolute inset-0 bg-gradient-to-t to-transparent" />
 
                 <span className="absolute inset-x-4 bottom-3.5">
                   <span className="block truncate text-lg leading-tight font-semibold text-white">
@@ -241,7 +241,6 @@ export function PlaceCardStack({
           );
         })}
       </div>
-
     </div>
   );
 }
