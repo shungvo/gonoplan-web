@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { Flag, Globe, MapPin, Navigation, Phone, Share2 } from 'lucide-react';
+import Link from 'next/link';
+import { ChevronRight, Flag, Globe, MapPin, Navigation, Phone, Share2 } from 'lucide-react';
 import { PlaceImage } from './PlaceImage';
 import { OpeningHours } from './OpeningHours';
 import { ReviewSection } from '@/features/reviews/components/ReviewSection';
@@ -190,6 +191,26 @@ export function PlaceDetailContent({
               <Share2 className="size-[1.125rem]" aria-hidden />
             </Button>
           </div>
+        )}
+
+        {/*
+          The way out of the sheet and onto the page.
+
+          Until this existed the full page had no route from anywhere a
+          traveller goes — every card and every pin opens the sheet, and the
+          page was reachable only from a shared link or the admin dashboard.
+          It is the same content, so this is not "more detail"; it is a real
+          URL, a browser back entry, and a screen that is not sharing space
+          with whatever is behind it.
+        */}
+        {compact && (
+          <Link
+            href={`/place/${place.slug}`}
+            className="mt-3 flex w-full items-center justify-between rounded-lg bg-surface-sunken px-4 py-3.5 text-sm font-medium text-ink active:scale-[0.99]"
+          >
+            Open full page
+            <ChevronRight className="size-4 shrink-0 text-ink-subtle" aria-hidden />
+          </Link>
         )}
 
         <div className="mt-5 space-y-4 border-t border-border pt-4">
