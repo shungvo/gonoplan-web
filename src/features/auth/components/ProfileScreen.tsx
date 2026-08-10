@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { LogOut, Shield, Store, User } from 'lucide-react';
+import { ChevronRight, LogOut, Shield, Store, User } from 'lucide-react';
 import { AuthSheet } from './AuthSheet';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -10,6 +11,7 @@ import { useSessionStore } from '../store';
 import { logout } from '../api';
 
 export function ProfileScreen() {
+  const router = useRouter();
   const { user, isInitializing, clear } = useSessionStore();
   const [authOpen, setAuthOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -92,6 +94,22 @@ export function ProfileScreen() {
                 )}
               </div>
             )}
+
+            {/* Shown to everyone, not only existing owners: this is how a
+                business discovers it can claim its listing (§24). */}
+            <button
+              type="button"
+              onClick={() => {
+                router.push('/owner');
+              }}
+              className="bg-surface mt-3 flex w-full items-center gap-2.5 rounded-lg p-3.5 text-left shadow-sm active:scale-[0.99]"
+            >
+              <Store className="text-primary size-4 shrink-0" aria-hidden />
+              <span className="text-ink flex-1 text-sm font-medium">
+                {user.ownerProfileId ? 'Your business' : 'Register your business'}
+              </span>
+              <ChevronRight className="text-ink-subtle size-4 shrink-0" aria-hidden />
+            </button>
 
             <Button
               variant="secondary"
