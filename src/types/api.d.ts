@@ -804,6 +804,7 @@ export interface paths {
                             /** @enum {boolean} */
                             success: true;
                             data: {
+                                isSaved: boolean;
                                 /** Format: uuid */
                                 id: string;
                                 slug: string;
@@ -1001,6 +1002,7 @@ export interface paths {
                             /** @enum {boolean} */
                             success: true;
                             data: {
+                                isSaved: boolean;
                                 /** Format: uuid */
                                 id: string;
                                 slug: string;
@@ -1161,6 +1163,7 @@ export interface paths {
                             /** @enum {boolean} */
                             success: true;
                             data: {
+                                isSaved: boolean;
                                 /** Format: uuid */
                                 id: string;
                                 slug: string;
@@ -1303,6 +1306,8 @@ export interface paths {
                             /** @enum {boolean} */
                             success: true;
                             data: {
+                                /** @description Always false for unauthenticated callers */
+                                isSaved: boolean;
                                 /** Format: uuid */
                                 id: string;
                                 slug: string;
@@ -1359,8 +1364,6 @@ export interface paths {
                                     crossesMidnight: boolean;
                                     isClosed: boolean;
                                 }[];
-                                /** @description Always false for unauthenticated callers */
-                                isSaved: boolean;
                                 /** @description Whether the caller may submit changes */
                                 canEdit: boolean;
                                 hasPendingRevision: boolean;
@@ -2420,6 +2423,7 @@ export interface paths {
                             /** @enum {boolean} */
                             success: true;
                             data: {
+                                isSaved: boolean;
                                 /** Format: uuid */
                                 id: string;
                                 slug: string;
@@ -5603,6 +5607,7 @@ export interface components {
             }[];
         };
         PlaceCard: {
+            isSaved: boolean;
             /** Format: uuid */
             id: string;
             slug: string;
@@ -5631,6 +5636,8 @@ export interface components {
             coverBlurhash: string | null;
         };
         PlaceDetail: {
+            /** @description Always false for unauthenticated callers */
+            isSaved: boolean;
             /** Format: uuid */
             id: string;
             slug: string;
@@ -5687,8 +5694,6 @@ export interface components {
                 crossesMidnight: boolean;
                 isClosed: boolean;
             }[];
-            /** @description Always false for unauthenticated callers */
-            isSaved: boolean;
             /** @description Whether the caller may submit changes */
             canEdit: boolean;
             hasPendingRevision: boolean;

@@ -427,6 +427,9 @@
       "PlaceCard": {
         "type": "object",
         "properties": {
+          "isSaved": {
+            "type": "boolean"
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -529,6 +532,7 @@
           }
         },
         "required": [
+          "isSaved",
           "id",
           "slug",
           "name",
@@ -552,6 +556,10 @@
       "PlaceDetail": {
         "type": "object",
         "properties": {
+          "isSaved": {
+            "type": "boolean",
+            "description": "Always false for unauthenticated callers"
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -779,10 +787,6 @@
               ]
             }
           },
-          "isSaved": {
-            "type": "boolean",
-            "description": "Always false for unauthenticated callers"
-          },
           "canEdit": {
             "type": "boolean",
             "description": "Whether the caller may submit changes"
@@ -801,6 +805,7 @@
           }
         },
         "required": [
+          "isSaved",
           "id",
           "slug",
           "name",
@@ -829,7 +834,6 @@
           "subcategory",
           "images",
           "openingHours",
-          "isSaved",
           "canEdit",
           "hasPendingRevision",
           "publishedAt",
@@ -4247,6 +4251,9 @@
                       "items": {
                         "type": "object",
                         "properties": {
+                          "isSaved": {
+                            "type": "boolean"
+                          },
                           "id": {
                             "type": "string",
                             "format": "uuid"
@@ -4349,6 +4356,7 @@
                           }
                         },
                         "required": [
+                          "isSaved",
                           "id",
                           "slug",
                           "name",
@@ -4757,6 +4765,9 @@
                       "items": {
                         "type": "object",
                         "properties": {
+                          "isSaved": {
+                            "type": "boolean"
+                          },
                           "id": {
                             "type": "string",
                             "format": "uuid"
@@ -4859,6 +4870,7 @@
                           }
                         },
                         "required": [
+                          "isSaved",
                           "id",
                           "slug",
                           "name",
@@ -5128,6 +5140,9 @@
                       "items": {
                         "type": "object",
                         "properties": {
+                          "isSaved": {
+                            "type": "boolean"
+                          },
                           "id": {
                             "type": "string",
                             "format": "uuid"
@@ -5230,6 +5245,7 @@
                           }
                         },
                         "required": [
+                          "isSaved",
                           "id",
                           "slug",
                           "name",
@@ -5427,6 +5443,10 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "isSaved": {
+                          "type": "boolean",
+                          "description": "Always false for unauthenticated callers"
+                        },
                         "id": {
                           "type": "string",
                           "format": "uuid"
@@ -5654,10 +5674,6 @@
                             ]
                           }
                         },
-                        "isSaved": {
-                          "type": "boolean",
-                          "description": "Always false for unauthenticated callers"
-                        },
                         "canEdit": {
                           "type": "boolean",
                           "description": "Whether the caller may submit changes"
@@ -5676,6 +5692,7 @@
                         }
                       },
                       "required": [
+                        "isSaved",
                         "id",
                         "slug",
                         "name",
@@ -5704,7 +5721,6 @@
                         "subcategory",
                         "images",
                         "openingHours",
-                        "isSaved",
                         "canEdit",
                         "hasPendingRevision",
                         "publishedAt",
@@ -7765,6 +7781,9 @@
                       "items": {
                         "type": "object",
                         "properties": {
+                          "isSaved": {
+                            "type": "boolean"
+                          },
                           "id": {
                             "type": "string",
                             "format": "uuid"
@@ -7867,6 +7886,7 @@
                           }
                         },
                         "required": [
+                          "isSaved",
                           "id",
                           "slug",
                           "name",

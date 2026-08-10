@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Drawer } from 'vaul';
-import { X } from 'lucide-react';
 import { PlaceDetailContent } from './PlaceDetailContent';
 import { usePlaceDetail } from '../hooks/usePlaces';
 import { useLocationStore } from '@/features/location/store';
@@ -52,21 +51,33 @@ export function PlaceSheet({ placeId, onClose }: PlaceSheetProps) {
         />
         <Drawer.Content
           // The sheet is a container, not a control. Vaul focuses it on open to
-          // trap focus, and the global :focus-visible ring then draws a purple
+          // trap focus, and the global :focus-visible ring then draws an
           // outline around the whole panel. Its children keep their own rings.
-          className="fixed inset-x-0 bottom-0 z-50 flex h-[95dvh] flex-col rounded-t-xl border-t border-border bg-surface shadow-sheet focus:outline-none"
+          //
+          // `overflow-hidden` is what lets the photo inherit the sheet's own
+          // rounded top corners instead of poking square ones through them.
+          className="fixed inset-x-0 bottom-0 z-50 flex h-[95dvh] flex-col overflow-hidden rounded-t-xl bg-surface shadow-sheet focus:outline-none"
         >
-          <div className="relative shrink-0">
-            <div className="mx-auto mt-3 h-1 w-10 rounded-full bg-border" />
-            <Drawer.Close
-              aria-label="Close"
-              className="absolute top-1 right-4 flex size-9 items-center justify-center rounded-full bg-surface/90 text-ink-muted shadow-sm backdrop-blur-sm"
-            >
-              <X className="size-4" aria-hidden />
-            </Drawer.Close>
+          {/*
+            The handle floats over the photo rather than sitting in a strip
+            above it. That strip was a band of white between the sheet's edge
+            and the image, which read as two stacked surfaces with a seam —
+            the photo now runs all the way to the top and the sheet reads as
+            one card.
+
+            The scrim is what keeps the handle visible: over a bright sky it
+            would otherwise vanish. `pointer-events-none` so the whole area
+            still belongs to vaul's drag handling.
+
+            There is no close button. Dragging down and tapping the overlay
+            both already dismiss it, and a floating X over the photo is one
+            more thing between the reader and the place.
+          */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 bg-gradient-to-b from-ink/25 to-transparent">
+            <span className="mx-auto mt-2.5 block h-1 w-10 rounded-full bg-white/80" />
           </div>
 
-          <div className="mt-2 flex-1 overflow-y-auto overscroll-contain">
+          <div className="flex-1 overflow-y-auto overscroll-contain">
             {isPending && <PlaceSheetSkeleton />}
 
             {error && (

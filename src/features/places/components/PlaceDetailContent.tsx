@@ -57,11 +57,14 @@ export function PlaceDetailContent({
     <article>
       {/* Fixed height in the sheet rather than an aspect ratio: at a peek height
           of ~470px a 16:9 hero eats 219px and pushes the CTA out of view. The
-          full-page hero can afford to be generous. */}
+          full-page hero can afford to be generous.
+          192px, up from 160: removing the sheet's handle strip returned 28px,
+          and the CTA still clears the peek fold by 40px with the extra height
+          spent on the photo. */}
       <div
         className={cn(
           'relative w-full overflow-hidden bg-surface-sunken',
-          compact ? 'h-40' : 'aspect-[4/3] max-h-[46dvh]',
+          compact ? 'h-48' : 'aspect-[4/3] max-h-[46dvh]',
         )}
       >
         <PlaceImage

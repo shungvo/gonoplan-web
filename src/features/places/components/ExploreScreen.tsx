@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Compass, Search, SlidersHorizontal } from 'lucide-react';
 import { Chip } from '@/components/ui/Chip';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { ApiError } from '@/lib/api/errors';
 import { Button } from '@/components/ui/Button';
 import { PlaceListItem, PlaceListItemSkeleton } from './PlaceListItem';
 import { PlaceSheet } from './PlaceSheet';
@@ -24,8 +25,16 @@ const FALLBACK_ORIGIN = { latitude: 10.7769, longitude: 106.7009 };
  */
 export function ExploreScreen() {
   const router = useRouter();
+  const params = useSearchParams();
   const { coordinates, label } = useLocationStore();
-  const [selectedSlugs, setSelectedSlugs] = useState<string[]>([]);
+
+  // Seeded from the URL so Home's category row can land here already filtered.
+  // Read once, on mount: after that the chips own the state, and re-syncing
+  // from the URL would fight every tap.
+  const [selectedSlugs, setSelectedSlugs] = useState<string[]>(() => {
+    const initial = params.get('category');
+    return initial ? [initial] : [];
+  });
   const [openNow, setOpenNow] = useState(false);
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
 
@@ -37,7 +46,7 @@ export function ExploreScreen() {
     staleTime: 30 * 60_000,
   });
 
-  const { data, isPending } = useNearbyPlaces(origin, {
+  const { data, isPending, error, refetch } = useNearbyPlaces(origin, {
     limit: 30,
     categorySlugs: selectedSlugs,
     openNow,
@@ -109,7 +118,36 @@ export function ExploreScreen() {
           </div>
         )}
 
-        {!isPending && data && data.places.length === 0 && (
+        {/*
+          A failed request used to fall through every branch below and render
+          nothing at all — a blank screen under a working filter bar, which
+          reads as "there is nothing here" rather than "this broke". That is
+          how a 500 on category filtering stayed invisible.
+        */}
+        {!isPending && error && (
+          <EmptyState
+            icon={<Compass className="size-7" aria-hidden />}
+            title="Could not load places"
+            description={
+              error instanceof ApiError && error.isRetryable
+                ? 'Check your connection and try again.'
+                : 'Something went wrong at our end. Try again in a moment.'
+            }
+            action={
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  void refetch();
+                }}
+              >
+                Try again
+              </Button>
+            }
+          />
+        )}
+
+        {!isPending && !error && data && data.places.length === 0 && (
           <EmptyState
             icon={<Compass className="size-7" aria-hidden />}
             title={hasFilters ? 'Nothing matches your filters' : 'Nothing around here yet'}
@@ -135,7 +173,7 @@ export function ExploreScreen() {
           />
         )}
 
-        {!isPending && data && data.places.length > 0 && (
+        {!isPending && !error && data && data.places.length > 0 && (
           <>
             <p className="mb-2.5 text-xs text-ink-subtle">
               {data.places.length} places

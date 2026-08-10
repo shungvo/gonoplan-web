@@ -2,24 +2,59 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { Search } from 'lucide-react';
 import { HomeMap } from '@/features/map/components/HomeMap';
 import { LocationChip } from '@/features/location/components/LocationChip';
 import { useLocationStore } from '@/features/location/store';
+import { fetchCategories } from '@/features/categories/api';
 import { useNearbyPlaces } from '../hooks/usePlaces';
 import { PlaceRail } from './PlaceRail';
+import { PlaceCardStack } from './PlaceCardStack';
+import { PlaceGrid } from './PlaceGrid';
 import { PlaceSheet } from './PlaceSheet';
 import { formatDistance } from '@/lib/geo/grid';
+import { cn } from '@/lib/utils/cn';
+
+/**
+ * Section heading with an optional "View all".
+ *
+ * The link is only rendered when there is somewhere to go — a "View all" that
+ * lands on the same eight places the section already shows is a promise the
+ * screen cannot keep.
+ */
+function SectionHeading({
+  title,
+  note,
+  onViewAll,
+  className,
+}: {
+  title: string;
+  note?: string | undefined;
+  onViewAll?: (() => void) | undefined;
+  className?: string;
+}) {
+  return (
+    <div className={cn('flex items-baseline justify-between gap-3 px-5', className)}>
+      <h2 className="text-ink text-lg leading-tight font-semibold tracking-tight">
+        {title}
+        {note && <span className="text-ink-subtle ml-2 text-xs font-normal">{note}</span>}
+      </h2>
+      {onViewAll && (
+        <button
+          type="button"
+          onClick={onViewAll}
+          className="text-primary shrink-0 text-sm font-medium"
+        >
+          View all
+        </button>
+      )}
+    </div>
+  );
+}
 
 /** Ho Chi Minh City — used for the feed before any location is resolved. */
 const FALLBACK_ORIGIN = { latitude: 10.7769, longitude: 106.7009 };
-
-function greeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return 'Good morning';
-  if (hour < 18) return 'Good afternoon';
-  return 'Good evening';
-}
 
 /**
  * Home (§14) — the discovery loop.
@@ -36,56 +71,123 @@ export function HomeScreen() {
 
   const origin = coordinates ?? FALLBACK_ORIGIN;
 
+  const categories = useQuery({
+    queryKey: ['categories'],
+    queryFn: fetchCategories,
+    staleTime: 30 * 60_000,
+  });
+
   const popular = useNearbyPlaces(origin, { limit: 12 });
   const bestRated = useNearbyPlaces(origin, { limit: 12, minRating: 4.5 });
   const openNow = useNearbyPlaces(origin, { limit: 12, openNow: true });
 
   return (
     <div className="px-safe">
-      <header className="px-5 pt-safe">
-        <div className="pt-4">
-          <p className="text-sm text-ink-muted">{greeting()} 👋</p>
-          <h1 className="mt-1 text-[1.75rem] leading-tight font-semibold tracking-tight text-ink">
-            Where to today?
-          </h1>
-        </div>
-
-        <div className="mt-3">
+      {/*
+        Location and search share one bar.
+        They were stacked, which spent two rows and 96px of the first screen on
+        chrome before a single place appeared. They also answer the same
+        question — "where am I looking?" — so splitting them made the user read
+        twice to learn one thing.
+      */}
+      <header className="pt-safe px-5">
+        <div className="bg-surface mt-3 flex items-center gap-1 rounded-full p-1.5 pr-2 shadow-md">
           <LocationChip />
-        </div>
 
-        {/* A button rather than an input: tapping navigates to the search
-            screen, where the keyboard, recents and suggestions live. An inline
-            input here would need all of that on the home screen too. */}
-        <button
-          type="button"
-          onClick={() => {
-            router.push('/search');
-          }}
-          className="mt-4 flex h-13 w-full items-center gap-3 rounded-lg bg-surface px-4 text-left shadow-md transition-transform active:scale-[0.99]"
-        >
-          <Search className="size-5 shrink-0 text-ink-subtle" aria-hidden />
-          <span className="text-[0.9375rem] text-ink-subtle">Where do you want to go?</span>
-        </button>
+          <span className="bg-border h-5 w-px shrink-0" aria-hidden />
+
+          {/* A button rather than an input: tapping navigates to the search
+              screen, where the keyboard, recents and suggestions live. An
+              inline input here would need all of that on the home screen too. */}
+          <button
+            type="button"
+            onClick={() => {
+              router.push('/search');
+            }}
+            className="flex min-w-0 flex-1 items-center gap-2 rounded-full py-2 pl-1 text-left"
+          >
+            <span className="text-ink-subtle truncate text-[0.9375rem]">
+              Where do you want to go?
+            </span>
+          </button>
+
+          <span
+            className="bg-primary-tint flex size-8 shrink-0 items-center justify-center rounded-full"
+            aria-hidden
+          >
+            <Search className="text-primary size-4" />
+          </span>
+        </div>
       </header>
 
-      <section className="mt-5 px-5" aria-label="Map">
-        <HomeMap
-          className="h-72"
-          selectedPlaceId={selectedPlaceId}
-          onSelectPlace={setSelectedPlaceId}
+      {/*
+        The stack leads, before the map.
+        A map answers "what is around me" only once you already know what you
+        are looking for; on open, a specific suggestion is the faster route to
+        a decision. The map is still one scroll away for anyone who wants it.
+      */}
+      <section className="mt-5" aria-label="Recommended for you">
+        <SectionHeading
+          title="Recommended for you"
+          onViewAll={() => {
+            router.push('/explore');
+          }}
         />
-      </section>
-
-      <div className="mt-7 space-y-7">
-        <PlaceRail
-          title="Popular near you"
-          places={popular.data?.places}
-          isPending={popular.isPending}
+        <PlaceCardStack
+          className="mt-3"
+          places={bestRated.data?.places}
+          isPending={bestRated.isPending}
           onSelect={(place) => {
             setSelectedPlaceId(place.id);
           }}
-          priority
+        />
+      </section>
+
+      {/* Categories, between the suggestion and the list.
+          It is the pivot: the stack answers "somewhere specific", the grid
+          answers "what is close", and this is how you say "actually, coffee".
+          Each chip lands on Explore already filtered rather than filtering in
+          place, because the answer is a list and this screen is not one. */}
+      <section className="mt-7" aria-label="Categories">
+        <SectionHeading
+          title="Categories"
+          onViewAll={() => {
+            router.push('/explore');
+          }}
+        />
+        <div className="mt-3 flex snap-x snap-mandatory scroll-pl-5 scrollbar-none gap-2 overflow-x-auto px-5 pb-1">
+          {/* The tree's roots are the top-level categories — flattening would
+              mix subcategories in and make the row twice as long for no gain. */}
+          {categories.data
+            ? categories.data.map((category) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => {
+                    router.push(`/explore?category=${category.slug}`);
+                  }}
+                  className="border-border bg-surface text-ink inline-flex h-11 shrink-0 snap-start items-center gap-2 rounded-full border px-4 text-sm font-medium transition-transform active:scale-[0.97]"
+                >
+                  <span
+                    className="size-2 shrink-0 rounded-full"
+                    style={{ backgroundColor: category.colorHex }}
+                    aria-hidden
+                  />
+                  {category.name}
+                </button>
+              ))
+            : Array.from({ length: 5 }, (_, index) => (
+                <div
+                  key={index}
+                  className="bg-surface-sunken h-11 w-28 shrink-0 animate-pulse rounded-full"
+                />
+              ))}
+        </div>
+      </section>
+
+      <section className="mt-7" aria-label="Nearby from you">
+        <SectionHeading
+          title="Nearby from you"
           // Says so out loud when the search had to widen, rather than
           // silently showing places an hour away as if they were nearby.
           note={
@@ -93,19 +195,30 @@ export function HomeScreen() {
               ? `within ${formatDistance(popular.data.radiusMeters)}`
               : undefined
           }
-          emptyMessage="No places around here yet. Gonoplan is still filling in this area."
+          onViewAll={() => {
+            router.push('/explore');
+          }}
         />
-
-        <PlaceRail
-          title="Best rated"
-          places={bestRated.data?.places}
-          isPending={bestRated.isPending}
+        <PlaceGrid
+          className="mt-3"
+          places={popular.data?.places.slice(0, 4)}
+          isPending={popular.isPending}
           onSelect={(place) => {
             setSelectedPlaceId(place.id);
           }}
-          emptyMessage="Nothing rated 4.5 or above nearby yet."
         />
+      </section>
 
+      <section className="mt-7 px-5" aria-label="Map">
+        <SectionHeading title="On the map" className="px-0 pb-3" />
+        <HomeMap
+          className="h-72"
+          selectedPlaceId={selectedPlaceId}
+          onSelectPlace={setSelectedPlaceId}
+        />
+      </section>
+
+      <div className="mt-7">
         <PlaceRail
           title="Open right now"
           places={openNow.data?.places}
@@ -120,7 +233,7 @@ export function HomeScreen() {
       {/* Only shown once we know where the user is — until then the label would
           claim a precision the app does not have. */}
       {label && source !== 'NONE' && (
-        <p className="mt-7 px-5 text-center text-xs text-ink-subtle">
+        <p className="text-ink-subtle mt-7 px-5 text-center text-xs">
           Showing places around {label}
         </p>
       )}
