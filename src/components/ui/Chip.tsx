@@ -23,7 +23,10 @@ export function Chip({ children, selected = false, onClick, colorHex, className 
       aria-pressed={selected}
       style={tint}
       className={cn(
-        'inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5',
+        // 44px, not 36. Button already documents this floor as Apple's minimum
+        // comfortable target, and chips are the primary filter control on two
+        // screens — they were the one place breaking the rule.
+        'inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full px-4',
         'text-sm font-medium whitespace-nowrap',
         'transition-[background-color,transform] duration-150 active:scale-[0.97]',
         selected && !colorHex && 'bg-primary text-white shadow-primary',

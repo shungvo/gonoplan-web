@@ -51,7 +51,12 @@ export function PlaceRail({
           {action && <div className="mt-3 flex justify-center">{action}</div>}
         </div>
       ) : (
-        <div className="scrollbar-none mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-1">
+        // `scroll-pl-5` must match `px-5`. Mandatory snapping aligns the first
+        // card to the scrollport edge, not to the padded content edge — so on
+        // load the rail silently scrolled itself 20px and every first card sat
+        // flush against the screen while its own heading stayed inset. Scroll
+        // padding moves the snap position instead of the card.
+        <div className="scrollbar-none mt-3 flex snap-x snap-mandatory scroll-pl-5 gap-3 overflow-x-auto px-5 pb-1">
           {isPending
             ? Array.from({ length: 3 }, (_, index) => (
                 <div key={index} className="snap-start">

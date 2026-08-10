@@ -6,6 +6,7 @@ import { StarInput } from './StarInput';
 import { Button } from '@/components/ui/Button';
 import { useCreateReview, useUpdateReview } from '../hooks/useReviews';
 import { ApiError } from '@/lib/api/errors';
+import { fieldClass } from '@/components/ui/field';
 import type { Review } from '../api';
 
 const MAX_LENGTH = 2000;
@@ -112,7 +113,7 @@ function ReviewForm({
         rows={5}
         disabled={pending}
         placeholder="What stood out? Anything worth knowing before going?"
-        className="bg-surface-sunken text-ink placeholder:text-ink-subtle focus-visible:outline-primary mt-2 w-full resize-none rounded-md p-3.5 text-[0.9375rem] leading-relaxed outline-none focus-visible:outline-2"
+        className={fieldClass('mt-2 resize-none p-3.5 text-[0.9375rem] leading-relaxed')}
       />
       <p className="text-ink-subtle mt-1 text-right text-xs">
         {content.length}/{MAX_LENGTH}

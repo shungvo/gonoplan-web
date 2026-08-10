@@ -30,7 +30,38 @@ const SOURCE_ID = 'places';
 const CLUSTER_LAYER = 'places-clusters';
 const CLUSTER_COUNT_LAYER = 'places-cluster-count';
 const MARKER_LAYER = 'places-markers';
+
 const MARKER_SELECTED_LAYER = 'places-marker-selected';
+
+/**
+ * The font stack the basemap itself already renders labels with.
+ *
+ * A symbol layer with no `text-font` falls back to MapLibre's default —
+ * "Open Sans Regular, Arial Unicode MS Regular" — which OpenFreeMap does not
+ * host. Every cluster bubble then fired a 404 for its glyph range and the
+ * number was drawn through a local fallback path.
+ *
+ * Hardcoding a font that OpenFreeMap does host would only move the failure to
+ * Goong, which is the production provider. Borrowing whatever the style's own
+ * labels use resolves on any provider, because that font is by definition
+ * served by that style's glyph endpoint.
+ */
+function basemapFont(map: MapLibreMap): string[] | null {
+  for (const layer of map.getStyle().layers ?? []) {
+    if (layer.type !== 'symbol') continue;
+
+    const font: unknown = layer.layout?.['text-font'];
+    if (!Array.isArray(font)) continue;
+
+    // `text-font` may also be an expression — ["array", ...] or a zoom ramp.
+    // Only a plain stack of names can be copied verbatim, and it is the only
+    // form that survives being handed to a different layer.
+    const names = font.filter((entry): entry is string => typeof entry === 'string');
+    if (names.length > 0 && names.length === font.length) return names;
+  }
+  return null;
+}
+
 
 export interface MapCanvasProps {
   center: { latitude: number; longitude: number };
@@ -150,6 +181,8 @@ export function MapCanvas({
         },
       });
 
+      const clusterFont = basemapFont(map);
+
       map.addLayer({
         id: CLUSTER_COUNT_LAYER,
         type: 'symbol',
@@ -159,6 +192,7 @@ export function MapCanvas({
           'text-field': ['get', 'point_count_abbreviated'],
           'text-size': 11,
           'text-allow-overlap': true,
+          ...(clusterFont ? { 'text-font': clusterFont } : {}),
         },
         paint: { 'text-color': '#ffffff' },
       });

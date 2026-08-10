@@ -5,6 +5,7 @@ import { Drawer } from 'vaul';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { ApiError } from '@/lib/api/errors';
+import { fieldClass } from '@/components/ui/field';
 import { replyToReview, type OwnerReview } from '../api';
 
 const MAX_LENGTH = 1000;
@@ -79,7 +80,7 @@ function ReplyForm({ review, onDone }: { review: OwnerReview; onDone: () => void
         rows={5}
         aria-label="Your reply"
         placeholder="Thank them, or explain what you have changed."
-        className="bg-surface-sunken text-ink placeholder:text-ink-subtle focus-visible:outline-primary mt-3 w-full resize-none rounded-md p-3.5 text-[0.9375rem] leading-relaxed outline-none focus-visible:outline-2"
+        className={fieldClass('mt-3 resize-none p-3.5 text-[0.9375rem] leading-relaxed')}
       />
       <p className="text-ink-subtle mt-1 text-right text-xs">
         {content.length}/{MAX_LENGTH}

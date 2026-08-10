@@ -5,6 +5,7 @@ import { Drawer } from 'vaul';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { ApiError } from '@/lib/api/errors';
+import { fieldClass } from '@/components/ui/field';
 import { useSessionStore } from '../store';
 import { login, register } from '../api';
 
@@ -90,7 +91,7 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
               setName(event.target.value);
             }}
             autoComplete="name"
-            className="bg-surface-sunken text-ink focus-visible:outline-primary mt-1.5 h-12 w-full rounded-md px-3.5 text-[0.9375rem] outline-none focus-visible:outline-2"
+            className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
           />
         </label>
       )}
@@ -109,7 +110,7 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
           autoCapitalize="none"
           spellCheck={false}
           inputMode="email"
-          className="bg-surface-sunken text-ink focus-visible:outline-primary mt-1.5 h-12 w-full rounded-md px-3.5 text-[0.9375rem] outline-none focus-visible:outline-2"
+          className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
         />
       </label>
 
@@ -122,7 +123,7 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
             setPassword(event.target.value);
           }}
           autoComplete={isRegister ? 'new-password' : 'current-password'}
-          className="bg-surface-sunken text-ink focus-visible:outline-primary mt-1.5 h-12 w-full rounded-md px-3.5 text-[0.9375rem] outline-none focus-visible:outline-2"
+          className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
         />
         {isRegister && (
           <span className="text-ink-subtle mt-1 block text-xs">At least 8 characters.</span>

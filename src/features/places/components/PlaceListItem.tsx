@@ -43,16 +43,14 @@ export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps
       </div>
 
       <div className="min-w-0 flex-1">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="truncate text-[0.9375rem] leading-snug font-semibold text-primary">
-            {place.name}
-          </h3>
-          {place.isOpenNow && (
-            <span className="mt-0.5 shrink-0 text-[0.6875rem] font-semibold text-success">
-              Open
-            </span>
-          )}
-        </div>
+        {/* Full width, up to two lines. Sharing this row with the "Open" badge
+            left the name about 220px on a 375px screen, so it cut exactly the
+            thing the row exists to show — "Ho Chi Minh City Museum of Fine
+            Arts" arrived as "Ho Chi Minh City Museum of Fin…". "Open" is one
+            word and reads fine next to the category instead. */}
+        <h3 className="line-clamp-2 text-[0.9375rem] leading-snug font-semibold text-primary">
+          {place.name}
+        </h3>
 
         <p className="mt-0.5 flex items-center gap-1.5 text-xs text-ink-muted">
           <span
@@ -61,6 +59,9 @@ export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps
             aria-hidden
           />
           <span className="truncate">{place.category.name}</span>
+          {place.isOpenNow && (
+            <span className="shrink-0 font-semibold text-success">· Open</span>
+          )}
         </p>
 
         <div className="mt-1.5 flex items-center gap-2">

@@ -5,6 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Store } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ApiError } from '@/lib/api/errors';
+import { fieldClass } from '@/components/ui/field';
 import { registerBusiness } from '../api';
 
 /**
@@ -54,10 +55,11 @@ export function RegisterBusinessForm({ onRegistered }: { onRegistered: () => voi
         <input
           type="text"
           value={businessName}
+          placeholder="Hòa Hospitality Group"
           onChange={(event) => {
             setBusinessName(event.target.value);
           }}
-          className="bg-surface-sunken text-ink focus-visible:outline-primary mt-1.5 h-12 w-full rounded-md px-3.5 text-[0.9375rem] outline-none focus-visible:outline-2"
+          className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
         />
       </label>
 
@@ -68,12 +70,13 @@ export function RegisterBusinessForm({ onRegistered }: { onRegistered: () => voi
         <input
           type="email"
           value={businessEmail}
+          placeholder="contact@yourbusiness.vn"
           onChange={(event) => {
             setBusinessEmail(event.target.value);
           }}
           autoCapitalize="none"
           inputMode="email"
-          className="bg-surface-sunken text-ink focus-visible:outline-primary mt-1.5 h-12 w-full rounded-md px-3.5 text-[0.9375rem] outline-none focus-visible:outline-2"
+          className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
         />
       </label>
 
@@ -84,11 +87,12 @@ export function RegisterBusinessForm({ onRegistered }: { onRegistered: () => voi
         <input
           type="tel"
           value={businessPhone}
+          placeholder="+84 28 1234 5678"
           onChange={(event) => {
             setBusinessPhone(event.target.value);
           }}
           inputMode="tel"
-          className="bg-surface-sunken text-ink focus-visible:outline-primary mt-1.5 h-12 w-full rounded-md px-3.5 text-[0.9375rem] outline-none focus-visible:outline-2"
+          className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
         />
       </label>
 

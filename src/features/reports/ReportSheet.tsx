@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { ApiError } from '@/lib/api/errors';
 import { api } from '@/lib/api/client';
 import { cn } from '@/lib/utils/cn';
+import { fieldClass } from '@/components/ui/field';
 
 type Reason = 'CLOSED_PERMANENTLY' | 'INCORRECT_INFO' | 'DUPLICATE' | 'SPAM' | 'INAPPROPRIATE' | 'OTHER';
 
@@ -182,7 +183,7 @@ function ReportForm({
           }}
           rows={3}
           placeholder="What did you see? Anything specific helps."
-          className="bg-surface-sunken text-ink placeholder:text-ink-subtle focus-visible:outline-primary mt-1.5 w-full resize-none rounded-md p-3.5 text-[0.9375rem] leading-relaxed outline-none focus-visible:outline-2"
+          className={fieldClass('mt-1.5 resize-none p-3.5 text-[0.9375rem] leading-relaxed')}
         />
       </label>
 
