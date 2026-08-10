@@ -55,7 +55,7 @@ export function BottomNav() {
         picked up whatever was behind it, so the bar changed colour as you
         panned and never settled into being one object.
       */}
-      <ul className="mx-auto flex w-fit items-center gap-1 rounded-full border border-border/60 bg-surface p-1.5 shadow-lg">
+      <ul className="mx-auto flex w-fit items-center gap-1 rounded-full bg-surface p-1.5 shadow-lg">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href);
 

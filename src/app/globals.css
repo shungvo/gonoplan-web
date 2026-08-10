@@ -40,15 +40,28 @@
   --color-danger: #f2545b;
 
   /* ─── Surfaces ──────────────────────────────────────────────────────── */
-  --color-background: #edf4fb;
+  /* White is the ground, not an accent.
+     The page was a light blue with white cards floating on it, which spends
+     colour on every square inch and leaves nothing louder for the things that
+     should be. Inverted: the page is white, and colour is what marks something
+     out.
+
+     The cost is that a white card on a white page has no edge of its own, so
+     cards now carry a hairline border as well as a shadow — a shadow alone on
+     white reads as a smudge rather than a lift. `sunken` is the one tinted
+     surface left, for the insets that must read as recessed: inputs,
+     skeletons, image placeholders. */
+  --color-background: #ffffff;
   --color-surface: #ffffff;
-  --color-surface-sunken: #e9f1f9;
+  --color-surface-sunken: #f2f6fb;
 
   /* ─── Text ──────────────────────────────────────────────────────────── */
   --color-ink: #14202e;
   --color-ink-muted: #5a6b7d;
   --color-ink-subtle: #8a9aab;
-  --color-border: #dbe7f3;
+  /* Carries more weight now that it is drawing the edge of every card rather
+     than only separating stacked rows. */
+  --color-border: #e6ecf4;
 
   /* ─── Radii ─────────────────────────────────────────────────────────── */
   /* Generous. The soft, rounded silhouette is most of what separates this
@@ -64,12 +77,31 @@
   /* Layered shadows rather than glassmorphism, which §16 rules out. Each
      level pairs a tight contact shadow with a wide ambient one — that pairing
      is what reads as physical depth instead of a flat grey blur.
-     Tinted navy, not black: a neutral shadow over a blue background greys it
-     out, and the cards stop looking like they are floating in the same room. */
-  --shadow-sm: 0 1px 2px rgb(19 66 116 / 0.05), 0 2px 6px rgb(19 66 116 / 0.06);
-  --shadow-md: 0 2px 6px rgb(19 66 116 / 0.05), 0 10px 20px rgb(19 66 116 / 0.09);
-  --shadow-lg: 0 4px 10px rgb(19 66 116 / 0.05), 0 18px 36px rgb(19 66 116 / 0.11);
-  --shadow-xl: 0 8px 18px rgb(19 66 116 / 0.06), 0 28px 56px rgb(19 66 116 / 0.13);
+     Tinted navy, not black: a neutral shadow greys out the surface it falls on
+     and the cards stop looking like they are in the same room as the page.
+
+     Every level now opens with a 1px hairline ring. On a white page a white
+     card has no edge of its own, and a soft shadow alone reads as a smudge
+     underneath rather than a lift. Putting the edge here rather than adding
+     `border` to thirty-eight components keeps it where elevation is already
+     defined — a card that is raised gets an edge by being raised.
+
+     0.08, not 0.05: at 0.05 the line resolves to #f3f6f8, about three percent
+     off white, which held up on a 2x screenshot and would not on a phone in
+     daylight. The whole layout now leans on this line to separate a white card
+     from a white page, so it is worth the extra two percent. */
+  --shadow-sm:
+    0 0 0 1px rgb(19 66 116 / 0.08), 0 1px 2px rgb(19 66 116 / 0.04),
+    0 2px 6px rgb(19 66 116 / 0.05);
+  --shadow-md:
+    0 0 0 1px rgb(19 66 116 / 0.08), 0 2px 6px rgb(19 66 116 / 0.05),
+    0 10px 20px rgb(19 66 116 / 0.08);
+  --shadow-lg:
+    0 0 0 1px rgb(19 66 116 / 0.08), 0 4px 10px rgb(19 66 116 / 0.05),
+    0 18px 36px rgb(19 66 116 / 0.10);
+  --shadow-xl:
+    0 0 0 1px rgb(19 66 116 / 0.08), 0 8px 18px rgb(19 66 116 / 0.06),
+    0 28px 56px rgb(19 66 116 / 0.12);
   --shadow-primary: 0 8px 24px rgb(15 108 205 / 0.30);
   /* Two layers, like the others: a tight contact shadow that separates the
      sheet's edge from whatever is behind it, and a wide ambient one that makes
@@ -102,16 +134,9 @@
   body {
     height: 100dvh;
     background-color: var(--color-background);
-    /* A diagonal sweep, barely there — two stops either side of the base
-       colour. It stops a full screen of one flat light blue from looking like
-       an unpainted background, and because the shell is 100dvh with its own
-       scroll container, it never travels with the content. */
-    background-image: linear-gradient(
-      160deg,
-      #f5fafe 0%,
-      var(--color-background) 45%,
-      #e2edf8 100%
-    );
+    /* No gradient. It existed to stop a screen of flat light blue looking
+       unpainted; white does not have that problem, and a tinted sweep over it
+       would put back the wash this change is removing. */
     color: var(--color-ink);
     /* Stops iOS rubber-band scrolling from dragging the whole app when the
        user pans the map or over-scrolls a bottom sheet. */
