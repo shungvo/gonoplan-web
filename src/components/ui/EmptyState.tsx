@@ -2,11 +2,14 @@ import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils/cn';
 
 export interface EmptyStateProps {
-  icon?: ReactNode;
+  icon?: ReactNode | undefined;
   title: string;
-  description?: string;
-  action?: ReactNode;
-  className?: string;
+  // Explicitly `| undefined`: with exactOptionalPropertyTypes, a caller writing
+  // `description={condition ? text : undefined}` would otherwise not typecheck,
+  // and that conditional is the normal way to build a JSX prop.
+  description?: string | undefined;
+  action?: ReactNode | undefined;
+  className?: string | undefined;
 }
 
 /**

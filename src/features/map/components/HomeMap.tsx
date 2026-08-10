@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { LocateFixed, MapPinOff } from 'lucide-react';
 import { MapView } from './MapView';
 import { CityPickerSheet } from '@/features/location/components/CityPickerSheet';
@@ -20,8 +19,13 @@ const FALLBACK_CENTER = { latitude: 10.7769, longitude: 106.7009 };
  * initial render falls back to a sensible default rather than a world view.
  * There is no state in which this renders nothing.
  */
-export function HomeMap({ className }: { className?: string }) {
-  const router = useRouter();
+export interface HomeMapProps {
+  className?: string;
+  selectedPlaceId?: string | null;
+  onSelectPlace?: (placeId: string) => void;
+}
+
+export function HomeMap({ className, selectedPlaceId = null, onSelectPlace }: HomeMapProps) {
   const { status, source, coordinates, label, requestLocation, setLabel } = useLocationStore();
 
   useEffect(() => {
@@ -71,8 +75,9 @@ export function HomeMap({ className }: { className?: string }) {
         center={center}
         zoom={14}
         userLocation={hasRealPosition ? coordinates : null}
+        selectedPlaceId={selectedPlaceId}
         onSelectPlace={(placeId) => {
-          router.push(`/place/${placeId}`);
+          onSelectPlace?.(placeId);
         }}
         className="rounded-lg shadow-md"
       />
