@@ -3538,6 +3538,87 @@
         }
       }
     },
+    "/places/search/popular": {
+      "get": {
+        "tags": [
+          "Places"
+        ],
+        "summary": "Most-searched queries",
+        "description": "Aggregated over the last 30 days from real search history. Queries that returned nothing are excluded — suggesting a search that finds nothing is worse than suggesting nothing. Returns an empty array until enough searches have been recorded, so clients should fall back to browsing by category.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 8
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Popular searches, most frequent first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "query": {
+                            "type": "string"
+                          },
+                          "searches": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "query",
+                          "searches"
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/places/{idOrSlug}": {
       "get": {
         "tags": [

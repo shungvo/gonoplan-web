@@ -1215,6 +1215,59 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/places/search/popular": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Most-searched queries
+         * @description Aggregated over the last 30 days from real search history. Queries that returned nothing are excluded — suggesting a search that finds nothing is worse than suggesting nothing. Returns an empty array until enough searches have been recorded, so clients should fall back to browsing by category.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Popular searches, most frequent first */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                query: string;
+                                searches: number;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/places/{idOrSlug}": {
         parameters: {
             query?: never;

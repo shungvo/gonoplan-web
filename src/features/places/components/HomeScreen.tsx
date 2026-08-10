@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { HomeMap } from '@/features/map/components/HomeMap';
 import { LocationChip } from '@/features/location/components/LocationChip';
@@ -29,6 +30,7 @@ function greeting(): string {
  * state nothing outside this screen ever reads.
  */
 export function HomeScreen() {
+  const router = useRouter();
   const { coordinates, label, source } = useLocationStore();
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
 
@@ -52,8 +54,14 @@ export function HomeScreen() {
           <LocationChip />
         </div>
 
+        {/* A button rather than an input: tapping navigates to the search
+            screen, where the keyboard, recents and suggestions live. An inline
+            input here would need all of that on the home screen too. */}
         <button
           type="button"
+          onClick={() => {
+            router.push('/search');
+          }}
           className="mt-4 flex h-13 w-full items-center gap-3 rounded-lg bg-surface px-4 text-left shadow-md transition-transform active:scale-[0.99]"
         >
           <Search className="size-5 shrink-0 text-ink-subtle" aria-hidden />

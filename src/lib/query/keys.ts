@@ -24,7 +24,9 @@ export const queryKeys = {
       ['places', 'map', bbox.map((n) => Math.round(n * 1000) / 1000), zoom] as const,
 
     detail: (idOrSlug: string) => ['places', 'detail', idOrSlug] as const,
-    search: (query: string, coords?: Coordinates) =>
+    // Accepts null as well as undefined: the location store holds `null` when
+    // there is no fix, and forcing every caller to convert would be noise.
+    search: (query: string, coords?: Coordinates | null) =>
       ['places', 'search', query, coords ? snapToGrid(coords, 1000) : null] as const,
     similar: (id: string) => ['places', 'similar', id] as const,
   },

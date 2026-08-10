@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Compass, SlidersHorizontal } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Compass, Search, SlidersHorizontal } from 'lucide-react';
 import { Chip } from '@/components/ui/Chip';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
@@ -22,6 +23,7 @@ const FALLBACK_ORIGIN = { latitude: 10.7769, longitude: 106.7009 };
  * who wants to compare options, and comparison needs a column, not a carousel.
  */
 export function ExploreScreen() {
+  const router = useRouter();
   const { coordinates, label } = useLocationStore();
   const [selectedSlugs, setSelectedSlugs] = useState<string[]>([]);
   const [openNow, setOpenNow] = useState(false);
@@ -58,6 +60,17 @@ export function ExploreScreen() {
         <p className="mt-1 text-sm text-ink-muted">
           {label ? `Everything around ${label}` : 'Everything around you'}
         </p>
+
+        <button
+          type="button"
+          onClick={() => {
+            router.push('/search');
+          }}
+          className="mt-4 flex h-12 w-full items-center gap-3 rounded-md bg-surface px-3.5 text-left shadow-sm transition-transform active:scale-[0.99]"
+        >
+          <Search className="size-4 shrink-0 text-ink-subtle" aria-hidden />
+          <span className="text-[0.9375rem] text-ink-subtle">Search places</span>
+        </button>
       </header>
 
       {/* Filters sit above the list and scroll horizontally, so adding a
