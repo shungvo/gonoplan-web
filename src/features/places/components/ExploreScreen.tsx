@@ -112,7 +112,7 @@ export function ExploreScreen() {
         often enough to feel broken. Stopping above the tab bar keeps the app's
         navigation reachable.
       */
-      <div className="fixed inset-x-0 top-0 z-20 bottom-[var(--spacing-nav)] bg-background">
+      <div className="bg-background fixed inset-x-0 top-0 bottom-[var(--spacing-nav)] z-20">
         <MapCanvas
           className="absolute inset-0"
           center={origin}
@@ -135,10 +135,10 @@ export function ExploreScreen() {
               onClick={() => {
                 router.push('/search');
               }}
-              className="flex h-12 flex-1 items-center gap-3 rounded-full bg-surface px-4 text-left shadow-md active:scale-[0.99]"
+              className="bg-surface flex h-12 flex-1 items-center gap-3 rounded-full px-4 text-left shadow-md active:scale-[0.99]"
             >
-              <Search className="size-4 shrink-0 text-ink-subtle" aria-hidden />
-              <span className="truncate text-[0.9375rem] text-ink-subtle">
+              <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
+              <span className="text-ink-subtle truncate text-[0.9375rem]">
                 {label ? `Search around ${label}` : 'Search places'}
               </span>
             </button>
@@ -147,14 +147,14 @@ export function ExploreScreen() {
               onClick={() => {
                 setView('list');
               }}
-              className="flex h-12 shrink-0 items-center gap-2 rounded-full bg-surface px-4 text-sm font-medium text-ink shadow-md active:scale-[0.98]"
+              className="bg-surface text-ink flex h-12 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-medium shadow-md active:scale-[0.98]"
             >
               <List className="size-4" aria-hidden />
               List
             </button>
           </div>
 
-          <div className="scrollbar-none pointer-events-auto mt-2 flex gap-2 overflow-x-auto pb-1">
+          <div className="pointer-events-auto mt-2 flex scrollbar-none gap-2 overflow-x-auto pb-1">
             <Chip
               selected={openNow}
               onClick={() => {
@@ -184,18 +184,16 @@ export function ExploreScreen() {
             moment a route appears means backing out to change your mind. */}
         {routeTarget && (
           <div className="absolute inset-x-4 bottom-[8.5rem] z-10">
-            <div className="flex items-center gap-3 rounded-full bg-surface px-4 py-2.5 shadow-lg">
-              <Route className="size-4 shrink-0 text-primary" aria-hidden />
+            <div className="bg-surface flex items-center gap-3 rounded-full px-4 py-2.5 shadow-lg">
+              <Route className="text-primary size-4 shrink-0" aria-hidden />
               <p className="min-w-0 flex-1 truncate text-sm">
-                {directions.isPending && (
-                  <span className="text-ink-muted">Finding a route…</span>
-                )}
+                {directions.isPending && <span className="text-ink-muted">Finding a route…</span>}
                 {directions.error && (
                   <span className="text-ink-muted">No route to {routeTarget.name}</span>
                 )}
                 {directions.data && (
                   <>
-                    <span className="font-semibold text-ink">
+                    <span className="text-ink font-semibold">
                       {formatDuration(directions.data.durationS)}
                     </span>
                     <span className="text-ink-muted">
@@ -211,7 +209,7 @@ export function ExploreScreen() {
                   setRouteToId(null);
                 }}
                 aria-label="Clear route"
-                className="-mr-1 flex size-8 shrink-0 items-center justify-center rounded-full text-ink-subtle"
+                className="text-ink-subtle -mr-1 flex size-8 shrink-0 items-center justify-center rounded-full"
               >
                 <X className="size-4" aria-hidden />
               </button>
@@ -224,12 +222,11 @@ export function ExploreScreen() {
             bottom edge and is legally required — so the card moves, not it. */}
         <div className="absolute inset-x-0 bottom-0 pb-7">
           {placesInView.length === 0 ? (
-            <p className="mx-4 rounded-lg bg-surface/95 px-4 py-3 text-center text-sm text-ink-muted shadow-md backdrop-blur-md">
-              Nothing loaded in this area — try moving the map back, or widen
-              your filters.
+            <p className="bg-surface/95 text-ink-muted mx-4 rounded-lg px-4 py-3 text-center text-sm shadow-md backdrop-blur-md">
+              Nothing loaded in this area — try moving the map back, or widen your filters.
             </p>
           ) : (
-            <div className="scrollbar-none flex snap-x snap-mandatory scroll-pl-4 gap-3 overflow-x-auto px-4">
+            <div className="flex snap-x snap-mandatory scroll-pl-4 scrollbar-none gap-3 overflow-x-auto px-4">
               {/* The horizontal row, not the tall card used in the rails.
                   A 4:3 photo card eats 40% of the screen, and on a map screen
                   every pixel the card takes is a pixel of map the user came
@@ -246,7 +243,7 @@ export function ExploreScreen() {
                       // The ringed card and the enlarged pin are the same fact
                       // stated twice, which is what makes the pairing readable
                       // while panning.
-                      selectedPlaceId === place.id && 'ring-2 ring-primary',
+                      selectedPlaceId === place.id && 'ring-primary ring-2',
                     )}
                   />
                   {/* Outside the card's own button, so a tap can say which of
@@ -286,157 +283,196 @@ export function ExploreScreen() {
   }
 
   return (
-    <div className="px-safe">
-      <header className="px-5 pt-safe">
-        <h1 className="pt-6 text-[1.75rem] leading-tight font-semibold tracking-tight text-ink">
-          Explore
-        </h1>
-        <p className="mt-1 text-sm text-ink-muted">
-          {label ? `Everything around ${label}` : 'Everything around you'}
-        </p>
+    <div className="px-safe relative">
+      {/*
+        The map sits behind the page, not inside it.
 
-        <div className="mt-4 flex gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              router.push('/search');
-            }}
-            className="flex h-12 flex-1 items-center gap-3 rounded-md bg-surface px-3.5 text-left shadow-sm transition-transform active:scale-[0.99]"
-          >
-            <Search className="size-4 shrink-0 text-ink-subtle" aria-hidden />
-            <span className="text-[0.9375rem] text-ink-subtle">Search places</span>
-          </button>
+        `fixed` rather than a tall first child: the list scrolls over the map
+        instead of dragging it along, so the map is revealed and covered by the
+        same gesture that reads the list — no second scroll region, and no
+        decision about which one a drag belongs to.
 
-          {/* One button, not a segmented control: there are two views and the
-              label names the one you are not looking at, which is the only
-              thing you can act on. */}
+        `-z-10` puts it under everything without needing a stacking context on
+        each piece of chrome above it.
+      */}
+      <div className="fixed inset-x-0 top-0 -z-10 h-[38dvh]">
+        <MapCanvas
+          className="absolute inset-0"
+          center={origin}
+          zoom={14}
+          categorySlugs={selectedSlugs}
+          {...(coordinates ? { userLocation: coordinates } : {})}
+          selectedPlaceId={selectedPlaceId}
+          onSelectPlace={setSelectedPlaceId}
+        />
+      </div>
+
+      {/* Transparent, so the map reads as the backdrop rather than as a panel
+          beneath a bar. The controls keep their own surfaces — the text has to
+          stay legible over whatever the map happens to show. */}
+      <header className="pt-safe-float relative px-5">
+        <div className="flex items-center gap-2">
+          <h1 className="text-ink flex-1 text-[1.75rem] leading-tight font-semibold tracking-tight drop-shadow-[0_1px_2px_rgb(255_255_255/0.9)]">
+            Explore
+          </h1>
           <button
             type="button"
             onClick={() => {
               setView('map');
             }}
-            className="flex h-12 shrink-0 items-center gap-2 rounded-md bg-surface px-4 text-sm font-medium text-ink shadow-sm active:scale-[0.98]"
+            className="bg-surface text-ink flex h-11 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-medium shadow-md active:scale-[0.98]"
           >
             <Map className="size-4" aria-hidden />
-            Map
+            Full map
           </button>
         </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            router.push('/search');
+          }}
+          className="bg-surface mt-3 flex h-12 w-full items-center gap-3 rounded-full px-4 text-left shadow-md active:scale-[0.99]"
+        >
+          <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
+          <span className="text-ink-subtle text-[0.9375rem]">Search places</span>
+        </button>
       </header>
 
-      {/* Filters sit above the list and scroll horizontally, so adding a
-          fifteenth category never pushes the results off the screen. */}
-      <div className="scrollbar-none mt-4 flex gap-2 overflow-x-auto px-5 pb-1">
-        <Chip
-          selected={openNow}
-          onClick={() => {
-            setOpenNow((value) => !value);
-          }}
-        >
-          <SlidersHorizontal className="size-3.5" aria-hidden />
-          Open now
-        </Chip>
+      {/*
+        Enough clear map to be worth showing.
 
-        {categories?.map((category) => (
+        Sized so the user's own position sits above the sheet rather than
+        behind it — a map you cannot see yourself on answers nothing.
+      */}
+      <div className="h-[22dvh]" aria-hidden />
+
+      {/*
+        The list, shaped like a sheet.
+
+        It is a normal part of the page, not a Drawer: it is always present and
+        never dismissed, so the sheet here is a shape rather than a component —
+        and a real Drawer would add a second scroll region for the page to
+        argue with.
+      */}
+      <div className="bg-surface relative min-h-[70dvh] rounded-t-xl pb-2 shadow-[0_-2px_8px_rgb(19_66_116/0.10),0_-12px_40px_rgb(19_66_116/0.18)]">
+        <div className="bg-border mx-auto mt-2.5 h-1 w-10 rounded-full" aria-hidden />
+
+        {/* Filters sit above the list and scroll horizontally, so adding a
+          fifteenth category never pushes the results off the screen. */}
+        <div className="mt-3 flex scrollbar-none gap-2 overflow-x-auto px-5 pb-1">
           <Chip
-            key={category.id}
-            selected={selectedSlugs.includes(category.slug)}
-            colorHex={category.colorHex}
+            selected={openNow}
             onClick={() => {
-              toggleCategory(category.slug);
+              setOpenNow((value) => !value);
             }}
           >
-            {category.name}
+            <SlidersHorizontal className="size-3.5" aria-hidden />
+            Open now
           </Chip>
-        ))}
-      </div>
 
-      <div className="mt-4 px-5">
-        {isPending && (
-          <div className="space-y-2.5">
-            {Array.from({ length: 6 }, (_, index) => (
-              <PlaceListItemSkeleton key={index} />
-            ))}
-          </div>
-        )}
+          {categories?.map((category) => (
+            <Chip
+              key={category.id}
+              selected={selectedSlugs.includes(category.slug)}
+              colorHex={category.colorHex}
+              onClick={() => {
+                toggleCategory(category.slug);
+              }}
+            >
+              {category.name}
+            </Chip>
+          ))}
+        </div>
 
-        {/*
+        <div className="mt-4 px-5">
+          {isPending && (
+            <div className="space-y-2.5">
+              {Array.from({ length: 6 }, (_, index) => (
+                <PlaceListItemSkeleton key={index} />
+              ))}
+            </div>
+          )}
+
+          {/*
           A failed request used to fall through every branch below and render
           nothing at all — a blank screen under a working filter bar, which
           reads as "there is nothing here" rather than "this broke". That is
           how a 500 on category filtering stayed invisible.
         */}
-        {!isPending && error && (
-          <EmptyState
-            icon={<Compass className="size-7" aria-hidden />}
-            title="Could not load places"
-            description={
-              error instanceof ApiError && error.isRetryable
-                ? 'Check your connection and try again.'
-                : 'Something went wrong at our end. Try again in a moment.'
-            }
-            action={
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => {
-                  void refetch();
-                }}
-              >
-                Try again
-              </Button>
-            }
-          />
-        )}
-
-        {!isPending && !error && data && data.places.length === 0 && (
-          <EmptyState
-            icon={<Compass className="size-7" aria-hidden />}
-            title={hasFilters ? 'Nothing matches your filters' : 'Nothing around here yet'}
-            description={
-              hasFilters
-                ? 'Try removing a filter or widening your search.'
-                : 'Gonoplan is still filling in this area. Try another city from the location picker.'
-            }
-            action={
-              hasFilters ? (
+          {!isPending && error && (
+            <EmptyState
+              icon={<Compass className="size-7" aria-hidden />}
+              title="Could not load places"
+              description={
+                error instanceof ApiError && error.isRetryable
+                  ? 'Check your connection and try again.'
+                  : 'Something went wrong at our end. Try again in a moment.'
+              }
+              action={
                 <Button
                   variant="secondary"
                   size="sm"
                   onClick={() => {
-                    setSelectedSlugs([]);
-                    setOpenNow(false);
+                    void refetch();
                   }}
                 >
-                  Clear filters
+                  Try again
                 </Button>
-              ) : undefined
-            }
-          />
-        )}
+              }
+            />
+          )}
 
-        {!isPending && !error && data && data.places.length > 0 && (
-          <>
-            <p className="mb-2.5 text-xs text-ink-subtle">
-              {data.places.length} places
-              {data.widened && ` within ${formatDistance(data.radiusMeters)}`}
-            </p>
-            <ul className="space-y-2.5">
-              {data.places.map((place) => (
-                <li key={place.id}>
-                  <PlaceListItem
-                    place={place}
-                    onSelect={() => {
-                      setSelectedPlaceId(place.id);
+          {!isPending && !error && data && data.places.length === 0 && (
+            <EmptyState
+              icon={<Compass className="size-7" aria-hidden />}
+              title={hasFilters ? 'Nothing matches your filters' : 'Nothing around here yet'}
+              description={
+                hasFilters
+                  ? 'Try removing a filter or widening your search.'
+                  : 'Gonoplan is still filling in this area. Try another city from the location picker.'
+              }
+              action={
+                hasFilters ? (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedSlugs([]);
+                      setOpenNow(false);
                     }}
-                  />
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </div>
+                  >
+                    Clear filters
+                  </Button>
+                ) : undefined
+              }
+            />
+          )}
 
-      <div className="h-6" />
+          {!isPending && !error && data && data.places.length > 0 && (
+            <>
+              <p className="text-ink-subtle mb-2.5 text-xs">
+                {data.places.length} places
+                {data.widened && ` within ${formatDistance(data.radiusMeters)}`}
+              </p>
+              <ul className="space-y-2.5">
+                {data.places.map((place) => (
+                  <li key={place.id}>
+                    <PlaceListItem
+                      place={place}
+                      onSelect={() => {
+                        setSelectedPlaceId(place.id);
+                      }}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+
+        <div className="h-6" />
+      </div>
 
       <PlaceSheet
         placeId={selectedPlaceId}
