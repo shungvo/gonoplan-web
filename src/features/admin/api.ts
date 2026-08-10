@@ -1,0 +1,151 @@
+import { api } from '@/lib/api/client';
+import type { components } from '@/types/api';
+
+/*
+ * Every type here comes from the generated contract, not a hand-written copy.
+ * A hand-copied SessionUser already drifted once — it was missing
+ * `ownerStatus`, and nothing caught it until the UI rendered `undefined`.
+ */
+export type AdminOverview = components['schemas']['AdminOverview'];
+export type AdminAnalytics = components['schemas']['AdminAnalytics'];
+export type AdminUser = components['schemas']['AdminUser'];
+export type AdminUserDetail = components['schemas']['AdminUserDetail'];
+export type AdminPlace = components['schemas']['AdminPlace'];
+export type AdminReview = components['schemas']['AdminReview'];
+export type AdminReport = components['schemas']['AdminReport'];
+export type PendingPlace = components['schemas']['PendingPlace'];
+export type PendingRevision = components['schemas']['PendingRevision'];
+export type PendingOwner = components['schemas']['PendingOwner'];
+export type AuditEntry = components['schemas']['AuditEntry'];
+
+export type UserStatus = AdminUser['status'];
+export type ReportStatus = AdminReport['status'];
+
+export function fetchOverview(): Promise<AdminOverview> {
+  return api.get<AdminOverview>('/admin/dashboard');
+}
+
+export function fetchAnalytics(days: number): Promise<AdminAnalytics> {
+  return api.get<AdminAnalytics>('/admin/analytics', { query: { days } });
+}
+
+// ─── Queues ─────────────────────────────────────────────────────────────────
+
+export function fetchPendingPlaces(): Promise<PendingPlace[]> {
+  return api.get<PendingPlace[]>('/admin/places/pending', { query: { limit: 50 } });
+}
+
+export function fetchPendingRevisions(): Promise<PendingRevision[]> {
+  return api.get<PendingRevision[]>('/admin/revisions/pending', { query: { limit: 50 } });
+}
+
+export function fetchPendingOwners(): Promise<PendingOwner[]> {
+  return api.get<PendingOwner[]>('/admin/owners/pending');
+}
+
+export function fetchReports(status: ReportStatus): Promise<AdminReport[]> {
+  return api.get<AdminReport[]>('/admin/reports', { query: { status, limit: 50 } });
+}
+
+// ─── Decisions ──────────────────────────────────────────────────────────────
+
+export function approvePlace(placeId: string): Promise<unknown> {
+  return api.post(`/admin/places/${placeId}/approve`, {});
+}
+
+export function rejectPlace(placeId: string, reason: string): Promise<unknown> {
+  return api.post(`/admin/places/${placeId}/reject`, { reason });
+}
+
+export function suspendPlace(placeId: string, reason: string): Promise<unknown> {
+  return api.post(`/admin/places/${placeId}/suspend`, { reason });
+}
+
+export function approveRevision(revisionId: string): Promise<unknown> {
+  return api.post(`/admin/revisions/${revisionId}/approve`, {});
+}
+
+export function rejectRevision(revisionId: string, reason: string): Promise<unknown> {
+  return api.post(`/admin/revisions/${revisionId}/reject`, { reason });
+}
+
+export function approveOwner(ownerProfileId: string): Promise<unknown> {
+  return api.post(`/admin/owners/${ownerProfileId}/approve`, {});
+}
+
+export function rejectOwner(ownerProfileId: string, reason: string): Promise<unknown> {
+  return api.post(`/admin/owners/${ownerProfileId}/reject`, { reason });
+}
+
+export function suspendOwner(ownerProfileId: string, reason: string): Promise<unknown> {
+  return api.post(`/admin/owners/${ownerProfileId}/suspend`, { reason });
+}
+
+export function resolveReport(
+  reportId: string,
+  status: 'RESOLVED' | 'DISMISSED',
+  resolution: string,
+): Promise<unknown> {
+  return api.post(`/admin/reports/${reportId}/resolve`, { status, resolution });
+}
+
+// ─── Users ──────────────────────────────────────────────────────────────────
+
+export function fetchUsers(params: {
+  query?: string | undefined;
+  status?: UserStatus | undefined;
+}): Promise<AdminUser[]> {
+  return api.get<AdminUser[]>('/admin/users', {
+    query: { limit: 50, ...(params.query ? { query: params.query } : {}), ...(params.status ? { status: params.status } : {}) },
+  });
+}
+
+export function fetchUser(userId: string): Promise<AdminUserDetail> {
+  return api.get<AdminUserDetail>(`/admin/users/${userId}`);
+}
+
+export function banUser(userId: string, reason: string): Promise<AdminUser> {
+  return api.post<AdminUser>(`/admin/users/${userId}/ban`, { reason });
+}
+
+export function unbanUser(userId: string): Promise<AdminUser> {
+  return api.post<AdminUser>(`/admin/users/${userId}/unban`, {});
+}
+
+// ─── Catalogue ──────────────────────────────────────────────────────────────
+
+export function fetchPlaces(params: {
+  status?: string | undefined;
+  query?: string | undefined;
+}): Promise<AdminPlace[]> {
+  return api.get<AdminPlace[]>('/admin/places', {
+    query: {
+      limit: 50,
+      ...(params.status ? { status: params.status } : {}),
+      ...(params.query ? { query: params.query } : {}),
+    },
+  });
+}
+
+export function fetchReviews(params: { maxRating?: number | undefined }): Promise<AdminReview[]> {
+  return api.get<AdminReview[]>('/admin/reviews', {
+    query: { limit: 50, ...(params.maxRating ? { maxRating: params.maxRating } : {}) },
+  });
+}
+
+/**
+ * Deletion goes through the public review route, not an admin-only twin.
+ * That path locks the place row, recomputes the rating and writes the audit
+ * entry; a second endpoint would be a second chance to skip one of the three.
+ */
+export function deleteReview(reviewId: string): Promise<unknown> {
+  return api.delete(`/reviews/${reviewId}`);
+}
+
+// ─── Audit ──────────────────────────────────────────────────────────────────
+
+export function fetchAuditLog(targetId?: string): Promise<AuditEntry[]> {
+  return api.get<AuditEntry[]>('/admin/actions', {
+    query: { limit: 100, ...(targetId ? { targetId } : {}) },
+  });
+}

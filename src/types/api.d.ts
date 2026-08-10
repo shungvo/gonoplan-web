@@ -3154,7 +3154,22 @@ export interface paths {
                             /** @enum {boolean} */
                             success: true;
                             data: {
-                                [key: string]: unknown;
+                                /** Format: uuid */
+                                id: string;
+                                businessName: string;
+                                businessEmail: string | null;
+                                businessPhone: string | null;
+                                taxId: string | null;
+                                createdAt: string;
+                                user: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    email: string;
+                                    joinedAt: string;
+                                };
+                                placeCount: number;
+                                documentCount: number;
                             }[];
                             meta?: {
                                 cursor?: string | null;
@@ -3477,6 +3492,347 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Report a place, review or account
+         * @description Authenticated and rate limited — anonymous reporting would be the cheapest way to bury a competitor. Filing a second report for a target you already have an open report on returns the existing one with alreadyReported: true rather than a 409, because the reporter's intent is already satisfied.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        targetType: "PLACE" | "REVIEW" | "USER";
+                        /** Format: uuid */
+                        targetId: string;
+                        /** @enum {string} */
+                        reason: "SPAM" | "INAPPROPRIATE" | "INCORRECT_INFO" | "CLOSED_PERMANENTLY" | "DUPLICATE" | "OFFENSIVE" | "OTHER";
+                        description?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description An open report from this reporter for this target already exists */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                status: "OPEN" | "REVIEWING" | "RESOLVED" | "DISMISSED";
+                                /** @enum {boolean} */
+                                alreadyReported: true;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Report filed */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                status: "OPEN" | "REVIEWING" | "RESOLVED" | "DISMISSED";
+                                alreadyReported: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Reporting your own review or account */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description The target does not exist or has been removed */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Moderation queue
+         * @description Open reports come oldest first — a report waiting three days matters more than one filed a minute ago. Each row carries its resolved target and how many open reports that target has, so five people reporting one place is visible without opening each one. `target` is null when the target was deleted after the report was filed; the row still resolves.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    status?: "OPEN" | "REVIEWING" | "RESOLVED" | "DISMISSED";
+                    targetType?: "PLACE" | "REVIEW" | "USER";
+                    limit?: number;
+                    cursor?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Reports with hydrated targets */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                targetType: "PLACE" | "REVIEW" | "USER";
+                                /** Format: uuid */
+                                targetId: string;
+                                /** @enum {string} */
+                                reason: "SPAM" | "INAPPROPRIATE" | "INCORRECT_INFO" | "CLOSED_PERMANENTLY" | "DUPLICATE" | "OFFENSIVE" | "OTHER";
+                                description: string | null;
+                                /** @enum {string} */
+                                status: "OPEN" | "REVIEWING" | "RESOLVED" | "DISMISSED";
+                                createdAt: string;
+                                reporter: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    email: string;
+                                } | null;
+                                handledBy: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    email: string;
+                                } | null;
+                                handledAt: string | null;
+                                resolution: string | null;
+                                target: {
+                                    label: string;
+                                    detail: string | null;
+                                    href: string | null;
+                                    status: string | null;
+                                } | null;
+                                openReportsOnTarget: number;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/reports/{id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Close a report
+         * @description Deliberately does nothing to the target. Taking a place down and recording why a report was closed are separate decisions; fusing them would mean either a resolve that silently suspends, or a suspend with no moderation trail.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "RESOLVED" | "DISMISSED";
+                        resolution: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Closed */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                status: "OPEN" | "REVIEWING" | "RESOLVED" | "DISMISSED";
+                                resolution: string | null;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Already handled */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/places/pending": {
         parameters: {
             query?: never;
@@ -3510,8 +3866,26 @@ export interface paths {
                                 /** Format: uuid */
                                 id: string;
                                 slug: string;
+                                name: string;
+                                description: string | null;
+                                address: string | null;
+                                province: string | null;
+                                latitude: number;
+                                longitude: number;
                                 status: string;
-                                rejectionReason?: string | null;
+                                createdAt: string;
+                                category: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    colorHex: string;
+                                };
+                                submittedBy: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    email: string;
+                                } | null;
                             }[];
                             meta?: {
                                 cursor?: string | null;
@@ -3876,7 +4250,27 @@ export interface paths {
                             /** @enum {boolean} */
                             success: true;
                             data: {
-                                [key: string]: unknown;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                placeId: string;
+                                status: string;
+                                createdAt: string;
+                                payload: {
+                                    [key: string]: unknown;
+                                };
+                                place: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    slug: string;
+                                };
+                                submittedBy: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    email: string;
+                                } | null;
                             }[];
                             meta?: {
                                 cursor?: string | null;
@@ -4140,8 +4534,933 @@ export interface paths {
                             /** @enum {boolean} */
                             success: true;
                             data: {
-                                [key: string]: unknown;
+                                /** Format: uuid */
+                                id: string;
+                                action: string;
+                                targetType: string;
+                                /** Format: uuid */
+                                targetId: string;
+                                reason: string | null;
+                                metadata?: unknown;
+                                createdAt: string;
+                                admin: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    email: string;
+                                };
+                                target: {
+                                    label: string;
+                                    detail: string | null;
+                                    href: string | null;
+                                    status: string | null;
+                                } | null;
                             }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Browse and search users */
+        get: {
+            parameters: {
+                query?: {
+                    query?: string;
+                    status?: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+                    role?: "USER" | "PLACE_OWNER" | "ADMIN";
+                    limit?: number;
+                    cursor?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Users, newest first */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                email: string;
+                                name: string;
+                                avatarUrl: string | null;
+                                /** @enum {string} */
+                                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                /** @enum {string} */
+                                status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+                                createdAt: string;
+                                lastActiveAt: string | null;
+                                deletedAt: string | null;
+                                _count: {
+                                    reviews: number;
+                                    submittedPlaces: number;
+                                };
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One user, with the moderation history against them */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description User detail */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                email: string;
+                                name: string;
+                                avatarUrl: string | null;
+                                /** @enum {string} */
+                                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                /** @enum {string} */
+                                status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+                                createdAt: string;
+                                lastActiveAt: string | null;
+                                deletedAt: string | null;
+                                bio: string | null;
+                                locale: string;
+                                emailVerifiedAt: string | null;
+                                ownerProfile: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    businessName: string;
+                                    status: string;
+                                } | null;
+                                _count: {
+                                    reviews: number;
+                                    submittedPlaces: number;
+                                    favorites: number;
+                                };
+                                history: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    action: string;
+                                    reason: string | null;
+                                    createdAt: string;
+                                    admin: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        name: string;
+                                    };
+                                }[];
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Soft-delete an account
+         * @description The row survives, and so do the reviews and submissions attached to it. A hard delete would cascade through content other people rated — silently changing published place ratings — and destroy the evidence a deletion dispute needs.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        reason: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Deleted */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @enum {boolean} */
+                                deleted: true;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{id}/ban": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ban an account
+         * @description Revokes every refresh token in the same transaction as the status change. Refuses on your own account (there is no in-app way back) and on other administrators (one compromised session must not become total control). The access token still works until it expires — at most fifteen minutes.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        reason: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Banned */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                email: string;
+                                name: string;
+                                avatarUrl: string | null;
+                                /** @enum {string} */
+                                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                /** @enum {string} */
+                                status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+                                createdAt: string;
+                                lastActiveAt: string | null;
+                                deletedAt: string | null;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Refused: you cannot moderate your own account */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Already banned */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{id}/unban": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reinstate an account */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Reinstated */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                email: string;
+                                name: string;
+                                avatarUrl: string | null;
+                                /** @enum {string} */
+                                role: "USER" | "PLACE_OWNER" | "ADMIN";
+                                /** @enum {string} */
+                                status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+                                createdAt: string;
+                                lastActiveAt: string | null;
+                                deletedAt: string | null;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/places": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Every place, across all statuses
+         * @description Distinct from /admin/places/pending, which is the review queue. This is the catalogue: what a moderator opens when someone emails about a listing that is already live.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    status?: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED";
+                    query?: string;
+                    limit?: number;
+                    cursor?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Places, newest first */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                slug: string;
+                                name: string;
+                                address: string | null;
+                                status: string;
+                                rejectionReason: string | null;
+                                averageRating: number;
+                                reviewCount: number;
+                                viewCount: number;
+                                createdAt: string;
+                                publishedAt: string | null;
+                                deletedAt: string | null;
+                                category: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    colorHex: string;
+                                };
+                                submittedBy: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    email: string;
+                                } | null;
+                                ownerProfile: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    businessName: string;
+                                } | null;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Recent reviews for moderation
+         * @description maxRating is a ceiling rather than an exact match, because moderation reaches for low ratings first. Deletion is not here: DELETE /reviews/{id} already accepts an administrator and is the path that locks the place, recomputes the rating and writes the audit row.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    placeId?: string;
+                    maxRating?: number;
+                    includeDeleted?: "true" | "false";
+                    limit?: number;
+                    cursor?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Reviews, newest first */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                rating: number;
+                                content: string | null;
+                                status: string;
+                                helpfulCount: number;
+                                createdAt: string;
+                                user: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    email: string;
+                                };
+                                place: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    slug: string;
+                                };
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Overview: queue depths, totals, top places, category mix
+         * @description Counted live rather than read from place_daily_stats — that rollup has no job writing it yet, and a dashboard reporting zero because its source table is empty is worse than one that costs a few counts.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Overview */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                totals: {
+                                    users: number;
+                                    newUsers: number;
+                                    activeUsers: number;
+                                    places: number;
+                                    publishedPlaces: number;
+                                    pendingPlaces: number;
+                                    pendingRevisions: number;
+                                    pendingOwners: number;
+                                    reviews: number;
+                                    newReviews: number;
+                                    openReports: number;
+                                };
+                                queues: {
+                                    places: number;
+                                    revisions: number;
+                                    owners: number;
+                                    reports: number;
+                                };
+                                topPlaces: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    slug: string;
+                                    name: string;
+                                    views: number;
+                                    saves: number;
+                                    averageRating: number;
+                                }[];
+                                categories: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    colorHex: string;
+                                    places: number;
+                                }[];
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Administrator access required — re-verified against the database, not the token */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Daily signups, submissions and reviews
+         * @description Gap-filled with generate_series and bucketed in Asia/Ho_Chi_Minh, so a day with no signups renders as a zero rather than vanishing and letting the line draw straight through it.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    days?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Time series and top places */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                days: number;
+                                daily: {
+                                    date: string;
+                                    users: number;
+                                    places: number;
+                                    reviews: number;
+                                }[];
+                                topPlaces: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    slug: string;
+                                    name: string;
+                                    views: number;
+                                    saves: number;
+                                    averageRating: number;
+                                }[];
+                            };
                             meta?: {
                                 cursor?: string | null;
                                 hasMore?: boolean;
@@ -4522,6 +5841,296 @@ export interface components {
                 saves: number;
                 directions: number;
                 calls: number;
+            }[];
+        };
+        AdminReport: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            targetType: "PLACE" | "REVIEW" | "USER";
+            /** Format: uuid */
+            targetId: string;
+            /** @enum {string} */
+            reason: "SPAM" | "INAPPROPRIATE" | "INCORRECT_INFO" | "CLOSED_PERMANENTLY" | "DUPLICATE" | "OFFENSIVE" | "OTHER";
+            description: string | null;
+            /** @enum {string} */
+            status: "OPEN" | "REVIEWING" | "RESOLVED" | "DISMISSED";
+            createdAt: string;
+            reporter: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                email: string;
+            } | null;
+            handledBy: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                email: string;
+            } | null;
+            handledAt: string | null;
+            resolution: string | null;
+            target: {
+                label: string;
+                detail: string | null;
+                href: string | null;
+                status: string | null;
+            } | null;
+            openReportsOnTarget: number;
+        };
+        AdminUser: {
+            /** Format: uuid */
+            id: string;
+            email: string;
+            name: string;
+            avatarUrl: string | null;
+            /** @enum {string} */
+            role: "USER" | "PLACE_OWNER" | "ADMIN";
+            /** @enum {string} */
+            status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+            createdAt: string;
+            lastActiveAt: string | null;
+            deletedAt: string | null;
+            _count: {
+                reviews: number;
+                submittedPlaces: number;
+            };
+        };
+        AdminUserDetail: {
+            /** Format: uuid */
+            id: string;
+            email: string;
+            name: string;
+            avatarUrl: string | null;
+            /** @enum {string} */
+            role: "USER" | "PLACE_OWNER" | "ADMIN";
+            /** @enum {string} */
+            status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+            createdAt: string;
+            lastActiveAt: string | null;
+            deletedAt: string | null;
+            bio: string | null;
+            locale: string;
+            emailVerifiedAt: string | null;
+            ownerProfile: {
+                /** Format: uuid */
+                id: string;
+                businessName: string;
+                status: string;
+            } | null;
+            _count: {
+                reviews: number;
+                submittedPlaces: number;
+                favorites: number;
+            };
+            history: {
+                /** Format: uuid */
+                id: string;
+                action: string;
+                reason: string | null;
+                createdAt: string;
+                admin: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                };
+            }[];
+        };
+        AdminPlace: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            name: string;
+            address: string | null;
+            status: string;
+            rejectionReason: string | null;
+            averageRating: number;
+            reviewCount: number;
+            viewCount: number;
+            createdAt: string;
+            publishedAt: string | null;
+            deletedAt: string | null;
+            category: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                colorHex: string;
+            };
+            submittedBy: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                email: string;
+            } | null;
+            ownerProfile: {
+                /** Format: uuid */
+                id: string;
+                businessName: string;
+            } | null;
+        };
+        AdminReview: {
+            /** Format: uuid */
+            id: string;
+            rating: number;
+            content: string | null;
+            status: string;
+            helpfulCount: number;
+            createdAt: string;
+            user: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                email: string;
+            };
+            place: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                slug: string;
+            };
+        };
+        PendingPlace: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            name: string;
+            description: string | null;
+            address: string | null;
+            province: string | null;
+            latitude: number;
+            longitude: number;
+            status: string;
+            createdAt: string;
+            category: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                colorHex: string;
+            };
+            submittedBy: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                email: string;
+            } | null;
+        };
+        PendingRevision: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            placeId: string;
+            status: string;
+            createdAt: string;
+            payload: {
+                [key: string]: unknown;
+            };
+            place: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                slug: string;
+            };
+            submittedBy: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                email: string;
+            } | null;
+        };
+        PendingOwner: {
+            /** Format: uuid */
+            id: string;
+            businessName: string;
+            businessEmail: string | null;
+            businessPhone: string | null;
+            taxId: string | null;
+            createdAt: string;
+            user: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                email: string;
+                joinedAt: string;
+            };
+            placeCount: number;
+            documentCount: number;
+        };
+        AuditEntry: {
+            /** Format: uuid */
+            id: string;
+            action: string;
+            targetType: string;
+            /** Format: uuid */
+            targetId: string;
+            reason: string | null;
+            metadata?: unknown;
+            createdAt: string;
+            admin: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                email: string;
+            };
+            target: {
+                label: string;
+                detail: string | null;
+                href: string | null;
+                status: string | null;
+            } | null;
+        };
+        AdminOverview: {
+            totals: {
+                users: number;
+                newUsers: number;
+                activeUsers: number;
+                places: number;
+                publishedPlaces: number;
+                pendingPlaces: number;
+                pendingRevisions: number;
+                pendingOwners: number;
+                reviews: number;
+                newReviews: number;
+                openReports: number;
+            };
+            queues: {
+                places: number;
+                revisions: number;
+                owners: number;
+                reports: number;
+            };
+            topPlaces: {
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                name: string;
+                views: number;
+                saves: number;
+                averageRating: number;
+            }[];
+            categories: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                colorHex: string;
+                places: number;
+            }[];
+        };
+        AdminAnalytics: {
+            days: number;
+            daily: {
+                date: string;
+                users: number;
+                places: number;
+                reviews: number;
+            }[];
+            topPlaces: {
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                name: string;
+                views: number;
+                saves: number;
+                averageRating: number;
             }[];
         };
         HealthReport: {

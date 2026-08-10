@@ -1,16 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { Globe, MapPin, Navigation, Phone, Share2 } from 'lucide-react';
+import { Flag, Globe, MapPin, Navigation, Phone, Share2 } from 'lucide-react';
 import { PlaceImage } from './PlaceImage';
 import { OpeningHours } from './OpeningHours';
 import { ReviewSection } from '@/features/reviews/components/ReviewSection';
 import { SaveButton } from '@/features/favorites/components/SaveButton';
 import { AuthSheet } from '@/features/auth/components/AuthSheet';
+import { ReportSheet } from '@/features/reports/ReportSheet';
 import { Rating, PriceRange } from '@/components/ui/Rating';
 import { Button } from '@/components/ui/Button';
 import { formatDistance } from '@/lib/geo/grid';
 import { cn } from '@/lib/utils/cn';
+import { useSessionStore } from '@/features/auth/store';
 import type { PlaceDetail } from '../api';
 
 /**
@@ -27,6 +29,8 @@ export function PlaceDetailContent({
   compact?: boolean;
 }) {
   const [authOpen, setAuthOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const { user } = useSessionStore();
 
   /**
    * Hands off to the device's map app.
@@ -176,6 +180,21 @@ export function PlaceDetailContent({
 
         <ReviewSection placeId={place.id} placeName={place.name} />
 
+        {/* Low-key on purpose. Reporting has to be findable without being a
+            peer of "Get directions" — the overwhelming majority of visits are
+            not complaints. */}
+        <button
+          type="button"
+          onClick={() => {
+            if (user) setReportOpen(true);
+            else setAuthOpen(true);
+          }}
+          className="text-ink-subtle hover:text-ink-muted mt-6 inline-flex items-center gap-1.5 text-xs font-medium"
+        >
+          <Flag className="size-3.5" aria-hidden />
+          Report a problem with this listing
+        </button>
+
         <div className="h-8" />
       </div>
 
@@ -183,6 +202,12 @@ export function PlaceDetailContent({
         open={authOpen}
         onOpenChange={setAuthOpen}
         reason="Sign in to save places and come back to them later."
+      />
+      <ReportSheet
+        placeId={place.id}
+        placeName={place.name}
+        open={reportOpen}
+        onOpenChange={setReportOpen}
       />
     </article>
   );
