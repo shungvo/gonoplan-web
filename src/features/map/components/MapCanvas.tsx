@@ -65,7 +65,6 @@ function basemapFont(map: MapLibreMap): string[] | null {
   return null;
 }
 
-
 export interface MapCanvasProps {
   center: { latitude: number; longitude: number };
   zoom?: number;
@@ -188,141 +187,178 @@ export function MapCanvas({
      */
     map.on('error', (event) => {
       const message = event.error.message;
-      // Individual tile 404s are normal at the edges of coverage and must not
-      // replace a working map with an error screen.
-      if (/tile/i.test(message)) return;
+
+      /*
+       * `/tile/i` used to be the filter here, and it matched the provider's own
+       * hostname — `tiles.openfreemap.org` — so every style, sprite and source
+       * failure from OpenFreeMap was swallowed as if it were an edge-of-coverage
+       * 404. The map went blank and reported nothing.
+       *
+       * A missing tile is identified by the event carrying a sourceId, not by
+       * the word appearing somewhere in a URL.
+       */
+      const isMissingTile = 'sourceId' in event && event.sourceId !== undefined;
+      if (isMissingTile) {
+        // Still not shown to the user — the edges of coverage are normal — but
+        // no longer invisible to whoever is debugging.
+        console.warn('[map] tile failed', message);
+        return;
+      }
+
       setMapError(message);
     });
 
     map.on('load', () => {
-      map.addSource(SOURCE_ID, {
-        type: 'geojson',
-        data: { type: 'FeatureCollection', features: [] },
-        // MapLibre's built-in clustering — no supercluster dependency, and it
-        // runs in a worker rather than on the main thread.
-        cluster: true,
-        // Clustering stops at street zoom. Above this, tapping a specific place
-        // is the whole interaction, and a bubble the user has to zoom past
-        // twice more is friction rather than density.
-        clusterMaxZoom: 14,
-        clusterRadius: 45,
-      });
-
-      map.addSource(ROUTE_SOURCE, {
-        type: 'geojson',
-        data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [] } },
-      });
-
       /*
-       * Two lines, not one. The wider casing underneath is what keeps a route
-       * readable where it crosses a road of a similar colour — without it the
-       * line disappears into the basemap exactly where someone is checking
-       * which turning is theirs.
+       * Everything in here is wrapped, because `setIsReady(true)` is the last
+       * statement and a throw before it left the loading placeholder covering
+       * a perfectly working map — forever, with nothing logged. MapLibre's
+       * `error` event does not receive exceptions thrown inside a `load`
+       * listener, so the failure was invisible from every direction: the
+       * basemap rendered underneath, the style and sprites loaded, and the
+       * screen was a pale gradient.
        *
-       * Added before the marker layers so pins stay on top: the route is
-       * context, the destination is the point.
+       * Now a layer that fails says so, and the map is revealed either way.
        */
-      map.addLayer({
-        id: ROUTE_CASING_LAYER,
-        type: 'line',
-        source: ROUTE_SOURCE,
-        layout: { 'line-join': 'round', 'line-cap': 'round' },
-        paint: {
-          'line-color': '#ffffff',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 6, 18, 14],
-          'line-opacity': 0.9,
-        },
-      });
+      try {
+        map.addSource(SOURCE_ID, {
+          type: 'geojson',
+          data: { type: 'FeatureCollection', features: [] },
+          // MapLibre's built-in clustering — no supercluster dependency, and it
+          // runs in a worker rather than on the main thread.
+          cluster: true,
+          // Clustering stops at street zoom. Above this, tapping a specific place
+          // is the whole interaction, and a bubble the user has to zoom past
+          // twice more is friction rather than density.
+          clusterMaxZoom: 14,
+          clusterRadius: 45,
+        });
 
-      map.addLayer({
-        id: ROUTE_LAYER,
-        type: 'line',
-        source: ROUTE_SOURCE,
-        layout: { 'line-join': 'round', 'line-cap': 'round' },
-        paint: {
-          'line-color': '#0f6ccd',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 3, 18, 9],
-        },
-      });
+        map.addSource(ROUTE_SOURCE, {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            properties: {},
+            geometry: { type: 'LineString', coordinates: [] },
+          },
+        });
 
-      map.addLayer({
-        id: CLUSTER_LAYER,
-        type: 'symbol',
-        source: SOURCE_ID,
-        filter: ['has', 'point_count'],
-        layout: {
-          'icon-image': [
-            'step',
-            ['get', 'point_count'],
-            CLUSTER_IMAGE_SMALL,
-            10,
-            CLUSTER_IMAGE_MEDIUM,
-            30,
-            CLUSTER_IMAGE_LARGE,
-          ],
-          'icon-allow-overlap': true,
-          'icon-size': 1,
-        },
-      });
+        /*
+         * Two lines, not one. The wider casing underneath is what keeps a route
+         * readable where it crosses a road of a similar colour — without it the
+         * line disappears into the basemap exactly where someone is checking
+         * which turning is theirs.
+         *
+         * Added before the marker layers so pins stay on top: the route is
+         * context, the destination is the point.
+         */
+        map.addLayer({
+          id: ROUTE_CASING_LAYER,
+          type: 'line',
+          source: ROUTE_SOURCE,
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: {
+            'line-color': '#ffffff',
+            'line-width': ['interpolate', ['linear'], ['zoom'], 10, 6, 18, 14],
+            'line-opacity': 0.9,
+          },
+        });
 
-      const clusterFont = basemapFont(map);
+        map.addLayer({
+          id: ROUTE_LAYER,
+          type: 'line',
+          source: ROUTE_SOURCE,
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: {
+            'line-color': '#0f6ccd',
+            'line-width': ['interpolate', ['linear'], ['zoom'], 10, 3, 18, 9],
+          },
+        });
 
-      map.addLayer({
-        id: CLUSTER_COUNT_LAYER,
-        type: 'symbol',
-        source: SOURCE_ID,
-        filter: ['has', 'point_count'],
-        layout: {
-          'text-field': ['get', 'point_count_abbreviated'],
-          'text-size': 11,
-          'text-allow-overlap': true,
-          ...(clusterFont ? { 'text-font': clusterFont } : {}),
-        },
-        paint: { 'text-color': '#ffffff' },
-      });
+        map.addLayer({
+          id: CLUSTER_LAYER,
+          type: 'symbol',
+          source: SOURCE_ID,
+          filter: ['has', 'point_count'],
+          layout: {
+            'icon-image': [
+              'step',
+              ['get', 'point_count'],
+              CLUSTER_IMAGE_SMALL,
+              10,
+              CLUSTER_IMAGE_MEDIUM,
+              30,
+              CLUSTER_IMAGE_LARGE,
+            ],
+            'icon-allow-overlap': true,
+            'icon-size': 1,
+          },
+        });
 
-      map.addLayer({
-        id: MARKER_LAYER,
-        type: 'symbol',
-        source: SOURCE_ID,
-        filter: ['!', ['has', 'point_count']],
-        layout: {
-          'icon-image': ['concat', 'pin-', ['get', 'categoryId']],
-          // Anchored at the tip so the pin points at the actual coordinate
-          // rather than hovering with its centre on it.
-          'icon-anchor': 'bottom',
-          'icon-allow-overlap': true,
-          'icon-size': 1,
-        },
-      });
+        const clusterFont = basemapFont(map);
 
-      /*
-       * Selection is a second layer filtered to one id, not a feature-state
-       * expression on `icon-size`.
-       *
-       * `icon-size` is a *layout* property, and the style spec forbids
-       * feature-state in layout properties — MapLibre rejects the whole layer
-       * with "feature-state data expressions are not supported with layout
-       * properties" and the map never finishes loading.
-       *
-       * A filtered overlay also renders the selected pin above its neighbours,
-       * which a size bump alone would not do.
-       */
-      map.addLayer({
-        id: MARKER_SELECTED_LAYER,
-        type: 'symbol',
-        source: SOURCE_ID,
-        filter: ['==', ['get', 'id'], '__none__'],
-        layout: {
-          'icon-image': ['concat', 'pin-', ['get', 'categoryId']],
-          'icon-anchor': 'bottom',
-          'icon-allow-overlap': true,
-          'icon-ignore-placement': true,
-          'icon-size': 1.25,
-        },
-      });
+        map.addLayer({
+          id: CLUSTER_COUNT_LAYER,
+          type: 'symbol',
+          source: SOURCE_ID,
+          filter: ['has', 'point_count'],
+          layout: {
+            'text-field': ['get', 'point_count_abbreviated'],
+            'text-size': 11,
+            'text-allow-overlap': true,
+            ...(clusterFont ? { 'text-font': clusterFont } : {}),
+          },
+          paint: { 'text-color': '#ffffff' },
+        });
 
-      setIsReady(true);
+        map.addLayer({
+          id: MARKER_LAYER,
+          type: 'symbol',
+          source: SOURCE_ID,
+          filter: ['!', ['has', 'point_count']],
+          layout: {
+            'icon-image': ['concat', 'pin-', ['get', 'categoryId']],
+            // Anchored at the tip so the pin points at the actual coordinate
+            // rather than hovering with its centre on it.
+            'icon-anchor': 'bottom',
+            'icon-allow-overlap': true,
+            'icon-size': 1,
+          },
+        });
+
+        /*
+         * Selection is a second layer filtered to one id, not a feature-state
+         * expression on `icon-size`.
+         *
+         * `icon-size` is a *layout* property, and the style spec forbids
+         * feature-state in layout properties — MapLibre rejects the whole layer
+         * with "feature-state data expressions are not supported with layout
+         * properties" and the map never finishes loading.
+         *
+         * A filtered overlay also renders the selected pin above its neighbours,
+         * which a size bump alone would not do.
+         */
+        map.addLayer({
+          id: MARKER_SELECTED_LAYER,
+          type: 'symbol',
+          source: SOURCE_ID,
+          filter: ['==', ['get', 'id'], '__none__'],
+          layout: {
+            'icon-image': ['concat', 'pin-', ['get', 'categoryId']],
+            'icon-anchor': 'bottom',
+            'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
+            'icon-size': 1.25,
+          },
+        });
+      } catch (error) {
+        // Loud, not degraded: the basemap would still render, but without the
+        // marker layers this is a map of nothing, and a silent version of that
+        // is what cost a day.
+        setMapError(error instanceof Error ? error.message : 'Could not build the map layers');
+      } finally {
+        setIsReady(true);
+      }
     });
 
     const emitViewport = () => {
@@ -338,6 +374,25 @@ export function MapCanvas({
       onViewportChange?.(next, map.getZoom());
     };
 
+    /*
+     * MapLibre measures its container once, in the constructor.
+     *
+     * The Explore map mounts into a container that appears in the same commit,
+     * so that measurement can land on a 0x0 box — after which MapLibre holds a
+     * 0x0 transform, decides no tile is visible, never fires `load`, and paints
+     * nothing but the style's background colour. Every symptom of a broken map
+     * with no error anywhere, because as far as it is concerned there is
+     * nothing to draw.
+     *
+     * A ResizeObserver is the fix rather than a one-shot resize: it also covers
+     * the sheet opening, the keyboard appearing, and orientation changes, none
+     * of which fire `window.resize` reliably on mobile.
+     */
+    const resizeObserver = new ResizeObserver(() => {
+      map.resize();
+    });
+    resizeObserver.observe(containerRef.current);
+
     map.on('load', emitViewport);
     map.on('moveend', emitViewport);
 
@@ -351,6 +406,7 @@ export function MapCanvas({
     }
 
     return () => {
+      resizeObserver.disconnect();
       map.remove();
       mapRef.current = null;
       spritesLoadedRef.current = false;
@@ -472,11 +528,7 @@ export function MapCanvas({
     const map = mapRef.current;
     if (!map || !isReady) return;
 
-    map.setFilter(MARKER_SELECTED_LAYER, [
-      '==',
-      ['get', 'id'],
-      selectedPlaceId ?? '__none__',
-    ]);
+    map.setFilter(MARKER_SELECTED_LAYER, ['==', ['get', 'id'], selectedPlaceId ?? '__none__']);
   }, [isReady, selectedPlaceId]);
 
   // ─── User location dot ────────────────────────────────────────────────────
@@ -524,9 +576,12 @@ export function MapCanvas({
     }
   }, [isReady, center.latitude, center.longitude]);
 
-  const zoomBy = useCallback((delta: number) => {
-    mapRef.current?.easeTo({ zoom: (mapRef.current.getZoom() ?? zoom) + delta, duration: 220 });
-  }, [zoom]);
+  const zoomBy = useCallback(
+    (delta: number) => {
+      mapRef.current?.easeTo({ zoom: (mapRef.current.getZoom() ?? zoom) + delta, duration: 220 });
+    },
+    [zoom],
+  );
 
   return (
     <div className={cn('relative h-full w-full overflow-hidden', className)}>
@@ -538,19 +593,19 @@ export function MapCanvas({
       <div ref={containerRef} className="h-full w-full touch-none" />
 
       {!isReady && !mapError && (
-        <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-primary-tint via-surface to-accent-tint" />
+        <div className="from-primary-tint via-surface to-accent-tint absolute inset-0 animate-pulse bg-gradient-to-br" />
       )}
 
       {mapError && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-surface-sunken px-6 text-center">
-          <p className="text-sm font-semibold text-ink">Map unavailable</p>
-          <p className="max-w-[18rem] text-xs leading-relaxed text-ink-muted">{mapError}</p>
+        <div className="bg-surface-sunken absolute inset-0 flex flex-col items-center justify-center gap-2 px-6 text-center">
+          <p className="text-ink text-sm font-semibold">Map unavailable</p>
+          <p className="text-ink-muted max-w-[18rem] text-xs leading-relaxed">{mapError}</p>
         </div>
       )}
 
       {markerPage?.capped && (
         <div className="pointer-events-none absolute inset-x-0 top-3 flex justify-center">
-          <span className="rounded-full bg-ink/75 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm">
+          <span className="bg-ink/75 rounded-full px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm">
             Showing the top places — zoom in for more
           </span>
         </div>
@@ -563,7 +618,7 @@ export function MapCanvas({
           onClick={() => {
             zoomBy(1);
           }}
-          className="flex size-10 items-center justify-center rounded-sm bg-surface/90 text-lg font-medium text-ink shadow-md backdrop-blur-sm active:scale-95"
+          className="bg-surface/90 text-ink flex size-10 items-center justify-center rounded-sm text-lg font-medium shadow-md backdrop-blur-sm active:scale-95"
         >
           +
         </button>
@@ -573,7 +628,7 @@ export function MapCanvas({
           onClick={() => {
             zoomBy(-1);
           }}
-          className="flex size-10 items-center justify-center rounded-sm bg-surface/90 text-lg font-medium text-ink shadow-md backdrop-blur-sm active:scale-95"
+          className="bg-surface/90 text-ink flex size-10 items-center justify-center rounded-sm text-lg font-medium shadow-md backdrop-blur-sm active:scale-95"
         >
           −
         </button>
