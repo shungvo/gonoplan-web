@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { Search } from 'lucide-react';
+import { Search, User } from 'lucide-react';
 import { HomeMap } from '@/features/map/components/HomeMap';
 import { LocationChip } from '@/features/location/components/LocationChip';
 import { useLocationStore } from '@/features/location/store';
+import { useSessionStore } from '@/features/auth/store';
 import { fetchCategories } from '@/features/categories/api';
 import { useNearbyPlaces } from '../hooks/usePlaces';
 import { PlaceRail } from './PlaceRail';
@@ -67,6 +69,7 @@ const FALLBACK_ORIGIN = { latitude: 10.7769, longitude: 106.7009 };
 export function HomeScreen() {
   const router = useRouter();
   const { coordinates, label, source } = useLocationStore();
+  const { user } = useSessionStore();
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
 
   const origin = coordinates ?? FALLBACK_ORIGIN;
@@ -84,40 +87,50 @@ export function HomeScreen() {
   return (
     <div className="px-safe">
       {/*
-        Location and search share one bar.
-        They were stacked, which spent two rows and 96px of the first screen on
-        chrome before a single place appeared. They also answer the same
-        question — "where am I looking?" — so splitting them made the user read
-        twice to learn one thing.
+        Avatar, location, search — in that order down the screen.
+
+        Location and search shared one bar before this, which read as a single
+        control and left no room for the place name to breathe. Split, the
+        location becomes the header's subject — it is the answer to "where am I
+        looking?", which is the question the whole feed below depends on.
       */}
-      <header className="pt-safe px-5">
-        <div className="bg-surface mt-3 flex items-center gap-1 rounded-full p-1.5 pr-2 shadow-md">
-          <LocationChip />
-
-          <span className="bg-border h-5 w-px shrink-0" aria-hidden />
-
-          {/* A button rather than an input: tapping navigates to the search
-              screen, where the keyboard, recents and suggestions live. An
-              inline input here would need all of that on the home screen too. */}
-          <button
-            type="button"
-            onClick={() => {
-              router.push('/search');
-            }}
-            className="flex min-w-0 flex-1 items-center gap-2 rounded-full py-2 pl-1 text-left"
+      <header className="px-safe pt-safe px-5">
+        <div className="flex items-center gap-3 pt-3">
+          <Link
+            href="/profile"
+            aria-label={user ? `Signed in as ${user.name}` : 'Sign in'}
+            className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary-tint text-base font-semibold text-primary shadow-sm"
           >
-            <span className="text-ink-subtle truncate text-[0.9375rem]">
-              Where do you want to go?
-            </span>
-          </button>
+            {user ? user.name.trim().charAt(0).toUpperCase() : <User className="size-5" aria-hidden />}
+          </Link>
 
-          <span
-            className="bg-primary-tint flex size-8 shrink-0 items-center justify-center rounded-full"
-            aria-hidden
-          >
-            <Search className="text-primary size-4" />
-          </span>
+          <div className="flex min-w-0 flex-1 justify-center">
+            <LocationChip variant="header" />
+          </div>
+
+          {/*
+            The reference puts a notification bell here. Gonoplan has no
+            notifications — no endpoint, no model, nothing that could ever put a
+            dot on it — and a bell that opens onto nothing teaches people to
+            ignore the one place the app will later need them to look. The
+            spacer keeps the location optically centred until there is
+            something real to put here.
+          */}
+          <span className="size-11 shrink-0" aria-hidden />
         </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            router.push('/search');
+          }}
+          className="mt-4 flex h-12 w-full items-center gap-3 rounded-full bg-surface px-4 text-left shadow-md active:scale-[0.99]"
+        >
+          <Search className="size-4 shrink-0 text-ink-subtle" aria-hidden />
+          <span className="truncate text-[0.9375rem] text-ink-subtle">
+            Where do you want to go?
+          </span>
+        </button>
       </header>
 
       {/*
