@@ -4322,6 +4322,260 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/uploads/signature": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A short-lived URL to upload one image to
+         * @description Bytes never pass through this API. A 512 MB container should not be buffering six 5 MB photos, and the bandwidth belongs to the storage provider (docs/02-api.md §4).
+         *
+         *     What the server keeps is the decision about *what* may be written and *where*. The returned URL is signed over the object key, the content type and the declared size, so none of the three is the client's to change afterwards — a signature issued for a 2 MB JPEG cannot be used to store a 50 MB video. Send exactly the headers in `requiredHeaders` with the PUT; the signature covers them, so different headers fail the upload.
+         *
+         *     The key is a UUID under a dated, per-user prefix. Client filenames are never used: they arrive with spaces, diacritics, `../`, and occasionally the name of someone's employer, none of which belongs in a public URL.
+         *
+         *     Valid for five minutes — long enough for a photo on a slow connection, short enough that a leaked URL is worthless by the time anyone finds it. Call `/uploads/confirm` afterwards; nothing is recorded until the server has verified the object itself.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        purpose: "place" | "avatar";
+                        /** @enum {string} */
+                        contentType: "image/jpeg" | "image/png" | "image/webp";
+                        sizeBytes: number;
+                    };
+                };
+            };
+            responses: {
+                /** @description Where to PUT the image, and what to send with it */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uri */
+                                uploadUrl: string;
+                                key: string;
+                                /** Format: uri */
+                                publicUrl: string;
+                                expiresInSeconds: number;
+                                requiredHeaders: {
+                                    [key: string]: string;
+                                };
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description The declared size is over the ceiling */
+                413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Image storage is not configured on this deployment */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/uploads/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify an uploaded image before anything records it
+         * @description The step that makes direct upload safe. Between the signature and this call the bytes were entirely the client's to choose, so nothing it says about them is worth anything — the server re-reads the object's own header and believes that instead.
+         *
+         *     It checks four things: that the object exists and is under the size ceiling, that its leading bytes really are a JPEG, PNG or WebP, that the type it was *stored* as matches what it actually is, and that its dimensions are plausible. The third matters most: the bucket serves objects back with the content type they were stored under, so a PNG stored as `text/html` is a stored-XSS on our own origin.
+         *
+         *     Anything that fails is deleted rather than left behind. An unreferenced object nobody will look at is still an object the bucket serves publicly.
+         *
+         *     Width and height come back because the caller needs them for the `PlaceImage` row and for the aspect ratio cards reserve before an image loads.
+         *
+         *     `hasExif` is reported, not fixed. An object store has no transform pipeline, and EXIF on a phone photo usually carries the GPS coordinates of where it was taken — so stripping it is the client's job or a proxy's. See the privacy note in docs/04-storage.md.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        key: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description The image is real, and here is what it is */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                key: string;
+                                /** Format: uri */
+                                url: string;
+                                /** @enum {string} */
+                                contentType: "image/jpeg" | "image/png" | "image/webp";
+                                sizeBytes: number;
+                                width: number;
+                                height: number;
+                                hasExif: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description That key belongs to someone else */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description No such upload — it may have expired before it finished */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description The stored object is over the size ceiling */
+                413: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not an image, or not the type it claimed to be */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/places/pending": {
         parameters: {
             query?: never;
@@ -6529,6 +6783,28 @@ export interface components {
             /** @description How many events were stored */
             accepted: number;
             deduped: number;
+        };
+        UploadSignature: {
+            /** Format: uri */
+            uploadUrl: string;
+            key: string;
+            /** Format: uri */
+            publicUrl: string;
+            expiresInSeconds: number;
+            requiredHeaders: {
+                [key: string]: string;
+            };
+        };
+        UploadConfirmation: {
+            key: string;
+            /** Format: uri */
+            url: string;
+            /** @enum {string} */
+            contentType: "image/jpeg" | "image/png" | "image/webp";
+            sizeBytes: number;
+            width: number;
+            height: number;
+            hasExif: boolean;
         };
         AdminUser: {
             /** Format: uuid */

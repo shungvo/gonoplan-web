@@ -45,6 +45,10 @@
       "description": "Geocoding and routing proxy"
     },
     {
+      "name": "Uploads",
+      "description": "Signed direct image upload"
+    },
+    {
       "name": "Owner",
       "description": "Business owner dashboard"
     },
@@ -2286,6 +2290,79 @@
         "required": [
           "accepted",
           "deduped"
+        ]
+      },
+      "UploadSignature": {
+        "type": "object",
+        "properties": {
+          "uploadUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "key": {
+            "type": "string"
+          },
+          "publicUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "expiresInSeconds": {
+            "type": "integer"
+          },
+          "requiredHeaders": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "uploadUrl",
+          "key",
+          "publicUrl",
+          "expiresInSeconds",
+          "requiredHeaders"
+        ]
+      },
+      "UploadConfirmation": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "contentType": {
+            "type": "string",
+            "enum": [
+              "image/jpeg",
+              "image/png",
+              "image/webp"
+            ]
+          },
+          "sizeBytes": {
+            "type": "integer"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "hasExif": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "key",
+          "url",
+          "contentType",
+          "sizeBytes",
+          "width",
+          "height",
+          "hasExif"
         ]
       },
       "AdminUser": {
@@ -12244,6 +12321,353 @@
           },
           "400": {
             "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/uploads/signature": {
+      "post": {
+        "tags": [
+          "Uploads"
+        ],
+        "summary": "A short-lived URL to upload one image to",
+        "description": "Bytes never pass through this API. A 512 MB container should not be buffering six 5 MB photos, and the bandwidth belongs to the storage provider (docs/02-api.md §4).\n\nWhat the server keeps is the decision about *what* may be written and *where*. The returned URL is signed over the object key, the content type and the declared size, so none of the three is the client's to change afterwards — a signature issued for a 2 MB JPEG cannot be used to store a 50 MB video. Send exactly the headers in `requiredHeaders` with the PUT; the signature covers them, so different headers fail the upload.\n\nThe key is a UUID under a dated, per-user prefix. Client filenames are never used: they arrive with spaces, diacritics, `../`, and occasionally the name of someone's employer, none of which belongs in a public URL.\n\nValid for five minutes — long enough for a photo on a slow connection, short enough that a leaked URL is worthless by the time anyone finds it. Call `/uploads/confirm` afterwards; nothing is recorded until the server has verified the object itself.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "purpose": {
+                    "type": "string",
+                    "enum": [
+                      "place",
+                      "avatar"
+                    ]
+                  },
+                  "contentType": {
+                    "type": "string",
+                    "enum": [
+                      "image/jpeg",
+                      "image/png",
+                      "image/webp"
+                    ]
+                  },
+                  "sizeBytes": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0
+                  }
+                },
+                "required": [
+                  "purpose",
+                  "contentType",
+                  "sizeBytes"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Where to PUT the image, and what to send with it",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "uploadUrl": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "key": {
+                          "type": "string"
+                        },
+                        "publicUrl": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "expiresInSeconds": {
+                          "type": "integer"
+                        },
+                        "requiredHeaders": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "uploadUrl",
+                        "key",
+                        "publicUrl",
+                        "expiresInSeconds",
+                        "requiredHeaders"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The declared size is over the ceiling",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Image storage is not configured on this deployment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/uploads/confirm": {
+      "post": {
+        "tags": [
+          "Uploads"
+        ],
+        "summary": "Verify an uploaded image before anything records it",
+        "description": "The step that makes direct upload safe. Between the signature and this call the bytes were entirely the client's to choose, so nothing it says about them is worth anything — the server re-reads the object's own header and believes that instead.\n\nIt checks four things: that the object exists and is under the size ceiling, that its leading bytes really are a JPEG, PNG or WebP, that the type it was *stored* as matches what it actually is, and that its dimensions are plausible. The third matters most: the bucket serves objects back with the content type they were stored under, so a PNG stored as `text/html` is a stored-XSS on our own origin.\n\nAnything that fails is deleted rather than left behind. An unreferenced object nobody will look at is still an object the bucket serves publicly.\n\nWidth and height come back because the caller needs them for the `PlaceImage` row and for the aspect ratio cards reserve before an image loads.\n\n`hasExif` is reported, not fixed. An object store has no transform pipeline, and EXIF on a phone photo usually carries the GPS coordinates of where it was taken — so stripping it is the client's job or a proxy's. See the privacy note in docs/04-storage.md.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  }
+                },
+                "required": [
+                  "key"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The image is real, and here is what it is",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "url": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "contentType": {
+                          "type": "string",
+                          "enum": [
+                            "image/jpeg",
+                            "image/png",
+                            "image/webp"
+                          ]
+                        },
+                        "sizeBytes": {
+                          "type": "integer"
+                        },
+                        "width": {
+                          "type": "integer"
+                        },
+                        "height": {
+                          "type": "integer"
+                        },
+                        "hasExif": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "key",
+                        "url",
+                        "contentType",
+                        "sizeBytes",
+                        "width",
+                        "height",
+                        "hasExif"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "That key belongs to someone else",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such upload — it may have expired before it finished",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The stored object is over the size ceiling",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Not an image, or not the type it claimed to be",
             "content": {
               "application/json": {
                 "schema": {
