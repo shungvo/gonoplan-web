@@ -1,9 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { Globe, MapPin, Navigation, Phone, Share2 } from 'lucide-react';
 import { PlaceImage } from './PlaceImage';
 import { OpeningHours } from './OpeningHours';
 import { ReviewSection } from '@/features/reviews/components/ReviewSection';
+import { SaveButton } from '@/features/favorites/components/SaveButton';
+import { AuthSheet } from '@/features/auth/components/AuthSheet';
 import { Rating, PriceRange } from '@/components/ui/Rating';
 import { Button } from '@/components/ui/Button';
 import { formatDistance } from '@/lib/geo/grid';
@@ -23,6 +26,8 @@ export function PlaceDetailContent({
   place: PlaceDetail;
   compact?: boolean;
 }) {
+  const [authOpen, setAuthOpen] = useState(false);
+
   /**
    * Hands off to the device's map app.
    *
@@ -101,6 +106,14 @@ export function PlaceDetailContent({
           >
             Get directions
           </Button>
+          <SaveButton
+            placeId={place.id}
+            isSaved={place.isSaved}
+            onRequireAuth={() => {
+              setAuthOpen(true);
+            }}
+            className="size-14 shrink-0 rounded-lg"
+          />
           <Button
             variant="secondary"
             size="lg"
@@ -165,6 +178,12 @@ export function PlaceDetailContent({
 
         <div className="h-8" />
       </div>
+
+      <AuthSheet
+        open={authOpen}
+        onOpenChange={setAuthOpen}
+        reason="Sign in to save places and come back to them later."
+      />
     </article>
   );
 }

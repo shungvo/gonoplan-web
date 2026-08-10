@@ -2,16 +2,18 @@
 
 import { create } from 'zustand';
 
+import type { components } from '@/types/api';
+
 export type Role = 'USER' | 'PLACE_OWNER' | 'ADMIN';
 
-export interface SessionUser {
-  id: string;
-  email: string;
-  name: string;
-  avatarUrl: string | null;
-  role: Role;
-  ownerProfileId: string | null;
-}
+/**
+ * Taken from the generated contract rather than re-declared.
+ *
+ * A hand-written copy drifted the moment the API added `ownerStatus` — the
+ * field existed on the wire and in the OpenAPI document, but the app could not
+ * see it.
+ */
+export type SessionUser = components['schemas']['SessionUser'];
 
 interface SessionState {
   user: SessionUser | null;

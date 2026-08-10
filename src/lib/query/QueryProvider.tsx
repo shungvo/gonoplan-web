@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ApiError } from '@/lib/api/errors';
+import { SessionProvider } from '@/features/auth/SessionProvider';
 
 /**
  * TanStack Query is the *only* server-state cache in the app. Nothing that
@@ -46,5 +47,11 @@ export function QueryProvider({ children }: { children: ReactNode }) {
   // leak one user's cached data into another user's request.
   const [queryClient] = useState(createQueryClient);
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      {/* Inside the query provider: restoring a session invalidates every
+          anonymous response, which needs the client to already exist. */}
+      <SessionProvider>{children}</SessionProvider>
+    </QueryClientProvider>
+  );
 }
