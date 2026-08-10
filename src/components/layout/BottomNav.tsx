@@ -46,11 +46,16 @@ export function BottomNav() {
         list behind it lost a band of screen for four icons. Sized to content
         it is about 260px — a floating control rather than a shelf.
 
-        Only the active tab shows its label. Four labels is what made the bar
-        wide in the first place, and the one you need is the one telling you
-        where you are; the rest keep theirs for screen readers.
+        No visible labels. The tinted pill is the indicator, and four icons at
+        this size are distinguishable without captions — the labels stay in the
+        tree as `sr-only`, because a link with no accessible name is unusable
+        by anyone not looking at it.
+
+        Solid white rather than translucent: over the map the blurred backdrop
+        picked up whatever was behind it, so the bar changed colour as you
+        panned and never settled into being one object.
       */}
-      <ul className="mx-auto flex w-fit items-center gap-1 rounded-full border border-border/60 bg-surface/85 p-1.5 shadow-lg backdrop-blur-xl">
+      <ul className="mx-auto flex w-fit items-center gap-1 rounded-full border border-border/60 bg-surface p-1.5 shadow-lg">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href);
 
@@ -60,11 +65,12 @@ export function BottomNav() {
                 href={href}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'relative flex h-12 items-center justify-center gap-1.5 rounded-full',
-                  'text-[0.8125rem] font-medium transition-colors duration-200',
-                  // 48px square when collapsed — still past the 44px floor the
-                  // rest of the app holds to.
-                  isActive ? 'px-4 text-primary' : 'w-12 text-ink-subtle hover:text-ink-muted',
+                  // 48px square, past the 44px floor the rest of the app holds
+                  // to, and identical for every tab so the row cannot shift
+                  // when the active one changes.
+                  'relative flex size-12 items-center justify-center rounded-full',
+                  'transition-colors duration-200',
+                  isActive ? 'text-primary' : 'text-ink-subtle hover:text-ink-muted',
                 )}
               >
                 {/* A shared layoutId animates the pill between tabs instead of
@@ -82,9 +88,7 @@ export function BottomNav() {
                   strokeWidth={isActive ? 2.4 : 1.8}
                   aria-hidden
                 />
-                {/* Kept in the tree when collapsed, not removed: the tab still
-                    needs an accessible name. */}
-                <span className={cn('relative', !isActive && 'sr-only')}>{label}</span>
+                <span className="sr-only">{label}</span>
               </Link>
             </li>
           );
