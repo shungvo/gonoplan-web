@@ -111,6 +111,12 @@ export function PlaceCardStack({
 
   return (
     <div className={cn('px-5', className)}>
+      {/* Announced, not drawn. The dots are a visual cue only, and a card
+          silently replacing another says nothing to a screen reader. */}
+      <span className="sr-only" aria-live="polite">
+        {places[index]?.name}, recommendation {index + 1} of {total}
+      </span>
+
       {/* Room for the deepest card's offset, or the stack clips its own base. */}
       <div className="relative h-56" style={{ paddingBottom: SLOT[VISIBLE - 1]?.y }}>
         {slots.map(({ slot, place }) => {
@@ -137,7 +143,28 @@ export function PlaceCardStack({
                 type="button"
                 // The cards behind are decorative duplicates of rows that appear
                 // again below; exposing them would make the screen read twice.
-                {...(isActive ? {} : { tabIndex: -1, 'aria-hidden': true })}
+                {...(isActive
+                  ? {
+                      'aria-label': `${place.name}. Recommendation ${String(index + 1)} of ${String(total)}. Use the left and right arrow keys to browse.`,
+                    }
+                  : { tabIndex: -1, 'aria-hidden': true })}
+                /*
+                 * Arrow keys replace the Previous and Next buttons that used to
+                 * sit under the stack. The buttons were the only route in for a
+                 * keyboard — a drag gesture is not an interface on its own — so
+                 * removing them without this would have made the stack reachable
+                 * by mouse and finger only.
+                 */
+                onKeyDown={(event) => {
+                  if (!isActive || total < 2) return;
+                  if (event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    advance(1);
+                  } else if (event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    advance(-1);
+                  }
+                }}
                 onClick={() => {
                   if (isActive) onSelect?.(place);
                 }}
@@ -215,36 +242,6 @@ export function PlaceCardStack({
         })}
       </div>
 
-      {/*
-        A keyboard and screen-reader route to the same thing the swipe does.
-        A drag gesture is not an interface on its own — without this the stack
-        is unreachable for anyone not using a touchscreen.
-      */}
-      {total > 1 && (
-        <div className="mt-3 flex items-center justify-center gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              advance(-1);
-            }}
-            className="rounded-full px-3 py-1.5 text-xs font-medium text-ink-muted hover:bg-surface-sunken"
-          >
-            Previous
-          </button>
-          <span className="text-xs tabular-nums text-ink-subtle" aria-live="polite">
-            {index + 1} of {total}
-          </span>
-          <button
-            type="button"
-            onClick={() => {
-              advance(1);
-            }}
-            className="rounded-full px-3 py-1.5 text-xs font-medium text-ink-muted hover:bg-surface-sunken"
-          >
-            Next
-          </button>
-        </div>
-      )}
     </div>
   );
 }

@@ -15,9 +15,11 @@ import { Button } from '@/components/ui/Button';
  * Peek must show the hero, name, rating *and* the directions button — that set
  * is what lets someone decide without committing. Measured at 0.42 the CTA fell
  * below the fold, which turns a peek into a teaser and forces a drag before the
- * sheet is useful.
+ * sheet is useful. Raised from 0.56 to 0.7: the address and opening hours now
+ * clear the fold too, so the peek answers "should I go" and not merely "what is
+ * this".
  */
-const SNAP_POINTS = [0.56, 0.95];
+const SNAP_POINTS = [0.7, 0.95];
 
 export interface PlaceSheetProps {
   placeId: string | null;
@@ -60,21 +62,21 @@ export function PlaceSheet({ placeId, onClose }: PlaceSheetProps) {
         >
           {/*
             The handle floats over the photo rather than sitting in a strip
-            above it. That strip was a band of white between the sheet's edge
-            and the image, which read as two stacked surfaces with a seam —
-            the photo now runs all the way to the top and the sheet reads as
-            one card.
+            above it, so the sheet's top edge and the image read as one
+            surface rather than two stacked panels.
 
-            The scrim is what keeps the handle visible: over a bright sky it
-            would otherwise vanish. `pointer-events-none` so the whole area
-            still belongs to vaul's drag handling.
+            It carries its own drop shadow instead of sitting on a scrim. A
+            full-width gradient band did keep it legible on a bright photo,
+            but on a pale one it read as an inset shadow along the top of the
+            sheet — the sheet looked pressed into the screen instead of
+            floating above it. A shadow on the handle alone survives both.
 
             There is no close button. Dragging down and tapping the overlay
             both already dismiss it, and a floating X over the photo is one
             more thing between the reader and the place.
           */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 bg-gradient-to-b from-ink/25 to-transparent">
-            <span className="mx-auto mt-2.5 block h-1 w-10 rounded-full bg-white/80" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-center pt-2.5">
+            <span className="h-1 w-10 rounded-full bg-white/90 shadow-[0_1px_4px_rgb(0_0_0/0.5)]" />
           </div>
 
           <div className="flex-1 overflow-y-auto overscroll-contain">

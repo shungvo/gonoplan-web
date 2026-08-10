@@ -71,7 +71,10 @@
   --shadow-lg: 0 4px 10px rgb(19 66 116 / 0.05), 0 18px 36px rgb(19 66 116 / 0.11);
   --shadow-xl: 0 8px 18px rgb(19 66 116 / 0.06), 0 28px 56px rgb(19 66 116 / 0.13);
   --shadow-primary: 0 8px 24px rgb(15 108 205 / 0.30);
-  --shadow-sheet: 0 -8px 32px rgb(19 66 116 / 0.14);
+  /* Two layers, like the others: a tight contact shadow that separates the
+     sheet's edge from whatever is behind it, and a wide ambient one that makes
+     it read as lifted. A single soft shadow at this size just looks like haze. */
+  --shadow-sheet: 0 -2px 8px rgb(19 66 116 / 0.10), 0 -12px 40px rgb(19 66 116 / 0.22);
 
   /* ─── Motion ────────────────────────────────────────────────────────── */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
