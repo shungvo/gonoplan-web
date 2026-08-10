@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Compass, List, Map, Route, Search, SlidersHorizontal, X } from 'lucide-react';
@@ -44,6 +44,33 @@ export function ExploreScreen() {
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [routeToId, setRouteToId] = useState<string | null>(null);
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
+
+  /*
+   * How tall the map's bottom overlay actually is, so the zoom buttons can sit
+   * above whatever is really there.
+   *
+   * A static offset was wrong even when it looked right: the carousel measures
+   * 145px, the "nothing here" message 108, and both change with the viewport —
+   * the message wraps to two lines at 375px, and a long place name pushes a
+   * card to three. Any fixed number is one wrapped line from putting the zoom
+   * buttons back behind the cards, which is the bug this replaced. The 160px
+   * seed matches the carousel so there is no jump on first paint.
+   */
+  const [bottomOverlayHeight, setBottomOverlayHeight] = useState(160);
+
+  const measureBottomOverlay = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return;
+
+    const observer = new ResizeObserver((entries) => {
+      const size = entries[0]?.borderBoxSize[0]?.blockSize;
+      setBottomOverlayHeight(size ?? node.offsetHeight);
+    });
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   const origin = coordinates ?? FALLBACK_ORIGIN;
 
@@ -120,10 +147,10 @@ export function ExploreScreen() {
       <div className="bg-background fixed inset-x-0 top-0 bottom-[var(--nav-clearance)] z-20">
         <MapCanvas
           className="absolute inset-0"
-          // Clears the card carousel below: 44px of padding plus a card of
-          // about 101px, rounded up to leave the buttons visibly separate
-          // rather than balanced on the cards' top edge.
-          controlsBottomOffset="10rem"
+          // Measured, not guessed — see `bottomOverlayHeight`. The 16px is the
+          // gap, so the buttons read as separate from the cards rather than
+          // balanced on their top edge.
+          controlsBottomOffset={`${String(bottomOverlayHeight + 16)}px`}
           center={origin}
           categorySlugs={selectedSlugs}
           {...(coordinates ? { userLocation: coordinates } : {})}
@@ -240,7 +267,7 @@ export function ExploreScreen() {
             the control sits 10px off the map's bottom edge and is 24px tall,
             so anything under 34px puts the licence text across the card. It
             was `pb-7` (28px), and it did exactly that. */}
-        <div className="absolute inset-x-0 bottom-0 pb-11">
+        <div ref={measureBottomOverlay} className="absolute inset-x-0 bottom-0 pb-11">
           {placesInView.length === 0 ? (
             <p className="bg-surface/95 text-ink-muted mx-4 rounded-lg px-4 py-3 text-center text-sm shadow-md backdrop-blur-md">
               Nothing loaded in this area — try moving the map back, or widen your filters.
