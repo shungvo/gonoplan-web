@@ -277,6 +277,27 @@
   text-overflow: ellipsis;
 }
 
+/* A map that fills the viewport with the floating nav on top of it. The
+   attribution is a licence notice, so it cannot be the thing that ends up
+   behind the tab bar — it clears the nav's whole footprint instead. */
+.map-immersive .maplibregl-ctrl-bottom-right {
+  bottom: var(--nav-clearance);
+}
+
+/*
+ * The nav's scrim, off wherever a screen declares itself immersive.
+ *
+ * The gradient fades *scrolling* content out beneath the floating bar, which
+ * is right on a list and wrong on a full-bleed map: there is nothing to fade,
+ * so it just lays a white wash over the bottom of the map. `:has()` rather
+ * than a prop or a store because the nav lives in the layout and the immersive
+ * screen is a piece of component state three levels down — one selector beats
+ * threading a boolean through both.
+ */
+body:has([data-immersive]) nav[aria-label='Main'] {
+  background-image: none;
+}
+
 /* For a map whose bottom edge is deliberately tucked under a sheet. The
    attribution is a licence notice, so it cannot be the thing that gets tucked
    — it moves up by the depth of the overlap instead. */

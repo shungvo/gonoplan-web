@@ -136,21 +136,29 @@ export function ExploreScreen() {
         The map has to own the whole viewport, and a scrollable page around a
         pannable map means every drag is ambiguous — the browser has to guess
         whether you meant to move the map or the page, and it guesses wrong
-        often enough to feel broken. Stopping above the tab bar keeps the app's
-        navigation reachable.
+        often enough to feel broken.
 
-        The bottom edge is the nav's *whole* footprint, not just its height:
-        `--spacing-nav` alone ignores the home indicator, so on a notched phone
-        the map ran 34px past its own bottom and put the attribution — and the
-        card row anchored to it — underneath the tab bar.
+        `inset-0` — the whole viewport, tab bar included. Stopping the map at
+        the nav's top edge left a band of page background under it that read as
+        the map being cut off, because that is what it was. The nav is a
+        floating pill with its own shadow; it is built to sit on top of
+        something, and a full-bleed map is the something.
+
+        `data-immersive` turns off the nav's scrim (see globals.css). That
+        gradient exists to fade *scrolling* content out beneath the bar, and
+        there is nothing here to fade — over a fixed map it is just a white
+        wash across the bottom, which is the same complaint one layer down.
       */
-      <div className="bg-background fixed inset-x-0 top-0 bottom-[var(--nav-clearance)] z-20">
+      <div data-immersive className="bg-background fixed inset-0 z-20">
         <MapCanvas
-          className="absolute inset-0"
-          // Measured, not guessed — see `bottomOverlayHeight`. The 16px is the
-          // gap, so the buttons read as separate from the cards rather than
-          // balanced on their top edge.
-          controlsBottomOffset={`${String(bottomOverlayHeight + 16)}px`}
+          className="map-immersive absolute inset-0"
+          /*
+            Two offsets, not one: the nav's footprint, then the overlay that
+            sits above it. CSS does the addition so neither has to be baked
+            into a number here — `--nav-clearance` already knows about the home
+            indicator, and the overlay height is measured.
+          */
+          controlsBottomOffset={`calc(var(--nav-clearance) + ${String(bottomOverlayHeight + 16)}px)`}
           center={origin}
           categorySlugs={selectedSlugs}
           {...(coordinates ? { userLocation: coordinates } : {})}
@@ -201,7 +209,29 @@ export function ExploreScreen() {
             </button>
           </div>
 
-          
+          <div className="pointer-events-auto mt-2 flex scrollbar-none gap-2 overflow-x-auto pb-1">
+            <Chip
+              selected={openNow}
+              onClick={() => {
+                setOpenNow((value) => !value);
+              }}
+            >
+              <SlidersHorizontal className="size-3.5" aria-hidden />
+              Open now
+            </Chip>
+            {categories?.map((category) => (
+              <Chip
+                key={category.id}
+                selected={selectedSlugs.includes(category.slug)}
+                colorHex={category.colorHex}
+                onClick={() => {
+                  toggleCategory(category.slug);
+                }}
+              >
+                {category.name}
+              </Chip>
+            ))}
+          </div>
 
           {/*
             Under the filters, not above the carousel.
@@ -248,31 +278,7 @@ export function ExploreScreen() {
             </div>
           )}
         </div>
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-background/95 to-transparent pt-2">
-            <div className="pointer-events-auto mt-2 flex scrollbar-none gap-2 overflow-x-auto pb-1">
-            <Chip
-              selected={openNow}
-              onClick={() => {
-                setOpenNow((value) => !value);
-              }}
-            >
-              <SlidersHorizontal className="size-3.5" aria-hidden />
-              Open now
-            </Chip>
-            {categories?.map((category) => (
-              <Chip
-                key={category.id}
-                selected={selectedSlugs.includes(category.slug)}
-                colorHex={category.colorHex}
-                onClick={() => {
-                  toggleCategory(category.slug);
-                }}
-              >
-                {category.name}
-              </Chip>
-            ))}
-          </div>
-          </div>
+
         {/* What is actually on screen, in the order the map would read.
 
             The padding clears MapLibre's attribution strip, which is legally
@@ -280,7 +286,10 @@ export function ExploreScreen() {
             the control sits 10px off the map's bottom edge and is 24px tall,
             so anything under 34px puts the licence text across the card. It
             was `pb-7` (28px), and it did exactly that. */}
-        <div ref={measureBottomOverlay} className="absolute inset-x-0 bottom-0 pb-11">
+        <div
+          ref={measureBottomOverlay}
+          className="absolute inset-x-0 bottom-[var(--nav-clearance)] pb-11"
+        >
           {placesInView.length === 0 ? (
             <p className="bg-surface/95 text-ink-muted mx-4 rounded-lg px-4 py-3 text-center text-sm shadow-md backdrop-blur-md">
               Nothing loaded in this area — try moving the map back, or widen your filters.
