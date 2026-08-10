@@ -3837,6 +3837,119 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/geo/directions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A route between two points
+         * @description Proxied. The routing provider is reached with a server-side REST key that never leaves the API (§6) — shipping it to the browser is the usual way these quotas get drained. Responses are cached for an hour keyed on coordinates rounded to about eleven metres, and the endpoint sits on its own rate-limit tier because every call costs a metered upstream request.
+         *
+         *     The shape is normalised: distance in metres, duration in seconds, a GeoJSON LineString and plain-text steps. No vendor field reaches the client, so changing provider is a config branch rather than a client rewrite. `isFallbackProvider` is true when the keyless development router answered, which never happens in production.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    fromLat?: number | null;
+                    fromLng?: number | null;
+                    toLat?: number | null;
+                    toLng?: number | null;
+                    mode?: "driving" | "walking" | "cycling";
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description A route */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                distanceM: number;
+                                durationS: number;
+                                geometry: [
+                                    number,
+                                    number
+                                ][];
+                                steps: {
+                                    distanceM: number;
+                                    durationS: number;
+                                    instruction: string;
+                                    road: string | null;
+                                    at: {
+                                        latitude: number;
+                                        longitude: number;
+                                    };
+                                }[];
+                                /** @enum {string} */
+                                mode: "driving" | "walking" | "cycling";
+                                provider: string;
+                                isFallbackProvider: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description No route exists between those two points — an island, or a car asked to reach a pedestrian-only address */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description The routing provider is unreachable, or unconfigured in production */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/places/pending": {
         parameters: {
             query?: never;
@@ -5882,6 +5995,28 @@ export interface components {
                 status: string | null;
             } | null;
             openReportsOnTarget: number;
+        };
+        Route: {
+            distanceM: number;
+            durationS: number;
+            geometry: [
+                number,
+                number
+            ][];
+            steps: {
+                distanceM: number;
+                durationS: number;
+                instruction: string;
+                road: string | null;
+                at: {
+                    latitude: number;
+                    longitude: number;
+                };
+            }[];
+            /** @enum {string} */
+            mode: "driving" | "walking" | "cycling";
+            provider: string;
+            isFallbackProvider: boolean;
         };
         AdminUser: {
             /** Format: uuid */

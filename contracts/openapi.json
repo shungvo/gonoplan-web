@@ -1600,6 +1600,99 @@
           "openReportsOnTarget"
         ]
       },
+      "Route": {
+        "type": "object",
+        "properties": {
+          "distanceM": {
+            "type": "integer"
+          },
+          "durationS": {
+            "type": "integer"
+          },
+          "geometry": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "distanceM": {
+                  "type": "integer"
+                },
+                "durationS": {
+                  "type": "integer"
+                },
+                "instruction": {
+                  "type": "string"
+                },
+                "road": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "at": {
+                  "type": "object",
+                  "properties": {
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ]
+                }
+              },
+              "required": [
+                "distanceM",
+                "durationS",
+                "instruction",
+                "road",
+                "at"
+              ]
+            }
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "driving",
+              "walking",
+              "cycling"
+            ]
+          },
+          "provider": {
+            "type": "string"
+          },
+          "isFallbackProvider": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "distanceM",
+          "durationS",
+          "geometry",
+          "steps",
+          "mode",
+          "provider",
+          "isFallbackProvider"
+        ]
+      },
       "AdminUser": {
         "type": "object",
         "properties": {
@@ -10499,6 +10592,257 @@
           },
           "409": {
             "description": "Already handled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/geo/directions": {
+      "get": {
+        "tags": [
+          "Geo"
+        ],
+        "summary": "A route between two points",
+        "description": "Proxied. The routing provider is reached with a server-side REST key that never leaves the API (§6) — shipping it to the browser is the usual way these quotas get drained. Responses are cached for an hour keyed on coordinates rounded to about eleven metres, and the endpoint sits on its own rate-limit tier because every call costs a metered upstream request.\n\nThe shape is normalised: distance in metres, duration in seconds, a GeoJSON LineString and plain-text steps. No vendor field reaches the client, so changing provider is a config branch rather than a client rewrite. `isFallbackProvider` is true when the keyless development router answered, which never happens in production.",
+        "parameters": [
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -90,
+              "maximum": 90
+            },
+            "required": false,
+            "name": "fromLat",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -180,
+              "maximum": 180
+            },
+            "required": false,
+            "name": "fromLng",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -90,
+              "maximum": 90
+            },
+            "required": false,
+            "name": "toLat",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -180,
+              "maximum": 180
+            },
+            "required": false,
+            "name": "toLng",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "driving",
+                "walking",
+                "cycling"
+              ],
+              "default": "driving"
+            },
+            "required": false,
+            "name": "mode",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A route",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "distanceM": {
+                          "type": "integer"
+                        },
+                        "durationS": {
+                          "type": "integer"
+                        },
+                        "geometry": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "prefixItems": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          }
+                        },
+                        "steps": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "distanceM": {
+                                "type": "integer"
+                              },
+                              "durationS": {
+                                "type": "integer"
+                              },
+                              "instruction": {
+                                "type": "string"
+                              },
+                              "road": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "at": {
+                                "type": "object",
+                                "properties": {
+                                  "latitude": {
+                                    "type": "number"
+                                  },
+                                  "longitude": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "latitude",
+                                  "longitude"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "distanceM",
+                              "durationS",
+                              "instruction",
+                              "road",
+                              "at"
+                            ]
+                          }
+                        },
+                        "mode": {
+                          "type": "string",
+                          "enum": [
+                            "driving",
+                            "walking",
+                            "cycling"
+                          ]
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "isFallbackProvider": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "distanceM",
+                        "durationS",
+                        "geometry",
+                        "steps",
+                        "mode",
+                        "provider",
+                        "isFallbackProvider"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No route exists between those two points — an island, or a car asked to reach a pedestrian-only address",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The routing provider is unreachable, or unconfigured in production",
             "content": {
               "application/json": {
                 "schema": {

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Compass, List, Map, Search, SlidersHorizontal } from 'lucide-react';
+import { Compass, List, Map, Route, Search, SlidersHorizontal, X } from 'lucide-react';
 import { Chip } from '@/components/ui/Chip';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ApiError } from '@/lib/api/errors';
@@ -13,6 +13,7 @@ import { PlaceSheet } from './PlaceSheet';
 import { useNearbyPlaces } from '../hooks/usePlaces';
 import { MapCanvas } from '@/features/map/components/MapCanvas';
 import type { MapBounds } from '@/lib/map/types';
+import { useDirections, formatDuration } from '@/features/geo/useDirections';
 import { cn } from '@/lib/utils/cn';
 import { fetchCategories } from '@/features/categories/api';
 import { useLocationStore } from '@/features/location/store';
@@ -41,6 +42,7 @@ export function ExploreScreen() {
   const [openNow, setOpenNow] = useState(false);
   const [view, setView] = useState<'list' | 'map'>('list');
   const [bounds, setBounds] = useState<MapBounds | null>(null);
+  const [routeToId, setRouteToId] = useState<string | null>(null);
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
 
   const origin = coordinates ?? FALLBACK_ORIGIN;
@@ -64,6 +66,18 @@ export function ExploreScreen() {
   };
 
   const hasFilters = selectedSlugs.length > 0 || openNow;
+
+  /*
+   * A route is drawn only when asked for, never because a place got selected.
+   * Every fetch is a metered upstream call, and selection happens on every pin
+   * tap and every card scroll — routing all of those would spend the quota on
+   * curiosity rather than intent.
+   */
+  const routeTarget = data?.places.find((place) => place.id === routeToId) ?? null;
+  const directions = useDirections(
+    coordinates,
+    routeTarget ? { latitude: routeTarget.latitude, longitude: routeTarget.longitude } : null,
+  );
 
   /*
    * The carousel follows the map, filtered from what is already loaded.
@@ -109,6 +123,7 @@ export function ExploreScreen() {
           onViewportChange={(next) => {
             setBounds(next);
           }}
+          route={directions.data?.geometry ?? null}
         />
 
         {/* Floats over the map, matching the reference: the controls belong to
@@ -164,6 +179,46 @@ export function ExploreScreen() {
           </div>
         </div>
 
+        {/* The route summary sits above the carousel rather than replacing it:
+            the list is how you pick a different destination, and hiding it the
+            moment a route appears means backing out to change your mind. */}
+        {routeTarget && (
+          <div className="absolute inset-x-4 bottom-[8.5rem] z-10">
+            <div className="flex items-center gap-3 rounded-full bg-surface px-4 py-2.5 shadow-lg">
+              <Route className="size-4 shrink-0 text-primary" aria-hidden />
+              <p className="min-w-0 flex-1 truncate text-sm">
+                {directions.isPending && (
+                  <span className="text-ink-muted">Finding a route…</span>
+                )}
+                {directions.error && (
+                  <span className="text-ink-muted">No route to {routeTarget.name}</span>
+                )}
+                {directions.data && (
+                  <>
+                    <span className="font-semibold text-ink">
+                      {formatDuration(directions.data.durationS)}
+                    </span>
+                    <span className="text-ink-muted">
+                      {' · '}
+                      {formatDistance(directions.data.distanceM)} to {routeTarget.name}
+                    </span>
+                  </>
+                )}
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setRouteToId(null);
+                }}
+                aria-label="Clear route"
+                className="-mr-1 flex size-8 shrink-0 items-center justify-center rounded-full text-ink-subtle"
+              >
+                <X className="size-4" aria-hidden />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* What is actually on screen, in the order the map would read.
             `pb-7` clears MapLibre's attribution strip, which sits at the map's
             bottom edge and is legally required — so the card moves, not it. */}
@@ -180,7 +235,7 @@ export function ExploreScreen() {
                   every pixel the card takes is a pixel of map the user came
                   here for. */}
               {placesInView.map((place) => (
-                <div key={place.id} className="snap-start">
+                <div key={place.id} className="relative snap-start">
                   <PlaceListItem
                     place={place}
                     onSelect={() => {
@@ -194,6 +249,26 @@ export function ExploreScreen() {
                       selectedPlaceId === place.id && 'ring-2 ring-primary',
                     )}
                   />
+                  {/* Outside the card's own button, so a tap can say which of
+                      the two it meant. Hidden without a position — a route from
+                      nowhere is not a thing we can draw. */}
+                  {coordinates && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRouteToId(place.id);
+                      }}
+                      aria-label={`Show the route to ${place.name}`}
+                      className={cn(
+                        'absolute right-2 bottom-2 flex size-9 items-center justify-center rounded-full shadow-sm',
+                        routeToId === place.id
+                          ? 'bg-primary text-white'
+                          : 'bg-surface-sunken text-ink-muted',
+                      )}
+                    >
+                      <Route className="size-4" aria-hidden />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

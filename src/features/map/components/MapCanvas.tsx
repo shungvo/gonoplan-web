@@ -32,6 +32,9 @@ const CLUSTER_COUNT_LAYER = 'places-cluster-count';
 const MARKER_LAYER = 'places-markers';
 
 const MARKER_SELECTED_LAYER = 'places-marker-selected';
+const ROUTE_SOURCE = 'route';
+const ROUTE_CASING_LAYER = 'route-casing';
+const ROUTE_LAYER = 'route-line';
 
 /**
  * The font stack the basemap itself already renders labels with.
@@ -73,6 +76,8 @@ export interface MapCanvasProps {
   selectedPlaceId?: string | null;
   onSelectPlace?: (placeId: string) => void;
   onViewportChange?: (bounds: MapBounds, zoom: number) => void;
+  /** GeoJSON [lng, lat] pairs. Drawn beneath the markers, and fitted on change. */
+  route?: Array<[number, number]> | null;
   className?: string;
 }
 
@@ -84,6 +89,7 @@ export function MapCanvas({
   selectedPlaceId = null,
   onSelectPlace,
   onViewportChange,
+  route = null,
   className,
 }: MapCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -102,6 +108,47 @@ export function MapCanvas({
   });
 
   const { data: markerPage } = useMapMarkers(bounds, currentZoom, categorySlugs);
+
+  /*
+   * The route line, and the camera that frames it.
+   *
+   * Fitting the bounds is the part that matters: a route drawn at whatever
+   * zoom the user left the map at is usually one line leaving the screen, and
+   * the first thing anyone does is pinch out to find the rest of it.
+   */
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !isReady) return;
+
+    const source = map.getSource(ROUTE_SOURCE) as GeoJSONSource | undefined;
+    if (!source) return;
+
+    source.setData({
+      type: 'Feature',
+      properties: {},
+      geometry: { type: 'LineString', coordinates: route ?? [] },
+    });
+
+    if (!route || route.length < 2) return;
+
+    const lngs = route.map(([lng]) => lng);
+    const lats = route.map(([, lat]) => lat);
+
+    map.fitBounds(
+      [
+        [Math.min(...lngs), Math.min(...lats)],
+        [Math.max(...lngs), Math.max(...lats)],
+      ],
+      {
+        // Asymmetric on purpose: the bottom of a map screen belongs to the
+        // sheet or the carousel, so a route centred in the geometric middle
+        // ends up half-covered.
+        padding: { top: 90, bottom: 220, left: 48, right: 48 },
+        duration: 600,
+        maxZoom: 16,
+      },
+    );
+  }, [route, isReady]);
 
   // ─── Map lifecycle ────────────────────────────────────────────────────────
   useEffect(() => {
@@ -159,6 +206,43 @@ export function MapCanvas({
         // twice more is friction rather than density.
         clusterMaxZoom: 14,
         clusterRadius: 45,
+      });
+
+      map.addSource(ROUTE_SOURCE, {
+        type: 'geojson',
+        data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [] } },
+      });
+
+      /*
+       * Two lines, not one. The wider casing underneath is what keeps a route
+       * readable where it crosses a road of a similar colour — without it the
+       * line disappears into the basemap exactly where someone is checking
+       * which turning is theirs.
+       *
+       * Added before the marker layers so pins stay on top: the route is
+       * context, the destination is the point.
+       */
+      map.addLayer({
+        id: ROUTE_CASING_LAYER,
+        type: 'line',
+        source: ROUTE_SOURCE,
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: {
+          'line-color': '#ffffff',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 6, 18, 14],
+          'line-opacity': 0.9,
+        },
+      });
+
+      map.addLayer({
+        id: ROUTE_LAYER,
+        type: 'line',
+        source: ROUTE_SOURCE,
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: {
+          'line-color': '#0f6ccd',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 3, 18, 9],
+        },
       });
 
       map.addLayer({
