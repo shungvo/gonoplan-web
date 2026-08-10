@@ -98,22 +98,33 @@
     0 10px 20px rgb(19 66 116 / 0.08);
   --shadow-lg:
     0 0 0 1px rgb(19 66 116 / 0.08), 0 4px 10px rgb(19 66 116 / 0.05),
-    0 18px 36px rgb(19 66 116 / 0.10);
+    0 18px 36px rgb(19 66 116 / 0.1);
   --shadow-xl:
     0 0 0 1px rgb(19 66 116 / 0.08), 0 8px 18px rgb(19 66 116 / 0.06),
     0 28px 56px rgb(19 66 116 / 0.12);
-  --shadow-primary: 0 8px 24px rgb(15 108 205 / 0.30);
+  --shadow-primary: 0 8px 24px rgb(15 108 205 / 0.3);
   /* Two layers, like the others: a tight contact shadow that separates the
      sheet's edge from whatever is behind it, and a wide ambient one that makes
      it read as lifted. A single soft shadow at this size just looks like haze. */
-  --shadow-sheet: 0 -2px 8px rgb(19 66 116 / 0.10), 0 -12px 40px rgb(19 66 116 / 0.22);
+  --shadow-sheet: 0 -2px 8px rgb(19 66 116 / 0.1), 0 -12px 40px rgb(19 66 116 / 0.22);
 
   /* ─── Motion ────────────────────────────────────────────────────────── */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
 
   /* ─── Layout ────────────────────────────────────────────────────────── */
-  --spacing-nav: 4.5rem;
+  /* The bottom nav's own height, measured rather than guessed: `pt-4` (16px)
+     over a pill of `p-1.5` + a 48px tab (60px). 4.5rem was 4px short of that,
+     so every screen using `.pb-nav` let its last row slide under the bar. */
+  --spacing-nav: 4.75rem;
+}
+
+:root {
+  /* The nav's full footprint — its height plus the home indicator it floats
+     above. Scroll padding and the full-map's bottom edge both derive from this
+     one value, because when they drift apart the gap only shows up on a
+     notched phone, which is the device nobody tests on. */
+  --nav-clearance: calc(var(--spacing-nav) + max(env(safe-area-inset-bottom, 0px), 0.75rem));
 }
 
 /*
@@ -184,10 +195,9 @@
   .pt-safe-float {
     padding-top: max(env(safe-area-inset-top, 0px), 1rem);
   }
-  /* Scroll clearance for content behind the floating nav. Must stay in step
-     with .pb-safe-float or the last card ends up under the bar. */
+  /* Scroll clearance for content behind the floating nav. */
   .pb-nav {
-    padding-bottom: calc(var(--spacing-nav) + max(env(safe-area-inset-bottom, 0px), 0.75rem));
+    padding-bottom: var(--nav-clearance);
   }
 
   .scrollbar-none {
@@ -265,6 +275,13 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+/* For a map whose bottom edge is deliberately tucked under a sheet. The
+   attribution is a licence notice, so it cannot be the thing that gets tucked
+   — it moves up by the depth of the overlap instead. */
+.map-tucked .maplibregl-ctrl-bottom-right {
+  bottom: 1.5rem;
 }
 
 /* §17: motion confirms an action, it never delays one — and it always yields

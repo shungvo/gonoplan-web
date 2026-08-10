@@ -111,10 +111,19 @@ export function ExploreScreen() {
         whether you meant to move the map or the page, and it guesses wrong
         often enough to feel broken. Stopping above the tab bar keeps the app's
         navigation reachable.
+
+        The bottom edge is the nav's *whole* footprint, not just its height:
+        `--spacing-nav` alone ignores the home indicator, so on a notched phone
+        the map ran 34px past its own bottom and put the attribution — and the
+        card row anchored to it — underneath the tab bar.
       */
-      <div className="bg-background fixed inset-x-0 top-0 bottom-[var(--spacing-nav)] z-20">
+      <div className="bg-background fixed inset-x-0 top-0 bottom-[var(--nav-clearance)] z-20">
         <MapCanvas
           className="absolute inset-0"
+          // Clears the card carousel below: 44px of padding plus a card of
+          // about 101px, rounded up to leave the buttons visibly separate
+          // rather than balanced on the cards' top edge.
+          controlsBottomOffset="10rem"
           center={origin}
           categorySlugs={selectedSlugs}
           {...(coordinates ? { userLocation: coordinates } : {})}
@@ -177,14 +186,21 @@ export function ExploreScreen() {
               </Chip>
             ))}
           </div>
-        </div>
 
-        {/* The route summary sits above the carousel rather than replacing it:
-            the list is how you pick a different destination, and hiding it the
-            moment a route appears means backing out to change your mind. */}
-        {routeTarget && (
-          <div className="absolute inset-x-4 bottom-[8.5rem] z-10">
-            <div className="bg-surface flex items-center gap-3 rounded-full px-4 py-2.5 shadow-lg">
+          {/*
+            Under the filters, not above the carousel.
+
+            It never replaces the card row — the list is how you pick a
+            different destination, and hiding it the moment a route appears
+            means backing out to change your mind. But absolutely positioned at
+            `bottom-[8.5rem]` it landed 33px *inside* the cards, so the two
+            fought for the same band the moment a route existed. Here it is a
+            sibling of the chips instead, which puts it below them whatever the
+            safe-area inset does to the header's height, and leaves the whole
+            bottom of the map to the carousel.
+          */}
+          {routeTarget && (
+            <div className="bg-surface pointer-events-auto mt-2 flex items-center gap-3 rounded-full px-4 py-2.5 shadow-lg">
               <Route className="text-primary size-4 shrink-0" aria-hidden />
               <p className="min-w-0 flex-1 truncate text-sm">
                 {directions.isPending && <span className="text-ink-muted">Finding a route…</span>}
@@ -214,13 +230,17 @@ export function ExploreScreen() {
                 <X className="size-4" aria-hidden />
               </button>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* What is actually on screen, in the order the map would read.
-            `pb-7` clears MapLibre's attribution strip, which sits at the map's
-            bottom edge and is legally required — so the card moves, not it. */}
-        <div className="absolute inset-x-0 bottom-0 pb-7">
+
+            The padding clears MapLibre's attribution strip, which is legally
+            required — so the card moves, not it. 44px is measured, not picked:
+            the control sits 10px off the map's bottom edge and is 24px tall,
+            so anything under 34px puts the licence text across the card. It
+            was `pb-7` (28px), and it did exactly that. */}
+        <div className="absolute inset-x-0 bottom-0 pb-11">
           {placesInView.length === 0 ? (
             <p className="bg-surface/95 text-ink-muted mx-4 rounded-lg px-4 py-3 text-center text-sm shadow-md backdrop-blur-md">
               Nothing loaded in this area — try moving the map back, or widen your filters.
@@ -239,7 +259,13 @@ export function ExploreScreen() {
                       setSelectedPlaceId(place.id);
                     }}
                     className={cn(
-                      'w-[17rem] shadow-md',
+                      'w-[19rem] shadow-md',
+                      // Room for the route button, which is positioned over
+                      // this card rather than inside it. Without it the button
+                      // sat on top of the distance — "120 m" arrived as "12"
+                      // with a circle over the rest of it. The card widened to
+                      // pay for the column instead of taking it from the name.
+                      coordinates && 'pr-12',
                       // The ringed card and the enlarged pin are the same fact
                       // stated twice, which is what makes the pairing readable
                       // while panning.
@@ -292,12 +318,20 @@ export function ExploreScreen() {
         same gesture that reads the list — no second scroll region, and no
         decision about which one a drag belongs to.
 
-        `-z-10` puts it under everything without needing a stacking context on
-        each piece of chrome above it.
+        `z-0`, emphatically not `-z-10`.
+
+        A negative z-index paints *behind the in-flow content of the whole
+        page*, and the app shell is `bg-background` — opaque white. So the map
+        loaded its tiles, drew them, and was covered by two layers of white.
+        That is the blank map: not the worker, not OpenFreeMap, not the tiles.
+        `z-0` is a positioned layer, which paints above block backgrounds and
+        below anything given a `z-10` of its own — so the chrome that has to
+        sit over the map now says so explicitly, one class each.
       */}
-      <div className="fixed inset-x-0 top-0 -z-10 h-[38dvh]">
+      <div className="fixed inset-x-0 top-0 z-0 h-[38dvh]">
         <MapCanvas
-          className="absolute inset-0"
+          className="map-tucked absolute inset-0"
+          showZoomControls={false}
           center={origin}
           zoom={14}
           categorySlugs={selectedSlugs}
@@ -310,7 +344,7 @@ export function ExploreScreen() {
       {/* Transparent, so the map reads as the backdrop rather than as a panel
           beneath a bar. The controls keep their own surfaces — the text has to
           stay legible over whatever the map happens to show. */}
-      <header className="pt-safe-float relative px-5">
+      <header className="pt-safe-float relative z-10 px-5">
         <div className="flex items-center gap-2">
           <h1 className="text-ink flex-1 text-[1.75rem] leading-tight font-semibold tracking-tight drop-shadow-[0_1px_2px_rgb(255_255_255/0.9)]">
             Explore
@@ -355,8 +389,20 @@ export function ExploreScreen() {
         and a real Drawer would add a second scroll region for the page to
         argue with.
       */}
-      <div className="bg-surface relative min-h-[70dvh] rounded-t-xl pb-2 shadow-[0_-2px_8px_rgb(19_66_116/0.10),0_-12px_40px_rgb(19_66_116/0.18)]">
-        <div className="bg-border mx-auto mt-2.5 h-1 w-10 rounded-full" aria-hidden />
+      <div className="bg-surface shadow-sheet relative z-10 min-h-[70dvh] rounded-t-xl pb-2">
+        {/*
+          The bar needs a box of its own.
+
+          As a bare `mt-2.5` child of a block container its top margin collapsed
+          straight through the parent — measured at 0px from the sheet's top
+          edge — so it drew across the 32px corner radius instead of below it,
+          and the 10px of air ended up outside the sheet. A wrapper with height
+          rather than margin cannot collapse, and it gives the bar the vertical
+          centring it was faking.
+        */}
+        <div className="flex h-5 items-center justify-center" aria-hidden>
+          <div className="bg-border h-1 w-10 rounded-full" />
+        </div>
 
         {/* Filters sit above the list and scroll horizontally, so adding a
           fifteenth category never pushes the results off the screen. */}

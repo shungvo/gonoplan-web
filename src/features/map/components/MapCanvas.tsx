@@ -77,6 +77,14 @@ export interface MapCanvasProps {
   onViewportChange?: (bounds: MapBounds, zoom: number) => void;
   /** GeoJSON [lng, lat] pairs. Drawn beneath the markers, and fitted on change. */
   route?: Array<[number, number]> | null;
+  /**
+   * Off for a map that is a glance rather than a workspace — the strip behind
+   * Explore's list, where the buttons would crowd a 320px-tall map that has a
+   * "Full map" button two centimetres away. Pinch still zooms either way.
+   */
+  showZoomControls?: boolean;
+  /** How far the zoom buttons sit above the map's bottom edge, as a CSS length. */
+  controlsBottomOffset?: string;
   className?: string;
 }
 
@@ -89,6 +97,8 @@ export function MapCanvas({
   onSelectPlace,
   onViewportChange,
   route = null,
+  showZoomControls = true,
+  controlsBottomOffset = '2.25rem',
   className,
 }: MapCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -611,28 +621,41 @@ export function MapCanvas({
         </div>
       )}
 
-      <div className="absolute right-3 bottom-9 flex flex-col gap-1.5">
-        <button
-          type="button"
-          aria-label="Zoom in"
-          onClick={() => {
-            zoomBy(1);
-          }}
-          className="bg-surface/90 text-ink flex size-10 items-center justify-center rounded-sm text-lg font-medium shadow-md backdrop-blur-sm active:scale-95"
+      {showZoomControls && (
+        /*
+          The offset is the caller's to set, because only the caller knows what
+          it floats over the map. Explore's full-map view puts a card carousel
+          along the bottom, and at the old fixed `bottom-9` the two buttons sat
+          squarely behind it — present in the tree, invisible, and impossible to
+          tap. An inline style rather than a class: Tailwind cannot generate a
+          utility from a value it only sees at runtime.
+        */
+        <div
+          className="absolute right-3 flex flex-col gap-1.5"
+          style={{ bottom: controlsBottomOffset }}
         >
-          +
-        </button>
-        <button
-          type="button"
-          aria-label="Zoom out"
-          onClick={() => {
-            zoomBy(-1);
-          }}
-          className="bg-surface/90 text-ink flex size-10 items-center justify-center rounded-sm text-lg font-medium shadow-md backdrop-blur-sm active:scale-95"
-        >
-          −
-        </button>
-      </div>
+          <button
+            type="button"
+            aria-label="Zoom in"
+            onClick={() => {
+              zoomBy(1);
+            }}
+            className="bg-surface/90 text-ink flex size-10 items-center justify-center rounded-sm text-lg font-medium shadow-md backdrop-blur-sm active:scale-95"
+          >
+            +
+          </button>
+          <button
+            type="button"
+            aria-label="Zoom out"
+            onClick={() => {
+              zoomBy(-1);
+            }}
+            className="bg-surface/90 text-ink flex size-10 items-center justify-center rounded-sm text-lg font-medium shadow-md backdrop-blur-sm active:scale-95"
+          >
+            −
+          </button>
+        </div>
+      )}
     </div>
   );
 }
