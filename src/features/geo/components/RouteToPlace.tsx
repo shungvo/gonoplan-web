@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { useLocationStore } from '@/features/location/store';
 import { formatDistance } from '@/lib/geo/grid';
 import { cn } from '@/lib/utils/cn';
+import { trackNow } from '@/features/recommendations/track';
 import { useDirections, formatDuration } from '../useDirections';
 import type { TravelMode } from '../api';
 
@@ -38,7 +39,7 @@ const MODES: ModeOption[] = [
 export function RouteToPlace({
   place,
 }: {
-  place: { name: string; latitude: number; longitude: number; address: string | null };
+  place: { id: string; name: string; latitude: number; longitude: number; address: string | null };
 }) {
   const { coordinates, status, requestLocation } = useLocationStore();
   const [mode, setMode] = useState<TravelMode>('driving');
@@ -117,6 +118,9 @@ export function RouteToPlace({
           rel="noopener noreferrer"
           className="absolute inset-0"
           aria-label={`Open directions to ${place.name} in Google Maps`}
+          onClick={() => {
+            trackNow(place.id, 'DIRECTIONS', 'DETAIL');
+          }}
         />
       </div>
 
@@ -179,6 +183,9 @@ export function RouteToPlace({
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary inline-flex h-10 shrink-0 items-center gap-1.5 text-sm font-semibold"
+            onClick={() => {
+              trackNow(place.id, 'DIRECTIONS', 'DETAIL');
+            }}
           >
             <Navigation className="size-4" aria-hidden />
             Open in Maps

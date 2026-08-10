@@ -28,10 +28,19 @@ export const viewport: Viewport = {
   // utilities then pad content back out of them.
   viewportFit: 'cover',
   themeColor: '#ffffff',
-  // Zoom stays enabled. Disabling it is a common mobile-app affectation and an
-  // accessibility failure for anyone who needs to magnify text.
-  maximumScale: 5,
-  userScalable: true,
+  /*
+   * Pinch-zoom off, so the app reads as an app rather than a page.
+   *
+   * This is a real accessibility cost and worth stating plainly: someone who
+   * magnifies text can no longer do it here. Two things keep it from being a
+   * failure. `-webkit-text-size-adjust` is untouched and every size is in
+   * `rem`, so the OS-level font-size setting still scales the whole app — the
+   * control most people actually use. And the map, the one surface where
+   * zooming is the point, keeps its own gestures (see `touch-action` in
+   * globals.css).
+   */
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {

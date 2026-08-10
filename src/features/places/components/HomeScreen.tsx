@@ -10,7 +10,8 @@ import { LocationChip } from '@/features/location/components/LocationChip';
 import { useLocationStore } from '@/features/location/store';
 import { useSessionStore } from '@/features/auth/store';
 import { fetchCategories } from '@/features/categories/api';
-import { useNearbyPlaces } from '../hooks/usePlaces';
+import { pickRail, useCollections } from '@/features/recommendations/hooks';
+import { track } from '@/features/recommendations/track';
 import { PlaceRail } from './PlaceRail';
 import { PlaceCardStack } from './PlaceCardStack';
 import { PlaceGrid } from './PlaceGrid';
@@ -80,9 +81,29 @@ export function HomeScreen() {
     staleTime: 30 * 60_000,
   });
 
-  const popular = useNearbyPlaces(origin, { limit: 12 });
-  const bestRated = useNearbyPlaces(origin, { limit: 12, minRating: 4.5 });
-  const openNow = useNearbyPlaces(origin, { limit: 12, openNow: true });
+  /*
+   * One ranked request for the whole screen (Phase 12).
+   *
+   * This used to be three separate nearby queries with different filters —
+   * `minRating: 4.5` standing in for "recommended", `openNow` for "open right
+   * now" — which is distance sort wearing three hats. All three are now the
+   * same scorer with different weights, so a place is here because it scored
+   * well rather than because it happened to be close.
+   *
+   * Fetched together because the home screen is the first thing anyone sees:
+   * three requests over a Vietnamese mobile connection is the difference
+   * between an app that opens and one that loads.
+   */
+  const collections = useCollections(origin, 12);
+
+  /*
+   * Rails are omitted by the API when they cannot apply — `recommended-for-you`
+   * needs an account, `good-for-tonight` only exists after 16:00 — so each slot
+   * names its fallbacks rather than binding to one key and going empty.
+   */
+  const featured = pickRail(collections.data, ['recommended-for-you', 'best-rated']);
+  const nearby = pickRail(collections.data, ['popular-near-you']);
+  const tonight = pickRail(collections.data, ['good-for-tonight', 'hidden-gems']);
 
   return (
     <div className="px-safe">
@@ -99,9 +120,13 @@ export function HomeScreen() {
           <Link
             href="/profile"
             aria-label={user ? `Signed in as ${user.name}` : 'Sign in'}
-            className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary-tint text-base font-semibold text-primary shadow-sm"
+            className="bg-primary-tint text-primary flex size-11 shrink-0 items-center justify-center rounded-full text-base font-semibold shadow-sm"
           >
-            {user ? user.name.trim().charAt(0).toUpperCase() : <User className="size-5" aria-hidden />}
+            {user ? (
+              user.name.trim().charAt(0).toUpperCase()
+            ) : (
+              <User className="size-5" aria-hidden />
+            )}
           </Link>
 
           <div className="flex min-w-0 flex-1 justify-center">
@@ -124,10 +149,10 @@ export function HomeScreen() {
           onClick={() => {
             router.push('/search');
           }}
-          className="mt-4 flex h-12 w-full items-center gap-3 rounded-full bg-surface px-4 text-left shadow-md active:scale-[0.99]"
+          className="bg-surface mt-4 flex h-12 w-full items-center gap-3 rounded-full px-4 text-left shadow-md active:scale-[0.99]"
         >
-          <Search className="size-4 shrink-0 text-ink-subtle" aria-hidden />
-          <span className="truncate text-[0.9375rem] text-ink-subtle">
+          <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
+          <span className="text-ink-subtle truncate text-[0.9375rem]">
             Where do you want to go?
           </span>
         </button>
@@ -139,18 +164,19 @@ export function HomeScreen() {
         are looking for; on open, a specific suggestion is the faster route to
         a decision. The map is still one scroll away for anyone who wants it.
       */}
-      <section className="mt-5" aria-label="Recommended for you">
+      <section className="mt-5" aria-label={featured?.title ?? 'Recommended for you'}>
         <SectionHeading
-          title="Recommended for you"
+          title={featured?.title ?? 'Recommended for you'}
           onViewAll={() => {
             router.push('/explore');
           }}
         />
         <PlaceCardStack
           className="mt-3"
-          places={bestRated.data?.places}
-          isPending={bestRated.isPending}
+          places={featured?.places}
+          isPending={collections.isPending}
           onSelect={(place) => {
+            track(place.id, 'CLICK', 'HOME_FEED');
             setSelectedPlaceId(place.id);
           }}
         />
@@ -198,25 +224,22 @@ export function HomeScreen() {
         </div>
       </section>
 
-      <section className="mt-7" aria-label="Nearby from you">
+      <section className="mt-7" aria-label={nearby?.title ?? 'Popular near you'}>
         <SectionHeading
-          title="Nearby from you"
+          title={nearby?.title ?? 'Popular near you'}
           // Says so out loud when the search had to widen, rather than
           // silently showing places an hour away as if they were nearby.
-          note={
-            popular.data?.widened
-              ? `within ${formatDistance(popular.data.radiusMeters)}`
-              : undefined
-          }
+          note={nearby?.widened ? `within ${formatDistance(nearby.radiusMeters)}` : undefined}
           onViewAll={() => {
             router.push('/explore');
           }}
         />
         <PlaceGrid
           className="mt-3"
-          places={popular.data?.places.slice(0, 4)}
-          isPending={popular.isPending}
+          places={nearby?.places.slice(0, 4)}
+          isPending={collections.isPending}
           onSelect={(place) => {
+            track(place.id, 'CLICK', 'HOME_FEED');
             setSelectedPlaceId(place.id);
           }}
         />
@@ -231,12 +254,16 @@ export function HomeScreen() {
         />
       </section>
 
+      {/* Late in the day this is "Good for tonight"; the rest of the time the
+          API sends "Hidden gems" instead, and the heading follows the data
+          rather than claiming an evening that has not arrived. */}
       <div className="mt-7">
         <PlaceRail
-          title="Open right now"
-          places={openNow.data?.places}
-          isPending={openNow.isPending}
+          title={tonight?.title ?? 'Open right now'}
+          places={tonight?.places}
+          isPending={collections.isPending}
           onSelect={(place) => {
+            track(place.id, 'CLICK', 'HOME_FEED');
             setSelectedPlaceId(place.id);
           }}
           emptyMessage="Everything nearby is closed at the moment."

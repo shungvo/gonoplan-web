@@ -138,8 +138,26 @@
     /* 100vh on iOS Safari includes the area behind the URL bar, so a
        full-height layout overflows by ~60px. dvh tracks the visible viewport. */
     height: 100dvh;
+    /* Left at 100% deliberately. The viewport meta turns pinch-zoom off, so
+       this is what still lets the OS font-size setting scale the whole app. */
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
+
+    /*
+     * Panning yes, zooming no.
+     *
+     * `pan-x pan-y` keeps every scroller working — the vertical page and the
+     * horizontal chip rails alike — while removing pinch-zoom and double-tap
+     * zoom, which is what makes a web app feel like a document. The meta tag
+     * alone is not enough: iOS Safari has ignored `user-scalable=no` since iOS
+     * 10, and this is the declaration it does honour.
+     *
+     * Elements are free to ask for more: MapLibre's canvas sets
+     * `touch-action: none` and so keeps pinch and rotate for itself. The
+     * browser computes the intersection with its ancestors, and `none` is
+     * narrower than `pan-x pan-y`, so the map wins on its own surface.
+     */
+    touch-action: pan-x pan-y;
   }
 
   body {

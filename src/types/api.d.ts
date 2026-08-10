@@ -3950,6 +3950,378 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/recommendations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The ranked feed
+         * @description Ranked by a weighted linear model evaluated in SQL alongside the geospatial filter (docs/03-platform.md §2.1):
+         *
+         *     ```
+         *     score = 0.30·distance + 0.25·rating + 0.20·popularity + 0.15·categoryMatch + 0.10·openNow
+         *           × boost × novelty
+         *     ```
+         *
+         *     Distance decays exponentially rather than linearly, because 300 m versus 1 km changes where someone goes and 9 km versus 9.5 km does not. Rating is the Bayesian value, never the displayed average, so one five-star review cannot outrank two hundred at 4.6. `categoryMatch` is 0.5 — neutral — for anyone without preferences, so a new user gets an unbiased mix. `novelty` demotes to 0.4 anything the caller viewed or saved in the last week; demoted rather than removed, because a place you did not go to on Monday is still an answer on Saturday.
+         *
+         *     Every term ships back in `scoreParts`, so a result can always be explained rather than guessed at.
+         *
+         *     Results are diversified after scoring: no category may take more than three of the first twenty. Over-cap places are moved down the list, never dropped.
+         *
+         *     If fewer than ten places qualify the radius climbs 2 → 5 → 15 → 50 km and `widened` becomes true, so the client can say *"nothing within 2 km — showing places across the city"* rather than showing an empty screen.
+         *
+         *     Authentication is optional and changes the ranking rather than gating it: signed in, `categoryMatch` follows what the caller actually does and the novelty demotion applies.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    lat?: number | null;
+                    lng?: number | null;
+                    radius?: number;
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Ranked places, most relevant first */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                places: {
+                                    isSaved: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    slug: string;
+                                    name: string;
+                                    description: string | null;
+                                    category: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        colorHex: string;
+                                    };
+                                    latitude: number;
+                                    longitude: number;
+                                    address: string;
+                                    province: string;
+                                    district: string | null;
+                                    /** @enum {string|null} */
+                                    priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                    averageRating: number;
+                                    reviewCount: number;
+                                    saveCount: number;
+                                    distanceM: number | null;
+                                    isOpenNow: boolean;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    score: number;
+                                    scoreParts: {
+                                        distance: number;
+                                        rating: number;
+                                        popularity: number;
+                                        categoryMatch: number;
+                                        openNow: number;
+                                        boost: number;
+                                        novelty: number;
+                                    };
+                                }[];
+                                radiusMeters: number;
+                                /** @description True when the radius was widened to fill the feed */
+                                widened: boolean;
+                                /** @description Which ranker answered — "rule-based" today */
+                                strategy: string;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/recommendations/collections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The home rails
+         * @description Every rail the current context can fill, in one request — five sequential calls is the difference between a home screen that opens and one that loads.
+         *
+         *     Each rail is the same scorer with different weights, so a change to how distance decays lands on all of them at once:
+         *
+         *     | Rail | Emphasis |
+         *     |---|---|
+         *     | `popular-near-you` | popularity and distance |
+         *     | `best-rated` | rating, gated at 10 reviews |
+         *     | `hidden-gems` | rating high, popularity **inverted**, gated at 3 reviews |
+         *     | `good-for-tonight` | open now required; only offered from 16:00 local |
+         *     | `recommended-for-you` | `categoryMatch` doubled; requires auth |
+         *
+         *     Rails that cannot apply are omitted rather than returned empty — an empty rail reads as a broken screen. Send `X-Local-Hour` so *tonight* means the caller's evening; without it the server assumes Vietnam rather than UTC.
+         *
+         *     Ranked by a weighted linear model evaluated in SQL alongside the geospatial filter (docs/03-platform.md §2.1):
+         *
+         *     ```
+         *     score = 0.30·distance + 0.25·rating + 0.20·popularity + 0.15·categoryMatch + 0.10·openNow
+         *           × boost × novelty
+         *     ```
+         *
+         *     Distance decays exponentially rather than linearly, because 300 m versus 1 km changes where someone goes and 9 km versus 9.5 km does not. Rating is the Bayesian value, never the displayed average, so one five-star review cannot outrank two hundred at 4.6. `categoryMatch` is 0.5 — neutral — for anyone without preferences, so a new user gets an unbiased mix. `novelty` demotes to 0.4 anything the caller viewed or saved in the last week; demoted rather than removed, because a place you did not go to on Monday is still an answer on Saturday.
+         *
+         *     Every term ships back in `scoreParts`, so a result can always be explained rather than guessed at.
+         *
+         *     Results are diversified after scoring: no category may take more than three of the first twenty. Over-cap places are moved down the list, never dropped.
+         *
+         *     If fewer than ten places qualify the radius climbs 2 → 5 → 15 → 50 km and `widened` becomes true, so the client can say *"nothing within 2 km — showing places across the city"* rather than showing an empty screen.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    lat?: number | null;
+                    lng?: number | null;
+                    radius?: number;
+                    limit?: number;
+                };
+                header?: {
+                    /** @description The caller's local hour, 0-23 */
+                    "x-local-hour"?: string;
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The applicable rails, each already ranked and diversified */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                places: {
+                                    isSaved: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    slug: string;
+                                    name: string;
+                                    description: string | null;
+                                    category: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        colorHex: string;
+                                    };
+                                    latitude: number;
+                                    longitude: number;
+                                    address: string;
+                                    province: string;
+                                    district: string | null;
+                                    /** @enum {string|null} */
+                                    priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                    averageRating: number;
+                                    reviewCount: number;
+                                    saveCount: number;
+                                    distanceM: number | null;
+                                    isOpenNow: boolean;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    score: number;
+                                    scoreParts: {
+                                        distance: number;
+                                        rating: number;
+                                        popularity: number;
+                                        categoryMatch: number;
+                                        openNow: number;
+                                        boost: number;
+                                        novelty: number;
+                                    };
+                                }[];
+                                radiusMeters: number;
+                                /** @description True when the radius was widened to fill the feed */
+                                widened: boolean;
+                                /** @description Which ranker answered — "rule-based" today */
+                                strategy: string;
+                                /** @enum {string} */
+                                key: "popular-near-you" | "best-rated" | "hidden-gems" | "good-for-tonight" | "recommended-for-you";
+                                title: string;
+                                subtitle: string | null;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/interactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Report what happened
+         * @description The signal the recommender learns from (docs/00-architecture.md §2). Batched, because card impressions fire on every scroll and one request per event would put analytics ahead of the product on a mobile connection — buffer and flush on a timer and on `visibilitychange`.
+         *
+         *     Authentication is optional and anonymous callers are the point rather than an exception: most browsing happens before anyone signs in, and a recommender that learns only from signed-in users learns from the minority. Send `X-Anon-Id` so a device's history can be merged into its account on sign-up.
+         *
+         *     Only signals the client can genuinely observe are accepted. `REVIEW`, `SUBMIT` and `SEARCH` are written server-side when the thing itself happens — taking a client's word for "I wrote a review" would let anyone inflate a place's popularity with a shell loop.
+         *
+         *     Best-effort throughout: unknown or deleted places are skipped rather than raising, and repeats of the same signal within thirty minutes are counted once and reported as `deduped`. Analytics must never be why a user-facing action fails.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        events: {
+                            /** Format: uuid */
+                            placeId: string;
+                            /** @enum {string} */
+                            type: "VIEW" | "CARD_IMPRESSION" | "CLICK" | "SHARE" | "DIRECTIONS" | "CALL" | "WEBSITE";
+                            /** @enum {string} */
+                            source: "MAP" | "HOME_FEED" | "SEARCH" | "EXPLORE" | "DETAIL" | "RECOMMENDATION" | "DEEPLINK";
+                            latitude?: number;
+                            longitude?: number;
+                        }[];
+                    };
+                };
+            };
+            responses: {
+                /** @description How many events were stored, and how many were duplicates */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @description How many events were stored */
+                                accepted: number;
+                                deduped: number;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/places/pending": {
         parameters: {
             query?: never;
@@ -6017,6 +6389,146 @@ export interface components {
             mode: "driving" | "walking" | "cycling";
             provider: string;
             isFallbackProvider: boolean;
+        };
+        RankedPlace: {
+            isSaved: boolean;
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            name: string;
+            description: string | null;
+            category: {
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                name: string;
+                colorHex: string;
+            };
+            latitude: number;
+            longitude: number;
+            address: string;
+            province: string;
+            district: string | null;
+            /** @enum {string|null} */
+            priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+            averageRating: number;
+            reviewCount: number;
+            saveCount: number;
+            distanceM: number | null;
+            isOpenNow: boolean;
+            coverImageUrl: string | null;
+            coverBlurhash: string | null;
+            score: number;
+            scoreParts: {
+                distance: number;
+                rating: number;
+                popularity: number;
+                categoryMatch: number;
+                openNow: number;
+                boost: number;
+                novelty: number;
+            };
+        };
+        RecommendationFeed: {
+            places: {
+                isSaved: boolean;
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                name: string;
+                description: string | null;
+                category: {
+                    /** Format: uuid */
+                    id: string;
+                    slug: string;
+                    name: string;
+                    colorHex: string;
+                };
+                latitude: number;
+                longitude: number;
+                address: string;
+                province: string;
+                district: string | null;
+                /** @enum {string|null} */
+                priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                averageRating: number;
+                reviewCount: number;
+                saveCount: number;
+                distanceM: number | null;
+                isOpenNow: boolean;
+                coverImageUrl: string | null;
+                coverBlurhash: string | null;
+                score: number;
+                scoreParts: {
+                    distance: number;
+                    rating: number;
+                    popularity: number;
+                    categoryMatch: number;
+                    openNow: number;
+                    boost: number;
+                    novelty: number;
+                };
+            }[];
+            radiusMeters: number;
+            /** @description True when the radius was widened to fill the feed */
+            widened: boolean;
+            /** @description Which ranker answered — "rule-based" today */
+            strategy: string;
+        };
+        RecommendationCollection: {
+            places: {
+                isSaved: boolean;
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                name: string;
+                description: string | null;
+                category: {
+                    /** Format: uuid */
+                    id: string;
+                    slug: string;
+                    name: string;
+                    colorHex: string;
+                };
+                latitude: number;
+                longitude: number;
+                address: string;
+                province: string;
+                district: string | null;
+                /** @enum {string|null} */
+                priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                averageRating: number;
+                reviewCount: number;
+                saveCount: number;
+                distanceM: number | null;
+                isOpenNow: boolean;
+                coverImageUrl: string | null;
+                coverBlurhash: string | null;
+                score: number;
+                scoreParts: {
+                    distance: number;
+                    rating: number;
+                    popularity: number;
+                    categoryMatch: number;
+                    openNow: number;
+                    boost: number;
+                    novelty: number;
+                };
+            }[];
+            radiusMeters: number;
+            /** @description True when the radius was widened to fill the feed */
+            widened: boolean;
+            /** @description Which ranker answered — "rule-based" today */
+            strategy: string;
+            /** @enum {string} */
+            key: "popular-near-you" | "best-rated" | "hidden-gems" | "good-for-tonight" | "recommended-for-you";
+            title: string;
+            subtitle: string | null;
+        };
+        InteractionResult: {
+            /** @description How many events were stored */
+            accepted: number;
+            deduped: number;
         };
         AdminUser: {
             /** Format: uuid */

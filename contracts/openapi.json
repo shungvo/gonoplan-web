@@ -1693,6 +1693,601 @@
           "isFallbackProvider"
         ]
       },
+      "RankedPlace": {
+        "type": "object",
+        "properties": {
+          "isSaved": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "colorHex": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "slug",
+              "name",
+              "colorHex"
+            ]
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "address": {
+            "type": "string"
+          },
+          "province": {
+            "type": "string"
+          },
+          "district": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "priceRange": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "BUDGET",
+              "MODERATE",
+              "EXPENSIVE",
+              "LUXURY"
+            ]
+          },
+          "averageRating": {
+            "type": "number"
+          },
+          "reviewCount": {
+            "type": "integer"
+          },
+          "saveCount": {
+            "type": "integer"
+          },
+          "distanceM": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "isOpenNow": {
+            "type": "boolean"
+          },
+          "coverImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverBlurhash": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "score": {
+            "type": "number"
+          },
+          "scoreParts": {
+            "type": "object",
+            "properties": {
+              "distance": {
+                "type": "number"
+              },
+              "rating": {
+                "type": "number"
+              },
+              "popularity": {
+                "type": "number"
+              },
+              "categoryMatch": {
+                "type": "number"
+              },
+              "openNow": {
+                "type": "number"
+              },
+              "boost": {
+                "type": "number"
+              },
+              "novelty": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "distance",
+              "rating",
+              "popularity",
+              "categoryMatch",
+              "openNow",
+              "boost",
+              "novelty"
+            ]
+          }
+        },
+        "required": [
+          "isSaved",
+          "id",
+          "slug",
+          "name",
+          "description",
+          "category",
+          "latitude",
+          "longitude",
+          "address",
+          "province",
+          "district",
+          "priceRange",
+          "averageRating",
+          "reviewCount",
+          "saveCount",
+          "distanceM",
+          "isOpenNow",
+          "coverImageUrl",
+          "coverBlurhash",
+          "score",
+          "scoreParts"
+        ]
+      },
+      "RecommendationFeed": {
+        "type": "object",
+        "properties": {
+          "places": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "isSaved": {
+                  "type": "boolean"
+                },
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "category": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "colorHex": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "slug",
+                    "name",
+                    "colorHex"
+                  ]
+                },
+                "latitude": {
+                  "type": "number"
+                },
+                "longitude": {
+                  "type": "number"
+                },
+                "address": {
+                  "type": "string"
+                },
+                "province": {
+                  "type": "string"
+                },
+                "district": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "priceRange": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "BUDGET",
+                    "MODERATE",
+                    "EXPENSIVE",
+                    "LUXURY"
+                  ]
+                },
+                "averageRating": {
+                  "type": "number"
+                },
+                "reviewCount": {
+                  "type": "integer"
+                },
+                "saveCount": {
+                  "type": "integer"
+                },
+                "distanceM": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "isOpenNow": {
+                  "type": "boolean"
+                },
+                "coverImageUrl": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "coverBlurhash": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "score": {
+                  "type": "number"
+                },
+                "scoreParts": {
+                  "type": "object",
+                  "properties": {
+                    "distance": {
+                      "type": "number"
+                    },
+                    "rating": {
+                      "type": "number"
+                    },
+                    "popularity": {
+                      "type": "number"
+                    },
+                    "categoryMatch": {
+                      "type": "number"
+                    },
+                    "openNow": {
+                      "type": "number"
+                    },
+                    "boost": {
+                      "type": "number"
+                    },
+                    "novelty": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "distance",
+                    "rating",
+                    "popularity",
+                    "categoryMatch",
+                    "openNow",
+                    "boost",
+                    "novelty"
+                  ]
+                }
+              },
+              "required": [
+                "isSaved",
+                "id",
+                "slug",
+                "name",
+                "description",
+                "category",
+                "latitude",
+                "longitude",
+                "address",
+                "province",
+                "district",
+                "priceRange",
+                "averageRating",
+                "reviewCount",
+                "saveCount",
+                "distanceM",
+                "isOpenNow",
+                "coverImageUrl",
+                "coverBlurhash",
+                "score",
+                "scoreParts"
+              ]
+            }
+          },
+          "radiusMeters": {
+            "type": "integer"
+          },
+          "widened": {
+            "type": "boolean",
+            "description": "True when the radius was widened to fill the feed"
+          },
+          "strategy": {
+            "type": "string",
+            "description": "Which ranker answered — \"rule-based\" today"
+          }
+        },
+        "required": [
+          "places",
+          "radiusMeters",
+          "widened",
+          "strategy"
+        ]
+      },
+      "RecommendationCollection": {
+        "type": "object",
+        "properties": {
+          "places": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "isSaved": {
+                  "type": "boolean"
+                },
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "category": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "colorHex": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "slug",
+                    "name",
+                    "colorHex"
+                  ]
+                },
+                "latitude": {
+                  "type": "number"
+                },
+                "longitude": {
+                  "type": "number"
+                },
+                "address": {
+                  "type": "string"
+                },
+                "province": {
+                  "type": "string"
+                },
+                "district": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "priceRange": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "BUDGET",
+                    "MODERATE",
+                    "EXPENSIVE",
+                    "LUXURY"
+                  ]
+                },
+                "averageRating": {
+                  "type": "number"
+                },
+                "reviewCount": {
+                  "type": "integer"
+                },
+                "saveCount": {
+                  "type": "integer"
+                },
+                "distanceM": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "isOpenNow": {
+                  "type": "boolean"
+                },
+                "coverImageUrl": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "coverBlurhash": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "score": {
+                  "type": "number"
+                },
+                "scoreParts": {
+                  "type": "object",
+                  "properties": {
+                    "distance": {
+                      "type": "number"
+                    },
+                    "rating": {
+                      "type": "number"
+                    },
+                    "popularity": {
+                      "type": "number"
+                    },
+                    "categoryMatch": {
+                      "type": "number"
+                    },
+                    "openNow": {
+                      "type": "number"
+                    },
+                    "boost": {
+                      "type": "number"
+                    },
+                    "novelty": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "distance",
+                    "rating",
+                    "popularity",
+                    "categoryMatch",
+                    "openNow",
+                    "boost",
+                    "novelty"
+                  ]
+                }
+              },
+              "required": [
+                "isSaved",
+                "id",
+                "slug",
+                "name",
+                "description",
+                "category",
+                "latitude",
+                "longitude",
+                "address",
+                "province",
+                "district",
+                "priceRange",
+                "averageRating",
+                "reviewCount",
+                "saveCount",
+                "distanceM",
+                "isOpenNow",
+                "coverImageUrl",
+                "coverBlurhash",
+                "score",
+                "scoreParts"
+              ]
+            }
+          },
+          "radiusMeters": {
+            "type": "integer"
+          },
+          "widened": {
+            "type": "boolean",
+            "description": "True when the radius was widened to fill the feed"
+          },
+          "strategy": {
+            "type": "string",
+            "description": "Which ranker answered — \"rule-based\" today"
+          },
+          "key": {
+            "type": "string",
+            "enum": [
+              "popular-near-you",
+              "best-rated",
+              "hidden-gems",
+              "good-for-tonight",
+              "recommended-for-you"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "subtitle": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "places",
+          "radiusMeters",
+          "widened",
+          "strategy",
+          "key",
+          "title",
+          "subtitle"
+        ]
+      },
+      "InteractionResult": {
+        "type": "object",
+        "properties": {
+          "accepted": {
+            "type": "integer",
+            "description": "How many events were stored"
+          },
+          "deduped": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "accepted",
+          "deduped"
+        ]
+      },
       "AdminUser": {
         "type": "object",
         "properties": {
@@ -10843,6 +11438,822 @@
           },
           "503": {
             "description": "The routing provider is unreachable, or unconfigured in production",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recommendations": {
+      "get": {
+        "tags": [
+          "Recommendations"
+        ],
+        "summary": "The ranked feed",
+        "description": "Ranked by a weighted linear model evaluated in SQL alongside the geospatial filter (docs/03-platform.md §2.1):\n\n```\nscore = 0.30·distance + 0.25·rating + 0.20·popularity + 0.15·categoryMatch + 0.10·openNow\n      × boost × novelty\n```\n\nDistance decays exponentially rather than linearly, because 300 m versus 1 km changes where someone goes and 9 km versus 9.5 km does not. Rating is the Bayesian value, never the displayed average, so one five-star review cannot outrank two hundred at 4.6. `categoryMatch` is 0.5 — neutral — for anyone without preferences, so a new user gets an unbiased mix. `novelty` demotes to 0.4 anything the caller viewed or saved in the last week; demoted rather than removed, because a place you did not go to on Monday is still an answer on Saturday.\n\nEvery term ships back in `scoreParts`, so a result can always be explained rather than guessed at.\n\nResults are diversified after scoring: no category may take more than three of the first twenty. Over-cap places are moved down the list, never dropped.\n\nIf fewer than ten places qualify the radius climbs 2 → 5 → 15 → 50 km and `widened` becomes true, so the client can say *\"nothing within 2 km — showing places across the city\"* rather than showing an empty screen.\n\nAuthentication is optional and changes the ranking rather than gating it: signed in, `categoryMatch` follows what the caller actually does and the novelty demotion applies.",
+        "parameters": [
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -90,
+              "maximum": 90
+            },
+            "required": false,
+            "name": "lat",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -180,
+              "maximum": 180
+            },
+            "required": false,
+            "name": "lng",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 50000,
+              "default": 5000
+            },
+            "required": false,
+            "name": "radius",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ranked places, most relevant first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "places": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "isSaved": {
+                                "type": "boolean"
+                              },
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "slug": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "category": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "colorHex": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "colorHex"
+                                ]
+                              },
+                              "latitude": {
+                                "type": "number"
+                              },
+                              "longitude": {
+                                "type": "number"
+                              },
+                              "address": {
+                                "type": "string"
+                              },
+                              "province": {
+                                "type": "string"
+                              },
+                              "district": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "priceRange": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "enum": [
+                                  "BUDGET",
+                                  "MODERATE",
+                                  "EXPENSIVE",
+                                  "LUXURY"
+                                ]
+                              },
+                              "averageRating": {
+                                "type": "number"
+                              },
+                              "reviewCount": {
+                                "type": "integer"
+                              },
+                              "saveCount": {
+                                "type": "integer"
+                              },
+                              "distanceM": {
+                                "type": [
+                                  "number",
+                                  "null"
+                                ]
+                              },
+                              "isOpenNow": {
+                                "type": "boolean"
+                              },
+                              "coverImageUrl": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "coverBlurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "score": {
+                                "type": "number"
+                              },
+                              "scoreParts": {
+                                "type": "object",
+                                "properties": {
+                                  "distance": {
+                                    "type": "number"
+                                  },
+                                  "rating": {
+                                    "type": "number"
+                                  },
+                                  "popularity": {
+                                    "type": "number"
+                                  },
+                                  "categoryMatch": {
+                                    "type": "number"
+                                  },
+                                  "openNow": {
+                                    "type": "number"
+                                  },
+                                  "boost": {
+                                    "type": "number"
+                                  },
+                                  "novelty": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "distance",
+                                  "rating",
+                                  "popularity",
+                                  "categoryMatch",
+                                  "openNow",
+                                  "boost",
+                                  "novelty"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "isSaved",
+                              "id",
+                              "slug",
+                              "name",
+                              "description",
+                              "category",
+                              "latitude",
+                              "longitude",
+                              "address",
+                              "province",
+                              "district",
+                              "priceRange",
+                              "averageRating",
+                              "reviewCount",
+                              "saveCount",
+                              "distanceM",
+                              "isOpenNow",
+                              "coverImageUrl",
+                              "coverBlurhash",
+                              "score",
+                              "scoreParts"
+                            ]
+                          }
+                        },
+                        "radiusMeters": {
+                          "type": "integer"
+                        },
+                        "widened": {
+                          "type": "boolean",
+                          "description": "True when the radius was widened to fill the feed"
+                        },
+                        "strategy": {
+                          "type": "string",
+                          "description": "Which ranker answered — \"rule-based\" today"
+                        }
+                      },
+                      "required": [
+                        "places",
+                        "radiusMeters",
+                        "widened",
+                        "strategy"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recommendations/collections": {
+      "get": {
+        "tags": [
+          "Recommendations"
+        ],
+        "summary": "The home rails",
+        "description": "Every rail the current context can fill, in one request — five sequential calls is the difference between a home screen that opens and one that loads.\n\nEach rail is the same scorer with different weights, so a change to how distance decays lands on all of them at once:\n\n| Rail | Emphasis |\n|---|---|\n| `popular-near-you` | popularity and distance |\n| `best-rated` | rating, gated at 10 reviews |\n| `hidden-gems` | rating high, popularity **inverted**, gated at 3 reviews |\n| `good-for-tonight` | open now required; only offered from 16:00 local |\n| `recommended-for-you` | `categoryMatch` doubled; requires auth |\n\nRails that cannot apply are omitted rather than returned empty — an empty rail reads as a broken screen. Send `X-Local-Hour` so *tonight* means the caller's evening; without it the server assumes Vietnam rather than UTC.\n\nRanked by a weighted linear model evaluated in SQL alongside the geospatial filter (docs/03-platform.md §2.1):\n\n```\nscore = 0.30·distance + 0.25·rating + 0.20·popularity + 0.15·categoryMatch + 0.10·openNow\n      × boost × novelty\n```\n\nDistance decays exponentially rather than linearly, because 300 m versus 1 km changes where someone goes and 9 km versus 9.5 km does not. Rating is the Bayesian value, never the displayed average, so one five-star review cannot outrank two hundred at 4.6. `categoryMatch` is 0.5 — neutral — for anyone without preferences, so a new user gets an unbiased mix. `novelty` demotes to 0.4 anything the caller viewed or saved in the last week; demoted rather than removed, because a place you did not go to on Monday is still an answer on Saturday.\n\nEvery term ships back in `scoreParts`, so a result can always be explained rather than guessed at.\n\nResults are diversified after scoring: no category may take more than three of the first twenty. Over-cap places are moved down the list, never dropped.\n\nIf fewer than ten places qualify the radius climbs 2 → 5 → 15 → 50 km and `widened` becomes true, so the client can say *\"nothing within 2 km — showing places across the city\"* rather than showing an empty screen.",
+        "parameters": [
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -90,
+              "maximum": 90
+            },
+            "required": false,
+            "name": "lat",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -180,
+              "maximum": 180
+            },
+            "required": false,
+            "name": "lng",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 50000,
+              "default": 5000
+            },
+            "required": false,
+            "name": "radius",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 10
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "The caller's local hour, 0-23"
+            },
+            "required": false,
+            "description": "The caller's local hour, 0-23",
+            "name": "x-local-hour",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The applicable rails, each already ranked and diversified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "places": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "isSaved": {
+                                  "type": "boolean"
+                                },
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "description": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "category": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "format": "uuid"
+                                    },
+                                    "slug": {
+                                      "type": "string"
+                                    },
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "colorHex": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "slug",
+                                    "name",
+                                    "colorHex"
+                                  ]
+                                },
+                                "latitude": {
+                                  "type": "number"
+                                },
+                                "longitude": {
+                                  "type": "number"
+                                },
+                                "address": {
+                                  "type": "string"
+                                },
+                                "province": {
+                                  "type": "string"
+                                },
+                                "district": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "priceRange": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ],
+                                  "enum": [
+                                    "BUDGET",
+                                    "MODERATE",
+                                    "EXPENSIVE",
+                                    "LUXURY"
+                                  ]
+                                },
+                                "averageRating": {
+                                  "type": "number"
+                                },
+                                "reviewCount": {
+                                  "type": "integer"
+                                },
+                                "saveCount": {
+                                  "type": "integer"
+                                },
+                                "distanceM": {
+                                  "type": [
+                                    "number",
+                                    "null"
+                                  ]
+                                },
+                                "isOpenNow": {
+                                  "type": "boolean"
+                                },
+                                "coverImageUrl": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "coverBlurhash": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "score": {
+                                  "type": "number"
+                                },
+                                "scoreParts": {
+                                  "type": "object",
+                                  "properties": {
+                                    "distance": {
+                                      "type": "number"
+                                    },
+                                    "rating": {
+                                      "type": "number"
+                                    },
+                                    "popularity": {
+                                      "type": "number"
+                                    },
+                                    "categoryMatch": {
+                                      "type": "number"
+                                    },
+                                    "openNow": {
+                                      "type": "number"
+                                    },
+                                    "boost": {
+                                      "type": "number"
+                                    },
+                                    "novelty": {
+                                      "type": "number"
+                                    }
+                                  },
+                                  "required": [
+                                    "distance",
+                                    "rating",
+                                    "popularity",
+                                    "categoryMatch",
+                                    "openNow",
+                                    "boost",
+                                    "novelty"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "isSaved",
+                                "id",
+                                "slug",
+                                "name",
+                                "description",
+                                "category",
+                                "latitude",
+                                "longitude",
+                                "address",
+                                "province",
+                                "district",
+                                "priceRange",
+                                "averageRating",
+                                "reviewCount",
+                                "saveCount",
+                                "distanceM",
+                                "isOpenNow",
+                                "coverImageUrl",
+                                "coverBlurhash",
+                                "score",
+                                "scoreParts"
+                              ]
+                            }
+                          },
+                          "radiusMeters": {
+                            "type": "integer"
+                          },
+                          "widened": {
+                            "type": "boolean",
+                            "description": "True when the radius was widened to fill the feed"
+                          },
+                          "strategy": {
+                            "type": "string",
+                            "description": "Which ranker answered — \"rule-based\" today"
+                          },
+                          "key": {
+                            "type": "string",
+                            "enum": [
+                              "popular-near-you",
+                              "best-rated",
+                              "hidden-gems",
+                              "good-for-tonight",
+                              "recommended-for-you"
+                            ]
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "subtitle": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "places",
+                          "radiusMeters",
+                          "widened",
+                          "strategy",
+                          "key",
+                          "title",
+                          "subtitle"
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/interactions": {
+      "post": {
+        "tags": [
+          "Recommendations"
+        ],
+        "summary": "Report what happened",
+        "description": "The signal the recommender learns from (docs/00-architecture.md §2). Batched, because card impressions fire on every scroll and one request per event would put analytics ahead of the product on a mobile connection — buffer and flush on a timer and on `visibilitychange`.\n\nAuthentication is optional and anonymous callers are the point rather than an exception: most browsing happens before anyone signs in, and a recommender that learns only from signed-in users learns from the minority. Send `X-Anon-Id` so a device's history can be merged into its account on sign-up.\n\nOnly signals the client can genuinely observe are accepted. `REVIEW`, `SUBMIT` and `SEARCH` are written server-side when the thing itself happens — taking a client's word for \"I wrote a review\" would let anyone inflate a place's popularity with a shell loop.\n\nBest-effort throughout: unknown or deleted places are skipped rather than raising, and repeats of the same signal within thirty minutes are counted once and reported as `deduped`. Analytics must never be why a user-facing action fails.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "events": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "placeId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "VIEW",
+                            "CARD_IMPRESSION",
+                            "CLICK",
+                            "SHARE",
+                            "DIRECTIONS",
+                            "CALL",
+                            "WEBSITE"
+                          ]
+                        },
+                        "source": {
+                          "type": "string",
+                          "enum": [
+                            "MAP",
+                            "HOME_FEED",
+                            "SEARCH",
+                            "EXPLORE",
+                            "DETAIL",
+                            "RECOMMENDATION",
+                            "DEEPLINK"
+                          ]
+                        },
+                        "latitude": {
+                          "type": "number",
+                          "minimum": -90,
+                          "maximum": 90
+                        },
+                        "longitude": {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        }
+                      },
+                      "required": [
+                        "placeId",
+                        "type",
+                        "source"
+                      ]
+                    },
+                    "minItems": 1,
+                    "maxItems": 50
+                  }
+                },
+                "required": [
+                  "events"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "How many events were stored, and how many were duplicates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accepted": {
+                          "type": "integer",
+                          "description": "How many events were stored"
+                        },
+                        "deduped": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "accepted",
+                        "deduped"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
             "content": {
               "application/json": {
                 "schema": {
