@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { useCreateReview, useUpdateReview } from '../hooks/useReviews';
 import { ApiError } from '@/lib/api/errors';
 import { fieldClass } from '@/components/ui/field';
+import { PhotoPicker, type PickedPhoto } from '@/features/uploads/components/PhotoPicker';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import type { Review } from '../api';
 
@@ -28,24 +29,23 @@ export function WriteReviewSheet({
 }) {
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange}>
-
-          {/*
+      {/*
             Remounted per target rather than syncing state from props in an
             effect. The sheet stays mounted between uses, so without this the
             form would open showing whatever was typed last time — and seeding
             it from an effect causes a cascading render on every open.
           */}
-          {open && (
-            <ReviewForm
-              key={existing?.id ?? 'new'}
-              placeId={placeId}
-              placeName={placeName}
-              existing={existing ?? null}
-              onDone={() => {
-                onOpenChange(false);
-              }}
-            />
-          )}
+      {open && (
+        <ReviewForm
+          key={existing?.id ?? 'new'}
+          placeId={placeId}
+          placeName={placeName}
+          existing={existing ?? null}
+          onDone={() => {
+            onOpenChange(false);
+          }}
+        />
+      )}
     </BottomSheet>
   );
 }
@@ -64,6 +64,17 @@ function ReviewForm({
   const [rating, setRating] = useState(existing?.rating ?? 0);
   const [content, setContent] = useState(existing?.content ?? '');
 
+  /*
+   * Seeded from the review being edited.
+   *
+   * The API replaces the whole set on update rather than appending, so the
+   * existing photos have to start in the list — otherwise saving an edit
+   * would quietly delete every photo the review already had.
+   */
+  const [photos, setPhotos] = useState<PickedPhoto[]>(
+    () => existing?.images.map((image) => ({ key: image.id, url: image.url })) ?? [],
+  );
+
   const create = useCreateReview(placeId);
   const update = useUpdateReview(placeId);
   const pending = create.isPending || update.isPending;
@@ -74,12 +85,21 @@ function ReviewForm({
 
     if (existing) {
       update.mutate(
-        { reviewId: existing.id, rating, content: content.trim() || null },
+        {
+          reviewId: existing.id,
+          rating,
+          content: content.trim() || null,
+          imageKeys: photos.map((photo) => photo.key),
+        },
         { onSuccess: onDone },
       );
     } else {
       create.mutate(
-        { rating, ...(content.trim() ? { content: content.trim() } : {}) },
+        {
+          rating,
+          ...(content.trim() ? { content: content.trim() } : {}),
+          ...(photos.length ? { imageKeys: photos.map((photo) => photo.key) } : {}),
+        },
         { onSuccess: onDone },
       );
     }
@@ -113,6 +133,14 @@ function ReviewForm({
       <p className="text-ink-subtle mt-1 text-right text-xs">
         {content.length}/{MAX_LENGTH}
       </p>
+
+      <p className="text-ink mt-4 text-sm font-semibold">
+        Photos <span className="text-ink-subtle font-normal">(optional)</span>
+      </p>
+      {/* Re-encoded in the browser before upload, which both shrinks the file
+          and strips the EXIF a phone writes into it — including where the
+          photo was taken. See gonoplan-api/docs/04-storage.md §4. */}
+      <PhotoPicker className="mt-2" photos={photos} onChange={setPhotos} disabled={pending} />
 
       {error && (
         <p role="alert" className="bg-danger/10 text-danger mt-3 rounded-md p-3 text-sm">

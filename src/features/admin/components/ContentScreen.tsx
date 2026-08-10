@@ -11,6 +11,8 @@ import { Card, PageHeader, QueueEmpty, RowSkeleton, StatusBadge, TimeAgo } from 
 import { ReasonDialog } from './ReasonDialog';
 import {
   deleteReview,
+  hideReview,
+  restoreReview,
   fetchPlaces,
   fetchReviews,
   suspendPlace,
@@ -58,6 +60,12 @@ export function ContentScreen() {
       setSuspendTarget(null);
       await queryClient.invalidateQueries({ queryKey: ['admin'] });
     },
+  });
+
+  const setVisibility = useMutation({
+    mutationFn: ({ id, hidden }: { id: string; hidden: boolean }) =>
+      hidden ? hideReview(id, 'Hidden by a moderator from the review queue') : restoreReview(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'catalogue', 'reviews'] }),
   });
 
   const removeReview = useMutation({
@@ -248,6 +256,23 @@ export function ContentScreen() {
 
                   <div className="flex shrink-0 items-center gap-2">
                     <StatusBadge status={review.status} />
+                    {/* Hide before delete, and it is the wider button:
+                        reversible moderation should be the easier reach. */}
+                    {review.status !== 'DELETED' && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        isLoading={setVisibility.isPending}
+                        onClick={() => {
+                          setVisibility.mutate({
+                            id: review.id,
+                            hidden: review.status !== 'HIDDEN',
+                          });
+                        }}
+                      >
+                        {review.status === 'HIDDEN' ? 'Restore' : 'Hide'}
+                      </Button>
+                    )}
                     {review.status !== 'DELETED' && (
                       <Button
                         size="sm"

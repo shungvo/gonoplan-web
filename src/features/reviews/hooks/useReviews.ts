@@ -53,7 +53,8 @@ export function useCreateReview(placeId: string) {
   const invalidate = useInvalidateAfterRatingChange(placeId);
 
   return useMutation({
-    mutationFn: (input: { rating: number; content?: string }) => createReview(placeId, input),
+    mutationFn: (input: { rating: number; content?: string; imageKeys?: string[] }) =>
+      createReview(placeId, input),
     onSuccess: invalidate,
   });
 }
@@ -69,6 +70,7 @@ export function useUpdateReview(placeId: string) {
       reviewId: string;
       rating?: number;
       content?: string | null;
+      imageKeys?: string[];
     }) => updateReview(reviewId, input),
     onSuccess: invalidate,
   });

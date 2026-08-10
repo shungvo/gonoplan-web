@@ -7,6 +7,7 @@ import { PlaceImage } from './PlaceImage';
 import { OpeningHours } from './OpeningHours';
 import { ReviewSection } from '@/features/reviews/components/ReviewSection';
 import { RouteToPlace } from '@/features/geo/components/RouteToPlace';
+import { PhotoStack } from './PhotoStack';
 import { SaveButton } from '@/features/favorites/components/SaveButton';
 import { AuthSheet } from '@/features/auth/components/AuthSheet';
 import { ReportSheet } from '@/features/reports/ReportSheet';
@@ -283,6 +284,25 @@ export function PlaceDetailContent({
                 {aboutExpanded ? 'Show less' : 'Read more'}
               </button>
             )}
+          </section>
+        )}
+
+        {/*
+          The photos, as a deck.
+
+          Only when there is more than the cover, which is already the hero
+          above — a "Photos" section showing the one image the reader is
+          looking at is a section that wastes a scroll.
+        */}
+        {place.images.length > 1 && (
+          <section className="border-border mt-5 border-t pt-4">
+            <h2 className="text-ink text-sm font-semibold">
+              Photos
+              <span className="text-ink-subtle ml-2 text-xs font-normal">
+                {place.images.length}
+              </span>
+            </h2>
+            <PhotoStack className="mt-3" alt={place.name} photos={place.images} />
           </section>
         )}
 

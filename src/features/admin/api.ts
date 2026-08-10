@@ -96,7 +96,11 @@ export function fetchUsers(params: {
   status?: UserStatus | undefined;
 }): Promise<AdminUser[]> {
   return api.get<AdminUser[]>('/admin/users', {
-    query: { limit: 50, ...(params.query ? { query: params.query } : {}), ...(params.status ? { status: params.status } : {}) },
+    query: {
+      limit: 50,
+      ...(params.query ? { query: params.query } : {}),
+      ...(params.status ? { status: params.status } : {}),
+    },
   });
 }
 
@@ -140,6 +144,25 @@ export function fetchReviews(params: { maxRating?: number | undefined }): Promis
  */
 export function deleteReview(reviewId: string): Promise<unknown> {
   return api.delete(`/reviews/${reviewId}`);
+}
+
+/**
+ * Hide a review, reversibly.
+ *
+ * The action a moderator actually reaches for. Deletion is for content that
+ * should never be seen again; most reports are about a review that is
+ * borderline, disputed, or wrong in a way that may be appealed — and the only
+ * tool here used to be the irreversible one.
+ *
+ * Hiding also drops it from the place's rating, which deletion does too but
+ * which nothing made obvious.
+ */
+export function hideReview(reviewId: string, reason: string): Promise<unknown> {
+  return api.post(`/admin/reviews/${reviewId}/hide`, { reason });
+}
+
+export function restoreReview(reviewId: string): Promise<unknown> {
+  return api.post(`/admin/reviews/${reviewId}/restore`);
 }
 
 // ─── Audit ──────────────────────────────────────────────────────────────────

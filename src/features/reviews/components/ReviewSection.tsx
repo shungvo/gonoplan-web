@@ -30,13 +30,7 @@ const SORTS: Array<{ value: ReviewSort; label: string }> = [
  * only approved places — are server policy, so the client is told rather than
  * left to infer them and eventually render a button the API refuses.
  */
-export function ReviewSection({
-  placeId,
-  placeName,
-}: {
-  placeId: string;
-  placeName: string;
-}) {
+export function ReviewSection({ placeId, placeName }: { placeId: string; placeName: string }) {
   const [sort, setSort] = useState<ReviewSort>('helpful');
   const [writing, setWriting] = useState(false);
   const [editing, setEditing] = useState<Review | null>(null);
@@ -50,9 +44,9 @@ export function ReviewSection({
   const total = summary?.reviewCount ?? 0;
 
   return (
-    <section className="mt-5 border-t border-border pt-4">
+    <section className="border-border mt-5 border-t pt-4">
       <div className="flex items-baseline justify-between">
-        <h2 className="text-sm font-semibold text-ink">
+        <h2 className="text-ink text-sm font-semibold">
           Reviews {total > 0 && <span className="text-ink-subtle">({total})</span>}
         </h2>
       </div>
@@ -60,7 +54,7 @@ export function ReviewSection({
       {summary && total > 0 && (
         <div className="mt-3 flex items-center gap-4">
           <div className="text-center">
-            <p className="text-3xl leading-none font-semibold text-ink">
+            <p className="text-ink text-3xl leading-none font-semibold">
               {summary.averageRating.toFixed(1)}
             </p>
             <span className="mt-1 flex justify-center gap-0.5">
@@ -88,14 +82,14 @@ export function ReviewSection({
 
               return (
                 <div key={star} className="flex items-center gap-2">
-                  <span className="w-2 text-right text-[0.625rem] text-ink-subtle">{star}</span>
-                  <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-sunken">
+                  <span className="text-ink-subtle w-2 text-right text-[0.625rem]">{star}</span>
+                  <span className="bg-surface-sunken h-1.5 flex-1 overflow-hidden rounded-full">
                     <span
-                      className="block h-full rounded-full bg-warning"
+                      className="bg-warning block h-full rounded-full"
                       style={{ width: `${String(percent)}%` }}
                     />
                   </span>
-                  <span className="w-6 text-[0.625rem] text-ink-subtle">{count}</span>
+                  <span className="text-ink-subtle w-6 text-[0.625rem]">{count}</span>
                 </div>
               );
             })}
@@ -121,14 +115,14 @@ export function ReviewSection({
         {/* The reason is shown, not hidden. "Sign in to write a review" is
             actionable; a missing button is just confusing. */}
         {summary && !summary.canReview && summary.cannotReviewReason && (
-          <p className="rounded-md bg-surface-sunken p-3 text-center text-sm text-ink-muted">
+          <p className="bg-surface-sunken text-ink-muted rounded-md p-3 text-center text-sm">
             {summary.cannotReviewReason}
           </p>
         )}
       </div>
 
       {total > 1 && (
-        <div className="scrollbar-none mt-4 flex gap-2 overflow-x-auto pb-1">
+        <div className="mt-4 flex scrollbar-none gap-2 overflow-x-auto pb-1">
           {SORTS.map((option) => (
             <Chip
               key={option.value}
@@ -152,7 +146,7 @@ export function ReviewSection({
         )}
 
         {!isPending && reviews.length === 0 && (
-          <p className="rounded-lg bg-surface p-5 text-center text-sm text-ink-muted shadow-sm">
+          <p className="bg-surface text-ink-muted rounded-lg p-5 text-center text-sm shadow-sm">
             No reviews yet — be the first to write one.
           </p>
         )}
@@ -175,7 +169,7 @@ export function ReviewSection({
         ))}
 
         {page?.meta?.hasMore && (
-          <p className="pt-1 text-center text-xs text-ink-subtle">
+          <p className="text-ink-subtle pt-1 text-center text-xs">
             Showing the first {reviews.length} reviews
           </p>
         )}

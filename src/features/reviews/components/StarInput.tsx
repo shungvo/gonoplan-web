@@ -52,7 +52,7 @@ export function StarInput({
       </div>
 
       {/* Reserved height, so choosing a rating does not shift the form. */}
-      <p className="mt-1 h-5 text-center text-sm font-medium text-ink-muted">
+      <p className="text-ink-muted mt-1 h-5 text-center text-sm font-medium">
         {value > 0 ? LABELS[value] : 'Tap to rate'}
       </p>
     </div>

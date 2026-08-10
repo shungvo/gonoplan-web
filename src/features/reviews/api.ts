@@ -25,14 +25,14 @@ export function fetchReviewSummary(placeId: string): Promise<ReviewSummary> {
 
 export function createReview(
   placeId: string,
-  input: { rating: number; content?: string },
+  input: { rating: number; content?: string; imageKeys?: string[] },
 ): Promise<Review> {
   return api.post<Review>(`/places/${placeId}/reviews`, input);
 }
 
 export function updateReview(
   reviewId: string,
-  input: { rating?: number; content?: string | null },
+  input: { rating?: number; content?: string | null; imageKeys?: string[] },
 ): Promise<Review> {
   return api.patch<Review>(`/reviews/${reviewId}`, input);
 }

@@ -35,9 +35,43 @@ const nextConfig: NextConfig = {
   },
 
   images: {
-    // Cloudinary serves every place photo; f_auto/q_auto handle format and
-    // quality, so Next only needs to know the origin is trusted.
-    remotePatterns: [{ protocol: 'https', hostname: 'res.cloudinary.com' }],
+    /*
+     * Every origin a place photo may come from.
+     *
+     * `next/image` refuses an unlisted host outright, which is the correct
+     * default and also the reason an upload can appear to succeed while every
+     * photo renders as a broken box — the failure is in the optimiser, not in
+     * the storage.
+     *
+     * The MinIO entry is development only; `S3_PUBLIC_URL` decides the real
+     * one, so add the production bucket or CDN host here when that is set.
+     * See gonoplan-api/docs/04-storage.md §5.
+     */
+    remotePatterns: [
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
+      { protocol: 'http', hostname: 'localhost', port: '9000', pathname: '/**', search: '' },
+    ],
+
+    /*
+     * Lets the optimiser fetch from MinIO, and never ships to production.
+     *
+     * Next 16 refuses to fetch an image from a hostname that resolves to a
+     * private IP — a genuine SSRF guard, since `/_next/image?url=` is an
+     * attacker-controllable server-side fetch, and without it anyone could
+     * point it at `169.254.169.254` and read cloud metadata. `localhost` is a
+     * private IP, so the local bucket is blocked by exactly that rule.
+     *
+     * Safe here for one reason only: in development the URL is our own
+     * docker-compose MinIO. In production the bucket or CDN is a public host,
+     * so this is not needed — and the environment check is what guarantees it
+     * cannot be switched on there by accident.
+     *
+     * The failure it fixes is silent and misleading: the upload succeeds, the
+     * object is in the bucket and publicly readable, and every photo still
+     * renders as an empty box because the *optimiser* refused it.
+     */
+    dangerouslyAllowLocalIP: process.env.NODE_ENV !== 'production',
+
     formats: ['image/avif', 'image/webp'],
   },
 
