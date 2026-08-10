@@ -300,9 +300,13 @@ body:has([data-immersive]) nav[aria-label='Main'] {
 
 /* For a map whose bottom edge is deliberately tucked under a sheet. The
    attribution is a licence notice, so it cannot be the thing that gets tucked
-   — it moves up by the depth of the overlap instead. */
+   — it moves up by the depth of the overlap, plus a little air.
+
+   `--map-tuck` is measured and set by the screen, because the depth is the
+   strip's height minus wherever the sheet happens to start, and both move. The
+   1.5rem fallback is only for a strip that never declares one. */
 .map-tucked .maplibregl-ctrl-bottom-right {
-  bottom: 1.5rem;
+  bottom: calc(var(--map-tuck, 1.5rem) + 0.5rem);
 }
 
 /* §17: motion confirms an action, it never delays one — and it always yields

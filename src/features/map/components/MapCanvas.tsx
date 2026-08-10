@@ -218,7 +218,35 @@ export function MapCanvas({
       setMapError(message);
     });
 
+    /*
+     * Attribution starts folded into its own ⓘ button.
+     *
+     * MapLibre's compact control opens itself on load and only folds away once
+     * the user touches the map, so a bar of licence text sits across the
+     * bottom of every fresh map — over the card carousel on the full map, and
+     * over the sheet on the strip behind Explore's list.
+     *
+     * Folded is the same control, not a removed one: the ⓘ opens it, and it is
+     * the form MapLibre and Mapbox both ship on small screens. Deleting the
+     * control is not on the table — OpenStreetMap's data is ODbL and crediting
+     * it is a condition of using these tiles, so the notice has to stay
+     * reachable.
+     */
+    const foldAttribution = () => {
+      const details = map
+        .getContainer()
+        .querySelector<HTMLDetailsElement>('details.maplibregl-ctrl-attrib');
+      if (!details) return;
+
+      details.open = false;
+      // MapLibre styles the expanded state off this class as well as `open`,
+      // so clearing only one of the two leaves the text visible.
+      details.classList.remove('maplibregl-compact-show');
+    };
+
     map.on('load', () => {
+      foldAttribution();
+
       /*
        * Everything in here is wrapped, because `setIsReady(true)` is the last
        * statement and a throw before it left the loading placeholder covering

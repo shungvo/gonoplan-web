@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useState, type CSSProperties } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Compass, List, Map, Route, Search, SlidersHorizontal, X } from 'lucide-react';
@@ -20,6 +20,25 @@ import { useLocationStore } from '@/features/location/store';
 import { formatDistance } from '@/lib/geo/grid';
 
 const FALLBACK_ORIGIN = { latitude: 10.7769, longitude: 106.7009 };
+
+/**
+ * A `style` object that may also carry CSS custom properties.
+ *
+ * React forwards `--*` keys to the DOM, but `CSSProperties` has no index
+ * signature for them, so the plain type rejects a variable the stylesheet is
+ * waiting for. Widening the key space beats asserting the object's type — the
+ * standard properties on it stay checked.
+ */
+type StyleWithVars = CSSProperties & Record<`--${string}`, string>;
+
+/**
+ * The map strip behind the list.
+ *
+ * Deliberately taller than the gap above the sheet, so no seam of page
+ * background can appear between the two. A value rather than a class because
+ * the attribution's lift is derived from it — see `sheetRestTop`.
+ */
+const MAP_STRIP_HEIGHT = '50dvh';
 
 /**
  * Explore — browse everything nearby, filtered by category.
@@ -71,6 +90,45 @@ export function ExploreScreen() {
       observer.disconnect();
     };
   }, []);
+
+  /*
+   * Where the sheet starts when the list is unscrolled, so the map's
+   * attribution can be lifted clear of it.
+   *
+   * The strip is taller than the gap above the sheet on purpose, which means
+   * its bottom edge — and MapLibre's control cluster with it — is permanently
+   * behind the sheet. That notice has to stay reachable, so it moves up by
+   * exactly the depth of the overlap. A hard-coded lift is what broke it: 24px
+   * was right at `38dvh` and buried the control 65px deep the moment the strip
+   * became `50dvh`.
+   */
+  const [sheetRestTop, setSheetRestTop] = useState(0);
+
+  const measureSheetRestTop = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return;
+
+    const update = () => {
+      setSheetRestTop(node.offsetTop);
+    };
+    update();
+
+    const observer = new ResizeObserver(update);
+    observer.observe(node);
+    // The header above the sheet moves it without changing its size, so
+    // watching the sheet alone would miss a header that grew a line.
+    if (node.parentElement) observer.observe(node.parentElement);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  const mapStripStyle: StyleWithVars = {
+    height: MAP_STRIP_HEIGHT,
+    // How much of the strip the sheet covers at rest. `.map-tucked` reads this
+    // to lift the attribution out from under it.
+    '--map-tuck': `calc(${MAP_STRIP_HEIGHT} - ${String(sheetRestTop)}px)`,
+  };
 
   const origin = coordinates ?? FALLBACK_ORIGIN;
 
@@ -377,7 +435,7 @@ export function ExploreScreen() {
         below anything given a `z-10` of its own — so the chrome that has to
         sit over the map now says so explicitly, one class each.
       */}
-      <div className="fixed inset-x-0 top-0 z-0 h-[38dvh]">
+      <div className="fixed inset-x-0 top-0 z-0" style={mapStripStyle}>
         <MapCanvas
           className="map-tucked absolute inset-0"
           showZoomControls={false}
@@ -428,7 +486,7 @@ export function ExploreScreen() {
         Sized so the user's own position sits above the sheet rather than
         behind it — a map you cannot see yourself on answers nothing.
       */}
-      <div className="h-[22dvh]" aria-hidden />
+      <div className="h-[24dvh]" aria-hidden />
 
       {/*
         The list, shaped like a sheet.
@@ -438,7 +496,10 @@ export function ExploreScreen() {
         and a real Drawer would add a second scroll region for the page to
         argue with.
       */}
-      <div className="bg-surface shadow-sheet relative z-10 min-h-[70dvh] rounded-t-xl pb-2">
+      <div
+        ref={measureSheetRestTop}
+        className="bg-surface shadow-sheet relative z-10 min-h-[70dvh] rounded-t-xl pb-2"
+      >
         {/*
           The bar needs a box of its own.
 
