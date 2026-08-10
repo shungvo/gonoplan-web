@@ -268,7 +268,7 @@ export function MapCanvas({
 
     for (const [id, size] of clusters) {
       if (map.hasImage(id)) continue;
-      const image = renderClusterImage(size, '#6C5CE7', pixelRatio);
+      const image = renderClusterImage(size, '#0F6CCD', pixelRatio);
       if (image) map.addImage(id, image, { pixelRatio });
     }
 

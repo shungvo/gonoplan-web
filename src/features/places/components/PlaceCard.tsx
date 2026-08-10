@@ -62,7 +62,7 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
       </div>
 
       <div className="p-3.5">
-        <h3 className="truncate text-[0.9375rem] leading-snug font-semibold text-ink">
+        <h3 className="truncate text-[0.9375rem] leading-snug font-semibold text-primary">
           {place.name}
         </h3>
 

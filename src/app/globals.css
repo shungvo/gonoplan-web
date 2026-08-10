@@ -9,48 +9,69 @@
  */
 @theme {
   /* ─── Brand ─────────────────────────────────────────────────────────── */
-  --color-primary: #6c5ce7;
-  --color-primary-soft: #a29bfe;
-  --color-primary-tint: #f0edff;
+  /* Azure. Every hue below is pulled toward blue rather than left neutral — a
+     warm grey against a cool primary is what makes a light theme look dirty,
+     and it is the difference between "blue app" and "app with blue buttons".
 
-  /* Warm counterweight. A purple-only palette reads like a SaaS dashboard;
-     the map, category markers and CTAs need a colour that is not the brand. */
+     The exact blue is measured, not picked by eye. A brighter azure (#1683f0)
+     looks better in a static mockup but carries white button text at only
+     3.79:1 — under AA, on the one control that must never be hard to read.
+
+     This one clears AA in all four directions it is actually used: white on it
+     (5.19), and it as type on white (5.19), on the background (4.68) and on
+     sunken (4.55). The last two are what forced the final nudge — a blue that
+     passes on white but fails on the tinted background is a trap, because
+     nothing at the call site says which surface it will land on. One blue,
+     safe everywhere, so there is no second "blue for text" token to keep in
+     step with this one. */
+  --color-primary: #0f6ccd;
+  --color-primary-soft: #6fb4f7;
+  --color-primary-tint: #e4f0fe;
+
+  /* Warm counterweight. A blue-only palette reads like a utility screen; the
+     map, category markers and the location states need a colour that is not
+     the brand. Coral is blue's complement, so it stays legible on top of it. */
   --color-accent: #ff7a59;
   --color-accent-tint: #fff1ec;
 
   /* ─── Semantic ──────────────────────────────────────────────────────── */
-  --color-success: #00c48c;
-  --color-warning: #ffb020;
-  --color-danger: #ff5a5f;
+  --color-success: #14c08a;
+  --color-warning: #f5b02e;
+  --color-danger: #f2545b;
 
   /* ─── Surfaces ──────────────────────────────────────────────────────── */
-  --color-background: #f7f7fb;
+  --color-background: #edf4fb;
   --color-surface: #ffffff;
-  --color-surface-sunken: #f0f0f6;
+  --color-surface-sunken: #e9f1f9;
 
   /* ─── Text ──────────────────────────────────────────────────────────── */
-  --color-ink: #1f1f29;
-  --color-ink-muted: #6e6e80;
-  --color-ink-subtle: #9a9aad;
-  --color-border: #ececf3;
+  --color-ink: #14202e;
+  --color-ink-muted: #5a6b7d;
+  --color-ink-subtle: #8a9aab;
+  --color-border: #dbe7f3;
 
   /* ─── Radii ─────────────────────────────────────────────────────────── */
-  --radius-xs: 8px;
-  --radius-sm: 12px;
-  --radius-md: 16px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
+  /* Generous. The soft, rounded silhouette is most of what separates this
+     look from a stock dashboard — cards read as physical tiles rather than
+     panels, and every pill is fully round. */
+  --radius-xs: 10px;
+  --radius-sm: 14px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
 
   /* ─── Soft-3D depth ─────────────────────────────────────────────────── */
   /* Layered shadows rather than glassmorphism, which §16 rules out. Each
      level pairs a tight contact shadow with a wide ambient one — that pairing
-     is what reads as physical depth instead of a flat grey blur. */
-  --shadow-sm: 0 1px 2px rgb(31 31 41 / 0.04), 0 1px 3px rgb(31 31 41 / 0.06);
-  --shadow-md: 0 2px 4px rgb(31 31 41 / 0.04), 0 8px 16px rgb(31 31 41 / 0.08);
-  --shadow-lg: 0 4px 8px rgb(31 31 41 / 0.04), 0 16px 32px rgb(31 31 41 / 0.1);
-  --shadow-xl: 0 8px 16px rgb(31 31 41 / 0.04), 0 24px 48px rgb(31 31 41 / 0.12);
-  --shadow-primary: 0 8px 24px rgb(108 92 231 / 0.28);
-  --shadow-sheet: 0 -8px 32px rgb(31 31 41 / 0.12);
+     is what reads as physical depth instead of a flat grey blur.
+     Tinted navy, not black: a neutral shadow over a blue background greys it
+     out, and the cards stop looking like they are floating in the same room. */
+  --shadow-sm: 0 1px 2px rgb(19 66 116 / 0.05), 0 2px 6px rgb(19 66 116 / 0.06);
+  --shadow-md: 0 2px 6px rgb(19 66 116 / 0.05), 0 10px 20px rgb(19 66 116 / 0.09);
+  --shadow-lg: 0 4px 10px rgb(19 66 116 / 0.05), 0 18px 36px rgb(19 66 116 / 0.11);
+  --shadow-xl: 0 8px 18px rgb(19 66 116 / 0.06), 0 28px 56px rgb(19 66 116 / 0.13);
+  --shadow-primary: 0 8px 24px rgb(15 108 205 / 0.30);
+  --shadow-sheet: 0 -8px 32px rgb(19 66 116 / 0.14);
 
   /* ─── Motion ────────────────────────────────────────────────────────── */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
@@ -78,6 +99,16 @@
   body {
     height: 100dvh;
     background-color: var(--color-background);
+    /* A diagonal sweep, barely there — two stops either side of the base
+       colour. It stops a full screen of one flat light blue from looking like
+       an unpainted background, and because the shell is 100dvh with its own
+       scroll container, it never travels with the content. */
+    background-image: linear-gradient(
+      160deg,
+      #f5fafe 0%,
+      var(--color-background) 45%,
+      #e2edf8 100%
+    );
     color: var(--color-ink);
     /* Stops iOS rubber-band scrolling from dragging the whole app when the
        user pans the map or over-scrolls a bottom sheet. */

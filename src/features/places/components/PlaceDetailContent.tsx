@@ -85,7 +85,7 @@ export function PlaceDetailContent({
           {place.subcategory ? ` · ${place.subcategory.name}` : ''}
         </span>
 
-        <h1 className="mt-2.5 text-2xl leading-tight font-semibold tracking-tight text-ink">
+        <h1 className="mt-2.5 text-2xl leading-tight font-semibold tracking-tight text-primary">
           {place.name}
         </h1>
 

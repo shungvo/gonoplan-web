@@ -44,7 +44,7 @@ export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps
 
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="truncate text-[0.9375rem] leading-snug font-semibold text-ink">
+          <h3 className="truncate text-[0.9375rem] leading-snug font-semibold text-primary">
             {place.name}
           </h3>
           {place.isOpenNow && (

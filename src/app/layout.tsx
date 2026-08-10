@@ -27,7 +27,7 @@ export const viewport: Viewport = {
   // Lets the app paint into the notch and home-indicator areas; the `*-safe`
   // utilities then pad content back out of them.
   viewportFit: 'cover',
-  themeColor: '#f7f7fb',
+  themeColor: '#edf4fb',
   // Zoom stays enabled. Disabling it is a common mobile-app affectation and an
   // accessibility failure for anyone who needs to magnify text.
   maximumScale: 5,

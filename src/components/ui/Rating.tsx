@@ -59,7 +59,7 @@ export function PriceRange({ value, className }: { value: string | null; classNa
   if (!value) return null;
 
   return (
-    <span className={cn('text-xs font-semibold tracking-wide text-ink-muted', className)}>
+    <span className={cn('text-xs font-semibold tracking-wide text-primary', className)}>
       {PRICE_LABEL[value] ?? ''}
     </span>
   );
