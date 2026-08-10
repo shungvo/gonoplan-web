@@ -171,7 +171,18 @@ export function ExploreScreen() {
               onClick={() => {
                 router.push('/search');
               }}
-              className="bg-surface flex h-12 flex-1 items-center gap-3 rounded-full px-4 text-left shadow-md active:scale-[0.99]"
+              /*
+                `min-w-0` is load-bearing, not tidying.
+
+                A flex item keeps `min-width: auto`, which floors it at its own
+                min-content width — and the label below is `truncate`, so its
+                `white-space: nowrap` makes that min-content the *entire*
+                string. The button therefore refused to shrink below 278px,
+                and at 379px wide it shoved the List button 19px off the
+                screen. `truncate` cannot do its job until the box it is in is
+                allowed to get smaller than its text.
+              */
+              className="bg-surface flex h-12 min-w-0 flex-1 items-center gap-3 rounded-full px-4 text-left shadow-md active:scale-[0.99]"
             >
               <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
               <span className="text-ink-subtle truncate text-[0.9375rem]">
@@ -190,29 +201,7 @@ export function ExploreScreen() {
             </button>
           </div>
 
-          <div className="pointer-events-auto mt-2 flex scrollbar-none gap-2 overflow-x-auto pb-1">
-            <Chip
-              selected={openNow}
-              onClick={() => {
-                setOpenNow((value) => !value);
-              }}
-            >
-              <SlidersHorizontal className="size-3.5" aria-hidden />
-              Open now
-            </Chip>
-            {categories?.map((category) => (
-              <Chip
-                key={category.id}
-                selected={selectedSlugs.includes(category.slug)}
-                colorHex={category.colorHex}
-                onClick={() => {
-                  toggleCategory(category.slug);
-                }}
-              >
-                {category.name}
-              </Chip>
-            ))}
-          </div>
+          
 
           {/*
             Under the filters, not above the carousel.
@@ -259,7 +248,31 @@ export function ExploreScreen() {
             </div>
           )}
         </div>
-
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-background/95 to-transparent pt-2">
+            <div className="pointer-events-auto mt-2 flex scrollbar-none gap-2 overflow-x-auto pb-1">
+            <Chip
+              selected={openNow}
+              onClick={() => {
+                setOpenNow((value) => !value);
+              }}
+            >
+              <SlidersHorizontal className="size-3.5" aria-hidden />
+              Open now
+            </Chip>
+            {categories?.map((category) => (
+              <Chip
+                key={category.id}
+                selected={selectedSlugs.includes(category.slug)}
+                colorHex={category.colorHex}
+                onClick={() => {
+                  toggleCategory(category.slug);
+                }}
+              >
+                {category.name}
+              </Chip>
+            ))}
+          </div>
+          </div>
         {/* What is actually on screen, in the order the map would read.
 
             The padding clears MapLibre's attribution strip, which is legally

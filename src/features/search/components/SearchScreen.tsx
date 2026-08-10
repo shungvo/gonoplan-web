@@ -157,7 +157,13 @@ export function SearchScreen() {
                         onClick={() => {
                           runSearch(item);
                         }}
-                        className="flex flex-1 items-center gap-3 py-2.5 text-left"
+                        // `min-w-0` or the `truncate` below never fires: a flex
+                        // item is floored at its min-content width, and
+                        // `truncate` sets `white-space: nowrap`, which makes
+                        // that the whole string. A long enough recent search
+                        // pushed the remove button 197px off the screen — the
+                        // entry became impossible to delete.
+                        className="flex min-w-0 flex-1 items-center gap-3 py-2.5 text-left"
                       >
                         <Clock className="text-ink-subtle size-4 shrink-0" aria-hidden />
                         <span className="text-ink truncate text-[0.9375rem]">{item}</span>
