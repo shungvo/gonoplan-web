@@ -94,8 +94,8 @@ export function HomeScreen() {
         location becomes the header's subject — it is the answer to "where am I
         looking?", which is the question the whole feed below depends on.
       */}
-      <header className="px-safe pt-safe px-5">
-        <div className="flex items-center gap-3 pt-3">
+      <header className="pt-safe-float px-5">
+        <div className="flex items-center gap-3">
           <Link
             href="/profile"
             aria-label={user ? `Signed in as ${user.name}` : 'Sign in'}

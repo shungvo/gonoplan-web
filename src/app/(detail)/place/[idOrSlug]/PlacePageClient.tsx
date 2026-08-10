@@ -55,7 +55,7 @@ export function PlacePageClient({ idOrSlug }: { idOrSlug: string }) {
         CTA lower down — save and share — live here instead, where they read as
         secondary because of where they are rather than because of their size.
       */}
-      <header className="pt-safe flex items-center justify-between gap-3 px-4 pt-3">
+      <header className="pt-safe-float flex items-center justify-between gap-3 px-4">
         <button
           type="button"
           onClick={goBack}

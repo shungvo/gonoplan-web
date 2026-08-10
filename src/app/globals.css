@@ -176,6 +176,14 @@
   .pb-safe-float {
     padding-bottom: max(env(safe-area-inset-bottom, 0px), 0.75rem);
   }
+  /* Same problem at the top, and the one the header actually hit: `pt-safe`
+     alone is the notch inset, which is zero in a browser and on most Android
+     devices — so a header relying on it sat 12px from the very edge of the
+     screen. A floor gives it room everywhere and still clears a notch where
+     there is one. */
+  .pt-safe-float {
+    padding-top: max(env(safe-area-inset-top, 0px), 1rem);
+  }
   /* Scroll clearance for content behind the floating nav. Must stay in step
      with .pb-safe-float or the last card ends up under the bar. */
   .pb-nav {

@@ -128,7 +128,7 @@ export function ExploreScreen() {
 
         {/* Floats over the map, matching the reference: the controls belong to
             the map, not to a bar above it. */}
-        <div className="pt-safe pointer-events-none absolute inset-x-0 top-0 px-4 pt-3">
+        <div className="pt-safe-float pointer-events-none absolute inset-x-0 top-0 px-4">
           <div className="pointer-events-auto flex gap-2">
             <button
               type="button"
