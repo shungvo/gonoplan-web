@@ -38,19 +38,33 @@ export function BottomNav() {
         'pb-safe-float px-safe',
       )}
     >
-      <ul className="mx-auto flex max-w-md items-stretch gap-1 rounded-xl border border-border/60 bg-surface/85 p-1.5 shadow-lg backdrop-blur-xl">
+      {/*
+        Hugs its content instead of stretching to the screen.
+
+        `flex-1` across a `max-w-md` bar made every tab a quarter of the
+        viewport, so on a phone the nav was a full-width slab and the map or
+        list behind it lost a band of screen for four icons. Sized to content
+        it is about 260px — a floating control rather than a shelf.
+
+        Only the active tab shows its label. Four labels is what made the bar
+        wide in the first place, and the one you need is the one telling you
+        where you are; the rest keep theirs for screen readers.
+      */}
+      <ul className="mx-auto flex w-fit items-center gap-1 rounded-full border border-border/60 bg-surface/85 p-1.5 shadow-lg backdrop-blur-xl">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href);
 
           return (
-            <li key={href} className="flex-1">
+            <li key={href}>
               <Link
                 href={href}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'relative flex h-14 flex-col items-center justify-center gap-1 rounded-lg',
-                  'text-[0.6875rem] font-medium transition-colors duration-200',
-                  isActive ? 'text-primary' : 'text-ink-subtle hover:text-ink-muted',
+                  'relative flex h-12 items-center justify-center gap-1.5 rounded-full',
+                  'text-[0.8125rem] font-medium transition-colors duration-200',
+                  // 48px square when collapsed — still past the 44px floor the
+                  // rest of the app holds to.
+                  isActive ? 'px-4 text-primary' : 'w-12 text-ink-subtle hover:text-ink-muted',
                 )}
               >
                 {/* A shared layoutId animates the pill between tabs instead of
@@ -59,16 +73,18 @@ export function BottomNav() {
                 {isActive && (
                   <motion.span
                     layoutId="nav-active-pill"
-                    className="absolute inset-0 rounded-lg bg-primary-tint"
+                    className="absolute inset-0 rounded-full bg-primary-tint"
                     transition={{ type: 'spring', stiffness: 380, damping: 34 }}
                   />
                 )}
                 <Icon
-                  className="relative size-[1.375rem]"
+                  className="relative size-[1.375rem] shrink-0"
                   strokeWidth={isActive ? 2.4 : 1.8}
                   aria-hidden
                 />
-                <span className="relative">{label}</span>
+                {/* Kept in the tree when collapsed, not removed: the tab still
+                    needs an accessible name. */}
+                <span className={cn('relative', !isActive && 'sr-only')}>{label}</span>
               </Link>
             </li>
           );
