@@ -13,6 +13,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 import { resolveMapStyleProvider } from '@/lib/map/providers';
 import { ensureMapWorker } from '@/lib/map/worker';
+import { applyMapTheme } from '@/lib/map/theme';
 import {
   CLUSTER_IMAGE_LARGE,
   CLUSTER_IMAGE_MEDIUM,
@@ -65,6 +66,31 @@ function basemapFont(map: MapLibreMap): string[] | null {
   return null;
 }
 
+/**
+ * Keeps fit-padding inside the box doing the fitting.
+ *
+ * MapLibre subtracts padding from the viewport before solving for a camera; if
+ * the two sides together exceed the container the remaining box is zero or
+ * negative and the fit is meaningless. Each axis keeps at least a quarter of
+ * the map for the route itself.
+ */
+function clampPadding(
+  padding: { top: number; bottom: number; left: number; right: number },
+  container: HTMLElement,
+): { top: number; bottom: number; left: number; right: number } {
+  const fit = (near: number, far: number, extent: number) => {
+    const budget = Math.max(0, extent * 0.75);
+    const total = near + far;
+    if (total <= budget || total === 0) return [near, far] as const;
+    const scale = budget / total;
+    return [Math.floor(near * scale), Math.floor(far * scale)] as const;
+  };
+
+  const [top, bottom] = fit(padding.top, padding.bottom, container.clientHeight);
+  const [left, right] = fit(padding.left, padding.right, container.clientWidth);
+  return { top, bottom, left, right };
+}
+
 export interface MapCanvasProps {
   center: { latitude: number; longitude: number };
   zoom?: number;
@@ -85,6 +111,33 @@ export interface MapCanvasProps {
   showZoomControls?: boolean;
   /** How far the zoom buttons sit above the map's bottom edge, as a CSS length. */
   controlsBottomOffset?: string;
+  /**
+   * Off for a map that is about one specific place. The marker endpoint is
+   * keyed on the viewport, so leaving it on would spend a request — and a
+   * screenful of cluster bubbles — on neighbours nobody asked about.
+   */
+  showPlaceMarkers?: boolean;
+  /**
+   * A guaranteed pin, drawn whether or not the place is in the marker feed.
+   * A map about a place that fails to show that place is worse than no map.
+   */
+  destination?: { latitude: number; longitude: number } | null;
+  /**
+   * Off for a map embedded in a scrolling page, where a drag has to belong to
+   * the page. An inert preview that opens the real map on tap beats a map that
+   * eats every scroll gesture that starts on it.
+   */
+  interactive?: boolean;
+  /**
+   * Room left around a fitted route, in pixels.
+   *
+   * The caller sets it because only the caller knows what floats over its map.
+   * The default is asymmetric for the full-screen map, whose bottom belongs to
+   * a card carousel — and on a 208px preview that same 220px of bottom padding
+   * exceeded the map, so the route was fitted into a box taller than the one
+   * drawing it and ran off the edge.
+   */
+  routePadding?: { top: number; bottom: number; left: number; right: number };
   className?: string;
 }
 
@@ -99,6 +152,10 @@ export function MapCanvas({
   route = null,
   showZoomControls = true,
   controlsBottomOffset = '2.25rem',
+  showPlaceMarkers = true,
+  destination = null,
+  interactive = true,
+  routePadding = { top: 90, bottom: 220, left: 48, right: 48 },
   className,
 }: MapCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -149,15 +206,17 @@ export function MapCanvas({
         [Math.max(...lngs), Math.max(...lats)],
       ],
       {
-        // Asymmetric on purpose: the bottom of a map screen belongs to the
-        // sheet or the carousel, so a route centred in the geometric middle
-        // ends up half-covered.
-        padding: { top: 90, bottom: 220, left: 48, right: 48 },
+        // The default is asymmetric because the bottom of a map *screen*
+        // belongs to the sheet or the carousel, so a route centred in the
+        // geometric middle ends up half-covered. Clamped all the same: padding
+        // that exceeds the container makes MapLibre fit into a negative box,
+        // and the route leaves the map entirely.
+        padding: clampPadding(routePadding, map.getContainer()),
         duration: 600,
         maxZoom: 16,
       },
     );
-  }, [route, isReady]);
+  }, [route, isReady, routePadding]);
 
   // ─── Map lifecycle ────────────────────────────────────────────────────────
   useEffect(() => {
@@ -188,6 +247,23 @@ export function MapCanvas({
     });
 
     map.touchZoomRotate.disableRotation();
+
+    /*
+     * An inert map for the preview embedded in the detail page.
+     *
+     * Not `interactive: false` in the constructor — that also kills `resize`
+     * handling in some MapLibre versions and leaves no way to re-enable. Each
+     * handler is disabled by name, so the map still redraws, still fits a
+     * route, and simply refuses to take a gesture the page needs.
+     */
+    if (!interactive) {
+      map.dragPan.disable();
+      map.scrollZoom.disable();
+      map.doubleClickZoom.disable();
+      map.touchZoomRotate.disable();
+      map.keyboard.disable();
+      map.getCanvas().style.cursor = 'pointer';
+    }
 
     /*
      * MapLibre reports tile failures, style errors and lost WebGL contexts
@@ -246,6 +322,27 @@ export function MapCanvas({
 
     map.on('load', () => {
       foldAttribution();
+
+      /*
+       * Before our own layers, so the route and the pins are added on top of a
+       * basemap that has already stopped competing with them. Outside the
+       * `try` below on purpose: it guards itself layer by layer and cannot
+       * throw, and a recolouring that half-applied should never be the reason
+       * the map's data layers do not exist.
+       */
+      const themed = applyMapTheme(map);
+      /*
+       * A provider that reorganises its layer ids would not break anything —
+       * it would silently return the basemap to its stock colours, which is
+       * the kind of regression that ships. Nothing user-facing: this is a
+       * message for whoever next changes the provider.
+       */
+      if (process.env.NODE_ENV !== 'production') {
+        console.info('[map] theme', themed);
+        if (themed.styled === 0) {
+          console.warn('[map] basemap theme matched no layers — provider schema may have changed');
+        }
+      }
 
       /*
        * Everything in here is wrapped, because `setIsReady(true)` is the last
@@ -407,7 +504,10 @@ export function MapCanvas({
         maxLng: b.getEast(),
         maxLat: b.getNorth(),
       };
-      setBounds(next);
+      // Gated rather than skipping the layers: `bounds` is what enables the
+      // marker query, so leaving it null keeps the source empty and the
+      // request unmade, with no conditional layer setup to get wrong.
+      if (showPlaceMarkers) setBounds(next);
       setCurrentZoom(map.getZoom());
       onViewportChange?.(next, map.getZoom());
     };
@@ -596,6 +696,34 @@ export function MapCanvas({
       userMarkerRef.current.setLngLat([userLocation.longitude, userLocation.latitude]);
     }
   }, [isReady, userLocation]);
+
+  // ─── Destination pin ──────────────────────────────────────────────────────
+  const destinationMarkerRef = useRef<Marker | null>(null);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !isReady) return;
+
+    if (!destination) {
+      destinationMarkerRef.current?.remove();
+      destinationMarkerRef.current = null;
+      return;
+    }
+
+    if (!destinationMarkerRef.current) {
+      // A DOM marker rather than a symbol layer: this pin has to appear whether
+      // or not the marker feed is even running, which is the whole point of it.
+      const element = document.createElement('div');
+      element.className = 'gonoplan-destination-pin';
+      destinationMarkerRef.current = new Marker({ element, anchor: 'bottom' }).setLngLat([
+        destination.longitude,
+        destination.latitude,
+      ]);
+      destinationMarkerRef.current.addTo(map);
+    } else {
+      destinationMarkerRef.current.setLngLat([destination.longitude, destination.latitude]);
+    }
+  }, [isReady, destination]);
 
   // ─── Imperative recentre ──────────────────────────────────────────────────
   useEffect(() => {

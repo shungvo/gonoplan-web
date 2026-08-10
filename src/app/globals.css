@@ -239,6 +239,30 @@
   animation: gonoplan-pulse 2.4s ease-out infinite;
 }
 
+/* The destination on a route map. A teardrop rather than a dot, because the
+   other end of the line is the pulsing dot and the two have to be told apart
+   at a glance — one is where you are, one is where you are going. */
+.gonoplan-destination-pin {
+  /* The inner dot is positioned against this, not against MapLibre's own
+     marker wrapper — without it the white centre drifts off the pin. */
+  position: relative;
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px 9999px 9999px 2px;
+  transform: rotate(-45deg);
+  background: var(--color-primary);
+  border: 3px solid #fff;
+  box-shadow: var(--shadow-primary);
+}
+
+.gonoplan-destination-pin::after {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border-radius: 9999px;
+  background: #fff;
+}
+
 @keyframes gonoplan-pulse {
   0% {
     transform: scale(0.6);

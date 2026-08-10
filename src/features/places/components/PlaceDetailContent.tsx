@@ -6,6 +6,7 @@ import { ChevronRight, Flag, Globe, MapPin, Navigation, Phone, Share2 } from 'lu
 import { PlaceImage } from './PlaceImage';
 import { OpeningHours } from './OpeningHours';
 import { ReviewSection } from '@/features/reviews/components/ReviewSection';
+import { RouteToPlace } from '@/features/geo/components/RouteToPlace';
 import { SaveButton } from '@/features/favorites/components/SaveButton';
 import { AuthSheet } from '@/features/auth/components/AuthSheet';
 import { ReportSheet } from '@/features/reports/ReportSheet';
@@ -52,9 +53,12 @@ export function PlaceDetailContent({
    * Hands off to the device's map app.
    *
    * Turn-by-turn navigation is not something a PWA should reimplement badly:
-   * the native app has the GPS, the voice, and the traffic. In-app route
-   * preview arrives with the routing proxy in a later phase; this is the
-   * action people actually want from a discovery app today.
+   * the native app has the GPS, the voice, and the traffic. The in-app preview
+   * now lives in `RouteToPlace` below — a drawn line and a time, which is what
+   * decides whether someone goes. This is the button for once they have.
+   *
+   * No `origin`: omitted, Google uses the device's own live position, which is
+   * fresher than the coordinate we cached.
    */
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${String(place.latitude)},${String(place.longitude)}`;
 
@@ -85,7 +89,7 @@ export function PlaceDetailContent({
       <div className={cn('relative', compact ? '' : 'px-4 pt-2')}>
         <div
           className={cn(
-            'relative w-full overflow-hidden bg-surface-sunken',
+            'bg-surface-sunken relative w-full overflow-hidden',
             compact ? 'h-48' : 'aspect-[4/3] max-h-[38dvh] rounded-lg shadow-md',
           )}
         >
@@ -114,16 +118,14 @@ export function PlaceDetailContent({
         <div
           className={cn(
             'bg-surface',
-            compact
-              ? 'px-5 pt-4'
-              : 'relative -mt-10 mx-2 rounded-lg p-4 shadow-lg',
+            compact ? 'px-5 pt-4' : 'relative mx-2 -mt-10 rounded-lg p-4 shadow-lg',
           )}
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <h1
                 className={cn(
-                  'leading-tight font-semibold tracking-tight text-primary',
+                  'text-primary leading-tight font-semibold tracking-tight',
                   compact ? 'text-2xl' : 'text-xl',
                 )}
               >
@@ -133,7 +135,7 @@ export function PlaceDetailContent({
               <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
                 <Rating value={place.averageRating} reviewCount={place.reviewCount} size="md" />
                 {place.distanceM !== null && (
-                  <span className="inline-flex items-center gap-1 text-sm text-ink-muted">
+                  <span className="text-ink-muted inline-flex items-center gap-1 text-sm">
                     <Navigation className="size-3.5" aria-hidden />
                     {formatDistance(place.distanceM)}
                   </span>
@@ -147,7 +149,7 @@ export function PlaceDetailContent({
             {place.priceRange && (
               <div className="shrink-0 text-right">
                 <PriceRange value={place.priceRange} className="text-lg" />
-                <p className="text-[0.6875rem] text-ink-subtle">typical</p>
+                <p className="text-ink-subtle text-[0.6875rem]">typical</p>
               </div>
             )}
           </div>
@@ -206,16 +208,16 @@ export function PlaceDetailContent({
         {compact && (
           <Link
             href={`/place/${place.slug}`}
-            className="mt-3 flex w-full items-center justify-between rounded-lg bg-surface-sunken px-4 py-3.5 text-sm font-medium text-ink active:scale-[0.99]"
+            className="bg-surface-sunken text-ink mt-3 flex w-full items-center justify-between rounded-lg px-4 py-3.5 text-sm font-medium active:scale-[0.99]"
           >
             Open full page
-            <ChevronRight className="size-4 shrink-0 text-ink-subtle" aria-hidden />
+            <ChevronRight className="text-ink-subtle size-4 shrink-0" aria-hidden />
           </Link>
         )}
 
-        <div className="mt-5 space-y-4 border-t border-border pt-4">
-          <p className="flex items-start gap-2 text-sm leading-relaxed text-ink-muted">
-            <MapPin className="mt-0.5 size-4 shrink-0 text-ink-subtle" aria-hidden />
+        <div className="border-border mt-5 space-y-4 border-t pt-4">
+          <p className="text-ink-muted flex items-start gap-2 text-sm leading-relaxed">
+            <MapPin className="text-ink-subtle mt-0.5 size-4 shrink-0" aria-hidden />
             <span>{place.address}</span>
           </p>
 
@@ -230,7 +232,7 @@ export function PlaceDetailContent({
               {place.phone && (
                 <a
                   href={`tel:${place.phone}`}
-                  className="inline-flex h-10 items-center gap-2 rounded-sm bg-surface-sunken px-3.5 text-sm font-medium text-ink"
+                  className="bg-surface-sunken text-ink inline-flex h-10 items-center gap-2 rounded-sm px-3.5 text-sm font-medium"
                 >
                   <Phone className="size-4" aria-hidden />
                   Call
@@ -241,7 +243,7 @@ export function PlaceDetailContent({
                   href={place.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-10 items-center gap-2 rounded-sm bg-surface-sunken px-3.5 text-sm font-medium text-ink"
+                  className="bg-surface-sunken text-ink inline-flex h-10 items-center gap-2 rounded-sm px-3.5 text-sm font-medium"
                 >
                   <Globe className="size-4" aria-hidden />
                   Website
@@ -252,8 +254,8 @@ export function PlaceDetailContent({
         </div>
 
         {place.description && (
-          <section className="mt-5 border-t border-border pt-4">
-            <h2 className="text-sm font-semibold text-ink">About</h2>
+          <section className="border-border mt-5 border-t pt-4">
+            <h2 className="text-ink text-sm font-semibold">About</h2>
             {/* Clamped by lines, and the toggle appears only when the text is
                 actually clamped — measured, not guessed. A character-count
                 threshold got this wrong immediately: a 145-character
@@ -264,7 +266,7 @@ export function PlaceDetailContent({
             <p
               ref={measureAbout}
               className={cn(
-                'mt-2 text-sm leading-relaxed whitespace-pre-line text-ink-muted',
+                'text-ink-muted mt-2 text-sm leading-relaxed whitespace-pre-line',
                 !aboutExpanded && 'line-clamp-3',
               )}
             >
@@ -276,13 +278,18 @@ export function PlaceDetailContent({
                 onClick={() => {
                   setAboutExpanded((open) => !open);
                 }}
-                className="mt-1 text-sm font-medium text-primary"
+                className="text-primary mt-1 text-sm font-medium"
               >
                 {aboutExpanded ? 'Show less' : 'Read more'}
               </button>
             )}
           </section>
         )}
+
+        {/* Above the reviews on purpose. "Can I get there" is decided before
+            "is it any good" — someone who has already read the rating is
+            asking how far it is, not the other way round. */}
+        <RouteToPlace place={place} />
 
         <ReviewSection placeId={place.id} placeName={place.name} />
 
@@ -319,12 +326,12 @@ export function PlaceDetailContent({
         With no phone number, directions simply takes the full width.
       */}
       {!compact && (
-        <div className="pb-safe-float px-safe fixed inset-x-0 bottom-0 z-30 border-t border-border bg-surface/95 px-4 pt-3 backdrop-blur-md">
+        <div className="pb-safe-float px-safe border-border bg-surface/95 fixed inset-x-0 bottom-0 z-30 border-t px-4 pt-3 backdrop-blur-md">
           <div className="mx-auto flex max-w-lg gap-2">
             {place.phone && (
               <a
                 href={`tel:${place.phone}`}
-                className="inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-surface text-[0.9375rem] font-medium text-ink active:scale-[0.98]"
+                className="border-border bg-surface text-ink inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-lg border text-[0.9375rem] font-medium active:scale-[0.98]"
               >
                 <Phone className="size-[1.125rem]" aria-hidden />
                 Call
