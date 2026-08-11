@@ -73,7 +73,7 @@ export function PlanEditorScreen({ planId }: { planId: string }) {
 
   if (plan.isPending) {
     return (
-      <div className="px-safe pt-safe px-5">
+      <div className="px-safe pt-safe-float px-5">
         <div className="bg-surface-sunken mt-6 h-8 w-2/3 animate-pulse rounded" />
         <div className="mt-6 space-y-3">
           {Array.from({ length: 3 }, (_, index) => (
@@ -86,7 +86,7 @@ export function PlanEditorScreen({ planId }: { planId: string }) {
 
   if (plan.error != null || !plan.data) {
     return (
-      <div className="px-safe pt-safe px-5">
+      <div className="px-safe pt-safe-float px-5">
         <EmptyState
           className="pt-20"
           title={describeError(plan.error)}

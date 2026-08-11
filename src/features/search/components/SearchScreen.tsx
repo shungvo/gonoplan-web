@@ -93,7 +93,7 @@ export function SearchScreen() {
 
   return (
     <div className="px-safe flex min-h-dvh flex-col">
-      <header className="bg-background/95 pt-safe sticky top-0 z-10 px-5 backdrop-blur-md">
+      <header className="bg-background/95 pt-safe-float sticky top-0 z-10 px-5 backdrop-blur-md">
         <div className="flex items-center gap-2 pt-3 pb-3">
           <BackButton
             compact

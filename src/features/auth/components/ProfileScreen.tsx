@@ -37,7 +37,7 @@ export function ProfileScreen() {
 
   return (
     <div className="px-safe pb-10">
-      <header className="pt-safe flex items-center justify-between gap-3 px-5">
+      <header className="pt-safe-float flex items-center justify-between gap-3 px-5">
         <h1 className="text-ink pt-6 text-[1.75rem] leading-tight font-semibold tracking-tight">
           {t('profile.title')}
         </h1>

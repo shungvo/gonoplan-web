@@ -99,7 +99,7 @@ export function OwnerScreen() {
 
   return (
     <div className="px-safe">
-      <header className="pt-safe px-5">
+      <header className="pt-safe-float px-5">
         <BackButton
           onClick={() => {
             router.push('/profile');

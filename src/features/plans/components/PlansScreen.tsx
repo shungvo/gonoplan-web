@@ -32,7 +32,7 @@ export function PlansScreen() {
 
   return (
     <div className="px-safe">
-      <header className="pt-safe px-5">
+      <header className="pt-safe-float px-5">
         <h1 className="text-ink pt-6 text-[1.75rem] leading-tight font-semibold tracking-tight">
           {t('plans.title')}
         </h1>
