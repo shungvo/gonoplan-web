@@ -2,12 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, ChevronRight, LogOut, MapPinPlus, Shield, Store } from 'lucide-react';
+import { ChevronRight, LogOut, MapPinPlus, Shield, Store } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useT } from '@/i18n/I18nProvider';
 import { LocaleSwitcher } from '@/i18n/LocaleSwitcher';
 import { useSessionStore } from '../store';
 import { logout } from '../api';
+import { BackButton } from '@/components/ui/BackButton';
 
 /**
  * Everything the profile screen used to be.
@@ -34,16 +35,11 @@ export function AccountSettingsScreen() {
   return (
     <div className="px-safe pb-10">
       <header className="pt-safe-float px-5">
-        <button
-          type="button"
+        <BackButton
           onClick={() => {
             router.push('/profile');
           }}
-          aria-label={t('common.back')}
-          className="text-ink -ml-2 flex size-10 items-center justify-center rounded-full"
-        >
-          <ArrowLeft className="size-5" aria-hidden />
-        </button>
+        />
         <h1 className="text-ink mt-1 text-[1.75rem] leading-tight font-semibold tracking-tight">
           {t('profile.settingsTitle')}
         </h1>

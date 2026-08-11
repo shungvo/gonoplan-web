@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Flag } from 'lucide-react';
+import { Flag } from 'lucide-react';
 import { ReportSheet } from '@/features/reports/ReportSheet';
 import { useIsAuthenticated } from '@/features/auth/store';
 import { Button } from '@/components/ui/Button';
@@ -11,6 +11,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { useT } from '@/i18n/I18nProvider';
 import { fetchPublicUser } from '../api';
 import { ProfileBody } from './ProfileBody';
+import { BackButton } from '@/components/ui/BackButton';
 
 /** Somebody else's profile, reached from a review or a listing they added. */
 export function PublicProfileScreen({ userId }: { userId: string }) {
@@ -29,17 +30,12 @@ export function PublicProfileScreen({ userId }: { userId: string }) {
   return (
     <div className="px-safe pb-10">
       <header className="pt-safe-float px-5">
-        <button
-          type="button"
+        <BackButton
           onClick={() => {
             if (window.history.length > 1) router.back();
             else router.push('/');
           }}
-          aria-label={t('common.back')}
-          className="text-ink -ml-2 flex size-10 items-center justify-center rounded-full"
-        >
-          <ArrowLeft className="size-5" aria-hidden />
-        </button>
+        />
       </header>
 
       <div className="mt-2 px-5">

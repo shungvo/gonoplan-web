@@ -5,7 +5,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import {
   AlertCircle,
-  ArrowLeft,
   BarChart3,
   Clock,
   MessageSquare,
@@ -32,6 +31,7 @@ import { useLocale, useT } from '@/i18n/I18nProvider';
 import { formatNumber, formatRating } from '@/i18n/format';
 import type { MessageKey } from '@/i18n/messages/keys';
 import { cn } from '@/lib/utils/cn';
+import { BackButton } from '@/components/ui/BackButton';
 
 type Tab = 'places' | 'reviews';
 
@@ -100,16 +100,12 @@ export function OwnerScreen() {
   return (
     <div className="px-safe">
       <header className="pt-safe px-5">
-        <button
-          type="button"
+        <BackButton
           onClick={() => {
             router.push('/profile');
           }}
-          aria-label={t('common.back')}
-          className="text-ink-muted -ml-2 mt-3 flex size-9 items-center justify-center rounded-full"
-        >
-          <ArrowLeft className="size-5" aria-hidden />
-        </button>
+          className="mt-3"
+        />
 
         <h1 className="text-ink mt-1 text-[1.75rem] leading-tight font-semibold tracking-tight">
           {t('owner.title')}

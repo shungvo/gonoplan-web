@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-  ArrowLeft,
   CalendarDays,
   Check,
   ChevronDown,
@@ -37,6 +36,7 @@ import type { PlanStop } from '../api';
 import { TravelGap } from './TravelGap';
 import { AddStopSheet } from './AddStopSheet';
 import { SharePlanSheet } from './SharePlanSheet';
+import { BackButton } from '@/components/ui/BackButton';
 
 /**
  * One day, in order.
@@ -108,16 +108,12 @@ export function PlanEditorScreen({ planId }: { planId: string }) {
   return (
     <div className="px-safe pb-10">
       <header className="pt-safe-float px-5">
-        <button
-          type="button"
+        <BackButton
+          label={t('plan.back')}
           onClick={() => {
             router.push('/plan');
           }}
-          aria-label={t('plan.back')}
-          className="text-ink -ml-2 flex size-10 items-center justify-center rounded-full"
-        >
-          <ArrowLeft className="size-5" aria-hidden />
-        </button>
+        />
 
         {/* The title edits in place. A day gets renamed as it takes shape —
             "Sunday" becomes "Sunday, District 1 coffee" — and sending someone

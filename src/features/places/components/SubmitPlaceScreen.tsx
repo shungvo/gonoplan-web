@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Check, Crosshair, MapPin, Wand2 } from 'lucide-react';
+import { Check, Crosshair, MapPin, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
 import { fieldClass } from '@/components/ui/field';
@@ -20,6 +20,7 @@ import { useLocale, useT } from '@/i18n/I18nProvider';
 import { categoryName } from '@/features/categories/name';
 import { useErrorMessage } from '@/i18n/useErrorMessage';
 import { submitPlace, PRICE_RANGES, type PriceRange } from '../api';
+import { BackButton } from '@/components/ui/BackButton';
 
 const DESCRIPTION_MAX = 2000;
 
@@ -250,16 +251,11 @@ export function SubmitPlaceScreen() {
   return (
     <div className="px-safe pb-10">
       <header className="pt-safe-float flex items-center gap-3 px-5">
-        <button
-          type="button"
+        <BackButton
           onClick={() => {
             router.back();
           }}
-          aria-label={t('common.back')}
-          className="text-ink -ml-2 flex size-10 items-center justify-center rounded-full"
-        >
-          <ArrowLeft className="size-5" aria-hidden />
-        </button>
+        />
         <h1 className="text-ink text-xl font-semibold tracking-tight">{t('submit.title')}</h1>
       </header>
 

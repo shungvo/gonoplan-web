@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Clock, MapPin, Search, TrendingUp, X } from 'lucide-react';
+import { Clock, MapPin, Search, TrendingUp, X } from 'lucide-react';
 
 import { Chip } from '@/components/ui/Chip';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -20,6 +20,7 @@ import { categoryName } from '@/features/categories/name';
 import { queryKeys } from '@/lib/query/keys';
 import { useRecentSearches } from '../store';
 import { fetchPopularSearches } from '../api';
+import { BackButton } from '@/components/ui/BackButton';
 
 const MIN_QUERY_LENGTH = 2;
 
@@ -94,16 +95,12 @@ export function SearchScreen() {
     <div className="px-safe flex min-h-dvh flex-col">
       <header className="bg-background/95 pt-safe sticky top-0 z-10 px-5 backdrop-blur-md">
         <div className="flex items-center gap-2 pt-3 pb-3">
-          <button
-            type="button"
-            aria-label={t('common.back')}
+          <BackButton
+            compact
             onClick={() => {
               router.back();
             }}
-            className="text-ink flex size-10 shrink-0 items-center justify-center rounded-full active:scale-95"
-          >
-            <ArrowLeft className="size-5" aria-hidden />
-          </button>
+          />
 
           <div className="bg-surface flex h-12 flex-1 items-center gap-2.5 rounded-md px-3.5 shadow-sm">
             <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />

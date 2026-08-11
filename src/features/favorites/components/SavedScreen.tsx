@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Bookmark, Compass } from 'lucide-react';
+import { Bookmark, Compass } from 'lucide-react';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import {
@@ -13,6 +13,7 @@ import { PlaceSheet } from '@/features/places/components/PlaceSheet';
 import { useIsAuthenticated } from '@/features/auth/store';
 import { useT } from '@/i18n/I18nProvider';
 import { useSavedPlaces } from '../hooks/useFavorites';
+import { BackButton } from '@/components/ui/BackButton';
 
 /**
  * The Saved tab (§18).
@@ -36,16 +37,11 @@ export function SavedScreen() {
         {/* Saved moved out of the bottom nav and under the profile, so it is
             reached rather than switched to — and a screen you reach needs a
             way back. */}
-        <button
-          type="button"
+        <BackButton
           onClick={() => {
             router.push('/profile');
           }}
-          aria-label={t('common.back')}
-          className="text-ink -ml-2 flex size-10 items-center justify-center rounded-full"
-        >
-          <ArrowLeft className="size-5" aria-hidden />
-        </button>
+        />
         <h1 className="text-ink mt-1 text-[1.75rem] leading-tight font-semibold tracking-tight">
           {t('saved.title')}
         </h1>
