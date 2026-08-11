@@ -3,7 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'motion/react';
-import { Compass, Home, Route, User, type LucideIcon } from 'lucide-react';
+import {
+  ExploreTabIcon,
+  HomeTabIcon,
+  PlanTabIcon,
+  ProfileTabIcon,
+  type TabIconProps,
+} from '@/components/icons/tabs';
 import { useT } from '@/i18n/I18nProvider';
 import type { MessageKey } from '@/i18n/messages/keys';
 import { cn } from '@/lib/utils/cn';
@@ -12,7 +18,7 @@ interface NavItem {
   href: string;
   /** A key, not a string: the labels below are read by screen readers. */
   labelKey: MessageKey;
-  icon: LucideIcon;
+  icon: (props: TabIconProps) => React.ReactElement;
 }
 
 /**
@@ -23,16 +29,15 @@ interface NavItem {
  * the navigation. Saved now lives under the profile, one tap further in and
  * next to the account it belongs to.
  *
- * A route rather than a calendar for that tab. `CalendarDays` carries six
- * internal dots, which at 24px is a texture rather than a shape and read as
- * noise beside three simple outlines. Two nodes and a path is also closer to
- * what the screen does: a day in the order you will walk it.
+ * The glyphs are drawn in `components/icons/tabs.tsx` rather than taken from
+ * lucide, because the selected tab is filled and lucide ships no filled
+ * variants — filling its outlines turns the compass into a plain disc.
  */
 const NAV_ITEMS: NavItem[] = [
-  { href: '/', labelKey: 'nav.home', icon: Home },
-  { href: '/explore', labelKey: 'nav.explore', icon: Compass },
-  { href: '/plan', labelKey: 'nav.plan', icon: Route },
-  { href: '/profile', labelKey: 'nav.profile', icon: User },
+  { href: '/', labelKey: 'nav.home', icon: HomeTabIcon },
+  { href: '/explore', labelKey: 'nav.explore', icon: ExploreTabIcon },
+  { href: '/plan', labelKey: 'nav.plan', icon: PlanTabIcon },
+  { href: '/profile', labelKey: 'nav.profile', icon: ProfileTabIcon },
 ];
 
 export function BottomNav() {
@@ -99,16 +104,9 @@ export function BottomNav() {
                     transition={{ type: 'spring', stiffness: 380, damping: 34 }}
                   />
                 )}
-                {/*
-                  One stroke weight for every tab, active or not.
-
-                  The weight used to jump from 1.8 to 2.4 on selection, which
-                  reads as the glyph thickening rather than as a state change —
-                  and it made the four icons visibly unequal whenever the row
-                  was scanned as a whole. The tinted pill and the colour are
-                  the indicator; they do not need a third signal helping.
-                */}
-                <Icon className="relative size-6 shrink-0" strokeWidth={2} aria-hidden />
+                {/* Filled when selected. The silhouette is identical either
+                    way, so the tab gains weight rather than changing shape. */}
+                <Icon filled={isActive} className="relative size-6 shrink-0" />
                 <span className="sr-only">{t(labelKey)}</span>
               </Link>
             </li>
