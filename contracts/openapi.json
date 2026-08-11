@@ -1135,6 +1135,30 @@
           "stopCount": {
             "type": "integer"
           },
+          "coverImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverBlurhash": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverCategorySlug": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverCategoryColor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "createdAt": {
             "type": "string"
           },
@@ -1149,6 +1173,10 @@
           "timezone",
           "note",
           "stopCount",
+          "coverImageUrl",
+          "coverBlurhash",
+          "coverCategorySlug",
+          "coverCategoryColor",
           "createdAt",
           "updatedAt"
         ]
@@ -1180,6 +1208,30 @@
           },
           "stopCount": {
             "type": "integer"
+          },
+          "coverImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverBlurhash": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverCategorySlug": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverCategoryColor": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "createdAt": {
             "type": "string"
@@ -1351,6 +1403,10 @@
           "timezone",
           "note",
           "stopCount",
+          "coverImageUrl",
+          "coverBlurhash",
+          "coverCategorySlug",
+          "coverCategoryColor",
           "createdAt",
           "updatedAt",
           "stops"
@@ -9763,6 +9819,30 @@
                           "stopCount": {
                             "type": "integer"
                           },
+                          "coverImageUrl": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "coverBlurhash": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "coverCategorySlug": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "coverCategoryColor": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
                           "createdAt": {
                             "type": "string"
                           },
@@ -9777,6 +9857,10 @@
                           "timezone",
                           "note",
                           "stopCount",
+                          "coverImageUrl",
+                          "coverBlurhash",
+                          "coverCategorySlug",
+                          "coverCategoryColor",
                           "createdAt",
                           "updatedAt"
                         ]
@@ -9899,6 +9983,30 @@
                         },
                         "stopCount": {
                           "type": "integer"
+                        },
+                        "coverImageUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverBlurhash": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategorySlug": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategoryColor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         },
                         "createdAt": {
                           "type": "string"
@@ -10070,6 +10178,10 @@
                         "timezone",
                         "note",
                         "stopCount",
+                        "coverImageUrl",
+                        "coverBlurhash",
+                        "coverCategorySlug",
+                        "coverCategoryColor",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -10194,6 +10306,30 @@
                         "stopCount": {
                           "type": "integer"
                         },
+                        "coverImageUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverBlurhash": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategorySlug": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategoryColor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -10364,6 +10500,10 @@
                         "timezone",
                         "note",
                         "stopCount",
+                        "coverImageUrl",
+                        "coverBlurhash",
+                        "coverCategorySlug",
+                        "coverCategoryColor",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -10511,6 +10651,30 @@
                         "stopCount": {
                           "type": "integer"
                         },
+                        "coverImageUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverBlurhash": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategorySlug": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategoryColor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -10681,6 +10845,10 @@
                         "timezone",
                         "note",
                         "stopCount",
+                        "coverImageUrl",
+                        "coverBlurhash",
+                        "coverCategorySlug",
+                        "coverCategoryColor",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -10927,6 +11095,30 @@
                         "stopCount": {
                           "type": "integer"
                         },
+                        "coverImageUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverBlurhash": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategorySlug": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategoryColor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -11097,6 +11289,10 @@
                         "timezone",
                         "note",
                         "stopCount",
+                        "coverImageUrl",
+                        "coverBlurhash",
+                        "coverCategorySlug",
+                        "coverCategoryColor",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -11254,6 +11450,30 @@
                         "stopCount": {
                           "type": "integer"
                         },
+                        "coverImageUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverBlurhash": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategorySlug": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategoryColor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -11424,6 +11644,10 @@
                         "timezone",
                         "note",
                         "stopCount",
+                        "coverImageUrl",
+                        "coverBlurhash",
+                        "coverCategorySlug",
+                        "coverCategoryColor",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -11601,6 +11825,30 @@
                         "stopCount": {
                           "type": "integer"
                         },
+                        "coverImageUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverBlurhash": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategorySlug": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategoryColor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -11771,6 +12019,10 @@
                         "timezone",
                         "note",
                         "stopCount",
+                        "coverImageUrl",
+                        "coverBlurhash",
+                        "coverCategorySlug",
+                        "coverCategoryColor",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -11902,6 +12154,30 @@
                         "stopCount": {
                           "type": "integer"
                         },
+                        "coverImageUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverBlurhash": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategorySlug": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategoryColor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -12072,6 +12348,10 @@
                         "timezone",
                         "note",
                         "stopCount",
+                        "coverImageUrl",
+                        "coverBlurhash",
+                        "coverCategorySlug",
+                        "coverCategoryColor",
                         "createdAt",
                         "updatedAt",
                         "stops"

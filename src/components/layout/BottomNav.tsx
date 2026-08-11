@@ -7,7 +7,7 @@ import {
   ExploreTabIcon,
   HomeTabIcon,
   PlanTabIcon,
-  ProfileTabIcon,
+  SoonTabIcon,
   type TabIconProps,
 } from '@/components/icons/tabs';
 import { useT } from '@/i18n/I18nProvider';
@@ -29,6 +29,12 @@ interface NavItem {
  * the navigation. Saved now lives under the profile, one tap further in and
  * next to the account it belongs to.
  *
+ * The profile has since moved off the bar entirely and onto the avatar in the
+ * home header, where every other app of this shape puts it — the account is
+ * something you visit, not somewhere you browse. The fourth slot is held for
+ * whatever earns it; until then it goes somewhere honest rather than being
+ * quietly filled with the nearest available screen.
+ *
  * The glyphs are drawn in `components/icons/tabs.tsx` rather than taken from
  * lucide, because the selected tab is filled and lucide ships no filled
  * variants — filling its outlines turns the compass into a plain disc.
@@ -37,7 +43,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/', labelKey: 'nav.home', icon: HomeTabIcon },
   { href: '/explore', labelKey: 'nav.explore', icon: ExploreTabIcon },
   { href: '/plan', labelKey: 'nav.plan', icon: PlanTabIcon },
-  { href: '/profile', labelKey: 'nav.profile', icon: ProfileTabIcon },
+  { href: '/soon', labelKey: 'nav.soon', icon: SoonTabIcon },
 ];
 
 export function BottomNav() {

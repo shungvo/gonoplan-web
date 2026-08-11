@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { Bookmark, CalendarDays, ChevronRight, Settings, User } from 'lucide-react';
 import { AuthSheet } from './AuthSheet';
+import { BackButton } from '@/components/ui/BackButton';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { fetchPublicUser } from '@/features/users/api';
@@ -26,8 +28,16 @@ import { useSessionStore } from '../store';
  */
 export function ProfileScreen() {
   const t = useT();
+  const router = useRouter();
   const { user, isInitializing } = useSessionStore();
   const [authOpen, setAuthOpen] = useState(false);
+
+  // A shared link or a cold start has no history behind it, so back falls to
+  // home rather than being a button that does nothing.
+  const goBack = () => {
+    if (window.history.length > 1) router.back();
+    else router.push('/');
+  };
 
   const profile = useQuery({
     queryKey: ['users', user?.id],
@@ -37,19 +47,25 @@ export function ProfileScreen() {
 
   return (
     <div className="px-safe pb-10">
-      <header className="pt-safe-float flex items-center justify-between gap-3 px-5">
-        <h1 className="text-ink pt-6 text-[1.75rem] leading-tight font-semibold tracking-tight">
+      {/* Reached from the avatar rather than switched to from the bar, so it
+          needs the way back every other pushed screen has. */}
+      <header className="pt-safe-float px-5">
+        <BackButton onClick={goBack} />
+
+        <div className="mt-3 flex items-center justify-between gap-3">
+        <h1 className="text-ink text-[1.75rem] leading-tight font-semibold tracking-tight">
           {t('profile.title')}
         </h1>
         {user && (
           <Link
             href="/profile/settings"
             aria-label={t('profile.settings')}
-            className="text-ink-muted mt-6 flex size-10 items-center justify-center rounded-full"
+            className="text-ink-muted flex size-10 items-center justify-center rounded-full"
           >
             <Settings className="size-5" aria-hidden />
           </Link>
         )}
+        </div>
       </header>
 
       <div className="mt-4 px-5">

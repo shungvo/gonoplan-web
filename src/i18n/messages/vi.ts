@@ -38,6 +38,9 @@ export const vi: Messages = {
   'nav.explore': 'Khám phá',
   'nav.plan': 'Lên plan',
   'nav.profile': 'Cá nhân',
+  'nav.soon': 'Sắp có',
+  'soon.title': 'Chưa có gì ở đây',
+  'soon.body': 'Tab này đang được giữ chỗ. Trang cá nhân đã chuyển lên avatar ở đầu trang chủ.',
   'nav.main': 'Chính',
 
   // ─── Language ─────────────────────────────────────────────────────────────
@@ -768,6 +771,11 @@ export const vi: Messages = {
   'plans.deleteBody': 'Chỉ plan bị xoá; các địa điểm trong đó không bị ảnh hưởng.',
 
   'plan.back': 'Plan',
+  'plan.noteLabel': 'Về ngày này',
+  'plan.notePlaceholder': 'Thêm ghi chú cho ngày này…',
+  'plan.stopNoteLabel': 'Về địa điểm này',
+  'plan.stopNotePlaceholder': 'Ở đây bạn sẽ làm gì?',
+  'plan.savedRail': 'Địa điểm đã lưu',
   'plan.addPlace': 'Thêm địa điểm',
   'plan.share': 'Chia sẻ',
   'plan.emptyTitle': 'Ngày này chưa có gì',

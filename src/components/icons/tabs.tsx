@@ -101,6 +101,21 @@ export function PlanTabIcon({ filled, className }: TabIconProps) {
 }
 
 /**
+ * A rounded square: a slot, held.
+ *
+ * The fourth tab has no job yet. Anything representational here would name
+ * something that does not exist, so it is deliberately the plainest shape in
+ * the set — it reads as a space kept rather than a feature hidden.
+ */
+export function SoonTabIcon({ filled, className }: TabIconProps) {
+  return (
+    <svg {...svgProps(filled, className)}>
+      <rect x="4.2" y="4.2" width="15.6" height="15.6" rx="4.6" fill={filled ? 'currentColor' : 'none'} />
+    </svg>
+  );
+}
+
+/**
  * Head and shoulders, both closed shapes so the filled state is solid.
  *
  * The two are held apart by a hair. At the first attempt the head's lower edge

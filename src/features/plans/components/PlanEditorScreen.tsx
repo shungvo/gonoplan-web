@@ -34,6 +34,7 @@ import {
 import { formatTimeOfDay, gapBetween, parseTimeInput, toTimeInput } from '../time';
 import type { PlanStop } from '../api';
 import { TravelGap } from './TravelGap';
+import { PlanNote } from './PlanNote';
 import { AddStopSheet } from './AddStopSheet';
 import { SharePlanSheet } from './SharePlanSheet';
 import { BackButton } from '@/components/ui/BackButton';
@@ -46,7 +47,23 @@ import { BackButton } from '@/components/ui/BackButton';
  * and the arrows are reachable one-handed, work with a keyboard and a screen
  * reader, and cannot be started by accident while reading.
  */
-export function PlanEditorScreen({ planId }: { planId: string }) {
+export function PlanEditorScreen({
+  planId,
+  compact = false,
+  onClose,
+}: {
+  planId: string;
+  /**
+   * Rendered inside the sheet on the Plan tab rather than as its own page.
+   *
+   * One component for both, the same bargain `PlaceDetailContent` makes: the
+   * sheet is not a cut-down preview of the editor, it is the editor. Only the
+   * chrome differs — the page carries a back button and the safe-area padding,
+   * the sheet is already inside something that has both.
+   */
+  compact?: boolean;
+  onClose?: (() => void) | undefined;
+}) {
   const t = useT();
   const locale = useLocale();
   const router = useRouter();
@@ -71,9 +88,16 @@ export function PlanEditorScreen({ planId }: { planId: string }) {
     reorder.mutate(next.map((stop) => stop.id));
   };
 
+  // The way out differs by where this is rendered: a page navigates, a sheet
+  // closes itself.
+  const leave = () => {
+    if (onClose) onClose();
+    else router.push('/plan');
+  };
+
   if (plan.isPending) {
     return (
-      <div className="px-safe pt-safe-float px-5">
+      <div className={compact ? 'px-5 pt-2' : 'px-safe pt-safe-float px-5'}>
         <div className="bg-surface-sunken mt-6 h-8 w-2/3 animate-pulse rounded" />
         <div className="mt-6 space-y-3">
           {Array.from({ length: 3 }, (_, index) => (
@@ -86,18 +110,13 @@ export function PlanEditorScreen({ planId }: { planId: string }) {
 
   if (plan.error != null || !plan.data) {
     return (
-      <div className="px-safe pt-safe-float px-5">
+      <div className={compact ? 'px-5 pt-2' : 'px-safe pt-safe-float px-5'}>
         <EmptyState
           className="pt-20"
           title={describeError(plan.error)}
           action={
-            <Button
-              variant="secondary"
-              onClick={() => {
-                router.push('/plan');
-              }}
-            >
-              {t('plan.back')}
+            <Button variant="secondary" onClick={leave}>
+              {compact ? t('common.close') : t('plan.back')}
             </Button>
           }
         />
@@ -106,14 +125,16 @@ export function PlanEditorScreen({ planId }: { planId: string }) {
   }
 
   return (
-    <div className="px-safe pb-10">
-      <header className="pt-safe-float px-5">
-        <BackButton
-          label={t('plan.back')}
-          onClick={() => {
-            router.push('/plan');
-          }}
-        />
+    <div className={compact ? 'pb-6' : 'px-safe pb-10'}>
+      <header className={compact ? 'px-5 pt-2' : 'pt-safe-float px-5'}>
+        {!compact && (
+          <BackButton
+            label={t('plan.back')}
+            onClick={() => {
+              router.push('/plan');
+            }}
+          />
+        )}
 
         {/* The title edits in place. A day gets renamed as it takes shape —
             "Sunday" becomes "Sunday, District 1 coffee" — and sending someone
@@ -152,6 +173,25 @@ export function PlanEditorScreen({ planId }: { planId: string }) {
             {plan.data.date ? formatDate(plan.data.date, locale) : t('plans.noDate')}
           </button>
         )}
+
+        {/*
+          What the day is for, in the owner's words.
+
+          Sits under the date because it describes the whole plan rather than
+          any one stop — "brunch then the museum, back before the rain". Saved
+          on blur rather than per keystroke: this is prose, and a request per
+          character is a request per character.
+        */}
+        <PlanNote
+          value={plan.data.note}
+          placeholder={t('plan.notePlaceholder')}
+          label={t('plan.noteLabel')}
+          maxLength={2000}
+          onSave={(note) => {
+            updatePlan.mutate({ note });
+          }}
+          className="mt-3"
+        />
 
         <div className="mt-4 flex gap-2">
           <Button
@@ -413,6 +453,21 @@ function StopCard({
           </button>
         </div>
       )}
+
+      {/* What you are doing here, in the owner's words. Below the row rather
+          than inside the middle column: it is a sentence, and a sentence in a
+          220px column beside a thumbnail and two move buttons wraps to five
+          lines. */}
+      <PlanNote
+        value={stop.note}
+        label={t('plan.stopNoteLabel')}
+        placeholder={t('plan.stopNotePlaceholder')}
+        maxLength={500}
+        onSave={(note) => {
+          updateStop.mutate({ stopId: stop.id, note });
+        }}
+        className="mt-2.5"
+      />
     </div>
   );
 }

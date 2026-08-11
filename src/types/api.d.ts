@@ -2538,6 +2538,10 @@ export interface paths {
                                 timezone: string;
                                 note: string | null;
                                 stopCount: number;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                                coverCategorySlug: string | null;
+                                coverCategoryColor: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                             }[];
@@ -2603,6 +2607,10 @@ export interface paths {
                                 timezone: string;
                                 note: string | null;
                                 stopCount: number;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                                coverCategorySlug: string | null;
+                                coverCategoryColor: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -2727,6 +2735,10 @@ export interface paths {
                                 timezone: string;
                                 note: string | null;
                                 stopCount: number;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                                coverCategorySlug: string | null;
+                                coverCategoryColor: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -2898,6 +2910,10 @@ export interface paths {
                                 timezone: string;
                                 note: string | null;
                                 stopCount: number;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                                coverCategorySlug: string | null;
+                                coverCategoryColor: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3030,6 +3046,10 @@ export interface paths {
                                 timezone: string;
                                 note: string | null;
                                 stopCount: number;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                                coverCategorySlug: string | null;
+                                coverCategoryColor: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3170,6 +3190,10 @@ export interface paths {
                                 timezone: string;
                                 note: string | null;
                                 stopCount: number;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                                coverCategorySlug: string | null;
+                                coverCategoryColor: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3306,6 +3330,10 @@ export interface paths {
                                 timezone: string;
                                 note: string | null;
                                 stopCount: number;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                                coverCategorySlug: string | null;
+                                coverCategoryColor: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3417,6 +3445,10 @@ export interface paths {
                                 timezone: string;
                                 note: string | null;
                                 stopCount: number;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                                coverCategorySlug: string | null;
+                                coverCategoryColor: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -9177,6 +9209,10 @@ export interface components {
             timezone: string;
             note: string | null;
             stopCount: number;
+            coverImageUrl: string | null;
+            coverBlurhash: string | null;
+            coverCategorySlug: string | null;
+            coverCategoryColor: string | null;
             createdAt: string;
             updatedAt: string;
         };
@@ -9188,6 +9224,10 @@ export interface components {
             timezone: string;
             note: string | null;
             stopCount: number;
+            coverImageUrl: string | null;
+            coverBlurhash: string | null;
+            coverCategorySlug: string | null;
+            coverCategoryColor: string | null;
             createdAt: string;
             updatedAt: string;
             stops: {

@@ -1,19 +1,23 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { CalendarDays, ChevronRight, Plus } from 'lucide-react';
+import { CalendarDays, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { fieldClass } from '@/components/ui/field';
-import { BottomSheet } from '@/components/ui/BottomSheet';
+import { BottomSheet, SHEET_SNAP_POINTS } from '@/components/ui/BottomSheet';
 import { Drawer } from 'vaul';
 import { useIsAuthenticated } from '@/features/auth/store';
+import { useSavedPlaces } from '@/features/favorites/hooks/useFavorites';
+import { PlaceImage } from '@/features/places/components/PlaceImage';
+import { PlaceSheet } from '@/features/places/components/PlaceSheet';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { useErrorMessage } from '@/i18n/useErrorMessage';
 import { formatDate } from '@/i18n/format';
 import { usePlans, useCreatePlan } from '../hooks/usePlans';
+import { PlanEditorScreen } from './PlanEditorScreen';
+import type { Plan } from '../api';
 
 /**
  * The Plan tab.
@@ -23,12 +27,14 @@ import { usePlans, useCreatePlan } from '../hooks/usePlans';
  */
 export function PlansScreen() {
   const t = useT();
-  const locale = useLocale();
   const router = useRouter();
   const isAuthenticated = useIsAuthenticated();
   const [composing, setComposing] = useState(false);
+  const [openPlanId, setOpenPlanId] = useState<string | null>(null);
+  const [openPlaceId, setOpenPlaceId] = useState<string | null>(null);
 
   const plans = usePlans(isAuthenticated);
+  const saved = useSavedPlaces();
 
   return (
     <div className="px-safe">
@@ -39,7 +45,50 @@ export function PlansScreen() {
         <p className="text-ink-muted mt-1 text-sm">{t('plans.description')}</p>
       </header>
 
-      <div className="mt-4 px-5">
+      {/*
+        The saved places, across the top.
+
+        A plan is built out of places somebody has already decided they want to
+        go to, and until now those lived two taps away under the profile while
+        this screen offered a blank "add a place" search. Putting them here
+        makes the shortlist the raw material it already was.
+      */}
+      {isAuthenticated && (saved.data?.data.length ?? 0) > 0 && (
+        <section className="mt-5" aria-label={t('plan.savedRail')}>
+          <h2 className="text-ink px-5 text-sm font-semibold">{t('plan.savedRail')}</h2>
+
+          <ul className="scrollbar-none mt-2.5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5">
+            {saved.data?.data.map((place) => (
+              <li key={place.id} className="w-28 shrink-0 snap-start">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenPlaceId(place.id);
+                  }}
+                  className="block w-full text-left active:scale-[0.98]"
+                >
+                  <span className="bg-surface-sunken relative block aspect-square w-full overflow-hidden rounded-md shadow-sm">
+                    <PlaceImage
+                      url={place.coverImageUrl}
+                      blurhash={place.coverBlurhash}
+                      name={place.name}
+                      categorySlug={place.category.slug}
+                      categoryColor={place.category.colorHex}
+                      sizes="112px"
+                      fallbackSize="sm"
+                    />
+                  </span>
+                  <span className="text-ink mt-1.5 block truncate text-xs font-medium">
+                    {place.name}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <div className="mt-5 px-5">
         {!isAuthenticated && (
           <EmptyState
             icon={<CalendarDays className="size-7" aria-hidden />}
@@ -70,9 +119,9 @@ export function PlansScreen() {
             </Button>
 
             {plans.isPending && (
-              <div className="mt-4 space-y-2.5">
+              <div className="mt-4 space-y-3">
                 {Array.from({ length: 3 }, (_, index) => (
-                  <div key={index} className="bg-surface h-20 animate-pulse rounded-lg shadow-sm" />
+                  <div key={index} className="bg-surface h-28 animate-pulse rounded-lg shadow-md" />
                 ))}
               </div>
             )}
@@ -85,22 +134,15 @@ export function PlansScreen() {
               />
             )}
 
-            <ul className="mt-4 space-y-2.5">
+            <ul className="mt-4 space-y-3">
               {plans.data?.map((plan) => (
                 <li key={plan.id}>
-                  <Link
-                    href={`/plan/${plan.id}`}
-                    className="bg-surface flex items-center gap-3 rounded-lg p-4 shadow-sm active:scale-[0.99]"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <p className="text-ink truncate font-semibold">{plan.title}</p>
-                      <p className="text-ink-subtle mt-0.5 text-xs">
-                        {plan.date ? formatDate(plan.date, locale) : t('plans.noDate')} ·{' '}
-                        {t('plans.stopCount', { count: plan.stopCount })}
-                      </p>
-                    </div>
-                    <ChevronRight className="text-ink-subtle size-4 shrink-0" aria-hidden />
-                  </Link>
+                  <PlanCard
+                    plan={plan}
+                    onOpen={() => {
+                      setOpenPlanId(plan.id);
+                    }}
+                  />
                 </li>
               ))}
             </ul>
@@ -115,11 +157,52 @@ export function PlansScreen() {
           <NewPlanForm
             onCreated={(id) => {
               setComposing(false);
-              router.push(`/plan/${id}`);
+              // Straight into the day that was just made — the reason for
+              // making it is to put something in it.
+              setOpenPlanId(id);
             }}
           />
         )}
       </BottomSheet>
+
+      {/*
+        The day opens over the list rather than replacing it.
+
+        A plan is edited in short bursts — move a stop, set a time, write a
+        line — and each one used to cost a navigation out and a navigation
+        back. The route still exists for links and for the back button inside
+        the editor; this is the same component, in a sheet.
+      */}
+      <BottomSheet
+        open={openPlanId !== null}
+        onOpenChange={(next) => {
+          if (!next) setOpenPlanId(null);
+        }}
+        snapPoints={SHEET_SNAP_POINTS}
+        defaultSnapIndex={2}
+      >
+        <div className="flex-1 overflow-y-auto overscroll-contain">
+          {openPlanId !== null && (
+            <>
+              <Drawer.Title className="sr-only">{t('plans.title')}</Drawer.Title>
+              <PlanEditorScreen
+                planId={openPlanId}
+                compact
+                onClose={() => {
+                  setOpenPlanId(null);
+                }}
+              />
+            </>
+          )}
+        </div>
+      </BottomSheet>
+
+      <PlaceSheet
+        placeId={openPlaceId}
+        onClose={() => {
+          setOpenPlaceId(null);
+        }}
+      />
     </div>
   );
 }
@@ -201,5 +284,58 @@ function NewPlanForm({ onCreated }: { onCreated: (id: string) => void }) {
         {t('plans.create')}
       </Button>
     </form>
+  );
+}
+
+/**
+ * A day, as a card you can see.
+ *
+ * It was a 20px-tall row: a title, a line of grey, a chevron. Days are the
+ * thing this tab is *for*, and they read as list items in a settings screen —
+ * so the card is 112px, raised on `shadow-md` rather than the hairline
+ * `shadow-sm` the rows carried, and it leads with a photograph.
+ *
+ * The photograph is the first stop's, chosen by the API. Nobody uploads a
+ * picture for a plan; the plan is already made of places that have them.
+ */
+function PlanCard({ plan, onOpen }: { plan: Plan; onOpen: () => void }) {
+  const t = useT();
+  const locale = useLocale();
+
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className="bg-surface flex w-full items-stretch gap-3.5 overflow-hidden rounded-lg p-3 text-left shadow-md active:scale-[0.99]"
+    >
+      <span className="bg-surface-sunken relative size-[5.5rem] shrink-0 overflow-hidden rounded-md">
+        <PlaceImage
+          url={plan.coverImageUrl}
+          blurhash={plan.coverBlurhash}
+          name={plan.title}
+          categorySlug={plan.coverCategorySlug ?? 'other'}
+          categoryColor={plan.coverCategoryColor ?? '#0f6ccd'}
+          sizes="88px"
+          fallbackSize="sm"
+        />
+      </span>
+
+      <span className="flex min-w-0 flex-1 flex-col justify-center">
+        <span className="text-ink truncate font-semibold">{plan.title}</span>
+        <span className="text-ink-subtle mt-0.5 block text-xs">
+          {plan.date ? formatDate(plan.date, locale) : t('plans.noDate')} ·{' '}
+          {t('plans.stopCount', { count: plan.stopCount })}
+        </span>
+
+        {/* The day's own description, when there is one. Two lines: enough to
+            tell two Sundays apart, not enough to turn the list back into a
+            wall of text. */}
+        {plan.note && (
+          <span className="text-ink-muted mt-1.5 line-clamp-2 text-xs leading-relaxed">
+            {plan.note}
+          </span>
+        )}
+      </span>
+    </button>
   );
 }

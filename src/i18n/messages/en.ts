@@ -42,6 +42,9 @@ export const en = {
   'nav.explore': 'Explore',
   'nav.plan': 'Plan',
   'nav.profile': 'Profile',
+  'nav.soon': 'Soon',
+  'soon.title': 'Nothing here yet',
+  'soon.body': 'This tab is being kept for something. Your profile moved to the avatar at the top of Home.',
   'nav.main': 'Main',
 
   // ─── Language ─────────────────────────────────────────────────────────────
@@ -787,6 +790,11 @@ export const en = {
   'plans.deleteBody': 'The plan goes; the places in it are untouched.',
 
   'plan.back': 'Plans',
+  'plan.noteLabel': 'About this day',
+  'plan.notePlaceholder': 'Add a note about this day…',
+  'plan.stopNoteLabel': 'About this stop',
+  'plan.stopNotePlaceholder': 'What are you doing here?',
+  'plan.savedRail': 'Saved places',
   'plan.addPlace': 'Add a place',
   'plan.share': 'Share',
   'plan.emptyTitle': 'Nothing in this day yet',
