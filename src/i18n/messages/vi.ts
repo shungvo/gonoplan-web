@@ -111,6 +111,13 @@ export const vi: Messages = {
   'location.locating': 'Đang định vị…',
   'location.choose': 'Chọn vị trí của bạn',
   'location.lastKnown': '{coordinates} (vị trí gần nhất)',
+  'location.pickDescription':
+    'Tìm bất kỳ địa chỉ nào, hoặc chọn một thành phố. Mọi gợi ý đều tính từ đây.',
+  'location.useCurrent': 'Dùng vị trí hiện tại của tôi',
+  'location.searchPlaceholder': 'Tìm địa chỉ, địa điểm hoặc thành phố',
+  'location.cities': 'Thành phố',
+  'location.addresses': 'Địa chỉ',
+  'location.noMatch': 'Không có kết quả nào cho “{query}”.',
 
   // ─── Search ───────────────────────────────────────────────────────────────
   'search.label': 'Tìm kiếm',
@@ -152,8 +159,6 @@ export const vi: Messages = {
   'city.unavailableDescription':
     'Chúng tôi không tự tìm được bạn. Chọn một thành phố để bắt đầu khám phá.',
   'city.retry': 'Thử lại bằng vị trí của tôi',
-  'city.searchPlaceholder': 'Tìm thành phố',
-  'city.noMatch': 'Không có thành phố nào khớp “{query}”.',
 
   // ─── Place detail ─────────────────────────────────────────────────────────
   'detail.typical': 'trung bình',

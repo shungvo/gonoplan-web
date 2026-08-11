@@ -8,6 +8,7 @@ import { Search, User } from 'lucide-react';
 import { AuthSheet } from '@/features/auth/components/AuthSheet';
 import { HomeMap } from '@/features/map/components/HomeMap';
 import { LocationChip } from '@/features/location/components/LocationChip';
+import { LocationPickerSheet } from '@/features/location/components/LocationPickerSheet';
 import { useLocationStore } from '@/features/location/store';
 import { useSessionStore } from '@/features/auth/store';
 import { fetchCategories } from '@/features/categories/api';
@@ -96,6 +97,7 @@ export function HomeScreen() {
   const { user } = useSessionStore();
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const [locationOpen, setLocationOpen] = useState(false);
 
   const origin = coordinates ?? FALLBACK_ORIGIN;
 
@@ -154,7 +156,14 @@ export function HomeScreen() {
           </Link>
 
           <div className="flex min-w-0 flex-1 justify-center">
-            <LocationChip variant="header" />
+            {/* The whole feed below is scoped to this point, so the control
+                that states it is also the control that changes it. */}
+            <LocationChip
+              variant="header"
+              onPickLocation={() => {
+                setLocationOpen(true);
+              }}
+            />
           </div>
 
           {/*
@@ -335,6 +344,8 @@ export function HomeScreen() {
           sheet carries its own; the grid had nothing, so tapping save while
           signed out did precisely nothing. */}
       <AuthSheet open={authOpen} onOpenChange={setAuthOpen} reason={t('detail.signInToSave')} />
+
+      <LocationPickerSheet open={locationOpen} onOpenChange={setLocationOpen} />
     </div>
   );
 }

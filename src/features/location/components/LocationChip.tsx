@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { ChevronDown, MapPin, LoaderCircle, MapPinOff } from 'lucide-react';
-import { useLocationStore } from '../store';
+import { useLocationStore, useShouldAutoLocate } from '../store';
 import { useOnboardingPending } from '@/features/onboarding/store';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { formatNumber } from '@/i18n/format';
@@ -31,6 +31,7 @@ export function LocationChip({
   const locale = useLocale();
   const { status, source, coordinates, label, requestLocation } = useLocationStore();
   const onboarding = useOnboardingPending();
+  const shouldAutoLocate = useShouldAutoLocate();
 
   useEffect(() => {
     // Only auto-prompt from a cold start. Re-asking after a denial is both
@@ -39,10 +40,18 @@ export function LocationChip({
     // And never while onboarding is up: the browser dialog would appear behind
     // the overlay, unexplained, and the reflex answer to that is No — which is
     // the one answer that cannot be asked again.
-    if (status === 'IDLE' && !onboarding) void requestLocation();
-  }, [status, onboarding, requestLocation]);
+    if (shouldAutoLocate && !onboarding) void requestLocation();
+  }, [shouldAutoLocate, onboarding, requestLocation]);
 
-  const isDenied = status === 'DENIED' || status === 'UNAVAILABLE';
+  /*
+   * Only alarming when there is genuinely nothing to work with.
+   *
+   * A refusal with a position already in hand — one the reader chose, or the
+   * last one we had — is not a state that needs an orange chip and a
+   * crossed-out pin. The label says "last known" where that is what it is,
+   * which is the honest part; the colour was just shouting.
+   */
+  const isDenied = (status === 'DENIED' || status === 'UNAVAILABLE') && coordinates === null;
   const isPrompting = status === 'PROMPTING';
 
   const text = (() => {
@@ -65,10 +74,20 @@ export function LocationChip({
 
   const Icon = isPrompting ? LoaderCircle : isDenied ? MapPinOff : MapPin;
 
+  /*
+   * Tapping opens the picker.
+   *
+   * It used to re-request GPS, which meant that once permission was granted
+   * the control did nothing visible and there was no way in the app to look
+   * somewhere else — the picker existed but only a refusal could reach it.
+   * Being in Gò Vấp and planning an evening in District 1 is not an error
+   * state, and it was the one thing this chip could not express.
+   *
+   * The GPS request stays as the fallback for callers with no picker to open,
+   * and the picker itself offers "use my current location" first.
+   */
   const handleClick = () => {
-    // Re-prompting after a denial does nothing — the browser remembers it.
-    // Offer the manual picker instead of a button that appears broken.
-    if (isDenied && onPickLocation) {
+    if (onPickLocation) {
       onPickLocation();
       return;
     }
@@ -104,15 +123,7 @@ export function LocationChip({
   return (
     <button
       type="button"
-      onClick={() => {
-        // Re-prompting after a denial does nothing — the browser remembers it.
-        // Offer the manual picker instead of a button that appears broken.
-        if (isDenied && onPickLocation) {
-          onPickLocation();
-          return;
-        }
-        void requestLocation();
-      }}
+      onClick={handleClick}
       className={cn(
         'inline-flex max-w-full items-center gap-1.5 rounded-full px-3 py-1.5',
         'text-sm font-medium transition-colors active:scale-[0.98]',

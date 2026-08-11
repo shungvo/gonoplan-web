@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { Compass, MapPin, MapPinPlus, Route } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { CityPickerSheet } from '@/features/location/components/CityPickerSheet';
+import { LocationPickerSheet } from '@/features/location/components/LocationPickerSheet';
 import { useLocationStore } from '@/features/location/store';
 import { LOCALES, LOCALE_LABELS } from '@/i18n/config';
 import { useLocale, useT } from '@/i18n/I18nProvider';
@@ -176,7 +176,7 @@ export function Onboarding() {
         )}
       </div>
 
-      <CityPickerSheet
+      <LocationPickerSheet
         open={pickingCity}
         onOpenChange={(open) => {
           setPickingCity(open);

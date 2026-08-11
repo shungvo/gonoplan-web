@@ -118,6 +118,13 @@ export const en = {
   'location.locating': 'Locating…',
   'location.choose': 'Choose your location',
   'location.lastKnown': '{coordinates} (last known)',
+  'location.pickDescription':
+    'Search anywhere, or pick a city. Everything nearby is measured from here.',
+  'location.useCurrent': 'Use my current location',
+  'location.searchPlaceholder': 'Search an address, place or city',
+  'location.cities': 'Cities',
+  'location.addresses': 'Addresses',
+  'location.noMatch': 'Nothing matches “{query}”.',
 
   // ─── Search ───────────────────────────────────────────────────────────────
   'search.label': 'Search',
@@ -159,8 +166,6 @@ export const en = {
   'city.unavailableDescription':
     'We could not find you automatically. Pick a city to start exploring.',
   'city.retry': 'Try using my location again',
-  'city.searchPlaceholder': 'Search a city',
-  'city.noMatch': 'No city matches “{query}”.',
 
   // ─── Place detail ─────────────────────────────────────────────────────────
   'detail.typical': 'typical',

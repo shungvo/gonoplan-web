@@ -19,6 +19,8 @@ import { categoryName } from '@/features/categories/name';
 import { cn } from '@/lib/utils/cn';
 import { fetchCategories } from '@/features/categories/api';
 import { useLocationStore } from '@/features/location/store';
+import { LocationChip } from '@/features/location/components/LocationChip';
+import { LocationPickerSheet } from '@/features/location/components/LocationPickerSheet';
 import { formatDistance } from '@/lib/geo/grid';
 
 const FALLBACK_ORIGIN = { latitude: 10.7769, longitude: 106.7009 };
@@ -67,6 +69,7 @@ export function ExploreScreen() {
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [routeToId, setRouteToId] = useState<string | null>(null);
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
+  const [locationOpen, setLocationOpen] = useState(false);
 
   /*
    * How tall the map's bottom overlay actually is, so the zoom buttons can sit
@@ -477,6 +480,17 @@ export function ExploreScreen() {
           </button>
         </div>
 
+        {/* Every result below is measured from this point, and the screen
+            already said so — "Search around X" — without offering any way to
+            make X somewhere else. */}
+        <div className="mt-2 flex">
+          <LocationChip
+            onPickLocation={() => {
+              setLocationOpen(true);
+            }}
+          />
+        </div>
+
         <button
           type="button"
           onClick={() => {
@@ -648,6 +662,8 @@ export function ExploreScreen() {
           setSelectedPlaceId(null);
         }}
       />
+
+      <LocationPickerSheet open={locationOpen} onOpenChange={setLocationOpen} />
     </div>
   );
 }

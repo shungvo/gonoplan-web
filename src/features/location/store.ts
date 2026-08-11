@@ -76,6 +76,16 @@ export const useLocationStore = create<LocationState>()(
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
             },
+            /*
+             * Cleared, so the name is re-derived from the new position.
+             *
+             * Whoever labels a fix only does so when the label is empty, and
+             * the label survives everything otherwise. Coming back to GPS
+             * after searching around somewhere else would have kept the chip
+             * reading "Nguyễn Huệ" over a position in Gò Vấp — the one thing
+             * this control exists to state.
+             */
+            label: null,
             accuracyMeters: position.coords.accuracy,
             updatedAt: Date.now(),
           });
@@ -92,7 +102,12 @@ export const useLocationStore = create<LocationState>()(
                   : 'UNAVAILABLE',
             // A persisted position is far better than nothing: the app keeps
             // working, and the UI can label it "last known" honestly.
-            source: previous ? 'LAST_KNOWN' : 'NONE',
+            //
+            // Except when it was chosen. Somebody who picked a point in
+            // District 1 has not fallen back to anything, and calling their
+            // own choice "last known" is both wrong and a downgrade of a
+            // decision they made deliberately.
+            source: get().source === 'MANUAL' ? 'MANUAL' : previous ? 'LAST_KNOWN' : 'NONE',
           });
         }
       },
@@ -142,4 +157,19 @@ export const useLocationStore = create<LocationState>()(
 /** True when there is a usable position, however it was obtained. */
 export function useHasLocation(): boolean {
   return useLocationStore((state) => state.coordinates !== null);
+}
+
+/**
+ * Whether the app may ask the browser for a position on its own.
+ *
+ * `status` is not persisted, so every cold start looks like `IDLE` — which
+ * meant a stored manual choice was overwritten by a GPS fix, or by a denial,
+ * on the next page load. Somebody who set the search to District 1 and came
+ * back to find themselves in Gò Vấp again has not been helped.
+ *
+ * A choice outranks a sensor until it is changed, and the picker's own "use my
+ * current location" is how it gets changed.
+ */
+export function useShouldAutoLocate(): boolean {
+  return useLocationStore((state) => state.status === 'IDLE' && state.source !== 'MANUAL');
 }

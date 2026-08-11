@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { LocateFixed, MapPinOff } from 'lucide-react';
 import { MapView } from './MapView';
-import { CityPickerSheet } from '@/features/location/components/CityPickerSheet';
-import { useLocationStore } from '@/features/location/store';
+import { LocationPickerSheet } from '@/features/location/components/LocationPickerSheet';
+import { useLocationStore, useShouldAutoLocate } from '@/features/location/store';
 import { nearestCity } from '@/features/location/cities';
 import { cn } from '@/lib/utils/cn';
 
@@ -27,10 +27,11 @@ export interface HomeMapProps {
 
 export function HomeMap({ className, selectedPlaceId = null, onSelectPlace }: HomeMapProps) {
   const { status, source, coordinates, label, requestLocation, setLabel } = useLocationStore();
+  const shouldAutoLocate = useShouldAutoLocate();
 
   useEffect(() => {
-    if (status === 'IDLE') void requestLocation();
-  }, [status, requestLocation]);
+    if (shouldAutoLocate) void requestLocation();
+  }, [shouldAutoLocate, requestLocation]);
 
   /*
    * Whether the picker is open is *derived*, not stored.
@@ -108,7 +109,7 @@ export function HomeMap({ className, selectedPlaceId = null, onSelectPlace }: Ho
         </button>
       </div>
 
-      <CityPickerSheet open={pickerOpen} onOpenChange={handlePickerOpenChange} />
+      <LocationPickerSheet open={pickerOpen} onOpenChange={handlePickerOpenChange} />
     </div>
   );
 }
