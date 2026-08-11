@@ -18,6 +18,7 @@ import { PlaceRail } from './PlaceRail';
 import { PlaceCardStack } from './PlaceCardStack';
 import { PlaceGrid } from './PlaceGrid';
 import { PlaceSheet } from './PlaceSheet';
+import { NothingNearby } from './NothingNearby';
 import { formatDistance } from '@/lib/geo/grid';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import type { TranslateFn } from '@/i18n/translate';
@@ -131,6 +132,19 @@ export function HomeScreen() {
   const nearby = pickRail(collections.data, ['popular-near-you']);
   const tonight = pickRail(collections.data, ['good-for-tonight', 'hidden-gems']);
 
+  /*
+   * Nothing at all, anywhere on the feed.
+   *
+   * Each rail hides itself when it is empty, which is right when one of them
+   * has nothing — a "good for tonight" heading over a gap is worse than no
+   * heading. But when every one of them is empty the reader gets a screen of
+   * headings and white space and no explanation, and the honest explanation is
+   * that nobody has added this part of the map yet.
+   */
+  const feedIsEmpty =
+    collections.data !== undefined &&
+    collections.data.every((collection) => collection.places.length === 0);
+
   return (
     <div className="px-safe">
       {/*
@@ -197,6 +211,16 @@ export function HomeScreen() {
         are looking for; on open, a specific suggestion is the faster route to
         a decision. The map is still one scroll away for anyone who wants it.
       */}
+      {feedIsEmpty && (
+        <NothingNearby
+          className="mt-6"
+          onChangeLocation={() => {
+            setLocationOpen(true);
+          }}
+        />
+      )}
+
+      {!feedIsEmpty && (
       <section className="mt-5" aria-label={railTitle(t, featured, 'recommended-for-you')}>
         <SectionHeading
           title={railTitle(t, featured, 'recommended-for-you')}
@@ -215,12 +239,14 @@ export function HomeScreen() {
           }}
         />
       </section>
+      )}
 
       {/* Categories, between the suggestion and the list.
           It is the pivot: the stack answers "somewhere specific", the grid
           answers "what is close", and this is how you say "actually, coffee".
           Each chip lands on Explore already filtered rather than filtering in
           place, because the answer is a list and this screen is not one. */}
+      {!feedIsEmpty && (
       <section className="mt-7" aria-label={t('home.categories')}>
         <SectionHeading
           title={t('home.categories')}
@@ -268,7 +294,9 @@ export function HomeScreen() {
               ))}
         </div>
       </section>
+      )}
 
+      {!feedIsEmpty && (
       <section className="mt-7" aria-label={railTitle(t, nearby, 'popular-near-you')}>
         <SectionHeading
           title={railTitle(t, nearby, 'popular-near-you')}
@@ -297,6 +325,7 @@ export function HomeScreen() {
           }}
         />
       </section>
+      )}
 
       <section className="mt-7 px-5" aria-label={t('home.map')}>
         <SectionHeading title={t('home.onTheMap')} className="px-0 pb-3" />
@@ -310,6 +339,7 @@ export function HomeScreen() {
       {/* Late in the day this is "Good for tonight"; the rest of the time the
           API sends "Hidden gems" instead, and the heading follows the data
           rather than claiming an evening that has not arrived. */}
+      {!feedIsEmpty && (
       <div className="mt-7">
         <PlaceRail
           title={railTitle(t, tonight, 'good-for-tonight')}
@@ -322,6 +352,7 @@ export function HomeScreen() {
           emptyMessage={t('home.nothingOpen')}
         />
       </div>
+      )}
 
       {/* Only shown once we know where the user is — until then the label would
           claim a precision the app does not have. */}

@@ -94,6 +94,12 @@ export const vi: Messages = {
   'place.checkConnection': 'Kiểm tra kết nối rồi thử lại giúp bạn.',
   'place.reviewCount': '{count} đánh giá',
 
+  'nearby.emptyTitle': 'Quanh đây chưa có địa điểm nào',
+  'nearby.emptyBody':
+    'Gonoplan là do những người dùng nó cùng góp. Bạn biết chỗ nào hay ở đây thì thêm giúp nhé — người tìm sau sẽ thấy.',
+  'nearby.addPlace': 'Thêm địa điểm',
+  'nearby.changeLocation': 'Tìm ở nơi khác',
+
   // ─── Saved ────────────────────────────────────────────────────────────────
   'saved.title': 'Đã lưu',
   'saved.count': '{count} địa điểm bạn muốn ghé',

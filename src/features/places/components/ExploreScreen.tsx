@@ -10,6 +10,7 @@ import { ApiError } from '@/lib/api/errors';
 import { Button } from '@/components/ui/Button';
 import { PlaceListItem, PlaceListItemSkeleton } from './PlaceListItem';
 import { PlaceSheet } from './PlaceSheet';
+import { NothingNearby } from './NothingNearby';
 import { useNearbyPlaces } from '../hooks/usePlaces';
 import { MapCanvas } from '@/features/map/components/MapCanvas';
 import type { MapBounds } from '@/lib/map/types';
@@ -602,29 +603,40 @@ export function ExploreScreen() {
             />
           )}
 
-          {!isPending && !error && data && data.places.length === 0 && (
+          {/*
+            Two different nothings.
+
+            A filtered search with no results is the filters' doing and the way
+            out is to drop one. An unfiltered search with no results — after the
+            radius has already walked out to 50km — means nobody has added this
+            part of the map yet, which is a different sentence and a different
+            button.
+          */}
+          {!isPending && !error && data && data.places.length === 0 && hasFilters && (
             <EmptyState
               icon={<Compass className="size-7" aria-hidden />}
-              title={hasFilters ? t('explore.noMatches') : t('explore.emptyArea')}
-              description={
-                hasFilters
-                  ? t('explore.noMatchesHint')
-                  : t('explore.emptyAreaHint')
-              }
+              title={t('explore.noMatches')}
+              description={t('explore.noMatchesHint')}
               action={
-                hasFilters ? (
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedSlugs([]);
-                      setOpenNow(false);
-                    }}
-                  >
-                    {t('explore.clearFilters')}
-                  </Button>
-                ) : undefined
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedSlugs([]);
+                    setOpenNow(false);
+                  }}
+                >
+                  {t('explore.clearFilters')}
+                </Button>
               }
+            />
+          )}
+
+          {!isPending && !error && data && data.places.length === 0 && !hasFilters && (
+            <NothingNearby
+              onChangeLocation={() => {
+                setLocationOpen(true);
+              }}
             />
           )}
 

@@ -101,6 +101,14 @@ export const en = {
   'place.checkConnection': 'Check your connection and try again.',
   'place.reviewCount': { one: '{count} review', other: '{count} reviews' },
 
+  // Shown where somebody has looked at a spot on the map and found nothing.
+  // An empty area is a gap in a catalogue people built, not a refusal.
+  'nearby.emptyTitle': 'No places around here yet',
+  'nearby.emptyBody':
+    'Gonoplan is built by the people using it. If you know somewhere good here, add it — whoever looks next will find it.',
+  'nearby.addPlace': 'Add a place',
+  'nearby.changeLocation': 'Look somewhere else',
+
   // ─── Saved ────────────────────────────────────────────────────────────────
   'saved.title': 'Saved',
   'saved.count': { one: '{count} place you want to visit', other: '{count} places you want to visit' },
