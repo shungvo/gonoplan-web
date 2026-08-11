@@ -44,11 +44,16 @@ export function usePlan(id: string) {
 function useStopMutation<TVariables>(
   planId: string,
   run: (variables: TVariables) => Promise<PlanDetail>,
+  // Set by the two callers that put the error on screen themselves; everything
+  // else here fires from a row control with nowhere to render one, and rides
+  // the global toast instead.
+  options: { inlineError?: boolean } = {},
 ) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: run,
+    ...(options.inlineError ? { meta: { inlineError: true } } : {}),
     onSuccess: (plan) => {
       queryClient.setQueryData(planKeys.detail(planId), plan);
       // The list shows a stop count, so it is stale the moment a stop moves.
@@ -61,6 +66,8 @@ export function useCreatePlan() {
   const queryClient = useQueryClient();
 
   return useMutation({
+    // The dialog that raised it stays open and shows it.
+    meta: { inlineError: true },
     mutationFn: createPlan,
     onSuccess: (plan) => {
       queryClient.setQueryData(planKeys.detail(plan.id), plan);
@@ -87,7 +94,11 @@ export function useUpdatePlan(planId: string) {
 }
 
 export function useAddStop(planId: string) {
-  return useStopMutation(planId, (input: Parameters<typeof addStop>[1]) => addStop(planId, input));
+  return useStopMutation(
+    planId,
+    (input: Parameters<typeof addStop>[1]) => addStop(planId, input),
+    { inlineError: true },
+  );
 }
 
 export function useUpdateStop(planId: string) {
@@ -103,5 +114,7 @@ export function useRemoveStop(planId: string) {
 }
 
 export function useReorderStops(planId: string) {
-  return useStopMutation(planId, (stopIds: string[]) => reorderStops(planId, stopIds));
+  return useStopMutation(planId, (stopIds: string[]) => reorderStops(planId, stopIds), {
+    inlineError: true,
+  });
 }

@@ -70,6 +70,8 @@ export function TaxonomyScreen() {
   };
 
   const add = useMutation({
+    // Shown under the form that raised it.
+    meta: { inlineError: true },
     mutationFn: () => createCategory(draft),
     onSuccess: async () => {
       setDraft(BLANK);
@@ -85,6 +87,8 @@ export function TaxonomyScreen() {
   });
 
   const remove = useMutation({
+    // Shown in the dialog that raised it, which is covering the screen.
+    meta: { inlineError: true },
     mutationFn: (id: string) => deleteCategory(id),
     onSuccess: async () => {
       setDeleteTarget(null);

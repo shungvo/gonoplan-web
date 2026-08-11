@@ -24,6 +24,8 @@ export function RegisterBusinessForm({ onRegistered }: { onRegistered: () => voi
   const [businessPhone, setBusinessPhone] = useState('');
 
   const submit = useMutation({
+    // Rendered under the form, where the field that caused it is.
+    meta: { inlineError: true },
     mutationFn: () =>
       registerBusiness({
         businessName: businessName.trim(),

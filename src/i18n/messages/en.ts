@@ -23,6 +23,8 @@ export const en = {
   'common.optional': '(optional)',
   'common.somethingWrong': 'Something went wrong.',
   'common.offline': 'Could not reach Gonoplan. Check your connection.',
+  // Names the live region for a screen reader. Never rendered.
+  'toast.regionLabel': 'Notifications',
   'common.signIn': 'Sign in',
   'common.seeAll': 'See all',
   'common.apply': 'Apply',
@@ -246,13 +248,30 @@ export const en = {
   'error.PLACE_NOT_APPROVED': 'This place is not available yet',
   'error.PLACE_ALREADY_EXISTS': 'A place like that already exists here',
   'error.PLACE_EDIT_FORBIDDEN': 'You cannot edit this place',
+  'error.PLACE_SELF_APPROVE_FORBIDDEN':
+    'You submitted this place, so another moderator has to approve it',
   'error.REVIEW_NOT_FOUND': 'That review could not be found',
   'error.REVIEW_ALREADY_EXISTS': 'You have already reviewed this place',
   'error.REVIEW_OWN_PLACE_FORBIDDEN': 'You cannot review your own business',
   'error.REVIEW_EDIT_WINDOW_EXPIRED': 'Reviews can only be edited for 24 hours',
   'error.OWNER_NOT_APPROVED': 'Your business is still being reviewed',
+  'error.OWNER_PROFILE_NOT_FOUND': 'That business could not be found',
   'error.REPORT_SELF_FORBIDDEN': 'You cannot report your own content',
   'error.REPORT_ALREADY_HANDLED': 'This report has already been handled',
+  'error.REPORT_NOT_FOUND': 'That report could not be found',
+  'error.REPORT_TARGET_NOT_FOUND': 'What this report is about no longer exists',
+  'error.USER_NOT_FOUND': 'That account could not be found',
+  // Both of these are said to an administrator, so they have to explain the
+  // rule rather than refuse. See `assertCanActOnUser` in the API.
+  'error.ADMIN_SELF_ACTION_FORBIDDEN': 'Moderation actions cannot be applied to your own account',
+  'error.ADMIN_TARGET_IS_ADMIN': 'Administrator accounts cannot be moderated from here',
+  // Deliberately without the limit itself: the number lives in the API, and a
+  // copy here is one that goes stale silently.
+  'error.PLAN_LIMIT_REACHED': 'You have as many plans as you can keep — delete one to make room',
+  'error.PLAN_STOP_LIMIT_REACHED': 'This plan is full',
+  'error.PLAN_NOT_FOUND': 'That plan could not be found',
+  'error.PLAN_STOP_NOT_FOUND': 'That stop is no longer on this plan',
+  'error.PLAN_ORDER_MISMATCH': 'This plan changed elsewhere — reload and try again',
   'error.UPLOAD_INVALID_TYPE': 'That file type is not supported',
   'error.UPLOAD_TOO_LARGE': 'That photo is too large',
   'error.UPLOAD_VERIFICATION_FAILED': 'That photo could not be verified',

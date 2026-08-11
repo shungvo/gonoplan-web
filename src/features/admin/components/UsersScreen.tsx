@@ -58,6 +58,8 @@ export function UsersScreen() {
   });
 
   const ban = useMutation({
+    // Shown in the dialog that raised it, which is covering the screen.
+    meta: { inlineError: true },
     mutationFn: ({ userId, reason }: { userId: string; reason: string }) => banUser(userId, reason),
     onSuccess: async () => {
       setBanTarget(null);
@@ -86,6 +88,8 @@ export function UsersScreen() {
    * it, so the only way to remove an account was through the database.
    */
   const remove = useMutation({
+    // Shown in the dialog that raised it, which is covering the screen.
+    meta: { inlineError: true },
     mutationFn: ({ userId, reason }: { userId: string; reason: string }) =>
       deleteUser(userId, reason),
     onSuccess: async () => {
@@ -95,6 +99,8 @@ export function UsersScreen() {
   });
 
   const clearBio = useMutation({
+    // Shown in the dialog that raised it, which is covering the screen.
+    meta: { inlineError: true },
     mutationFn: ({ id, reason }: { id: string; reason: string }) => clearUserBio(id, reason),
     onSuccess: async () => {
       setBioTarget(null);
@@ -380,11 +386,13 @@ export function UsersScreen() {
         confirmLabel={t('users.deleteConfirm')}
         destructive
         isPending={remove.isPending}
+        error={remove.error}
         onConfirm={(reason) => {
           if (deleteTarget) remove.mutate({ userId: deleteTarget.id, reason });
         }}
         onClose={() => {
           setDeleteTarget(null);
+          remove.reset();
         }}
       />
 

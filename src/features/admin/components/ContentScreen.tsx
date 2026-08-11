@@ -61,6 +61,8 @@ export function ContentScreen() {
   });
 
   const suspend = useMutation({
+    // Shown in the dialog that raised it, which is covering the screen.
+    meta: { inlineError: true },
     mutationFn: ({ placeId, reason }: { placeId: string; reason: string }) =>
       suspendPlace(placeId, reason),
     onSuccess: async () => {
@@ -72,6 +74,8 @@ export function ContentScreen() {
   const [replyTarget, setReplyTarget] = useState<AdminReview | null>(null);
 
   const removeReply = useMutation({
+    // Shown in the dialog that raised it, which is covering the screen.
+    meta: { inlineError: true },
     mutationFn: ({ reviewId, reason }: { reviewId: string; reason: string }) =>
       removeReviewReply(reviewId, reason),
     onSuccess: async () => {
@@ -87,6 +91,8 @@ export function ContentScreen() {
   });
 
   const removeReview = useMutation({
+    // Shown in the dialog that raised it, which is covering the screen.
+    meta: { inlineError: true },
     mutationFn: (reviewId: string) => deleteReview(reviewId),
     onSuccess: async () => {
       setDeleteTarget(null);
@@ -369,11 +375,13 @@ export function ContentScreen() {
         confirmLabel={t('content.removeReply')}
         destructive
         isPending={removeReply.isPending}
+        error={removeReply.error}
         onConfirm={(reason) => {
           if (replyTarget) removeReply.mutate({ reviewId: replyTarget.id, reason });
         }}
         onClose={() => {
           setReplyTarget(null);
+          removeReply.reset();
         }}
       />
 

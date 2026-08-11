@@ -48,6 +48,8 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
   const queryClient = useQueryClient();
 
   const submit = useMutation({
+    // Rendered under the form, where the field that caused it is.
+    meta: { inlineError: true },
     mutationFn: () =>
       mode === 'signin' ? login({ email, password }) : register({ email, password, name }),
     onSuccess: (user) => {

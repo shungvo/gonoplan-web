@@ -105,6 +105,8 @@ function ReportForm({ target, onDone }: { target: ReportTarget; onDone: () => vo
   const [description, setDescription] = useState('');
 
   const submit = useMutation({
+    // Rendered in the sheet, above the button that raised it.
+    meta: { inlineError: true },
     mutationFn: () =>
       api.post<Result>('/reports', {
         targetType: target.type,

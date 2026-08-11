@@ -161,6 +161,8 @@ export function SubmitPlaceScreen() {
   };
 
   const submit = useMutation({
+    // Rendered above the submit button, beside the fields it is about.
+    meta: { inlineError: true },
     mutationFn: () =>
       submitPlace({
         name: name.trim(),

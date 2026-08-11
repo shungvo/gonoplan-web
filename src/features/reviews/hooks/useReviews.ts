@@ -53,6 +53,8 @@ export function useCreateReview(placeId: string) {
   const invalidate = useInvalidateAfterRatingChange(placeId);
 
   return useMutation({
+    // The sheet stays open and shows it, next to the fields it is about.
+    meta: { inlineError: true },
     mutationFn: (input: { rating: number; content?: string; imageKeys?: string[] }) =>
       createReview(placeId, input),
     onSuccess: invalidate,
@@ -63,6 +65,7 @@ export function useUpdateReview(placeId: string) {
   const invalidate = useInvalidateAfterRatingChange(placeId);
 
   return useMutation({
+    meta: { inlineError: true },
     mutationFn: ({
       reviewId,
       ...input

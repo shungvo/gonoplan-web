@@ -93,16 +93,43 @@ export function ModerationScreen() {
    * and the sidebar badge too, and a moderator who sees "3 waiting" over an
    * empty list stops trusting the numbers.
    */
+  const invalidateQueues = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['admin'] });
+  };
+
+  /*
+   * Two mutations, because the two halves of this screen report differently.
+   *
+   * Approving is one tap with nothing on screen to hold a message, so a
+   * refusal rides the toast. Rejecting happens inside a dialog that is already
+   * covering the page, so its refusal belongs in the dialog — and the dialog
+   * stays open, holding the reason the moderator typed.
+   *
+   * They were one mutation, wired to the dialog. Approving your own submission
+   * is refused by the API (§30) and the refusal went nowhere at all: the row
+   * stayed in the queue, no message appeared, and the only evidence was a 403
+   * in the network tab.
+   */
   const act = useMutation({
+    mutationFn: async (run: () => Promise<unknown>) => run(),
+    onSuccess: invalidateQueues,
+  });
+
+  const decide = useMutation({
+    meta: { inlineError: true },
     mutationFn: async (run: () => Promise<unknown>) => run(),
     onSuccess: async () => {
       setDecision(null);
-      await queryClient.invalidateQueries({ queryKey: ['admin'] });
+      await invalidateQueues();
     },
   });
 
   const run = (fn: () => Promise<unknown>) => {
     act.mutate(fn);
+  };
+
+  const confirm = (fn: () => Promise<unknown>) => {
+    decide.mutate(fn);
   };
 
   return (
@@ -351,29 +378,29 @@ export function ModerationScreen() {
             ? t('moderation.resolvePlaceholder')
             : t('admin.reasonPlaceholder')
         }
-        isPending={act.isPending}
-        error={act.error}
+        isPending={decide.isPending}
+        error={decide.error}
         onConfirm={(reason) => {
           if (!decision) return;
 
           switch (decision.kind) {
             case 'reject-place':
-              run(() => rejectPlace(decision.id, reason));
+              confirm(() => rejectPlace(decision.id, reason));
               break;
             case 'reject-revision':
-              run(() => rejectRevision(decision.id, reason));
+              confirm(() => rejectRevision(decision.id, reason));
               break;
             case 'reject-owner':
-              run(() => rejectOwner(decision.id, reason));
+              confirm(() => rejectOwner(decision.id, reason));
               break;
             case 'resolve-report':
-              run(() => resolveReport(decision.id, decision.outcome ?? 'RESOLVED', reason));
+              confirm(() => resolveReport(decision.id, decision.outcome ?? 'RESOLVED', reason));
               break;
           }
         }}
         onClose={() => {
           setDecision(null);
-          act.reset();
+          decide.reset();
         }}
       />
     </>

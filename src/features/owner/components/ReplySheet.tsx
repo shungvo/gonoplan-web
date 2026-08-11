@@ -40,6 +40,8 @@ function ReplyForm({ review, onDone }: { review: OwnerReview; onDone: () => void
   const queryClient = useQueryClient();
 
   const submit = useMutation({
+    // Rendered under the form, where the field that caused it is.
+    meta: { inlineError: true },
     mutationFn: () => replyToReview(review.id, content.trim()),
     onSuccess: () => {
       // The inbox count and the public review list both change.
