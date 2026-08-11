@@ -3553,6 +3553,7 @@ export interface paths {
                                     id: string;
                                     slug: string;
                                     name: string;
+                                    address: string;
                                     district: string | null;
                                     province: string;
                                     averageRating: number;
@@ -9276,6 +9277,7 @@ export interface components {
                 id: string;
                 slug: string;
                 name: string;
+                address: string;
                 district: string | null;
                 province: string;
                 averageRating: number;
