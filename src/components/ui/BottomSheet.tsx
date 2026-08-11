@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Drawer } from 'vaul';
 import { cn } from '@/lib/utils/cn';
 
@@ -47,15 +47,14 @@ export interface BottomSheetProps {
   dimOnlyWhenFull?: boolean | undefined;
 
   /**
-   * Rendered inside the portal, behind the sheet and behind the overlay.
+   * Only closed by something that calls `onOpenChange` — not by dragging it
+   * away, not by pressing the page behind it.
    *
-   * For a sheet that is a panel over something rather than a panel over the
-   * page — the place sheet puts the photographs here, so the smaller resting
-   * heights are showing the place instead of a dimmed list of other places.
-   * It has to live in the portal to sit above the app shell, and before the
-   * overlay so the overlay can still dim it.
+   * Dragging between snap points still works; the drag simply springs back
+   * instead of dismissing. For sheets where losing your place by resting a
+   * thumb in the wrong spot is worse than the extra tap on a button.
    */
-  backdrop?: ReactNode | undefined;
+  dismissible?: boolean | undefined;
 
   children: ReactNode;
   className?: string | undefined;
@@ -76,7 +75,7 @@ export function BottomSheet({
   defaultSnapIndex,
   floatingHandle = false,
   dimOnlyWhenFull = false,
-  backdrop,
+  dismissible = true,
   children,
   className,
 }: BottomSheetProps) {
@@ -85,6 +84,32 @@ export function BottomSheet({
     defaultSnapIndex ?? (stops ? Math.min(Math.floor(stops.length / 2), stops.length - 1) : 0);
 
   const [snap, setSnap] = useState<number | string | null>(stops?.[initialIndex] ?? null);
+
+  /*
+   * Escape still closes an undismissable sheet.
+   *
+   * `dismissible={false}` is there to stop a sheet being lost to a stray drag
+   * or a tap behind it — not to trap anyone inside it, and vaul takes Escape
+   * away along with the rest. Escape is the keyboard's version of the close
+   * button, so it is put back by hand.
+   *
+   * Guarded on being the topmost sheet: this one can have another open over it
+   * — the auth sheet, the report sheet — and that one owns the key.
+   */
+  useEffect(() => {
+    if (!open || dismissible) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      if (document.querySelectorAll('[data-vaul-drawer][data-state="open"]').length > 1) return;
+      onOpenChange(false);
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [open, dismissible, onOpenChange]);
 
   const isFull = stops !== null && snap === stops[stops.length - 1];
   const dimmed = !dimOnlyWhenFull || isFull;
@@ -99,13 +124,12 @@ export function BottomSheet({
         if (next && stops) setSnap(stops[initialIndex] ?? stops[0]!);
         onOpenChange(next);
       }}
+      dismissible={dismissible}
       {...(stops
         ? { snapPoints: stops, activeSnapPoint: snap, setActiveSnapPoint: setSnap }
         : {})}
     >
       <Drawer.Portal>
-        {backdrop && <div className="fixed inset-0 z-40">{backdrop}</div>}
-
         <Drawer.Overlay
           className="fixed inset-0 z-50 bg-ink/40 backdrop-blur-[2px] transition-opacity"
           style={{ opacity: dimmed ? 1 : 0, pointerEvents: dimmed ? 'auto' : 'none' }}
