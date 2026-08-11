@@ -2489,6 +2489,1122 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The caller's plans
+         * @description Newest dated day first; undated drafts sort last rather than disappearing above or below the dated ones. Responses are `private, no-store` — a shared proxy holding one person's day and serving it to the next caller is the failure this guards against.
+         *
+         *     Every route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Plans, without their stops */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                date: string | null;
+                                timezone: string;
+                                note: string | null;
+                                stopCount: number;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Start a plan
+         * @description A plan is **one day**. `date` is `YYYY-MM-DD` and deliberately not a timestamp — a value carrying an instant gets shifted by a timezone somewhere between the database and the screen. It is optional, because "someday in Hội An" is a real draft and forcing a date means inventing one.
+         *
+         *     `timezone` is the plan's, not the server's: a Hanoi day arranged from Berlin is still a Hanoi day.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        title: string;
+                        /** Format: date */
+                        date?: string;
+                        timezone?: string;
+                        note?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description The new plan */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                date: string | null;
+                                timezone: string;
+                                note: string | null;
+                                stopCount: number;
+                                createdAt: string;
+                                updatedAt: string;
+                                stops: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    sortOrder: number;
+                                    startsAtMin: number | null;
+                                    endsAtMin: number | null;
+                                    crossesMidnight: boolean;
+                                    note: string | null;
+                                    place: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        category: {
+                                            /** Format: uuid */
+                                            id: string;
+                                            slug: string;
+                                            name: string;
+                                            nameVi: string;
+                                            colorHex: string;
+                                        };
+                                        latitude: number;
+                                        longitude: number;
+                                        address: string;
+                                        district: string | null;
+                                        province: string;
+                                        /** @enum {string|null} */
+                                        priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                        averageRating: number;
+                                        reviewCount: number;
+                                        coverImageUrl: string | null;
+                                        coverBlurhash: string | null;
+                                        isUnavailable: boolean;
+                                    };
+                                }[];
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description The per-account plan limit is reached */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/plans/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A plan and its stops
+         * @description Stops come back in order, each with enough of its place to render without a second request.
+         *
+         *     A stop whose place has since been suspended or deleted is returned with `place.isUnavailable`, not filtered out. A silent gap in a day somebody arranged is worse than a row that says what happened.
+         *
+         *     Every route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The plan */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                date: string | null;
+                                timezone: string;
+                                note: string | null;
+                                stopCount: number;
+                                createdAt: string;
+                                updatedAt: string;
+                                stops: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    sortOrder: number;
+                                    startsAtMin: number | null;
+                                    endsAtMin: number | null;
+                                    crossesMidnight: boolean;
+                                    note: string | null;
+                                    place: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        category: {
+                                            /** Format: uuid */
+                                            id: string;
+                                            slug: string;
+                                            name: string;
+                                            nameVi: string;
+                                            colorHex: string;
+                                        };
+                                        latitude: number;
+                                        longitude: number;
+                                        address: string;
+                                        district: string | null;
+                                        province: string;
+                                        /** @enum {string|null} */
+                                        priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                        averageRating: number;
+                                        reviewCount: number;
+                                        coverImageUrl: string | null;
+                                        coverBlurhash: string | null;
+                                        isUnavailable: boolean;
+                                    };
+                                }[];
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Delete a plan
+         * @description Soft-deleted, so an accidental tap is recoverable by an operator.
+         *
+         *     Every route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Deleted */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                deleted: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Rename, redate or annotate a plan
+         * @description An explicit `null` for `date` or `note` clears it; omitting the field leaves it alone. Collapsing the two would make "remove the date" impossible to express.
+         *
+         *     Every route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        title?: string;
+                        /** Format: date */
+                        date?: string | null;
+                        timezone?: string;
+                        note?: string | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description The updated plan */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                date: string | null;
+                                timezone: string;
+                                note: string | null;
+                                stopCount: number;
+                                createdAt: string;
+                                updatedAt: string;
+                                stops: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    sortOrder: number;
+                                    startsAtMin: number | null;
+                                    endsAtMin: number | null;
+                                    crossesMidnight: boolean;
+                                    note: string | null;
+                                    place: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        category: {
+                                            /** Format: uuid */
+                                            id: string;
+                                            slug: string;
+                                            name: string;
+                                            nameVi: string;
+                                            colorHex: string;
+                                        };
+                                        latitude: number;
+                                        longitude: number;
+                                        address: string;
+                                        district: string | null;
+                                        province: string;
+                                        /** @enum {string|null} */
+                                        priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                        averageRating: number;
+                                        reviewCount: number;
+                                        coverImageUrl: string | null;
+                                        coverBlurhash: string | null;
+                                        isUnavailable: boolean;
+                                    };
+                                }[];
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/plans/{id}/stops": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a place to the day
+         * @description Appended at the end; use the reorder endpoint to move it. Times are minutes from midnight in the plan's timezone, matching `OpeningHour` — an integer cannot be misread by a driver on a different session timezone, and a `time` column can.
+         *
+         *     A stop may carry no time at all: "coffee somewhere before the museum" is an ordering with no clock attached, and it still has to sit in the right place.
+         *
+         *     Every route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        placeId: string;
+                        startsAtMin?: number;
+                        endsAtMin?: number;
+                        note?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description The plan, with the stop added */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                date: string | null;
+                                timezone: string;
+                                note: string | null;
+                                stopCount: number;
+                                createdAt: string;
+                                updatedAt: string;
+                                stops: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    sortOrder: number;
+                                    startsAtMin: number | null;
+                                    endsAtMin: number | null;
+                                    crossesMidnight: boolean;
+                                    note: string | null;
+                                    place: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        category: {
+                                            /** Format: uuid */
+                                            id: string;
+                                            slug: string;
+                                            name: string;
+                                            nameVi: string;
+                                            colorHex: string;
+                                        };
+                                        latitude: number;
+                                        longitude: number;
+                                        address: string;
+                                        district: string | null;
+                                        province: string;
+                                        /** @enum {string|null} */
+                                        priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                        averageRating: number;
+                                        reviewCount: number;
+                                        coverImageUrl: string | null;
+                                        coverBlurhash: string | null;
+                                        isUnavailable: boolean;
+                                    };
+                                }[];
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description The plan, or the place, is not available */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description The plan already holds the maximum number of stops */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/plans/{id}/stops/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set the order of the whole day
+         * @description Takes every stop id, in the order they should appear, and writes them in one transaction.
+         *
+         *     Sending a single stop's new index would need the server to shuffle its neighbours, and two of those arriving out of order leaves a day nobody arranged. The list is checked against the plan's actual stops first: a dropped id, a repeated one, or an id from another plan is a 409, because a client that has fallen behind should reload rather than have its stale idea applied.
+         *
+         *     Every route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.
+         */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        stopIds: string[];
+                    };
+                };
+            };
+            responses: {
+                /** @description The reordered plan */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                date: string | null;
+                                timezone: string;
+                                note: string | null;
+                                stopCount: number;
+                                createdAt: string;
+                                updatedAt: string;
+                                stops: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    sortOrder: number;
+                                    startsAtMin: number | null;
+                                    endsAtMin: number | null;
+                                    crossesMidnight: boolean;
+                                    note: string | null;
+                                    place: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        category: {
+                                            /** Format: uuid */
+                                            id: string;
+                                            slug: string;
+                                            name: string;
+                                            nameVi: string;
+                                            colorHex: string;
+                                        };
+                                        latitude: number;
+                                        longitude: number;
+                                        address: string;
+                                        district: string | null;
+                                        province: string;
+                                        /** @enum {string|null} */
+                                        priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                        averageRating: number;
+                                        reviewCount: number;
+                                        coverImageUrl: string | null;
+                                        coverBlurhash: string | null;
+                                        isUnavailable: boolean;
+                                    };
+                                }[];
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description The order does not match the stops on this plan */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/plans/{id}/stops/{stopId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove a stop
+         * @description The remaining stops are renumbered so positions stay contiguous. Leaving a hole works until somebody reorders, at which point the gap decides where a stop lands.
+         *
+         *     Every route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    stopId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The plan without that stop */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                date: string | null;
+                                timezone: string;
+                                note: string | null;
+                                stopCount: number;
+                                createdAt: string;
+                                updatedAt: string;
+                                stops: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    sortOrder: number;
+                                    startsAtMin: number | null;
+                                    endsAtMin: number | null;
+                                    crossesMidnight: boolean;
+                                    note: string | null;
+                                    place: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        category: {
+                                            /** Format: uuid */
+                                            id: string;
+                                            slug: string;
+                                            name: string;
+                                            nameVi: string;
+                                            colorHex: string;
+                                        };
+                                        latitude: number;
+                                        longitude: number;
+                                        address: string;
+                                        district: string | null;
+                                        province: string;
+                                        /** @enum {string|null} */
+                                        priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                        averageRating: number;
+                                        reviewCount: number;
+                                        coverImageUrl: string | null;
+                                        coverBlurhash: string | null;
+                                        isUnavailable: boolean;
+                                    };
+                                }[];
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Change a stop’s times or note
+         * @description An end before the start is an evening that runs past midnight, not an error — the bar at 22:00 closes at 01:00. The response reports it as `crossesMidnight` so the client does not have to work it out.
+         *
+         *     Every route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    stopId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        startsAtMin?: number | null;
+                        endsAtMin?: number | null;
+                        note?: string | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description The updated plan */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                date: string | null;
+                                timezone: string;
+                                note: string | null;
+                                stopCount: number;
+                                createdAt: string;
+                                updatedAt: string;
+                                stops: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    sortOrder: number;
+                                    startsAtMin: number | null;
+                                    endsAtMin: number | null;
+                                    crossesMidnight: boolean;
+                                    note: string | null;
+                                    place: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        category: {
+                                            /** Format: uuid */
+                                            id: string;
+                                            slug: string;
+                                            name: string;
+                                            nameVi: string;
+                                            colorHex: string;
+                                        };
+                                        latitude: number;
+                                        longitude: number;
+                                        address: string;
+                                        district: string | null;
+                                        province: string;
+                                        /** @enum {string|null} */
+                                        priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                        averageRating: number;
+                                        reviewCount: number;
+                                        coverImageUrl: string | null;
+                                        coverBlurhash: string | null;
+                                        isUnavailable: boolean;
+                                    };
+                                }[];
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/users/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A public profile
+         * @description What one person may see of another: their name, when they joined, their published reviews and the places they contributed.
+         *
+         *     The omissions are the design. Email and locale are absent, and so are saved places and plans — those are the two things people put unfinished intentions into, where they are thinking of going and who with, and neither belongs on a page a stranger can open. They are not filtered here; they are not in the DTO at all, so no future route can leak them by accident.
+         *
+         *     Only active accounts have a profile. A deleted or banned account answers 404, which also stops this being a way to enumerate who has been banned.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The profile */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string;
+                                avatarUrl: string | null;
+                                bio: string | null;
+                                joinedAt: string;
+                                isReviewer: boolean;
+                                counts: {
+                                    reviews: number;
+                                    places: number;
+                                };
+                                recentReviews: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    rating: number;
+                                    content: string | null;
+                                    helpfulCount: number;
+                                    createdAt: string;
+                                    place: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        coverImageUrl: string | null;
+                                    };
+                                }[];
+                                places: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    slug: string;
+                                    name: string;
+                                    district: string | null;
+                                    province: string;
+                                    averageRating: number;
+                                    reviewCount: number;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    category: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        nameVi: string;
+                                        colorHex: string;
+                                    };
+                                }[];
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description No active account with that id */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/owner/register": {
         parameters: {
             query?: never;
@@ -7935,6 +9051,146 @@ export interface components {
             canReview: boolean;
             cannotReviewReason: string | null;
             cannotReviewCode: string | null;
+        };
+        Plan: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            date: string | null;
+            timezone: string;
+            note: string | null;
+            stopCount: number;
+            createdAt: string;
+            updatedAt: string;
+        };
+        PlanDetail: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            date: string | null;
+            timezone: string;
+            note: string | null;
+            stopCount: number;
+            createdAt: string;
+            updatedAt: string;
+            stops: {
+                /** Format: uuid */
+                id: string;
+                sortOrder: number;
+                startsAtMin: number | null;
+                endsAtMin: number | null;
+                crossesMidnight: boolean;
+                note: string | null;
+                place: {
+                    /** Format: uuid */
+                    id: string;
+                    slug: string;
+                    name: string;
+                    category: {
+                        /** Format: uuid */
+                        id: string;
+                        slug: string;
+                        name: string;
+                        nameVi: string;
+                        colorHex: string;
+                    };
+                    latitude: number;
+                    longitude: number;
+                    address: string;
+                    district: string | null;
+                    province: string;
+                    /** @enum {string|null} */
+                    priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                    averageRating: number;
+                    reviewCount: number;
+                    coverImageUrl: string | null;
+                    coverBlurhash: string | null;
+                    isUnavailable: boolean;
+                };
+            }[];
+        };
+        PlanStop: {
+            /** Format: uuid */
+            id: string;
+            sortOrder: number;
+            startsAtMin: number | null;
+            endsAtMin: number | null;
+            crossesMidnight: boolean;
+            note: string | null;
+            place: {
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                name: string;
+                category: {
+                    /** Format: uuid */
+                    id: string;
+                    slug: string;
+                    name: string;
+                    nameVi: string;
+                    colorHex: string;
+                };
+                latitude: number;
+                longitude: number;
+                address: string;
+                district: string | null;
+                province: string;
+                /** @enum {string|null} */
+                priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                averageRating: number;
+                reviewCount: number;
+                coverImageUrl: string | null;
+                coverBlurhash: string | null;
+                isUnavailable: boolean;
+            };
+        };
+        PublicUser: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            avatarUrl: string | null;
+            bio: string | null;
+            joinedAt: string;
+            isReviewer: boolean;
+            counts: {
+                reviews: number;
+                places: number;
+            };
+            recentReviews: {
+                /** Format: uuid */
+                id: string;
+                rating: number;
+                content: string | null;
+                helpfulCount: number;
+                createdAt: string;
+                place: {
+                    /** Format: uuid */
+                    id: string;
+                    slug: string;
+                    name: string;
+                    coverImageUrl: string | null;
+                };
+            }[];
+            places: {
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                name: string;
+                district: string | null;
+                province: string;
+                averageRating: number;
+                reviewCount: number;
+                coverImageUrl: string | null;
+                coverBlurhash: string | null;
+                category: {
+                    /** Format: uuid */
+                    id: string;
+                    slug: string;
+                    name: string;
+                    nameVi: string;
+                    colorHex: string;
+                };
+            }[];
         };
         OwnerProfile: {
             /** Format: uuid */

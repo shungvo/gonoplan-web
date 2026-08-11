@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Bookmark, Compass } from 'lucide-react';
+import { ArrowLeft, Bookmark, Compass } from 'lucide-react';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import {
@@ -32,8 +32,21 @@ export function SavedScreen() {
 
   return (
     <div className="px-safe">
-      <header className="pt-safe px-5">
-        <h1 className="text-ink pt-6 text-[1.75rem] leading-tight font-semibold tracking-tight">
+      <header className="pt-safe-float px-5">
+        {/* Saved moved out of the bottom nav and under the profile, so it is
+            reached rather than switched to — and a screen you reach needs a
+            way back. */}
+        <button
+          type="button"
+          onClick={() => {
+            router.push('/profile');
+          }}
+          aria-label={t('common.back')}
+          className="text-ink -ml-2 flex size-10 items-center justify-center rounded-full"
+        >
+          <ArrowLeft className="size-5" aria-hidden />
+        </button>
+        <h1 className="text-ink mt-1 text-[1.75rem] leading-tight font-semibold tracking-tight">
           {t('saved.title')}
         </h1>
         {isAuthenticated && places.length > 0 && (

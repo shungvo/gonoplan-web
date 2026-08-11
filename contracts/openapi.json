@@ -1075,6 +1075,611 @@
           "cannotReviewCode"
         ]
       },
+      "Plan": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "stopCount": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "date",
+          "timezone",
+          "note",
+          "stopCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PlanDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "stopCount": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "stops": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "sortOrder": {
+                  "type": "integer"
+                },
+                "startsAtMin": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "endsAtMin": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "crossesMidnight": {
+                  "type": "boolean"
+                },
+                "note": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "place": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "nameVi": {
+                          "type": "string"
+                        },
+                        "colorHex": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "slug",
+                        "name",
+                        "nameVi",
+                        "colorHex"
+                      ]
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "address": {
+                      "type": "string"
+                    },
+                    "district": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "province": {
+                      "type": "string"
+                    },
+                    "priceRange": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "enum": [
+                        "BUDGET",
+                        "MODERATE",
+                        "EXPENSIVE",
+                        "LUXURY"
+                      ]
+                    },
+                    "averageRating": {
+                      "type": "number"
+                    },
+                    "reviewCount": {
+                      "type": "integer"
+                    },
+                    "coverImageUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "coverBlurhash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "isUnavailable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "slug",
+                    "name",
+                    "category",
+                    "latitude",
+                    "longitude",
+                    "address",
+                    "district",
+                    "province",
+                    "priceRange",
+                    "averageRating",
+                    "reviewCount",
+                    "coverImageUrl",
+                    "coverBlurhash",
+                    "isUnavailable"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "sortOrder",
+                "startsAtMin",
+                "endsAtMin",
+                "crossesMidnight",
+                "note",
+                "place"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "date",
+          "timezone",
+          "note",
+          "stopCount",
+          "createdAt",
+          "updatedAt",
+          "stops"
+        ]
+      },
+      "PlanStop": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sortOrder": {
+            "type": "integer"
+          },
+          "startsAtMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "endsAtMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "crossesMidnight": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "place": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "category": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "slug": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "nameVi": {
+                    "type": "string"
+                  },
+                  "colorHex": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "slug",
+                  "name",
+                  "nameVi",
+                  "colorHex"
+                ]
+              },
+              "latitude": {
+                "type": "number"
+              },
+              "longitude": {
+                "type": "number"
+              },
+              "address": {
+                "type": "string"
+              },
+              "district": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "province": {
+                "type": "string"
+              },
+              "priceRange": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "BUDGET",
+                  "MODERATE",
+                  "EXPENSIVE",
+                  "LUXURY"
+                ]
+              },
+              "averageRating": {
+                "type": "number"
+              },
+              "reviewCount": {
+                "type": "integer"
+              },
+              "coverImageUrl": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "coverBlurhash": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "isUnavailable": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "slug",
+              "name",
+              "category",
+              "latitude",
+              "longitude",
+              "address",
+              "district",
+              "province",
+              "priceRange",
+              "averageRating",
+              "reviewCount",
+              "coverImageUrl",
+              "coverBlurhash",
+              "isUnavailable"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "sortOrder",
+          "startsAtMin",
+          "endsAtMin",
+          "crossesMidnight",
+          "note",
+          "place"
+        ]
+      },
+      "PublicUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "bio": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "joinedAt": {
+            "type": "string"
+          },
+          "isReviewer": {
+            "type": "boolean"
+          },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "reviews": {
+                "type": "integer"
+              },
+              "places": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "reviews",
+              "places"
+            ]
+          },
+          "recentReviews": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "rating": {
+                  "type": "integer"
+                },
+                "content": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "helpfulCount": {
+                  "type": "integer"
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "place": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "coverImageUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "slug",
+                    "name",
+                    "coverImageUrl"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "rating",
+                "content",
+                "helpfulCount",
+                "createdAt",
+                "place"
+              ]
+            }
+          },
+          "places": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "district": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "province": {
+                  "type": "string"
+                },
+                "averageRating": {
+                  "type": "number"
+                },
+                "reviewCount": {
+                  "type": "integer"
+                },
+                "coverImageUrl": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "coverBlurhash": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "category": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "nameVi": {
+                      "type": "string"
+                    },
+                    "colorHex": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "slug",
+                    "name",
+                    "nameVi",
+                    "colorHex"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "slug",
+                "name",
+                "district",
+                "province",
+                "averageRating",
+                "reviewCount",
+                "coverImageUrl",
+                "coverBlurhash",
+                "category"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "avatarUrl",
+          "bio",
+          "joinedAt",
+          "isReviewer",
+          "counts",
+          "recentReviews",
+          "places"
+        ]
+      },
       "OwnerProfile": {
         "type": "object",
         "properties": {
@@ -9007,6 +9612,2717 @@
           },
           "401": {
             "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans": {
+      "get": {
+        "tags": [
+          "Plans"
+        ],
+        "summary": "The caller's plans",
+        "description": "Newest dated day first; undated drafts sort last rather than disappearing above or below the dated ones. Responses are `private, no-store` — a shared proxy holding one person's day and serving it to the next caller is the failure this guards against.\n\nEvery route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Plans, without their stops",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "date": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "timezone": {
+                            "type": "string"
+                          },
+                          "note": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "stopCount": {
+                            "type": "integer"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title",
+                          "date",
+                          "timezone",
+                          "note",
+                          "stopCount",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Start a plan",
+        "description": "A plan is **one day**. `date` is `YYYY-MM-DD` and deliberately not a timestamp — a value carrying an instant gets shifted by a timezone somewhere between the database and the screen. It is optional, because \"someday in Hội An\" is a real draft and forcing a date means inventing one.\n\n`timezone` is the plan's, not the server's: a Hanoi day arranged from Berlin is still a Hanoi day.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 2000
+                  }
+                },
+                "required": [
+                  "title"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The new plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "date": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "timezone": {
+                          "type": "string"
+                        },
+                        "note": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "stopCount": {
+                          "type": "integer"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "stops": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "sortOrder": {
+                                "type": "integer"
+                              },
+                              "startsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "endsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "crossesMidnight": {
+                                "type": "boolean"
+                              },
+                              "note": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "place": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "category": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                      },
+                                      "slug": {
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "nameVi": {
+                                        "type": "string"
+                                      },
+                                      "colorHex": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "slug",
+                                      "name",
+                                      "nameVi",
+                                      "colorHex"
+                                    ]
+                                  },
+                                  "latitude": {
+                                    "type": "number"
+                                  },
+                                  "longitude": {
+                                    "type": "number"
+                                  },
+                                  "address": {
+                                    "type": "string"
+                                  },
+                                  "district": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "province": {
+                                    "type": "string"
+                                  },
+                                  "priceRange": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "enum": [
+                                      "BUDGET",
+                                      "MODERATE",
+                                      "EXPENSIVE",
+                                      "LUXURY"
+                                    ]
+                                  },
+                                  "averageRating": {
+                                    "type": "number"
+                                  },
+                                  "reviewCount": {
+                                    "type": "integer"
+                                  },
+                                  "coverImageUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "coverBlurhash": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "isUnavailable": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "category",
+                                  "latitude",
+                                  "longitude",
+                                  "address",
+                                  "district",
+                                  "province",
+                                  "priceRange",
+                                  "averageRating",
+                                  "reviewCount",
+                                  "coverImageUrl",
+                                  "coverBlurhash",
+                                  "isUnavailable"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "sortOrder",
+                              "startsAtMin",
+                              "endsAtMin",
+                              "crossesMidnight",
+                              "note",
+                              "place"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "date",
+                        "timezone",
+                        "note",
+                        "stopCount",
+                        "createdAt",
+                        "updatedAt",
+                        "stops"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The per-account plan limit is reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans/{id}": {
+      "get": {
+        "tags": [
+          "Plans"
+        ],
+        "summary": "A plan and its stops",
+        "description": "Stops come back in order, each with enough of its place to render without a second request.\n\nA stop whose place has since been suspended or deleted is returned with `place.isUnavailable`, not filtered out. A silent gap in a day somebody arranged is worse than a row that says what happened.\n\nEvery route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "date": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "timezone": {
+                          "type": "string"
+                        },
+                        "note": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "stopCount": {
+                          "type": "integer"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "stops": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "sortOrder": {
+                                "type": "integer"
+                              },
+                              "startsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "endsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "crossesMidnight": {
+                                "type": "boolean"
+                              },
+                              "note": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "place": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "category": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                      },
+                                      "slug": {
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "nameVi": {
+                                        "type": "string"
+                                      },
+                                      "colorHex": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "slug",
+                                      "name",
+                                      "nameVi",
+                                      "colorHex"
+                                    ]
+                                  },
+                                  "latitude": {
+                                    "type": "number"
+                                  },
+                                  "longitude": {
+                                    "type": "number"
+                                  },
+                                  "address": {
+                                    "type": "string"
+                                  },
+                                  "district": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "province": {
+                                    "type": "string"
+                                  },
+                                  "priceRange": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "enum": [
+                                      "BUDGET",
+                                      "MODERATE",
+                                      "EXPENSIVE",
+                                      "LUXURY"
+                                    ]
+                                  },
+                                  "averageRating": {
+                                    "type": "number"
+                                  },
+                                  "reviewCount": {
+                                    "type": "integer"
+                                  },
+                                  "coverImageUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "coverBlurhash": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "isUnavailable": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "category",
+                                  "latitude",
+                                  "longitude",
+                                  "address",
+                                  "district",
+                                  "province",
+                                  "priceRange",
+                                  "averageRating",
+                                  "reviewCount",
+                                  "coverImageUrl",
+                                  "coverBlurhash",
+                                  "isUnavailable"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "sortOrder",
+                              "startsAtMin",
+                              "endsAtMin",
+                              "crossesMidnight",
+                              "note",
+                              "place"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "date",
+                        "timezone",
+                        "note",
+                        "stopCount",
+                        "createdAt",
+                        "updatedAt",
+                        "stops"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Rename, redate or annotate a plan",
+        "description": "An explicit `null` for `date` or `note` clears it; omitting the field leaves it alone. Collapsing the two would make \"remove the date\" impossible to express.\n\nEvery route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "date": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "date"
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "note": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 2000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "date": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "timezone": {
+                          "type": "string"
+                        },
+                        "note": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "stopCount": {
+                          "type": "integer"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "stops": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "sortOrder": {
+                                "type": "integer"
+                              },
+                              "startsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "endsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "crossesMidnight": {
+                                "type": "boolean"
+                              },
+                              "note": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "place": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "category": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                      },
+                                      "slug": {
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "nameVi": {
+                                        "type": "string"
+                                      },
+                                      "colorHex": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "slug",
+                                      "name",
+                                      "nameVi",
+                                      "colorHex"
+                                    ]
+                                  },
+                                  "latitude": {
+                                    "type": "number"
+                                  },
+                                  "longitude": {
+                                    "type": "number"
+                                  },
+                                  "address": {
+                                    "type": "string"
+                                  },
+                                  "district": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "province": {
+                                    "type": "string"
+                                  },
+                                  "priceRange": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "enum": [
+                                      "BUDGET",
+                                      "MODERATE",
+                                      "EXPENSIVE",
+                                      "LUXURY"
+                                    ]
+                                  },
+                                  "averageRating": {
+                                    "type": "number"
+                                  },
+                                  "reviewCount": {
+                                    "type": "integer"
+                                  },
+                                  "coverImageUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "coverBlurhash": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "isUnavailable": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "category",
+                                  "latitude",
+                                  "longitude",
+                                  "address",
+                                  "district",
+                                  "province",
+                                  "priceRange",
+                                  "averageRating",
+                                  "reviewCount",
+                                  "coverImageUrl",
+                                  "coverBlurhash",
+                                  "isUnavailable"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "sortOrder",
+                              "startsAtMin",
+                              "endsAtMin",
+                              "crossesMidnight",
+                              "note",
+                              "place"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "date",
+                        "timezone",
+                        "note",
+                        "stopCount",
+                        "createdAt",
+                        "updatedAt",
+                        "stops"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Delete a plan",
+        "description": "Soft-deleted, so an accidental tap is recoverable by an operator.\n\nEvery route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deleted": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "deleted"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans/{id}/stops": {
+      "post": {
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Add a place to the day",
+        "description": "Appended at the end; use the reorder endpoint to move it. Times are minutes from midnight in the plan's timezone, matching `OpeningHour` — an integer cannot be misread by a driver on a different session timezone, and a `time` column can.\n\nA stop may carry no time at all: \"coffee somewhere before the museum\" is an ordering with no clock attached, and it still has to sit in the right place.\n\nEvery route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "placeId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "startsAtMin": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1439
+                  },
+                  "endsAtMin": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1439
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "placeId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The plan, with the stop added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "date": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "timezone": {
+                          "type": "string"
+                        },
+                        "note": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "stopCount": {
+                          "type": "integer"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "stops": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "sortOrder": {
+                                "type": "integer"
+                              },
+                              "startsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "endsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "crossesMidnight": {
+                                "type": "boolean"
+                              },
+                              "note": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "place": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "category": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                      },
+                                      "slug": {
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "nameVi": {
+                                        "type": "string"
+                                      },
+                                      "colorHex": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "slug",
+                                      "name",
+                                      "nameVi",
+                                      "colorHex"
+                                    ]
+                                  },
+                                  "latitude": {
+                                    "type": "number"
+                                  },
+                                  "longitude": {
+                                    "type": "number"
+                                  },
+                                  "address": {
+                                    "type": "string"
+                                  },
+                                  "district": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "province": {
+                                    "type": "string"
+                                  },
+                                  "priceRange": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "enum": [
+                                      "BUDGET",
+                                      "MODERATE",
+                                      "EXPENSIVE",
+                                      "LUXURY"
+                                    ]
+                                  },
+                                  "averageRating": {
+                                    "type": "number"
+                                  },
+                                  "reviewCount": {
+                                    "type": "integer"
+                                  },
+                                  "coverImageUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "coverBlurhash": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "isUnavailable": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "category",
+                                  "latitude",
+                                  "longitude",
+                                  "address",
+                                  "district",
+                                  "province",
+                                  "priceRange",
+                                  "averageRating",
+                                  "reviewCount",
+                                  "coverImageUrl",
+                                  "coverBlurhash",
+                                  "isUnavailable"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "sortOrder",
+                              "startsAtMin",
+                              "endsAtMin",
+                              "crossesMidnight",
+                              "note",
+                              "place"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "date",
+                        "timezone",
+                        "note",
+                        "stopCount",
+                        "createdAt",
+                        "updatedAt",
+                        "stops"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The plan, or the place, is not available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The plan already holds the maximum number of stops",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans/{id}/stops/order": {
+      "put": {
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Set the order of the whole day",
+        "description": "Takes every stop id, in the order they should appear, and writes them in one transaction.\n\nSending a single stop's new index would need the server to shuffle its neighbours, and two of those arriving out of order leaves a day nobody arranged. The list is checked against the plan's actual stops first: a dropped id, a repeated one, or an id from another plan is a 409, because a client that has fallen behind should reload rather than have its stale idea applied.\n\nEvery route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "stopIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "minItems": 1,
+                    "maxItems": 30
+                  }
+                },
+                "required": [
+                  "stopIds"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The reordered plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "date": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "timezone": {
+                          "type": "string"
+                        },
+                        "note": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "stopCount": {
+                          "type": "integer"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "stops": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "sortOrder": {
+                                "type": "integer"
+                              },
+                              "startsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "endsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "crossesMidnight": {
+                                "type": "boolean"
+                              },
+                              "note": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "place": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "category": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                      },
+                                      "slug": {
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "nameVi": {
+                                        "type": "string"
+                                      },
+                                      "colorHex": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "slug",
+                                      "name",
+                                      "nameVi",
+                                      "colorHex"
+                                    ]
+                                  },
+                                  "latitude": {
+                                    "type": "number"
+                                  },
+                                  "longitude": {
+                                    "type": "number"
+                                  },
+                                  "address": {
+                                    "type": "string"
+                                  },
+                                  "district": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "province": {
+                                    "type": "string"
+                                  },
+                                  "priceRange": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "enum": [
+                                      "BUDGET",
+                                      "MODERATE",
+                                      "EXPENSIVE",
+                                      "LUXURY"
+                                    ]
+                                  },
+                                  "averageRating": {
+                                    "type": "number"
+                                  },
+                                  "reviewCount": {
+                                    "type": "integer"
+                                  },
+                                  "coverImageUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "coverBlurhash": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "isUnavailable": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "category",
+                                  "latitude",
+                                  "longitude",
+                                  "address",
+                                  "district",
+                                  "province",
+                                  "priceRange",
+                                  "averageRating",
+                                  "reviewCount",
+                                  "coverImageUrl",
+                                  "coverBlurhash",
+                                  "isUnavailable"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "sortOrder",
+                              "startsAtMin",
+                              "endsAtMin",
+                              "crossesMidnight",
+                              "note",
+                              "place"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "date",
+                        "timezone",
+                        "note",
+                        "stopCount",
+                        "createdAt",
+                        "updatedAt",
+                        "stops"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The order does not match the stops on this plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans/{id}/stops/{stopId}": {
+      "patch": {
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Change a stop’s times or note",
+        "description": "An end before the start is an evening that runs past midnight, not an error — the bar at 22:00 closes at 01:00. The response reports it as `crossesMidnight` so the client does not have to work it out.\n\nEvery route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "stopId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "startsAtMin": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "maximum": 1439
+                  },
+                  "endsAtMin": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "maximum": 1439
+                  },
+                  "note": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 500
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "date": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "timezone": {
+                          "type": "string"
+                        },
+                        "note": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "stopCount": {
+                          "type": "integer"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "stops": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "sortOrder": {
+                                "type": "integer"
+                              },
+                              "startsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "endsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "crossesMidnight": {
+                                "type": "boolean"
+                              },
+                              "note": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "place": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "category": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                      },
+                                      "slug": {
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "nameVi": {
+                                        "type": "string"
+                                      },
+                                      "colorHex": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "slug",
+                                      "name",
+                                      "nameVi",
+                                      "colorHex"
+                                    ]
+                                  },
+                                  "latitude": {
+                                    "type": "number"
+                                  },
+                                  "longitude": {
+                                    "type": "number"
+                                  },
+                                  "address": {
+                                    "type": "string"
+                                  },
+                                  "district": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "province": {
+                                    "type": "string"
+                                  },
+                                  "priceRange": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "enum": [
+                                      "BUDGET",
+                                      "MODERATE",
+                                      "EXPENSIVE",
+                                      "LUXURY"
+                                    ]
+                                  },
+                                  "averageRating": {
+                                    "type": "number"
+                                  },
+                                  "reviewCount": {
+                                    "type": "integer"
+                                  },
+                                  "coverImageUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "coverBlurhash": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "isUnavailable": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "category",
+                                  "latitude",
+                                  "longitude",
+                                  "address",
+                                  "district",
+                                  "province",
+                                  "priceRange",
+                                  "averageRating",
+                                  "reviewCount",
+                                  "coverImageUrl",
+                                  "coverBlurhash",
+                                  "isUnavailable"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "sortOrder",
+                              "startsAtMin",
+                              "endsAtMin",
+                              "crossesMidnight",
+                              "note",
+                              "place"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "date",
+                        "timezone",
+                        "note",
+                        "stopCount",
+                        "createdAt",
+                        "updatedAt",
+                        "stops"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Remove a stop",
+        "description": "The remaining stops are renumbered so positions stay contiguous. Leaving a hole works until somebody reorders, at which point the gap decides where a stop lands.\n\nEvery route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "stopId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The plan without that stop",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "date": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "timezone": {
+                          "type": "string"
+                        },
+                        "note": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "stopCount": {
+                          "type": "integer"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "stops": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "sortOrder": {
+                                "type": "integer"
+                              },
+                              "startsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "endsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "crossesMidnight": {
+                                "type": "boolean"
+                              },
+                              "note": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "place": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "category": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                      },
+                                      "slug": {
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "nameVi": {
+                                        "type": "string"
+                                      },
+                                      "colorHex": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "slug",
+                                      "name",
+                                      "nameVi",
+                                      "colorHex"
+                                    ]
+                                  },
+                                  "latitude": {
+                                    "type": "number"
+                                  },
+                                  "longitude": {
+                                    "type": "number"
+                                  },
+                                  "address": {
+                                    "type": "string"
+                                  },
+                                  "district": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "province": {
+                                    "type": "string"
+                                  },
+                                  "priceRange": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "enum": [
+                                      "BUDGET",
+                                      "MODERATE",
+                                      "EXPENSIVE",
+                                      "LUXURY"
+                                    ]
+                                  },
+                                  "averageRating": {
+                                    "type": "number"
+                                  },
+                                  "reviewCount": {
+                                    "type": "integer"
+                                  },
+                                  "coverImageUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "coverBlurhash": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "isUnavailable": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "category",
+                                  "latitude",
+                                  "longitude",
+                                  "address",
+                                  "district",
+                                  "province",
+                                  "priceRange",
+                                  "averageRating",
+                                  "reviewCount",
+                                  "coverImageUrl",
+                                  "coverBlurhash",
+                                  "isUnavailable"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "sortOrder",
+                              "startsAtMin",
+                              "endsAtMin",
+                              "crossesMidnight",
+                              "note",
+                              "place"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "date",
+                        "timezone",
+                        "note",
+                        "stopCount",
+                        "createdAt",
+                        "updatedAt",
+                        "stops"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "A public profile",
+        "description": "What one person may see of another: their name, when they joined, their published reviews and the places they contributed.\n\nThe omissions are the design. Email and locale are absent, and so are saved places and plans — those are the two things people put unfinished intentions into, where they are thinking of going and who with, and neither belongs on a page a stranger can open. They are not filtered here; they are not in the DTO at all, so no future route can leak them by accident.\n\nOnly active accounts have a profile. A deleted or banned account answers 404, which also stops this being a way to enumerate who has been banned.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "avatarUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "bio": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "joinedAt": {
+                          "type": "string"
+                        },
+                        "isReviewer": {
+                          "type": "boolean"
+                        },
+                        "counts": {
+                          "type": "object",
+                          "properties": {
+                            "reviews": {
+                              "type": "integer"
+                            },
+                            "places": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "reviews",
+                            "places"
+                          ]
+                        },
+                        "recentReviews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "rating": {
+                                "type": "integer"
+                              },
+                              "content": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "helpfulCount": {
+                                "type": "integer"
+                              },
+                              "createdAt": {
+                                "type": "string"
+                              },
+                              "place": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "coverImageUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "coverImageUrl"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "rating",
+                              "content",
+                              "helpfulCount",
+                              "createdAt",
+                              "place"
+                            ]
+                          }
+                        },
+                        "places": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "slug": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "district": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "province": {
+                                "type": "string"
+                              },
+                              "averageRating": {
+                                "type": "number"
+                              },
+                              "reviewCount": {
+                                "type": "integer"
+                              },
+                              "coverImageUrl": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "coverBlurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "category": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "nameVi": {
+                                    "type": "string"
+                                  },
+                                  "colorHex": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "nameVi",
+                                  "colorHex"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "slug",
+                              "name",
+                              "district",
+                              "province",
+                              "averageRating",
+                              "reviewCount",
+                              "coverImageUrl",
+                              "coverBlurhash",
+                              "category"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "avatarUrl",
+                        "bio",
+                        "joinedAt",
+                        "isReviewer",
+                        "counts",
+                        "recentReviews",
+                        "places"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No active account with that id",
             "content": {
               "application/json": {
                 "schema": {

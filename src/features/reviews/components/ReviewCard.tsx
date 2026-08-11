@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Star, ThumbsUp, Store } from 'lucide-react';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { formatNumber, formatRelativeTime } from '@/i18n/format';
@@ -32,7 +33,15 @@ export function ReviewCard({
 
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-2">
-            <p className="text-ink truncate text-sm font-semibold">{review.author.name}</p>
+            {/* The name is the way in to a profile. It was plain text until
+                profiles existed, which meant a review told you who wrote it
+                and gave you no way to see anything else they had written. */}
+            <Link
+              href={`/u/${review.author.id}`}
+              className="text-ink hover:text-primary truncate text-sm font-semibold"
+            >
+              {review.author.name}
+            </Link>
             {review.isMine && (
               <span className="bg-primary-tint text-primary shrink-0 rounded-full px-2 py-0.5 text-[0.625rem] font-semibold">
                 {t('reviews.you')}

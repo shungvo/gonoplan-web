@@ -1,38 +1,55 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useQueryClient } from '@tanstack/react-query';
-import { ChevronRight, LogOut, MapPinPlus, Shield, Store, User } from 'lucide-react';
+import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
+import { Bookmark, CalendarDays, ChevronRight, Settings, User } from 'lucide-react';
 import { AuthSheet } from './AuthSheet';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { fetchPublicUser } from '@/features/users/api';
+import { ProfileBody } from '@/features/users/components/ProfileBody';
 import { useT } from '@/i18n/I18nProvider';
 import { LocaleSwitcher } from '@/i18n/LocaleSwitcher';
 import { useSessionStore } from '../store';
-import { logout } from '../api';
 
+/**
+ * Your own profile.
+ *
+ * Rendered from the same public endpoint anybody else would read, so what is
+ * on this screen is exactly what a stranger sees. That is the honest way to
+ * answer "what have I made public?" — better than a settings toggle that
+ * describes it.
+ *
+ * The links above it are the private half: saved places and plans, which are
+ * yours alone and appear on nobody else's copy of this page.
+ */
 export function ProfileScreen() {
   const t = useT();
-  const router = useRouter();
-  const { user, isInitializing, clear } = useSessionStore();
+  const { user, isInitializing } = useSessionStore();
   const [authOpen, setAuthOpen] = useState(false);
-  const queryClient = useQueryClient();
 
-  const signOut = async () => {
-    await logout();
-    clear();
-    // Everything cached was fetched as the signed-in user; leaving it would
-    // show the next visitor someone else's saves.
-    queryClient.clear();
-  };
+  const profile = useQuery({
+    queryKey: ['users', user?.id],
+    queryFn: () => fetchPublicUser(user!.id),
+    enabled: user !== null,
+  });
 
   return (
-    <div className="px-safe">
-      <header className="pt-safe px-5">
+    <div className="px-safe pb-10">
+      <header className="pt-safe flex items-center justify-between gap-3 px-5">
         <h1 className="text-ink pt-6 text-[1.75rem] leading-tight font-semibold tracking-tight">
           {t('profile.title')}
         </h1>
+        {user && (
+          <Link
+            href="/profile/settings"
+            aria-label={t('profile.settings')}
+            className="text-ink-muted mt-6 flex size-10 items-center justify-center rounded-full"
+          >
+            <Settings className="size-5" aria-hidden />
+          </Link>
+        )}
       </header>
 
       <div className="mt-4 px-5">
@@ -50,107 +67,60 @@ export function ProfileScreen() {
         )}
 
         {!isInitializing && !user && (
-          <EmptyState
-            icon={<User className="size-7" aria-hidden />}
-            title={t('profile.guestTitle')}
-            description={t('profile.guestDescription')}
-            action={
-              <Button
-                onClick={() => {
-                  setAuthOpen(true);
-                }}
-              >
-                {t('profile.signInCta')}
-              </Button>
-            }
-          />
+          <>
+            <EmptyState
+              icon={<User className="size-7" aria-hidden />}
+              title={t('profile.guestTitle')}
+              description={t('profile.guestDescription')}
+              action={
+                <Button
+                  onClick={() => {
+                    setAuthOpen(true);
+                  }}
+                >
+                  {t('profile.signInCta')}
+                </Button>
+              }
+            />
+
+            {/* The one control a guest still needs — the person who cannot read
+                this screen has not necessarily signed in. */}
+            <div className="mt-6">
+              <LocaleSwitcher />
+            </div>
+          </>
         )}
 
         {!isInitializing && user && (
           <>
-            <div className="bg-surface flex items-center gap-3 rounded-lg p-4 shadow-sm">
-              <span className="bg-primary-tint text-primary flex size-12 shrink-0 items-center justify-center rounded-full text-lg font-semibold">
-                {user.name.trim().charAt(0).toUpperCase()}
-              </span>
-              <div className="min-w-0">
-                <p className="text-ink truncate font-semibold">{user.name}</p>
-                <p className="text-ink-muted truncate text-sm">{user.email}</p>
-              </div>
+            <nav className="bg-surface overflow-hidden rounded-lg shadow-sm">
+              {[
+                { href: '/profile/saved', icon: Bookmark, label: t('profile.saved') },
+                { href: '/plan', icon: CalendarDays, label: t('profile.myPlans') },
+                { href: '/profile/settings', icon: Settings, label: t('profile.settings') },
+              ].map((item, index) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center gap-2.5 p-3.5 ${index > 0 ? 'border-border border-t' : ''}`}
+                >
+                  <item.icon className="text-primary size-4 shrink-0" aria-hidden />
+                  <span className="text-ink flex-1 text-sm font-medium">{item.label}</span>
+                  <ChevronRight className="text-ink-subtle size-4 shrink-0" aria-hidden />
+                </Link>
+              ))}
+            </nav>
+
+            <p className="text-ink-subtle mt-3 text-xs">{t('profile.publicNotice')}</p>
+
+            <div className="mt-5">
+              {profile.isPending && (
+                <div className="bg-surface h-24 animate-pulse rounded-lg shadow-sm" />
+              )}
+              {profile.data && <ProfileBody user={profile.data} />}
             </div>
-
-            {(user.role === 'ADMIN' || user.ownerProfileId) && (
-              <div className="mt-3 space-y-2">
-                {user.role === 'ADMIN' && (
-                  <p className="bg-surface text-ink flex items-center gap-2.5 rounded-lg p-3.5 text-sm shadow-sm">
-                    <Shield className="text-primary size-4" aria-hidden />
-                    {t('profile.administrator')}
-                  </p>
-                )}
-                {user.ownerProfileId && (
-                  <p className="bg-surface text-ink flex items-center gap-2.5 rounded-lg p-3.5 text-sm shadow-sm">
-                    <Store className="text-primary size-4" aria-hidden />
-                    {t('profile.businessOwner')}
-                    {user.ownerStatus && user.ownerStatus !== 'APPROVED' && (
-                      <span className="text-ink-subtle">· {t(`ownerStatus.${user.ownerStatus}`)}</span>
-                    )}
-                  </p>
-                )}
-              </div>
-            )}
-
-            {/*
-              Above the business entry, because far more people have somewhere
-              to suggest than have a business to claim. Everyone sees it: any
-              signed-in user may submit, and every submission is reviewed.
-            */}
-            <button
-              type="button"
-              onClick={() => {
-                router.push('/places/new');
-              }}
-              className="bg-surface mt-3 flex w-full items-center gap-2.5 rounded-lg p-3.5 text-left shadow-sm active:scale-[0.99]"
-            >
-              <MapPinPlus className="text-primary size-4 shrink-0" aria-hidden />
-              <span className="text-ink flex-1 text-sm font-medium">{t('profile.addPlace')}</span>
-              <ChevronRight className="text-ink-subtle size-4 shrink-0" aria-hidden />
-            </button>
-
-            {/* Shown to everyone, not only existing owners: this is how a
-                business discovers it can claim its listing (§24). */}
-            <button
-              type="button"
-              onClick={() => {
-                router.push('/owner');
-              }}
-              className="bg-surface mt-3 flex w-full items-center gap-2.5 rounded-lg p-3.5 text-left shadow-sm active:scale-[0.99]"
-            >
-              <Store className="text-primary size-4 shrink-0" aria-hidden />
-              <span className="text-ink flex-1 text-sm font-medium">
-                {user.ownerProfileId ? t('profile.yourBusiness') : t('profile.registerBusiness')}
-              </span>
-              <ChevronRight className="text-ink-subtle size-4 shrink-0" aria-hidden />
-            </button>
-
-            <Button
-              variant="secondary"
-              fullWidth
-              className="mt-4"
-              leadingIcon={<LogOut className="size-4" aria-hidden />}
-              onClick={() => {
-                void signOut();
-              }}
-            >
-              {t('profile.signOut')}
-            </Button>
           </>
         )}
-      </div>
-
-      {/* Outside the signed-in branch on purpose: the person who most needs
-          this control is the one who cannot read the screen it is on, and
-          that person has not necessarily signed in. */}
-      <div className="mt-6 px-5">
-        <LocaleSwitcher />
       </div>
 
       <AuthSheet open={authOpen} onOpenChange={setAuthOpen} />

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'motion/react';
-import { Compass, Home, Bookmark, User, type LucideIcon } from 'lucide-react';
+import { CalendarDays, Compass, Home, User, type LucideIcon } from 'lucide-react';
 import { useT } from '@/i18n/I18nProvider';
 import type { MessageKey } from '@/i18n/messages/keys';
 import { cn } from '@/lib/utils/cn';
@@ -16,14 +16,17 @@ interface NavItem {
 }
 
 /**
- * Four tabs for MVP (docs/00-architecture.md §8). `Trips` joins this array
- * once trip planning does something — a tab that opens onto a placeholder
- * makes the whole app read as unfinished.
+ * Four tabs (docs/00-architecture.md §8).
+ *
+ * Plan took the slot Saved used to hold. Saved is a list you consult; a plan
+ * is a thing you build, and only one of those is worth a permanent quarter of
+ * the navigation. Saved now lives under the profile, one tap further in and
+ * next to the account it belongs to.
  */
 const NAV_ITEMS: NavItem[] = [
   { href: '/', labelKey: 'nav.home', icon: Home },
   { href: '/explore', labelKey: 'nav.explore', icon: Compass },
-  { href: '/saved', labelKey: 'nav.saved', icon: Bookmark },
+  { href: '/plan', labelKey: 'nav.plan', icon: CalendarDays },
   { href: '/profile', labelKey: 'nav.profile', icon: User },
 ];
 
