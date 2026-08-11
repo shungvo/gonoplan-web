@@ -242,3 +242,14 @@ export function removePlaceImage(
 ): Promise<unknown> {
   return api.delete(`/admin/places/${placeId}/images/${imageId}`, { body: { reason } });
 }
+
+/**
+ * Remove an owner's reply, leaving the review alone.
+ *
+ * A reply is published under the business's name on a page the business does
+ * not otherwise control. Hiding the whole thread to remove one abusive reply
+ * would punish the reviewer for what the owner wrote.
+ */
+export function removeReviewReply(reviewId: string, reason: string): Promise<unknown> {
+  return api.delete(`/admin/reviews/${reviewId}/reply`, { body: { reason } });
+}

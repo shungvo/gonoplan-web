@@ -2820,6 +2820,33 @@
               "name",
               "slug"
             ]
+          },
+          "reply": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "content": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string"
+              },
+              "businessName": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "content",
+              "createdAt",
+              "businessName"
+            ]
           }
         },
         "required": [
@@ -2830,7 +2857,8 @@
           "helpfulCount",
           "createdAt",
           "user",
-          "place"
+          "place",
+          "reply"
         ]
       },
       "PendingPlace": {
@@ -15571,6 +15599,33 @@
                               "name",
                               "slug"
                             ]
+                          },
+                          "reply": {
+                            "type": [
+                              "object",
+                              "null"
+                            ],
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "content": {
+                                "type": "string"
+                              },
+                              "createdAt": {
+                                "type": "string"
+                              },
+                              "businessName": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "content",
+                              "createdAt",
+                              "businessName"
+                            ]
                           }
                         },
                         "required": [
@@ -15581,7 +15636,8 @@
                           "helpfulCount",
                           "createdAt",
                           "user",
-                          "place"
+                          "place",
+                          "reply"
                         ]
                       }
                     },
@@ -17496,6 +17552,142 @@
           },
           "409": {
             "description": "Places or subcategories still use it",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/reviews/{id}/reply": {
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Remove an owner's reply",
+        "description": "A reply is published under the business's name on a page the business does not otherwise control, so it is moderatable content in its own right — and until now only the owner who wrote it could take it down. A business answering a bad review with the customer's phone number was something nobody but that business could fix. The queue could not even display it.\n\n**The review is left exactly as it was.** Hiding the whole thread to remove one abusive reply would punish the reviewer for what the owner wrote.\n\nAudited against the review rather than the reply, because that is what the queue and any later dispute are keyed on — the reply id would point at a row that no longer exists. The removed text is kept verbatim in the metadata: the log is only evidence if it says what was actually said.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 4,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "reason"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The reply is gone; the review is untouched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "removed": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "removed"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "That review has no reply",
             "content": {
               "application/json": {
                 "schema": {

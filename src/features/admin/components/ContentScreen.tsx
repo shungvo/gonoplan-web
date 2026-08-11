@@ -12,6 +12,7 @@ import { ReasonDialog } from './ReasonDialog';
 import {
   deleteReview,
   hideReview,
+  removeReviewReply,
   restoreReview,
   fetchPlaces,
   fetchReviews,
@@ -59,6 +60,17 @@ export function ContentScreen() {
     onSuccess: async () => {
       setSuspendTarget(null);
       await queryClient.invalidateQueries({ queryKey: ['admin'] });
+    },
+  });
+
+  const [replyTarget, setReplyTarget] = useState<AdminReview | null>(null);
+
+  const removeReply = useMutation({
+    mutationFn: ({ reviewId, reason }: { reviewId: string; reason: string }) =>
+      removeReviewReply(reviewId, reason),
+    onSuccess: async () => {
+      setReplyTarget(null);
+      await queryClient.invalidateQueries({ queryKey: ['admin', 'catalogue', 'reviews'] });
     },
   });
 
@@ -252,6 +264,29 @@ export function ContentScreen() {
                         {review.content}
                       </p>
                     )}
+
+                    {/* The owner's reply. The queue could not show this at
+                        all before, so an abusive one was both invisible here
+                        and removable only by the business that wrote it. */}
+                    {review.reply && (
+                      <div className="border-border bg-surface-sunken mt-3 rounded-md border-l-2 p-3">
+                        <p className="text-ink flex items-center gap-1.5 text-xs font-semibold">
+                          Reply from {review.reply.businessName}
+                        </p>
+                        <p className="text-ink-muted mt-1 text-sm leading-relaxed">
+                          {review.reply.content}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setReplyTarget(review);
+                          }}
+                          className="text-danger mt-2 text-xs font-medium"
+                        >
+                          Remove reply
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex shrink-0 items-center gap-2">
@@ -311,6 +346,21 @@ export function ContentScreen() {
 
       {/* No reason field: the server's review deletion takes none, and a box
           whose contents are silently discarded is worse than no box. */}
+      <ReasonDialog
+        open={replyTarget !== null}
+        title="Remove this reply"
+        description="Only the owner's reply is removed — the review itself stays exactly as it is. Hiding the whole thread would punish the reviewer for what the business wrote."
+        confirmLabel="Remove reply"
+        destructive
+        isPending={removeReply.isPending}
+        onConfirm={(reason) => {
+          if (replyTarget) removeReply.mutate({ reviewId: replyTarget.id, reason });
+        }}
+        onClose={() => {
+          setReplyTarget(null);
+        }}
+      />
+
       <ReasonDialog
         open={deleteTarget !== null}
         title="Delete this review"

@@ -6002,6 +6002,13 @@ export interface paths {
                                     name: string;
                                     slug: string;
                                 };
+                                reply: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    content: string;
+                                    createdAt: string;
+                                    businessName: string;
+                                } | null;
                             }[];
                             meta?: {
                                 cursor?: string | null;
@@ -7201,6 +7208,104 @@ export interface paths {
         };
         trace?: never;
     };
+    "/admin/reviews/{id}/reply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove an owner's reply
+         * @description A reply is published under the business's name on a page the business does not otherwise control, so it is moderatable content in its own right — and until now only the owner who wrote it could take it down. A business answering a bad review with the customer's phone number was something nobody but that business could fix. The queue could not even display it.
+         *
+         *     **The review is left exactly as it was.** Hiding the whole thread to remove one abusive reply would punish the reviewer for what the owner wrote.
+         *
+         *     Audited against the review rather than the reply, because that is what the queue and any later dispute are keyed on — the reply id would point at a row that no longer exists. The removed text is kept verbatim in the metadata: the log is only evidence if it says what was actually said.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        reason: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description The reply is gone; the review is untouched */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                removed: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description That review has no reply */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -7868,6 +7973,13 @@ export interface components {
                 name: string;
                 slug: string;
             };
+            reply: {
+                /** Format: uuid */
+                id: string;
+                content: string;
+                createdAt: string;
+                businessName: string;
+            } | null;
         };
         PendingPlace: {
             /** Format: uuid */
