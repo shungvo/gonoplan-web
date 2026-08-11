@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, Share2 } from 'lucide-react';
+import { Share2 } from 'lucide-react';
 import { SaveButton } from '@/features/favorites/components/SaveButton';
 import { AuthSheet } from '@/features/auth/components/AuthSheet';
 import { PlaceDetailContent } from '@/features/places/components/PlaceDetailContent';
@@ -12,6 +12,7 @@ import { ApiError } from '@/lib/api/errors';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { useT } from '@/i18n/I18nProvider';
+import { BackButton } from '@/components/ui/BackButton';
 
 /**
  * Full-page place detail, for shared links and direct navigation.
@@ -58,14 +59,7 @@ export function PlacePageClient({ idOrSlug }: { idOrSlug: string }) {
         secondary because of where they are rather than because of their size.
       */}
       <header className="pt-safe-float flex items-center justify-between gap-3 px-4">
-        <button
-          type="button"
-          onClick={goBack}
-          className="inline-flex h-10 items-center gap-1.5 rounded-full bg-surface pr-4 pl-3 text-sm font-medium text-ink shadow-sm active:scale-95"
-        >
-          <ChevronLeft className="size-5" aria-hidden />
-          {t('page.back')}
-        </button>
+        <BackButton onClick={goBack} />
 
         <div className="flex items-center gap-2">
           {place && (
@@ -75,7 +69,9 @@ export function PlacePageClient({ idOrSlug }: { idOrSlug: string }) {
               onRequireAuth={() => {
                 setAuthOpen(true);
               }}
-              className="size-10 rounded-full bg-surface shadow-sm"
+              // Size and lift only. The background belongs to the button —
+              // passing one here is what broke the saved state.
+              className="size-10 rounded-full shadow-sm"
             />
           )}
           <button
