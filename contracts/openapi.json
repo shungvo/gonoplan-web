@@ -775,6 +775,37 @@
               ]
             }
           },
+          "reviewPhotos": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "blurhash": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "reviewId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "id",
+                "url",
+                "blurhash",
+                "reviewId"
+              ]
+            }
+          },
           "openingHours": {
             "type": "array",
             "items": {
@@ -851,6 +882,7 @@
           "rejectionReason",
           "subcategory",
           "images",
+          "reviewPhotos",
           "openingHours",
           "canEdit",
           "hasPendingRevision",
@@ -7300,6 +7332,37 @@
                             ]
                           }
                         },
+                        "reviewPhotos": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "url": {
+                                "type": "string"
+                              },
+                              "blurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "reviewId": {
+                                "type": "string",
+                                "format": "uuid"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "url",
+                              "blurhash",
+                              "reviewId"
+                            ]
+                          }
+                        },
                         "openingHours": {
                           "type": "array",
                           "items": {
@@ -7376,6 +7439,7 @@
                         "rejectionReason",
                         "subcategory",
                         "images",
+                        "reviewPhotos",
                         "openingHours",
                         "canEdit",
                         "hasPendingRevision",

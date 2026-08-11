@@ -208,6 +208,11 @@ export const en = {
   'photos.none': 'No photos yet',
   'photos.previous': 'Previous photo',
   'photos.next': 'Next photo',
+  // Names a photograph for a screen reader, and labels the dot that jumps to
+  // it. The files carry no description of their own, so the subject is all
+  // there is to say.
+  'photos.position': 'Photo {current} of {total} — {name}',
+  'photos.fromReviews': 'From reviews',
 
   // ─── Card stack ───────────────────────────────────────────────────────────
   'stack.cardLabel':

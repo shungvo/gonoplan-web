@@ -1,7 +1,9 @@
 'use client';
 
 import { Drawer } from 'vaul';
+import { motion, useReducedMotion } from 'motion/react';
 import { PlaceDetailContent } from './PlaceDetailContent';
+import { PlaceGallery } from './PlaceGallery';
 import { usePlaceDetail } from '../hooks/usePlaces';
 import { useLocationStore } from '@/features/location/store';
 import { ApiError } from '@/lib/api/errors';
@@ -9,6 +11,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { BottomSheet, SHEET_SNAP_POINTS } from '@/components/ui/BottomSheet';
 import { useT } from '@/i18n/I18nProvider';
+import type { PlaceDetail } from '../api';
 
 /**
  * The heights this sheet rests at, and the one it opens to.
@@ -40,11 +43,10 @@ export function PlaceSheet({ placeId, onClose }: PlaceSheetProps) {
       }}
       snapPoints={SNAP_POINTS}
       defaultSnapIndex={OPENS_AT}
-      // The photo runs to the sheet's own rounded top, so the handle has to
-      // float over it rather than sit in a strip above it.
-      floatingHandle
-      // The map or list behind stays legible and usable at the shorter stops —
-      // that is the entire reason for stopping short of full height.
+      // The photographs, behind everything. See `Backdrop`.
+      backdrop={place ? <Backdrop place={place} /> : <div className="bg-ink size-full" />}
+      // Dimming is saved for full height, where the photo is covered anyway.
+      // At the shorter stops the whole point is that you can see it.
       dimOnlyWhenFull
     >
       <div className="flex-1 overflow-y-auto overscroll-contain">
@@ -81,11 +83,45 @@ export function PlaceSheet({ placeId, onClose }: PlaceSheetProps) {
   );
 }
 
+/**
+ * The place, behind its own sheet.
+ *
+ * Scaled in rather than cut in: a photograph that simply appears reads as a
+ * page swap, and the sheet sliding up over a still backdrop is exactly the
+ * arrangement this is meant to look like on a phone. 1.06 is small enough to
+ * be felt rather than seen.
+ *
+ * The scrim is not decoration. The dots sit at the top of the photograph and
+ * the sheet's handle at the bottom of it, and both are white — over a pale
+ * photograph, without something to sit on, neither is visible.
+ */
+function Backdrop({ place }: { place: PlaceDetail }) {
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <motion.div
+      className="relative size-full"
+      initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 1.06 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.32, ease: [0.32, 0.72, 0, 1] }}
+    >
+      <PlaceGallery
+        photos={place.images}
+        name={place.name}
+        categorySlug={place.category.slug}
+        categoryColor={place.category.colorHex}
+        priority
+        className="size-full"
+      />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/35 to-transparent" />
+    </motion.div>
+  );
+}
+
 /** Mirrors the real layout so the sheet does not reflow when data arrives. */
 function PlaceSheetSkeleton() {
   return (
     <div>
-      <div className="bg-surface-sunken h-48 w-full animate-pulse" />
       <div className="space-y-3 px-5 pt-4">
         <div className="bg-surface-sunken h-5 w-24 animate-pulse rounded-full" />
         <div className="bg-surface-sunken h-7 w-3/4 animate-pulse rounded" />

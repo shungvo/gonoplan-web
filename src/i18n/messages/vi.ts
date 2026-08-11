@@ -201,6 +201,8 @@ export const vi: Messages = {
   'photos.none': 'Chưa có ảnh',
   'photos.previous': 'Ảnh trước',
   'photos.next': 'Ảnh sau',
+  'photos.position': 'Ảnh {current}/{total} — {name}',
+  'photos.fromReviews': 'Ảnh từ đánh giá',
 
   // ─── Card stack ───────────────────────────────────────────────────────────
   'stack.cardLabel':

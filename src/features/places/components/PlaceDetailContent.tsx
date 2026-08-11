@@ -3,11 +3,11 @@
 import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import { ChevronRight, Flag, Globe, MapPin, Navigation, Phone, Share2 } from 'lucide-react';
-import { PlaceImage } from './PlaceImage';
+import Image from 'next/image';
+import { PlaceGallery } from './PlaceGallery';
 import { OpeningHours } from './OpeningHours';
 import { ReviewSection } from '@/features/reviews/components/ReviewSection';
 import { RouteToPlace } from '@/features/geo/components/RouteToPlace';
-import { PhotoStack } from './PhotoStack';
 import { RichText } from '@/components/ui/RichText';
 import { SaveButton } from '@/features/favorites/components/SaveButton';
 import { AuthSheet } from '@/features/auth/components/AuthSheet';
@@ -94,31 +94,34 @@ export function PlaceDetailContent({
         the same markup for both, which is the part that would actually drift.
       */}
       <div className={cn('relative', compact ? '' : 'px-4 pt-2')}>
-        <div
-          className={cn(
-            'bg-surface-sunken relative w-full overflow-hidden',
-            compact ? 'h-48' : 'aspect-[4/3] max-h-[38dvh] rounded-lg shadow-md',
-          )}
-        >
-          <PlaceImage
-            url={place.coverImageUrl}
-            blurhash={place.coverBlurhash}
-            name={place.name}
-            categorySlug={place.category.slug}
-            categoryColor={place.category.colorHex}
-            sizes="100vw"
-            priority
-            fallbackSize="lg"
-          />
+        {/*
+          No photograph in the sheet: it is behind the sheet.
 
-          <span
-            className="absolute top-3 left-3 rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold text-white"
-            style={{ backgroundColor: `${place.category.colorHex}e6` }}
-          >
-            {categoryName(place.category, locale)}
-            {place.subcategory ? ` · ${place.subcategory.name}` : ''}
-          </span>
-        </div>
+          `PlaceSheet` puts the gallery in the backdrop, so the smaller resting
+          heights show the place rather than a dimmed list of other places —
+          and dragging the sheet down reveals more of it, which is the whole
+          reason a sheet stops short of the top. A copy of the cover inside the
+          sheet would be the same photograph twice, 40px apart.
+        */}
+        {!compact && (
+          <div className="relative">
+            <PlaceGallery
+              photos={place.images}
+              name={place.name}
+              categorySlug={place.category.slug}
+              categoryColor={place.category.colorHex}
+              priority
+              className="aspect-[4/3] max-h-[38dvh] w-full rounded-lg shadow-md"
+            />
+            <span
+              className="absolute top-3 left-3 rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold text-white"
+              style={{ backgroundColor: `${place.category.colorHex}e6` }}
+            >
+              {categoryName(place.category, locale)}
+              {place.subcategory ? ` · ${place.subcategory.name}` : ''}
+            </span>
+          </div>
+        )}
 
         {/* Hangs off the photo on the page; inline in the sheet, where there is
             nothing above it to overlap. */}
@@ -130,6 +133,19 @@ export function PlaceDetailContent({
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
+              {/* On the page this rides on the photograph. In the sheet the
+                  photograph is behind everything, so the category has to be
+                  said here or not at all. */}
+              {compact && (
+                <span
+                  className="mb-1.5 inline-flex rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold text-white"
+                  style={{ backgroundColor: `${place.category.colorHex}e6` }}
+                >
+                  {categoryName(place.category, locale)}
+                  {place.subcategory ? ` · ${place.subcategory.name}` : ''}
+                </span>
+              )}
+
               <h1
                 className={cn(
                   'text-primary leading-tight font-semibold tracking-tight',
@@ -292,29 +308,53 @@ export function PlaceDetailContent({
           </section>
         )}
 
-        {/*
-          The photos, as a deck.
-
-          Only when there is more than the cover, which is already the hero
-          above — a "Photos" section showing the one image the reader is
-          looking at is a section that wastes a scroll.
-        */}
-        {place.images.length > 1 && (
-          <section className="border-border mt-5 border-t pt-4">
-            <h2 className="text-ink text-sm font-semibold">
-              {t('detail.photos')}
-              <span className="text-ink-subtle ml-2 text-xs font-normal">
-                {formatNumber(place.images.length, locale)}
-              </span>
-            </h2>
-            <PhotoStack className="mt-3" alt={place.name} photos={place.images} />
-          </section>
-        )}
-
         {/* Above the reviews on purpose. "Can I get there" is decided before
             "is it any good" — someone who has already read the rating is
             asking how far it is, not the other way round. */}
         <RouteToPlace place={place} />
+
+        {/*
+          What it looked like to somebody who went, immediately above what
+          they said about it.
+
+          This slot used to hold the listing's own photographs, which are now
+          the gallery at the top of the screen — showing them twice cost a
+          scroll to see the same pictures again. These are different pictures:
+          not the ones chosen to sell the place, the ones taken in it.
+        */}
+        {place.reviewPhotos.length > 0 && (
+          <section className="border-border mt-5 border-t pt-4">
+            <h2 className="text-ink text-sm font-semibold">
+              {t('photos.fromReviews')}
+              <span className="text-ink-subtle ml-2 text-xs font-normal">
+                {formatNumber(place.reviewPhotos.length, locale)}
+              </span>
+            </h2>
+
+            {/* A row that scrolls, not a deck. The deck is one object you look
+                through; this is a glance across several, and the reviews they
+                came from are directly below. */}
+            <ul className="scrollbar-none -mx-5 mt-3 flex snap-x snap-mandatory gap-2 overflow-x-auto px-5">
+              {place.reviewPhotos.map((photo, position) => (
+                <li key={photo.id} className="shrink-0 snap-start">
+                  <div className="bg-surface-sunken relative size-28 overflow-hidden rounded-md">
+                    <Image
+                      src={photo.url}
+                      alt={t('photos.position', {
+                        current: position + 1,
+                        total: place.reviewPhotos.length,
+                        name: place.name,
+                      })}
+                      fill
+                      sizes="112px"
+                      className="object-cover"
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <ReviewSection placeId={place.id} placeName={place.name} />
 

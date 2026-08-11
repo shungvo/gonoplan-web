@@ -46,6 +46,17 @@ export interface BottomSheetProps {
    */
   dimOnlyWhenFull?: boolean | undefined;
 
+  /**
+   * Rendered inside the portal, behind the sheet and behind the overlay.
+   *
+   * For a sheet that is a panel over something rather than a panel over the
+   * page — the place sheet puts the photographs here, so the smaller resting
+   * heights are showing the place instead of a dimmed list of other places.
+   * It has to live in the portal to sit above the app shell, and before the
+   * overlay so the overlay can still dim it.
+   */
+  backdrop?: ReactNode | undefined;
+
   children: ReactNode;
   className?: string | undefined;
 }
@@ -65,6 +76,7 @@ export function BottomSheet({
   defaultSnapIndex,
   floatingHandle = false,
   dimOnlyWhenFull = false,
+  backdrop,
   children,
   className,
 }: BottomSheetProps) {
@@ -92,6 +104,8 @@ export function BottomSheet({
         : {})}
     >
       <Drawer.Portal>
+        {backdrop && <div className="fixed inset-0 z-40">{backdrop}</div>}
+
         <Drawer.Overlay
           className="fixed inset-0 z-50 bg-ink/40 backdrop-blur-[2px] transition-opacity"
           style={{ opacity: dimmed ? 1 : 0, pointerEvents: dimmed ? 'auto' : 'none' }}

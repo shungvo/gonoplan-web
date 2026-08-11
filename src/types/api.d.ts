@@ -1363,6 +1363,14 @@ export interface paths {
                                     blurhash: string | null;
                                     isCover: boolean;
                                 }[];
+                                reviewPhotos: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    url: string;
+                                    blurhash: string | null;
+                                    /** Format: uuid */
+                                    reviewId: string;
+                                }[];
                                 openingHours: {
                                     dayOfWeek: number;
                                     opensAt: string;
@@ -9084,6 +9092,14 @@ export interface components {
                 url: string;
                 blurhash: string | null;
                 isCover: boolean;
+            }[];
+            reviewPhotos: {
+                /** Format: uuid */
+                id: string;
+                url: string;
+                blurhash: string | null;
+                /** Format: uuid */
+                reviewId: string;
             }[];
             openingHours: {
                 dayOfWeek: number;
