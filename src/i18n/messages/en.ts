@@ -215,11 +215,16 @@ export const en = {
   // it. The files carry no description of their own, so the subject is all
   // there is to say.
   'photos.position': 'Photo {current} of {total} — {name}',
+  // Read out when a card deck advances. Neutral, because the same deck holds
+  // recommendations on Home and saved places on the Plan tab.
+  'stack.position': '{name}, {current} of {total}',
   'photos.fromReviews': 'From reviews',
 
   // ─── Card stack ───────────────────────────────────────────────────────────
+  // "Card", not "recommendation": the same deck holds recommendations on Home
+  // and saved places on the Plan tab, and only one of those is a suggestion.
   'stack.cardLabel':
-    '{name}. Recommendation {position} of {total}. Use the left and right arrow keys to browse.',
+    '{name}. Card {position} of {total}. Use the left and right arrow keys to browse.',
 
   // ─── Explore ──────────────────────────────────────────────────────────────
   'explore.title': 'Explore',

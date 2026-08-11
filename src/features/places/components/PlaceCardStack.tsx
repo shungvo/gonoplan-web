@@ -116,10 +116,20 @@ export function PlaceCardStack({
 
   return (
     <div className={cn('px-5', className)}>
-      {/* Announced, not drawn. The dots are a visual cue only, and a card
-          silently replacing another says nothing to a screen reader. */}
+      {/*
+        Announced, not drawn. The dots are a visual cue only, and a card
+        silently replacing another says nothing to a screen reader.
+
+        Neutral wording, and translated: this deck holds recommendations on
+        Home and saved places on the Plan tab, and it was hard-coded English
+        calling both of them "recommendation".
+      */}
       <span className="sr-only" aria-live="polite">
-        {places[index]?.name}, recommendation {index + 1} of {total}
+        {t('stack.position', {
+          name: places[index]?.name ?? '',
+          current: index + 1,
+          total,
+        })}
       </span>
 
       {/* Room for the deepest card's offset, or the stack clips its own base. */}

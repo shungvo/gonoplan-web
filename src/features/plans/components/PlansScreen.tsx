@@ -10,6 +10,7 @@ import { BottomSheet, SHEET_SNAP_POINTS } from '@/components/ui/BottomSheet';
 import { Drawer } from 'vaul';
 import { useIsAuthenticated } from '@/features/auth/store';
 import { useSavedPlaces } from '@/features/favorites/hooks/useFavorites';
+import { PlaceCardStack } from '@/features/places/components/PlaceCardStack';
 import { PlaceImage } from '@/features/places/components/PlaceImage';
 import { PlaceSheet } from '@/features/places/components/PlaceSheet';
 import { useLocale, useT } from '@/i18n/I18nProvider';
@@ -53,38 +54,25 @@ export function PlansScreen() {
         this screen offered a blank "add a place" search. Putting them here
         makes the shortlist the raw material it already was.
       */}
+      {/*
+        The saved places, as a deck.
+
+        A rail invites scanning, and this is not a list to scan — it is the
+        shortlist a day gets built from, one place at a time: "this one, or the
+        next?". The same shape the home screen uses for recommendations, and
+        the same component, because two decks that drift apart is two decks.
+      */}
       {isAuthenticated && (saved.data?.data.length ?? 0) > 0 && (
         <section className="mt-5" aria-label={t('plan.savedRail')}>
           <h2 className="text-ink px-5 text-sm font-semibold">{t('plan.savedRail')}</h2>
 
-          <ul className="scrollbar-none mt-2.5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5">
-            {saved.data?.data.map((place) => (
-              <li key={place.id} className="w-28 shrink-0 snap-start">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOpenPlaceId(place.id);
-                  }}
-                  className="block w-full text-left active:scale-[0.98]"
-                >
-                  <span className="bg-surface-sunken relative block aspect-square w-full overflow-hidden rounded-md shadow-sm">
-                    <PlaceImage
-                      url={place.coverImageUrl}
-                      blurhash={place.coverBlurhash}
-                      name={place.name}
-                      categorySlug={place.category.slug}
-                      categoryColor={place.category.colorHex}
-                      sizes="112px"
-                      fallbackSize="sm"
-                    />
-                  </span>
-                  <span className="text-ink mt-1.5 block truncate text-xs font-medium">
-                    {place.name}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
+          <PlaceCardStack
+            className="mt-3"
+            places={saved.data?.data}
+            onSelect={(place) => {
+              setOpenPlaceId(place.id);
+            }}
+          />
         </section>
       )}
 

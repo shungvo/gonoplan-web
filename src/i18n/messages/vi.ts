@@ -205,11 +205,12 @@ export const vi: Messages = {
   'photos.previous': 'Ảnh trước',
   'photos.next': 'Ảnh sau',
   'photos.position': 'Ảnh {current}/{total} — {name}',
+  'stack.position': '{name}, {current}/{total}',
   'photos.fromReviews': 'Ảnh từ đánh giá',
 
   // ─── Card stack ───────────────────────────────────────────────────────────
   'stack.cardLabel':
-    '{name}. Gợi ý {position} trong {total}. Dùng phím mũi tên trái phải để xem tiếp.',
+    '{name}. Thẻ {position} trên {total}. Dùng phím mũi tên trái phải để xem tiếp.',
 
   // ─── Explore ──────────────────────────────────────────────────────────────
   'explore.title': 'Khám phá',
