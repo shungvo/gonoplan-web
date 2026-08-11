@@ -5,9 +5,11 @@ import { getLocale, getT } from '@/i18n/server';
  * PWA manifest (§33).
  *
  * `display: standalone` plus the iOS metadata in layout.tsx is what makes a
- * home-screen launch feel like an app rather than a bookmark. Icons and
- * screenshots are filled in during Phase 13 (PWA), together with the service
- * worker.
+ * home-screen launch feel like an app rather than a bookmark.
+ *
+ * Every file referenced here is drawn by `scripts/generate-app-assets.mjs` and
+ * committed. They were listed here long before they existed, so until now the
+ * three icon URLs answered 404 and an install prompt had nothing to show.
  */
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
   const locale = await getLocale();
@@ -30,7 +32,9 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
       { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
       { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
       // A maskable icon prevents Android from framing the logo in a white
-      // square on adaptive-icon launchers.
+      // square on adaptive-icon launchers. Drawn to a tighter inset than the
+      // two above, because a launcher's circular mask keeps only the middle
+      // 80% and the pin's tip is the first thing it would take.
       { src: '/icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
     ],
   };

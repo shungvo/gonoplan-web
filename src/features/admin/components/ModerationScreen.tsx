@@ -394,13 +394,21 @@ function ReportCard({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <StatusBadge status={report.reason} />
+            {/* The reason and the target type are enum values, not prose, so
+                they go through the catalogue like every other one. They were
+                rendered raw — `toLowerCase()` is a translation strategy that
+                works in exactly one language, and this queue is meant to be
+                readable in two. */}
+            <span className="bg-surface-sunken text-ink-muted inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold">
+              {t(`reportReason.${report.reason}`)}
+            </span>
             <span className="text-ink-subtle text-xs">
-              {report.targetType.toLowerCase()} · <TimeAgo iso={report.createdAt} />
+              {t(`moderation.targetType.${report.targetType}`)} ·{' '}
+              <TimeAgo iso={report.createdAt} />
             </span>
             {report.openReportsOnTarget > 1 && (
               <span className="bg-danger/10 text-danger rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold">
-                {report.openReportsOnTarget} open reports on this target
+                {t('moderation.openReports', { count: report.openReportsOnTarget })}
               </span>
             )}
           </div>

@@ -293,9 +293,13 @@ export const vi: Messages = {
     'Tên bạn không bao giờ hiển thị công khai. Chỉ người kiểm duyệt thấy ai đã báo cáo.',
   'report.failed': 'Không gửi được báo cáo. Bạn thử lại sau một lát nhé.',
   'report.alreadyTitle': 'Đội ngũ đã nhận được rồi',
-  'report.alreadyBody': 'Bạn đã báo cáo địa điểm này và chúng tôi vẫn đang xem xét.',
+  'report.thanksBody.PLACE': 'Sẽ có người kiểm tra địa điểm này. Chúng tôi không tiết lộ ai đã báo cáo.',
+  'report.thanksBody.REVIEW': 'Người kiểm duyệt sẽ đọc đánh giá này. Chúng tôi không tiết lộ ai đã báo cáo.',
+  'report.thanksBody.USER': 'Người kiểm duyệt sẽ xem tài khoản này. Chúng tôi không tiết lộ ai đã báo cáo.',
+  'report.alreadyBody.PLACE': 'Bạn đã báo cáo địa điểm này và chúng tôi vẫn đang xem xét.',
+  'report.alreadyBody.REVIEW': 'Bạn đã báo cáo đánh giá này và chúng tôi vẫn đang xem xét.',
+  'report.alreadyBody.USER': 'Bạn đã báo cáo tài khoản này và chúng tôi vẫn đang xem xét.',
   'report.thanksTitle': 'Cảm ơn bạn đã báo',
-  'report.thanksBody': 'Sẽ có người kiểm tra địa điểm này. Chúng tôi không tiết lộ ai đã báo cáo.',
   'report.CLOSED_PERMANENTLY': 'Đã đóng cửa hẳn',
   'report.CLOSED_PERMANENTLY.hint': 'Nơi này đã ngừng hoạt động',
   'report.INCORRECT_INFO': 'Thông tin sai',
@@ -308,6 +312,27 @@ export const vi: Messages = {
   'report.INAPPROPRIATE.hint': 'Nội dung hoặc hình ảnh phản cảm',
   'report.OTHER': 'Vấn đề khác',
   'report.OTHER.hint': 'Cho chúng tôi biết vấn đề là gì',
+
+  'report.reviewTitle': 'Báo cáo đánh giá này',
+  'report.profileTitle': 'Báo cáo trang cá nhân này',
+  'report.reviewAction': 'Báo cáo đánh giá này',
+  'report.profileAction': 'Báo cáo trang cá nhân này',
+  'report.OFFENSIVE': 'Xúc phạm hoặc lăng mạ',
+  'report.OFFENSIVE.hint': 'Quấy rối, thù ghét, hoặc công kích cá nhân',
+  'report.INAPPROPRIATE.review': 'Không nói về địa điểm',
+  'report.INAPPROPRIATE.review.hint': 'Chửi bới, quảng cáo, hoặc chẳng liên quan gì tới việc ghé thăm',
+  'report.SPAM.review': 'Spam hoặc giả mạo',
+  'report.SPAM.review.hint': 'Quảng cáo, hoặc đánh giá của người chưa từng tới',
+
+  'users.viewPublicProfile': 'Xem trang cá nhân công khai',
+  'users.bio': 'Giới thiệu công khai',
+  'users.clearBio': 'Xoá phần giới thiệu',
+  'users.clearBioTitle': 'Xoá phần giới thiệu này?',
+  'users.clearBioBody':
+    'Chỉ gỡ đoạn văn khỏi trang cá nhân công khai, không gì khác. Đánh giá và địa điểm họ đã thêm vẫn giữ nguyên.',
+
+  'overview.plans': 'Plan',
+  'overview.plansHint': 'chỉ đếm — không mở được từ đây',
 
   // ─── Photo picker ─────────────────────────────────────────────────────────
   'picker.photoAlt': 'Ảnh {position}',
@@ -524,6 +549,17 @@ export const vi: Messages = {
   'moderation.phone': 'Điện thoại: {value}',
   'moderation.taxId': 'Mã số thuế: {value}',
   'moderation.ownerMetaRest': 'tài khoản tạo {joined} · {places} địa điểm · {documents} tài liệu',
+  'moderation.targetType.PLACE': 'địa điểm',
+  'moderation.targetType.REVIEW': 'đánh giá',
+  'moderation.targetType.USER': 'tài khoản',
+  'moderation.openReports': '{count} báo cáo đang mở về đối tượng này',
+  'reportReason.SPAM': 'spam hoặc giả mạo',
+  'reportReason.INAPPROPRIATE': 'không phù hợp',
+  'reportReason.INCORRECT_INFO': 'thông tin sai',
+  'reportReason.CLOSED_PERMANENTLY': 'đã đóng cửa hẳn',
+  'reportReason.DUPLICATE': 'trùng lặp',
+  'reportReason.OFFENSIVE': 'xúc phạm',
+  'reportReason.OTHER': 'vấn đề khác',
   'moderation.targetGone': 'Đối tượng không còn tồn tại',
   'moderation.reportedBy': 'Báo cáo bởi {name}',
   'moderation.removedAccount': 'một tài khoản đã xoá',
@@ -759,6 +795,25 @@ export const vi: Messages = {
   'profile.notFoundBody': 'Tài khoản có thể đã đóng, hoặc liên kết đã cũ.',
   'profile.viewProfile': 'Xem trang cá nhân',
   'profile.publicNotice': 'Đánh giá và địa điểm bạn thêm ai cũng xem được.',
+
+  // ─── Onboarding ───────────────────────────────────────────────────────────
+  'onboarding.skip': 'Bỏ qua',
+  'onboarding.next': 'Tiếp',
+  'onboarding.step': 'Bước {current} trên {total}',
+  'onboarding.discoverTitle': 'Tìm chỗ đáng đi',
+  'onboarding.discoverBody':
+    'Cà phê, đồ ăn, điểm tham quan và chỗ nghỉ — xếp hạng theo chỗ nào thật sự ngon quanh bạn, không phải theo ai trả tiền.',
+  'onboarding.planTitle': 'Sắp xếp cả ngày',
+  'onboarding.planBody':
+    'Xếp các địa điểm theo thứ tự bạn sẽ đi, kèm giờ giấc. Gonoplan tính luôn thời gian di chuyển giữa các điểm, nên một ngày không kịp sẽ tự nói ra.',
+  'onboarding.contributeTitle': 'Thêm chỗ còn thiếu',
+  'onboarding.contributeBody':
+    'Biết một nơi hay mà ở đây chưa có? Thêm vào. Mọi đề xuất đều được kiểm duyệt trước khi hiển thị.',
+  'onboarding.locationTitle': 'Bạn đang ở đâu?',
+  'onboarding.locationBody':
+    'Mọi thứ ở đây đều sắp theo khoảng cách, nên đây là thứ app thật sự cần. Bạn đổi lại lúc nào cũng được, và vị trí không rời khỏi máy bạn ngoài việc đi kèm một toạ độ khi tìm kiếm.',
+  'onboarding.useLocation': 'Dùng vị trí của tôi',
+  'onboarding.chooseCity': 'Chọn thành phố',
 
   // ─── Profile (own) ──────────────────────────────────────────────────────────────
   'profile.title': 'Cá nhân',

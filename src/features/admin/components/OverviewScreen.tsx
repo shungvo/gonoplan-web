@@ -82,6 +82,14 @@ export function OverviewScreen() {
               value={totals.reviews}
               hint={t('overview.inSevenDays', { count: totals.newReviews })}
             />
+            {/* Counted, never opened. A plan has no public surface, so there is
+                nothing on one to moderate — and no reason this screen should
+                be able to read somebody's day. */}
+            <Stat
+              label={t('overview.plans')}
+              value={totals.plans}
+              hint={t('overview.plansHint')}
+            />
           </div>
         </>
       )}

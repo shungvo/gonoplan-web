@@ -303,9 +303,13 @@ export const en = {
   'report.privacy': 'Your name is never shown publicly. Only moderators see who reported a place.',
   'report.failed': 'Could not send your report. Try again in a moment.',
   'report.alreadyTitle': 'Already with our team',
-  'report.alreadyBody': 'You have already reported this place and we are still looking at it.',
+  'report.thanksBody.PLACE': 'Someone will review this listing. We do not share who reported it.',
+  'report.thanksBody.REVIEW': 'A moderator will read this review. We do not share who reported it.',
+  'report.thanksBody.USER': 'A moderator will look at this account. We do not share who reported it.',
+  'report.alreadyBody.PLACE': 'You have already reported this place and we are still looking at it.',
+  'report.alreadyBody.REVIEW': 'You have already reported this review and we are still looking at it.',
+  'report.alreadyBody.USER': 'You have already reported this account and we are still looking at it.',
   'report.thanksTitle': 'Thanks for telling us',
-  'report.thanksBody': 'Someone will review this listing. We do not share who reported it.',
   'report.CLOSED_PERMANENTLY': 'Permanently closed',
   'report.CLOSED_PERMANENTLY.hint': 'It has shut down for good',
   'report.INCORRECT_INFO': 'Wrong information',
@@ -318,6 +322,27 @@ export const en = {
   'report.INAPPROPRIATE.hint': 'Offensive content or images',
   'report.OTHER': 'Something else',
   'report.OTHER.hint': 'Tell us what is wrong',
+
+  'report.reviewTitle': 'Report this review',
+  'report.profileTitle': 'Report this profile',
+  'report.reviewAction': 'Report this review',
+  'report.profileAction': 'Report this profile',
+  'report.OFFENSIVE': 'Offensive or abusive',
+  'report.OFFENSIVE.hint': 'Harassment, hate, or a personal attack',
+  'report.INAPPROPRIATE.review': 'Not about the place',
+  'report.INAPPROPRIATE.review.hint': 'A rant, an advert, or nothing to do with visiting',
+  'report.SPAM.review': 'Spam or fake',
+  'report.SPAM.review.hint': 'Advertising, or a review by someone who was never there',
+
+  'users.viewPublicProfile': 'View public profile',
+  'users.bio': 'Public bio',
+  'users.clearBio': 'Clear bio',
+  'users.clearBioTitle': 'Clear this bio?',
+  'users.clearBioBody':
+    'Removes the text from their public profile and nothing else. Their reviews and the places they added stay exactly as they are.',
+
+  'overview.plans': 'Plans',
+  'overview.plansHint': 'counted only — never opened from here',
 
   // ─── Photo picker ─────────────────────────────────────────────────────────
   'picker.photoAlt': 'Photo {position}',
@@ -532,6 +557,17 @@ export const en = {
   'moderation.phone': 'Phone: {value}',
   'moderation.taxId': 'Tax ID: {value}',
   'moderation.ownerMetaRest': 'account joined {joined} · {places} places · {documents} documents',
+  'moderation.targetType.PLACE': 'place',
+  'moderation.targetType.REVIEW': 'review',
+  'moderation.targetType.USER': 'account',
+  'moderation.openReports': '{count} open reports on this target',
+  'reportReason.SPAM': 'spam or fake',
+  'reportReason.INAPPROPRIATE': 'inappropriate',
+  'reportReason.INCORRECT_INFO': 'wrong information',
+  'reportReason.CLOSED_PERMANENTLY': 'permanently closed',
+  'reportReason.DUPLICATE': 'duplicate',
+  'reportReason.OFFENSIVE': 'offensive',
+  'reportReason.OTHER': 'something else',
   'moderation.targetGone': 'Target no longer exists',
   'moderation.reportedBy': 'Reported by {name}',
   'moderation.removedAccount': 'a removed account',
@@ -770,6 +806,25 @@ export const en = {
   'profile.notFoundBody': 'The account may have been closed, or the link may be out of date.',
   'profile.viewProfile': 'View profile',
   'profile.publicNotice': 'Your reviews and the places you add are visible to anyone.',
+
+  // ─── Onboarding ───────────────────────────────────────────────────────────
+  'onboarding.skip': 'Skip',
+  'onboarding.next': 'Next',
+  'onboarding.step': 'Step {current} of {total}',
+  'onboarding.discoverTitle': 'Find somewhere worth going',
+  'onboarding.discoverBody':
+    'Cafes, food, sights and stays — ranked by what is actually good near you, not by who paid.',
+  'onboarding.planTitle': 'Lay out the day',
+  'onboarding.planBody':
+    'Put places in the order you will walk them, with times. Gonoplan works out how long each hop takes, so a day that cannot fit says so.',
+  'onboarding.contributeTitle': 'Add what is missing',
+  'onboarding.contributeBody':
+    'Somewhere good that is not here yet? Add it. Every submission is checked by a moderator before it appears.',
+  'onboarding.locationTitle': 'Where are you?',
+  'onboarding.locationBody':
+    'Everything here is sorted by distance, so this is the one thing the app really needs. You can change it any time, and it never leaves your device except as a coordinate on a search.',
+  'onboarding.useLocation': 'Use my location',
+  'onboarding.chooseCity': 'Choose a city instead',
 
   // ─── Profile (own) ──────────────────────────────────────────────────────────────
   'profile.title': 'Profile',

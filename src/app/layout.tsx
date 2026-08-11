@@ -7,6 +7,19 @@ import './globals.css';
 
 const geist = Geist({ variable: '--font-geist-sans', subsets: ['latin', 'vietnamese'] });
 
+/** Kept in step with `scripts/generate-app-assets.mjs`, which draws the files. */
+const SPLASH_DEVICES = [
+  { width: 430, height: 932, ratio: 3 },
+  { width: 428, height: 926, ratio: 3 },
+  { width: 414, height: 896, ratio: 3 },
+  { width: 414, height: 896, ratio: 2 },
+  { width: 414, height: 736, ratio: 3 },
+  { width: 393, height: 852, ratio: 3 },
+  { width: 390, height: 844, ratio: 3 },
+  { width: 375, height: 812, ratio: 3 },
+  { width: 375, height: 667, ratio: 2 },
+] as const;
+
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
 
@@ -15,13 +28,31 @@ export async function generateMetadata(): Promise<Metadata> {
     description: t('meta.appDescription'),
     applicationName: 'Gonoplan',
     manifest: '/manifest.webmanifest',
+    icons: {
+      icon: [{ url: '/icons/favicon-32.png', sizes: '32x32', type: 'image/png' }],
+      apple: [{ url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+    },
     appleWebApp: {
       // Makes an iOS home-screen launch open without Safari chrome. iOS has no
       // `beforeinstallprompt`, so this metadata plus a hand-rolled "Add to Home
-      // Screen" hint is the entire iOS install story (Phase 13).
+      // Screen" hint is the entire iOS install story.
       capable: true,
       title: 'Gonoplan',
       statusBarStyle: 'default',
+      /*
+       * Android builds a launch screen from the manifest's `background_color`
+       * and icon. iOS will not: without an exact-size image per device it
+       * shows a white flash and then a screenshot of whatever was last on
+       * screen, which for a returning user is their own half-scrolled list
+       * appearing frozen before the app has loaded.
+       *
+       * The media query has to match the device exactly — the wrong one is the
+       * same as none at all.
+       */
+      startupImage: SPLASH_DEVICES.map(({ width, height, ratio }) => ({
+        url: `/icons/splash-${String(width)}x${String(height)}@${String(ratio)}x.png`,
+        media: `(device-width: ${String(width)}px) and (device-height: ${String(height)}px) and (-webkit-device-pixel-ratio: ${String(ratio)}) and (orientation: portrait)`,
+      })),
     },
     formatDetection: { telephone: false },
   };

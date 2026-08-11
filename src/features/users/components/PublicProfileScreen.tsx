@@ -1,8 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Flag } from 'lucide-react';
+import { ReportSheet } from '@/features/reports/ReportSheet';
+import { useIsAuthenticated } from '@/features/auth/store';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useT } from '@/i18n/I18nProvider';
@@ -13,6 +16,8 @@ import { ProfileBody } from './ProfileBody';
 export function PublicProfileScreen({ userId }: { userId: string }) {
   const t = useT();
   const router = useRouter();
+  const isAuthenticated = useIsAuthenticated();
+  const [reporting, setReporting] = useState(false);
 
   const user = useQuery({
     queryKey: ['users', userId],
@@ -60,7 +65,33 @@ export function PublicProfileScreen({ userId }: { userId: string }) {
           />
         )}
 
-        {user.data && <ProfileBody user={user.data} />}
+        {user.data && (
+          <>
+            <ProfileBody user={user.data} />
+
+            {/* Low-key and at the end, the same shape the place page uses.
+                `ReportTargetType.USER` has been in the schema and the queue
+                since Phase 11 with nothing able to send one. */}
+            {isAuthenticated && (
+              <button
+                type="button"
+                onClick={() => {
+                  setReporting(true);
+                }}
+                className="text-ink-subtle hover:text-ink-muted mt-6 inline-flex items-center gap-1.5 text-xs font-medium"
+              >
+                <Flag className="size-3.5" aria-hidden />
+                {t('report.profileAction')}
+              </button>
+            )}
+
+            <ReportSheet
+              target={{ type: 'USER', id: user.data.id, label: user.data.name }}
+              open={reporting}
+              onOpenChange={setReporting}
+            />
+          </>
+        )}
       </div>
     </div>
   );

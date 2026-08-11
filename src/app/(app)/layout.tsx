@@ -1,4 +1,5 @@
 import { BottomNav } from '@/components/layout/BottomNav';
+import { OnboardingGate } from '@/features/onboarding/components/OnboardingGate';
 
 /**
  * The mobile app shell.
@@ -12,6 +13,10 @@ export default function AppLayout({ children }: LayoutProps<'/'>) {
     <div className="relative flex h-dvh flex-col overflow-hidden bg-background">
       <main className="flex-1 overflow-y-auto overscroll-contain pb-nav">{children}</main>
       <BottomNav />
+      {/* Over the shell rather than in front of a route, so a first-run visitor
+          who lands on a shared place link still gets it — and still lands on
+          that place once it is done. */}
+      <OnboardingGate />
     </div>
   );
 }

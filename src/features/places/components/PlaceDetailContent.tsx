@@ -382,8 +382,7 @@ export function PlaceDetailContent({
         reason={t('detail.signInToSave')}
       />
       <ReportSheet
-        placeId={place.id}
-        placeName={place.name}
+        target={{ type: 'PLACE', id: place.id, label: place.name }}
         open={reportOpen}
         onOpenChange={setReportOpen}
       />

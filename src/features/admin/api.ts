@@ -253,3 +253,16 @@ export function removePlaceImage(
 export function removeReviewReply(reviewId: string, reason: string): Promise<unknown> {
   return api.delete(`/admin/reviews/${reviewId}/reply`, { body: { reason } });
 }
+
+/**
+ * Clears a public bio and nothing else.
+ *
+ * Deliberately not part of a general "edit this user": renaming somebody is a
+ * different power, and the endpoint does not offer it either.
+ */
+export function clearUserBio(userId: string, reason: string): Promise<{ cleared: boolean }> {
+  return api.request<{ cleared: boolean }>(`/admin/users/${userId}/bio`, {
+    method: 'DELETE',
+    body: { reason },
+  }).then((result) => result.data);
+}

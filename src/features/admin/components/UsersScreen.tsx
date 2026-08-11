@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Search, Shield, Store } from 'lucide-react';
+import { ExternalLink, Search, Shield, Store } from 'lucide-react';
 
 import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
@@ -14,6 +15,7 @@ import { Card, PageHeader, QueueEmpty, RowSkeleton, StatusBadge, TimeAgo } from 
 import { ReasonDialog } from './ReasonDialog';
 import {
   banUser,
+  clearUserBio,
   deleteUser,
   fetchUser,
   fetchUsers,
@@ -42,6 +44,7 @@ export function UsersScreen() {
   const [banTarget, setBanTarget] = useState<AdminUser | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AdminUser | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [bioTarget, setBioTarget] = useState<{ id: string; name: string } | null>(null);
 
   const users = useQuery({
     queryKey: ['admin', 'users', submitted, status],
@@ -87,6 +90,14 @@ export function UsersScreen() {
       deleteUser(userId, reason),
     onSuccess: async () => {
       setDeleteTarget(null);
+      await queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+    },
+  });
+
+  const clearBio = useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) => clearUserBio(id, reason),
+    onSuccess: async () => {
+      setBioTarget(null);
       await queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
     },
   });
@@ -181,6 +192,19 @@ export function UsersScreen() {
                 </div>
 
                 <div className="flex shrink-0 items-center gap-2">
+                  {/* The page everyone else sees. A moderator handling a report
+                      about a person could read their row here and not the
+                      thing being complained about. */}
+                  {user.status === 'ACTIVE' && (
+                    <Link
+                      href={`/u/${user.id}`}
+                      target="_blank"
+                      className="text-primary inline-flex items-center gap-1 text-xs font-medium"
+                    >
+                      {t('users.viewPublicProfile')}
+                      <ExternalLink className="size-3" aria-hidden />
+                    </Link>
+                  )}
                   <StatusBadge status={user.status} />
                   <Button
                     variant="ghost"
@@ -292,6 +316,28 @@ export function UsersScreen() {
                         </div>
                       </dl>
 
+                      {/* Public free text, and the reason this screen needed a
+                          third verb: banning removes the profile along with
+                          everything the account ever contributed, which is a
+                          penalty aimed at the wrong thing. */}
+                      {detail.data.bio && (
+                        <div className="border-border bg-surface-sunken mt-4 rounded-md border p-3">
+                          <p className="text-ink-subtle text-xs font-medium">{t('users.bio')}</p>
+                          <p className="text-ink-muted mt-1 text-sm leading-relaxed">
+                            {detail.data.bio}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBioTarget({ id: user.id, name: user.name });
+                            }}
+                            className="text-danger mt-2 text-xs font-medium"
+                          >
+                            {t('users.clearBio')}
+                          </button>
+                        </div>
+                      )}
+
                       <h4 className="text-ink mt-4 text-sm font-semibold">{t('users.moderationHistory')}</h4>
                       {detail.data.history.length === 0 ? (
                         <p className="text-ink-subtle mt-1 text-sm">
@@ -339,6 +385,23 @@ export function UsersScreen() {
         }}
         onClose={() => {
           setDeleteTarget(null);
+        }}
+      />
+
+      <ReasonDialog
+        open={bioTarget !== null}
+        title={t('users.clearBioTitle')}
+        description={t('users.clearBioBody')}
+        confirmLabel={t('users.clearBio')}
+        destructive
+        isPending={clearBio.isPending}
+        error={clearBio.error}
+        onConfirm={(reason) => {
+          if (bioTarget) clearBio.mutate({ id: bioTarget.id, reason });
+        }}
+        onClose={() => {
+          setBioTarget(null);
+          clearBio.reset();
         }}
       />
 

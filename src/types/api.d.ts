@@ -7595,6 +7595,8 @@ export interface paths {
                                     reviews: number;
                                     newReviews: number;
                                     openReports: number;
+                                    plans: number;
+                                    newPlans: number;
                                 };
                                 queues: {
                                     places: number;
@@ -8804,6 +8806,104 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/users/{id}/bio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Clear a user's public bio
+         * @description `PATCH /me` accepts five hundred characters of free text and the public profile renders them. Until this existed the only answers to an abusive bio were to ban the account or delete it — both of which also take down every review and place that person contributed, which punishes the wrong thing.
+         *
+         *     Clears one field and nothing else. Renaming somebody is a different power with different consequences, and is deliberately not offered here.
+         *
+         *     Audited as `USER_EDIT` with the removed text kept verbatim in `metadata`: a log saying "a bio was removed" proves nothing if the removal is later disputed.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        reason: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Cleared */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                cleared: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description No such account, or it has no bio */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -9744,6 +9844,8 @@ export interface components {
                 reviews: number;
                 newReviews: number;
                 openReports: number;
+                plans: number;
+                newPlans: number;
             };
             queues: {
                 places: number;

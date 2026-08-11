@@ -1,8 +1,12 @@
 'use client';
 
+import { useState } from 'react';
+
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star, ThumbsUp, Store } from 'lucide-react';
+import { Flag, Star, ThumbsUp, Store } from 'lucide-react';
+import { ReportSheet } from '@/features/reports/ReportSheet';
+import { useIsAuthenticated } from '@/features/auth/store';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { formatNumber, formatRelativeTime } from '@/i18n/format';
 import { useNow } from '@/lib/utils/useNow';
@@ -23,6 +27,8 @@ export function ReviewCard({
   const t = useT();
   const locale = useLocale();
   const now = useNow();
+  const isAuthenticated = useIsAuthenticated();
+  const [reporting, setReporting] = useState(false);
 
   return (
     <article className="bg-surface rounded-lg p-4 shadow-sm">
@@ -157,7 +163,29 @@ export function ReviewCard({
             {t('common.delete')}
           </button>
         )}
+
+        {/* Quiet, and last. `ReportTargetType.REVIEW` and the moderator queue
+            that resolves it have both existed since Phase 11; nothing in the
+            app could ever file one. Hidden from the author, who has Delete. */}
+        {!review.isMine && isAuthenticated && (
+          <button
+            type="button"
+            onClick={() => {
+              setReporting(true);
+            }}
+            aria-label={t('report.reviewAction')}
+            className="text-ink-subtle hover:text-ink-muted ml-auto inline-flex items-center"
+          >
+            <Flag className="size-3.5" aria-hidden />
+          </button>
+        )}
       </div>
+
+      <ReportSheet
+        target={{ type: 'REVIEW', id: review.id, label: review.author.name }}
+        open={reporting}
+        onOpenChange={setReporting}
+      />
     </article>
   );
 }

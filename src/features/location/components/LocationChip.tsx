@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { ChevronDown, MapPin, LoaderCircle, MapPinOff } from 'lucide-react';
 import { useLocationStore } from '../store';
+import { useOnboardingPending } from '@/features/onboarding/store';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { formatNumber } from '@/i18n/format';
 import { cn } from '@/lib/utils/cn';
@@ -29,12 +30,17 @@ export function LocationChip({
   const t = useT();
   const locale = useLocale();
   const { status, source, coordinates, label, requestLocation } = useLocationStore();
+  const onboarding = useOnboardingPending();
 
   useEffect(() => {
     // Only auto-prompt from a cold start. Re-asking after a denial is both
     // futile — browsers remember the decision — and hostile.
-    if (status === 'IDLE') void requestLocation();
-  }, [status, requestLocation]);
+    //
+    // And never while onboarding is up: the browser dialog would appear behind
+    // the overlay, unexplained, and the reflex answer to that is No — which is
+    // the one answer that cannot be asked again.
+    if (status === 'IDLE' && !onboarding) void requestLocation();
+  }, [status, onboarding, requestLocation]);
 
   const isDenied = status === 'DENIED' || status === 'UNAVAILABLE';
   const isPrompting = status === 'PROMPTING';

@@ -11,24 +11,59 @@ import { cn } from '@/lib/utils/cn';
 import { fieldClass } from '@/components/ui/field';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { useT } from '@/i18n/I18nProvider';
+import { en } from '@/i18n/messages/en';
+import type { MessageKey } from '@/i18n/messages/keys';
 import { useErrorMessage } from '@/i18n/useErrorMessage';
 
-type Reason = 'CLOSED_PERMANENTLY' | 'INCORRECT_INFO' | 'DUPLICATE' | 'SPAM' | 'INAPPROPRIATE' | 'OTHER';
+type Reason =
+  | 'CLOSED_PERMANENTLY'
+  | 'INCORRECT_INFO'
+  | 'DUPLICATE'
+  | 'SPAM'
+  | 'INAPPROPRIATE'
+  | 'OFFENSIVE'
+  | 'OTHER';
+
+export type ReportTargetType = 'PLACE' | 'REVIEW' | 'USER';
+
+export interface ReportTarget {
+  type: ReportTargetType;
+  id: string;
+  /** Shown under the title, so the reporter can see what they are reporting. */
+  label: string;
+}
 
 /**
- * Only the reasons that make sense for a place.
+ * A different list per target, because a reason a moderator cannot act on is
+ * worse than one fewer option.
  *
- * OFFENSIVE is deliberately absent — it belongs to reviews and accounts, and
- * offering it here produces reports a moderator cannot act on.
+ * "Permanently closed" is meaningless about a person, and "offensive" was
+ * missing entirely until reviews and profiles became reportable — the enum has
+ * carried OFFENSIVE since the first migration and nothing could ever send it.
  */
-const REASONS: Reason[] = [
-  'CLOSED_PERMANENTLY',
-  'INCORRECT_INFO',
-  'DUPLICATE',
-  'SPAM',
-  'INAPPROPRIATE',
-  'OTHER',
-];
+const REASONS: Record<ReportTargetType, Reason[]> = {
+  PLACE: ['CLOSED_PERMANENTLY', 'INCORRECT_INFO', 'DUPLICATE', 'SPAM', 'INAPPROPRIATE', 'OTHER'],
+  REVIEW: ['OFFENSIVE', 'INAPPROPRIATE', 'SPAM', 'OTHER'],
+  USER: ['OFFENSIVE', 'SPAM', 'INAPPROPRIATE', 'OTHER'],
+};
+
+const TITLE_KEY: Record<ReportTargetType, MessageKey> = {
+  PLACE: 'report.title',
+  REVIEW: 'report.reviewTitle',
+  USER: 'report.profileTitle',
+};
+
+/**
+ * A review's wording differs from a place's for the same enum value: "not
+ * about the place" is a review problem and nonsense about a listing.
+ */
+function reasonKeys(type: ReportTargetType, reason: Reason): [MessageKey, MessageKey] {
+  const scoped = `report.${reason}.review` as MessageKey;
+  if (type === 'REVIEW' && scoped in en) {
+    return [scoped, `report.${reason}.review.hint` as MessageKey];
+  }
+  return [`report.${reason}` as MessageKey, `report.${reason}.hint` as MessageKey];
+}
 
 const MAX_DESCRIPTION = 1000;
 
@@ -38,43 +73,32 @@ interface Result {
 }
 
 export function ReportSheet({
-  placeId,
-  placeName,
+  target,
   open,
   onOpenChange,
 }: {
-  placeId: string;
-  placeName: string;
+  target: ReportTarget;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange}>
-          {/* Keyed on the place so the form never opens carrying the previous
-              report's selection. */}
-          {open && (
-            <ReportForm
-              key={placeId}
-              placeId={placeId}
-              placeName={placeName}
-              onDone={() => {
-                onOpenChange(false);
-              }}
-            />
-          )}
+      {/* Keyed on the target so the form never opens carrying the previous
+          report's selection. */}
+      {open && (
+        <ReportForm
+          key={`${target.type}:${target.id}`}
+          target={target}
+          onDone={() => {
+            onOpenChange(false);
+          }}
+        />
+      )}
     </BottomSheet>
   );
 }
 
-function ReportForm({
-  placeId,
-  placeName,
-  onDone,
-}: {
-  placeId: string;
-  placeName: string;
-  onDone: () => void;
-}) {
+function ReportForm({ target, onDone }: { target: ReportTarget; onDone: () => void }) {
   const t = useT();
   const describeError = useErrorMessage();
   const [reason, setReason] = useState<Reason | null>(null);
@@ -83,8 +107,8 @@ function ReportForm({
   const submit = useMutation({
     mutationFn: () =>
       api.post<Result>('/reports', {
-        targetType: 'PLACE',
-        targetId: placeId,
+        targetType: target.type,
+        targetId: target.id,
         reason,
         ...(description.trim() ? { description: description.trim() } : {}),
       }),
@@ -105,8 +129,8 @@ function ReportForm({
         </Drawer.Title>
         <p className="text-ink-muted mt-1.5 text-sm leading-relaxed">
           {submit.data.alreadyReported
-            ? t('report.alreadyBody')
-            : t('report.thanksBody')}
+            ? t(`report.alreadyBody.${target.type}`)
+            : t(`report.thanksBody.${target.type}`)}
         </p>
         <Button fullWidth size="lg" className="mt-5 mb-4" onClick={onDone}>
           {t('common.done')}
@@ -124,16 +148,16 @@ function ReportForm({
       }}
     >
       <Drawer.Title className="text-ink text-xl font-semibold tracking-tight">
-        {t('report.title')}
+        {t(TITLE_KEY[target.type])}
       </Drawer.Title>
       <Drawer.Description className="text-ink-muted mt-1 text-sm">
-        {placeName}
+        {target.label}
       </Drawer.Description>
 
       <fieldset className="mt-4">
         <legend className="sr-only">{t('report.reason')}</legend>
         <div className="space-y-2">
-          {REASONS.map((option) => (
+          {REASONS[target.type].map((option) => (
             <label
               key={option}
               className={cn(
@@ -158,10 +182,10 @@ function ReportForm({
                     reason === option ? 'text-primary' : 'text-ink',
                   )}
                 >
-                  {t(`report.${option}`)}
+                  {t(reasonKeys(target.type, option)[0])}
                 </span>
                 <span className="text-ink-subtle block text-xs">
-                  {t(`report.${option}.hint`)}
+                  {t(reasonKeys(target.type, option)[1])}
                 </span>
               </span>
             </label>

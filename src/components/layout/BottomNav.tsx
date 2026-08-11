@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'motion/react';
-import { CalendarDays, Compass, Home, User, type LucideIcon } from 'lucide-react';
+import { Compass, Home, Route, User, type LucideIcon } from 'lucide-react';
 import { useT } from '@/i18n/I18nProvider';
 import type { MessageKey } from '@/i18n/messages/keys';
 import { cn } from '@/lib/utils/cn';
@@ -22,11 +22,16 @@ interface NavItem {
  * is a thing you build, and only one of those is worth a permanent quarter of
  * the navigation. Saved now lives under the profile, one tap further in and
  * next to the account it belongs to.
+ *
+ * A route rather than a calendar for that tab. `CalendarDays` carries six
+ * internal dots, which at 24px is a texture rather than a shape and read as
+ * noise beside three simple outlines. Two nodes and a path is also closer to
+ * what the screen does: a day in the order you will walk it.
  */
 const NAV_ITEMS: NavItem[] = [
   { href: '/', labelKey: 'nav.home', icon: Home },
   { href: '/explore', labelKey: 'nav.explore', icon: Compass },
-  { href: '/plan', labelKey: 'nav.plan', icon: CalendarDays },
+  { href: '/plan', labelKey: 'nav.plan', icon: Route },
   { href: '/profile', labelKey: 'nav.profile', icon: User },
 ];
 
@@ -94,11 +99,16 @@ export function BottomNav() {
                     transition={{ type: 'spring', stiffness: 380, damping: 34 }}
                   />
                 )}
-                <Icon
-                  className="relative size-[1.375rem] shrink-0"
-                  strokeWidth={isActive ? 2.4 : 1.8}
-                  aria-hidden
-                />
+                {/*
+                  One stroke weight for every tab, active or not.
+
+                  The weight used to jump from 1.8 to 2.4 on selection, which
+                  reads as the glyph thickening rather than as a state change —
+                  and it made the four icons visibly unequal whenever the row
+                  was scanned as a whole. The tinted pill and the colour are
+                  the indicator; they do not need a third signal helping.
+                */}
+                <Icon className="relative size-6 shrink-0" strokeWidth={2} aria-hidden />
                 <span className="sr-only">{t(labelKey)}</span>
               </Link>
             </li>

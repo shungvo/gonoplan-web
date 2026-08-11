@@ -39,11 +39,19 @@ export function useSetLocale(): {
     ].join('; ');
 
     if (user) {
-      // Optimistic, because the switch has already visibly happened. A failed
-      // write means the next device does not inherit the choice, which is not
-      // worth an error state on a language toggle.
+      /*
+       * `/auth/me`, not `/me` — the profile routes are mounted under the auth
+       * router.
+       *
+       * This said `/me` until it was tested against the running API, and every
+       * call 404'd. The switch still worked, because the cookie is what the
+       * server reads, so nothing looked wrong — and the `.catch()` below,
+       * added on the reasoning that a failed write is not worth an error
+       * state, is what kept it quiet. The account never learned the choice,
+       * which is precisely the promise the language screen makes.
+       */
       setUser({ ...user, locale });
-      void api.patch('/me', { locale }).catch(() => undefined);
+      void api.patch('/auth/me', { locale }).catch(() => undefined);
     }
 
     startTransition(() => {
