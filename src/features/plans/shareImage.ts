@@ -17,6 +17,14 @@ export interface ShareImageStop {
   /** Already formatted — "09:00 – 10:30", or empty when the stop has no time. */
   time: string;
   name: string;
+  /**
+   * The street address, with whatever administrative tail applies.
+   *
+   * Wrapped rather than truncated: this is the line somebody types into a maps
+   * app or reads out to a driver, and half an address is worse than none —
+   * it looks complete and is not.
+   */
+  address: string;
   /** Category and area, on one line. */
   meta: string;
 }
@@ -104,9 +112,16 @@ export async function renderPlanImage(input: ShareImageInput): Promise<Blob> {
   const rows = input.stops.map((stop) => {
     measure.font = `600 40px ${family}`;
     const nameLines = wrap(measure, stop.name, nameWidth);
-    // Name lines, then the meta line, then the gap to the next row.
-    const height = nameLines.length * 52 + (stop.meta ? 40 : 0) + 36;
-    return { ...stop, nameLines, height };
+
+    // Measured at its own size. Wrapping at the name's font would break the
+    // address in the wrong places — wider glyphs, fewer words per line.
+    measure.font = `400 32px ${family}`;
+    const addressLines = stop.address ? wrap(measure, stop.address, nameWidth) : [];
+
+    const height =
+      nameLines.length * 52 + addressLines.length * 40 + (stop.meta ? 38 : 0) + 36;
+
+    return { ...stop, nameLines, addressLines, height };
   });
 
   const headerHeight = 96 + 52 + 48;
@@ -160,14 +175,21 @@ export async function renderPlanImage(input: ShareImageInput): Promise<Blob> {
       context.fillText(line, PADDING + TIME_COLUMN, rowTop + index * 52);
     });
 
+    let lineY = rowTop + row.nameLines.length * 52;
+
+    // Darker than the category line below it. The address is the part of this
+    // image somebody actually acts on, so it outranks the label.
+    context.fillStyle = COLOURS.muted;
+    context.font = `400 32px ${family}`;
+    row.addressLines.forEach((line, index) => {
+      context.fillText(line, PADDING + TIME_COLUMN, lineY + 6 + index * 40);
+    });
+    lineY += row.addressLines.length * 40;
+
     if (row.meta) {
       context.fillStyle = COLOURS.subtle;
       context.font = `400 30px ${family}`;
-      context.fillText(
-        row.meta,
-        PADDING + TIME_COLUMN,
-        rowTop + row.nameLines.length * 52 + 4,
-      );
+      context.fillText(row.meta, PADDING + TIME_COLUMN, lineY + 8);
     }
 
     y += row.height;

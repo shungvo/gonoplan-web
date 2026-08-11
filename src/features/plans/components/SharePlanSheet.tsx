@@ -6,6 +6,7 @@ import { Download, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { categoryName } from '@/features/categories/name';
+import { fullAddress } from '@/features/places/address';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { formatDate } from '@/i18n/format';
 import { formatTimeOfDay } from '../time';
@@ -61,7 +62,16 @@ function ShareBody({ plan }: { plan: PlanDetail }) {
                   ? formatTimeOfDay(stop.startsAtMin, locale)
                   : `${formatTimeOfDay(stop.startsAtMin, locale)} – ${formatTimeOfDay(stop.endsAtMin, locale)}`,
             name: stop.place.name,
-            meta: `${categoryName(stop.place.category, locale)} · ${stop.place.district ?? stop.place.province}`,
+            /*
+             * The full address, not just the area.
+             *
+             * A shared day is read by somebody who is not holding the app —
+             * "Hải Châu" tells them a district, and they still have to look
+             * every stop up. The street line is what makes the picture usable
+             * on its own.
+             */
+            address: fullAddress(stop.place),
+            meta: categoryName(stop.place.category, locale),
           })),
           footer: 'Gonoplan',
         });
