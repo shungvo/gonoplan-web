@@ -4,13 +4,7 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import {
-  ClipboardList,
-  FileClock,
-  LayoutDashboard,
-  Store,
-  Users,
-} from 'lucide-react';
+import { ClipboardList, FileClock, LayoutDashboard, Store, Tags, Users } from 'lucide-react';
 
 import { useSessionStore } from '@/features/auth/store';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -35,6 +29,11 @@ const NAV: NavItem[] = [
     queue: 'moderation',
   },
   { href: '/admin/content', label: 'Content', icon: <Store className="size-4" aria-hidden /> },
+  {
+    href: '/admin/taxonomy',
+    label: 'Taxonomy',
+    icon: <Tags className="size-4" aria-hidden />,
+  },
   { href: '/admin/users', label: 'Users', icon: <Users className="size-4" aria-hidden /> },
   { href: '/admin/audit', label: 'Audit log', icon: <FileClock className="size-4" aria-hidden /> },
 ];
@@ -68,7 +67,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   if (isInitializing) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-background">
+      <div className="bg-background flex min-h-dvh items-center justify-center">
         <div className="bg-surface h-24 w-64 animate-pulse rounded-lg shadow-sm" />
       </div>
     );
@@ -81,7 +80,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
    */
   if (user?.role !== 'ADMIN') {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-background px-6">
+      <div className="bg-background flex min-h-dvh items-center justify-center px-6">
         <div className="max-w-sm">
           <EmptyState
             icon={<LayoutDashboard className="size-7" aria-hidden />}
@@ -107,7 +106,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-dvh bg-background">
+    <div className="bg-background flex min-h-dvh">
       <aside className="border-border bg-surface sticky top-0 hidden h-dvh w-60 shrink-0 border-r px-4 py-6 md:block">
         <Link href="/" className="text-ink px-2 text-lg font-semibold tracking-tight">
           Gonoplan
@@ -127,7 +126,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 aria-current={active ? 'page' : undefined}
                 className={cn(
                   'flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                  active ? 'bg-primary-tint text-primary' : 'text-ink-muted hover:bg-surface-sunken',
+                  active
+                    ? 'bg-primary-tint text-primary'
+                    : 'text-ink-muted hover:bg-surface-sunken',
                 )}
               >
                 {item.icon}

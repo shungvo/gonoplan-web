@@ -9,7 +9,16 @@ import { Chip } from '@/components/ui/Chip';
 import { useSessionStore } from '@/features/auth/store';
 import { Card, PageHeader, QueueEmpty, RowSkeleton, StatusBadge, TimeAgo } from './primitives';
 import { ReasonDialog } from './ReasonDialog';
-import { banUser, fetchUser, fetchUsers, unbanUser, type AdminUser, type UserStatus } from '../api';
+import {
+  banUser,
+  deleteUser,
+  fetchUser,
+  fetchUsers,
+  setUserRole,
+  unbanUser,
+  type AdminUser,
+  type UserStatus,
+} from '../api';
 
 const FILTERS: Array<{ label: string; value: UserStatus | undefined }> = [
   { label: 'All', value: undefined },
@@ -26,6 +35,7 @@ export function UsersScreen() {
   const [submitted, setSubmitted] = useState('');
   const [status, setStatus] = useState<UserStatus | undefined>(undefined);
   const [banTarget, setBanTarget] = useState<AdminUser | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<AdminUser | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const users = useQuery({
@@ -44,6 +54,35 @@ export function UsersScreen() {
     onSuccess: async () => {
       setBanTarget(null);
       await queryClient.invalidateQueries({ queryKey: ['admin'] });
+    },
+  });
+
+  /**
+   * The reviewer badge.
+   *
+   * Not a permission — every signed-in user may already submit a place. It
+   * marks a track record so the moderation queue can be sorted by it.
+   */
+  const changeRole = useMutation({
+    mutationFn: ({ user, next }: { user: AdminUser; next: 'USER' | 'REVIEWER' }) =>
+      setUserRole(
+        user.id,
+        next,
+        next === 'REVIEWER' ? 'Consistent, accurate contributions' : 'Reviewer badge removed',
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'users'] }),
+  });
+
+  /**
+   * Soft delete. The endpoint has existed since Phase 11 with nothing calling
+   * it, so the only way to remove an account was through the database.
+   */
+  const remove = useMutation({
+    mutationFn: ({ userId, reason }: { userId: string; reason: string }) =>
+      deleteUser(userId, reason),
+    onSuccess: async () => {
+      setDeleteTarget(null);
+      await queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
     },
   });
 
@@ -148,8 +187,10 @@ export function UsersScreen() {
                   {/* Both refusals are enforced by the server; hiding the
                       buttons is so a moderator is never offered an action that
                       is going to fail. */}
-                  {!isSelf && !isAdmin && user.status !== 'DELETED' && (
-                    user.status === 'BANNED' ? (
+                  {!isSelf &&
+                    !isAdmin &&
+                    user.status !== 'DELETED' &&
+                    (user.status === 'BANNED' ? (
                       <Button
                         size="sm"
                         variant="secondary"
@@ -170,7 +211,38 @@ export function UsersScreen() {
                       >
                         Ban
                       </Button>
-                    )
+                    ))}
+
+                  {/* Only USER and REVIEWER are interchangeable here. Owners
+                      come from verification and admins are not grantable from
+                      this screen, so neither is offered a toggle that would
+                      400. */}
+                  {!isSelf && (user.role === 'USER' || user.role === 'REVIEWER') && (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      isLoading={changeRole.isPending}
+                      onClick={() => {
+                        changeRole.mutate({
+                          user,
+                          next: user.role === 'REVIEWER' ? 'USER' : 'REVIEWER',
+                        });
+                      }}
+                    >
+                      {user.role === 'REVIEWER' ? 'Remove badge' : 'Make reviewer'}
+                    </Button>
+                  )}
+
+                  {!isSelf && !isAdmin && user.status !== 'DELETED' && (
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      onClick={() => {
+                        setDeleteTarget(user);
+                      }}
+                    >
+                      Delete
+                    </Button>
                   )}
                 </div>
               </div>
@@ -241,6 +313,21 @@ export function UsersScreen() {
           );
         })}
       </div>
+
+      <ReasonDialog
+        open={deleteTarget !== null}
+        title={`Delete ${deleteTarget?.name ?? ''}`}
+        description="The account is soft-deleted: their reviews and submissions stay, attributed to a removed user, so nothing they contributed disappears from other people's screens."
+        confirmLabel="Delete account"
+        destructive
+        isPending={remove.isPending}
+        onConfirm={(reason) => {
+          if (deleteTarget) remove.mutate({ userId: deleteTarget.id, reason });
+        }}
+        onClose={() => {
+          setDeleteTarget(null);
+        }}
+      />
 
       <ReasonDialog
         open={banTarget !== null}

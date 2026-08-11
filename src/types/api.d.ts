@@ -6620,6 +6620,587 @@ export interface paths {
         };
         trace?: never;
     };
+    "/admin/search-insights": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * What people looked for, and what they did not find
+         * @description `unmet` is the point: queries that returned nothing every time in the window. `search_history` has recorded result counts since Phase 7 and nothing ever read the failures — `/places/search/popular` filters to `result_count > 0` — so the signal the schema calls "the most direct signal of which places are worth seeding next" went into the table and stopped there.
+         *
+         *     A query counts as unmet only if it *never* returned anything in the window: one lucky hit means the gap is already filled.
+         *
+         *     Grouped on the normalised query, so "Cà Phê" and "ca phe" are one row, and labelled with the most recent spelling so it reads back with its diacritics. `totals.unmetShare` is how often search fails outright — the single number worth watching.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    days?: number;
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Unmet demand, popular queries, and the totals behind both */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @description Queries that returned nothing — what to seed next */
+                                unmet: {
+                                    /** @description The most recent spelling, so diacritics read back properly */
+                                    query: string;
+                                    searches: number;
+                                    lastSearchedAt: string;
+                                }[];
+                                /** @description Queries that found something */
+                                popular: {
+                                    /** @description The most recent spelling, so diacritics read back properly */
+                                    query: string;
+                                    searches: number;
+                                    lastSearchedAt: string;
+                                }[];
+                                totals: {
+                                    searches: number;
+                                    unmetSearches: number;
+                                    /** @description 0..1 — how often search fails outright */
+                                    unmetShare: number;
+                                };
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/places/{id}/images/{imageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Take down one photo
+         * @description Removes a single photo from a listing. Only reachable since uploads shipped — before that a place had no user-supplied images, and taking one down would have meant deleting the whole listing.
+         *
+         *     The object is deleted from storage too. Leaving it would keep an image a moderator just removed publicly readable at a URL still sitting in somebody's history: the row is what the app shows, the object is what the internet can still fetch. A storage failure is logged and does not block the removal — the row disappearing is what was asked for, and an orphan is a cleanup job's problem.
+         *
+         *     If the removed photo was the cover, the next one is promoted. Otherwise the place points at a cover that no longer exists and every card silently falls back to the category glyph.
+         *
+         *     Addressed by both ids, so a stray image id cannot delete a photo from a different listing.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    imageId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        reason: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description The photo is gone */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                removed: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description No such photo on that place */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Every category, retired ones included
+         * @description The taxonomy the whole app is organised by — every chip, every marker colour, every filter. It was read-only until now: `GET /categories` and nothing else, so adding a category meant editing the seed and redeploying.
+         *
+         *     The tree is two levels by design (§11): a third has no UI to render it and no query that knows what filtering on a middle node means. The public tree is cached in-process for five minutes and every write here drops that cache, or an admin renames something, reloads, sees the old name and concludes the save failed.
+         *
+         *     Unlike the public tree this shows inactive categories — a retired one is exactly what an admin came to look at — and counts places using it as a *sub*category as well, because that is what decides whether it can be removed at all.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The full tree, flat, with usage counts */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                slug: string;
+                                name: string;
+                                nameVi: string;
+                                /** @description Sprite key for the marker and chip icon */
+                                iconKey: string;
+                                colorHex: string;
+                                /** @description Approved, non-deleted places in this category */
+                                placeCount: number;
+                                /** Format: uuid */
+                                parentId: string | null;
+                                sortOrder: number;
+                                isActive: boolean;
+                                subcategoryPlaceCount: number;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Add a category
+         * @description The taxonomy the whole app is organised by — every chip, every marker colour, every filter. It was read-only until now: `GET /categories` and nothing else, so adding a category meant editing the seed and redeploying.
+         *
+         *     The tree is two levels by design (§11): a third has no UI to render it and no query that knows what filtering on a middle node means. The public tree is cached in-process for five minutes and every write here drops that cache, or an admin renames something, reloads, sees the old name and concludes the save failed.
+         *
+         *     The slug appears in `?category=` in shareable URLs, so it is restricted to lowercase letters, numbers and hyphens — a URL nobody can type is a URL nobody shares. Uniqueness is enforced by the index rather than a pre-flight check, which races: two admins adding "bakery" at once would both pass it.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        slug: string;
+                        name: string;
+                        nameVi: string;
+                        iconKey: string;
+                        colorHex: string;
+                        /** Format: uuid */
+                        parentId?: string;
+                        /** @default 0 */
+                        sortOrder?: number | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description The new category */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id?: string;
+                                slug?: string;
+                                name?: string;
+                                nameVi?: string;
+                                /** @description Sprite key for the marker and chip icon */
+                                iconKey?: string;
+                                colorHex?: string;
+                                /** @description Approved, non-deleted places in this category */
+                                placeCount?: number;
+                                /** Format: uuid */
+                                parentId?: string | null;
+                                sortOrder?: number;
+                                isActive?: boolean;
+                                subcategoryPlaceCount?: number;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description That slug is taken */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/categories/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove an unused category
+         * @description The taxonomy the whole app is organised by — every chip, every marker colour, every filter. It was read-only until now: `GET /categories` and nothing else, so adding a category meant editing the seed and redeploying.
+         *
+         *     The tree is two levels by design (§11): a third has no UI to render it and no query that knows what filtering on a middle node means. The public tree is cached in-process for five minutes and every write here drops that cache, or an admin renames something, reloads, sees the old name and concludes the save failed.
+         *
+         *     Only a category nothing points at. `onDelete: Restrict` would refuse anyway; this turns that into an answer a moderator can act on, and names the alternative — retire it, and the places keep their label.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Removed */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                deleted: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Places or subcategories still use it */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Rename, recolour, reorder or retire
+         * @description The taxonomy the whole app is organised by — every chip, every marker colour, every filter. It was read-only until now: `GET /categories` and nothing else, so adding a category meant editing the seed and redeploying.
+         *
+         *     The tree is two levels by design (§11): a third has no UI to render it and no query that knows what filtering on a middle node means. The public tree is cached in-process for five minutes and every write here drops that cache, or an admin renames something, reloads, sees the old name and concludes the save failed.
+         *
+         *     The slug cannot be changed: every link anyone has shared with `?category=cafe` in it would break.
+         *
+         *     `isActive: false` retires a category — it leaves the picker while every listing keeps the label it was filed under. That is the move for a category with places, since deleting one is refused.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        name?: string;
+                        nameVi?: string;
+                        iconKey?: string;
+                        colorHex?: string;
+                        /** Format: uuid */
+                        parentId?: string;
+                        /** @default 0 */
+                        sortOrder?: number | null;
+                        isActive?: boolean;
+                    };
+                };
+            };
+            responses: {
+                /** @description The updated category */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id?: string;
+                                slug?: string;
+                                name?: string;
+                                nameVi?: string;
+                                /** @description Sprite key for the marker and chip icon */
+                                iconKey?: string;
+                                colorHex?: string;
+                                /** @description Approved, non-deleted places in this category */
+                                placeCount?: number;
+                                /** Format: uuid */
+                                parentId?: string | null;
+                                sortOrder?: number;
+                                isActive?: boolean;
+                                subcategoryPlaceCount?: number;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -7431,6 +8012,45 @@ export interface components {
                 saves: number;
                 averageRating: number;
             }[];
+        };
+        SearchInsights: {
+            /** @description Queries that returned nothing — what to seed next */
+            unmet: {
+                /** @description The most recent spelling, so diacritics read back properly */
+                query: string;
+                searches: number;
+                lastSearchedAt: string;
+            }[];
+            /** @description Queries that found something */
+            popular: {
+                /** @description The most recent spelling, so diacritics read back properly */
+                query: string;
+                searches: number;
+                lastSearchedAt: string;
+            }[];
+            totals: {
+                searches: number;
+                unmetSearches: number;
+                /** @description 0..1 — how often search fails outright */
+                unmetShare: number;
+            };
+        };
+        AdminCategory: {
+            /** Format: uuid */
+            id: string;
+            slug: string;
+            name: string;
+            nameVi: string;
+            /** @description Sprite key for the marker and chip icon */
+            iconKey: string;
+            colorHex: string;
+            /** @description Approved, non-deleted places in this category */
+            placeCount: number;
+            /** Format: uuid */
+            parentId: string | null;
+            sortOrder: number;
+            isActive: boolean;
+            subcategoryPlaceCount: number;
         };
         HealthReport: {
             /** @enum {string} */

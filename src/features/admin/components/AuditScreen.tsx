@@ -69,9 +69,7 @@ export function AuditScreen() {
                     </span>
                   )}
                 </p>
-                {entry.reason && (
-                  <p className="text-ink-muted mt-0.5 text-sm">“{entry.reason}”</p>
-                )}
+                {entry.reason && <p className="text-ink-muted mt-0.5 text-sm">“{entry.reason}”</p>}
               </div>
 
               <TimeAgo iso={entry.createdAt} />

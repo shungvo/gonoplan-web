@@ -17,6 +17,8 @@ export type PendingPlace = components['schemas']['PendingPlace'];
 export type PendingRevision = components['schemas']['PendingRevision'];
 export type PendingOwner = components['schemas']['PendingOwner'];
 export type AuditEntry = components['schemas']['AuditEntry'];
+export type SearchInsights = components['schemas']['SearchInsights'];
+export type AdminCategory = components['schemas']['AdminCategory'];
 
 export type UserStatus = AdminUser['status'];
 export type ReportStatus = AdminReport['status'];
@@ -171,4 +173,72 @@ export function fetchAuditLog(targetId?: string): Promise<AuditEntry[]> {
   return api.get<AuditEntry[]>('/admin/actions', {
     query: { limit: 100, ...(targetId ? { targetId } : {}) },
   });
+}
+
+// ─── Categories ─────────────────────────────────────────────────────────────
+
+export function fetchAdminCategories(): Promise<AdminCategory[]> {
+  return api.get<AdminCategory[]>('/admin/categories');
+}
+
+export interface CategoryInput {
+  slug: string;
+  name: string;
+  nameVi: string;
+  iconKey: string;
+  colorHex: string;
+  parentId?: string;
+  sortOrder?: number;
+}
+
+export function createCategory(input: CategoryInput): Promise<AdminCategory> {
+  return api.post<AdminCategory>('/admin/categories', input);
+}
+
+export function updateCategory(
+  id: string,
+  input: Partial<Omit<CategoryInput, 'slug'>> & { isActive?: boolean },
+): Promise<AdminCategory> {
+  return api.patch<AdminCategory>(`/admin/categories/${id}`, input);
+}
+
+export function deleteCategory(id: string): Promise<unknown> {
+  return api.delete(`/admin/categories/${id}`);
+}
+
+// ─── Search insights ────────────────────────────────────────────────────────
+
+export function fetchSearchInsights(days = 30): Promise<SearchInsights> {
+  return api.get<SearchInsights>('/admin/search-insights', { query: { days } });
+}
+
+// ─── Users ──────────────────────────────────────────────────────────────────
+
+/**
+ * Grant or revoke the reviewer badge.
+ *
+ * Not a permission — every signed-in user may already submit a place. It marks
+ * a track record so the moderation queue can be sorted by it.
+ */
+export function setUserRole(
+  userId: string,
+  role: 'USER' | 'REVIEWER',
+  reason: string,
+): Promise<unknown> {
+  return api.patch(`/admin/users/${userId}/role`, { role, reason });
+}
+
+/** Soft delete. The API has had this since Phase 11 with nothing calling it. */
+export function deleteUser(userId: string, reason: string): Promise<unknown> {
+  return api.delete(`/admin/users/${userId}`, { body: { reason } });
+}
+
+// ─── Place photos ───────────────────────────────────────────────────────────
+
+export function removePlaceImage(
+  placeId: string,
+  imageId: string,
+  reason: string,
+): Promise<unknown> {
+  return api.delete(`/admin/places/${placeId}/images/${imageId}`, { body: { reason } });
 }

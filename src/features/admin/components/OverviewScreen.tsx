@@ -26,10 +26,7 @@ export function OverviewScreen() {
 
   return (
     <>
-      <PageHeader
-        title="Overview"
-        description="Queue depths first — everything else is context."
-      />
+      <PageHeader title="Overview" description="Queue depths first — everything else is context." />
 
       {overview.isPending && <RowSkeleton rows={2} />}
 
@@ -62,11 +59,7 @@ export function OverviewScreen() {
 
           <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
             <Stat label="Users" value={totals.users} hint={`+${totals.newUsers} in 7 days`} />
-            <Stat
-              label="Active users"
-              value={totals.activeUsers}
-              hint="signed in this week"
-            />
+            <Stat label="Active users" value={totals.activeUsers} hint="signed in this week" />
             <Stat
               label="Published places"
               value={totals.publishedPlaces}
@@ -105,9 +98,7 @@ export function OverviewScreen() {
           <p className="text-ink-subtle mt-0.5 text-xs">By views over the last {days} days</p>
 
           {analytics.data?.topPlaces.length === 0 && (
-            <p className="text-ink-muted mt-4 text-sm">
-              No recorded views in this window yet.
-            </p>
+            <p className="text-ink-muted mt-4 text-sm">No recorded views in this window yet.</p>
           )}
 
           <ol className="mt-4 space-y-2.5">
@@ -180,7 +171,12 @@ function QueueCard({ label, value, href }: { label: string; value: number; href:
       </p>
       <p className="text-ink-subtle mt-1.5 flex items-center gap-1 text-xs">
         {waiting ? 'Review now' : 'Nothing waiting'}
-        {waiting && <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" aria-hidden />}
+        {waiting && (
+          <ArrowRight
+            className="size-3 transition-transform group-hover:translate-x-0.5"
+            aria-hidden
+          />
+        )}
       </p>
     </Link>
   );

@@ -3399,6 +3399,142 @@
           "topPlaces"
         ]
       },
+      "SearchInsights": {
+        "type": "object",
+        "properties": {
+          "unmet": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "The most recent spelling, so diacritics read back properly"
+                },
+                "searches": {
+                  "type": "integer"
+                },
+                "lastSearchedAt": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "query",
+                "searches",
+                "lastSearchedAt"
+              ]
+            },
+            "description": "Queries that returned nothing — what to seed next"
+          },
+          "popular": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "The most recent spelling, so diacritics read back properly"
+                },
+                "searches": {
+                  "type": "integer"
+                },
+                "lastSearchedAt": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "query",
+                "searches",
+                "lastSearchedAt"
+              ]
+            },
+            "description": "Queries that found something"
+          },
+          "totals": {
+            "type": "object",
+            "properties": {
+              "searches": {
+                "type": "integer"
+              },
+              "unmetSearches": {
+                "type": "integer"
+              },
+              "unmetShare": {
+                "type": "number",
+                "description": "0..1 — how often search fails outright"
+              }
+            },
+            "required": [
+              "searches",
+              "unmetSearches",
+              "unmetShare"
+            ]
+          }
+        },
+        "required": [
+          "unmet",
+          "popular",
+          "totals"
+        ]
+      },
+      "AdminCategory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "nameVi": {
+            "type": "string"
+          },
+          "iconKey": {
+            "type": "string",
+            "description": "Sprite key for the marker and chip icon"
+          },
+          "colorHex": {
+            "type": "string"
+          },
+          "placeCount": {
+            "type": "integer",
+            "description": "Approved, non-deleted places in this category"
+          },
+          "parentId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "sortOrder": {
+            "type": "integer"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "subcategoryPlaceCount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "nameVi",
+          "iconKey",
+          "colorHex",
+          "placeCount",
+          "parentId",
+          "sortOrder",
+          "isActive",
+          "subcategoryPlaceCount"
+        ]
+      },
       "HealthReport": {
         "type": "object",
         "properties": {
@@ -16396,6 +16532,970 @@
           },
           "404": {
             "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/search-insights": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "What people looked for, and what they did not find",
+        "description": "`unmet` is the point: queries that returned nothing every time in the window. `search_history` has recorded result counts since Phase 7 and nothing ever read the failures — `/places/search/popular` filters to `result_count > 0` — so the signal the schema calls \"the most direct signal of which places are worth seeding next\" went into the table and stopped there.\n\nA query counts as unmet only if it *never* returned anything in the window: one lucky hit means the gap is already filled.\n\nGrouped on the normalised query, so \"Cà Phê\" and \"ca phe\" are one row, and labelled with the most recent spelling so it reads back with its diacritics. `totals.unmetShare` is how often search fails outright — the single number worth watching.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 90,
+              "default": 30
+            },
+            "required": false,
+            "name": "days",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unmet demand, popular queries, and the totals behind both",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "unmet": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "query": {
+                                "type": "string",
+                                "description": "The most recent spelling, so diacritics read back properly"
+                              },
+                              "searches": {
+                                "type": "integer"
+                              },
+                              "lastSearchedAt": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "query",
+                              "searches",
+                              "lastSearchedAt"
+                            ]
+                          },
+                          "description": "Queries that returned nothing — what to seed next"
+                        },
+                        "popular": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "query": {
+                                "type": "string",
+                                "description": "The most recent spelling, so diacritics read back properly"
+                              },
+                              "searches": {
+                                "type": "integer"
+                              },
+                              "lastSearchedAt": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "query",
+                              "searches",
+                              "lastSearchedAt"
+                            ]
+                          },
+                          "description": "Queries that found something"
+                        },
+                        "totals": {
+                          "type": "object",
+                          "properties": {
+                            "searches": {
+                              "type": "integer"
+                            },
+                            "unmetSearches": {
+                              "type": "integer"
+                            },
+                            "unmetShare": {
+                              "type": "number",
+                              "description": "0..1 — how often search fails outright"
+                            }
+                          },
+                          "required": [
+                            "searches",
+                            "unmetSearches",
+                            "unmetShare"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "unmet",
+                        "popular",
+                        "totals"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/places/{id}/images/{imageId}": {
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Take down one photo",
+        "description": "Removes a single photo from a listing. Only reachable since uploads shipped — before that a place had no user-supplied images, and taking one down would have meant deleting the whole listing.\n\nThe object is deleted from storage too. Leaving it would keep an image a moderator just removed publicly readable at a URL still sitting in somebody's history: the row is what the app shows, the object is what the internet can still fetch. A storage failure is logged and does not block the removal — the row disappearing is what was asked for, and an orphan is a cleanup job's problem.\n\nIf the removed photo was the cover, the next one is promoted. Otherwise the place points at a cover that no longer exists and every card silently falls back to the category glyph.\n\nAddressed by both ids, so a stray image id cannot delete a photo from a different listing.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "imageId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 4,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "reason"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The photo is gone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "removed": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "removed"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such photo on that place",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/categories": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Every category, retired ones included",
+        "description": "The taxonomy the whole app is organised by — every chip, every marker colour, every filter. It was read-only until now: `GET /categories` and nothing else, so adding a category meant editing the seed and redeploying.\n\nThe tree is two levels by design (§11): a third has no UI to render it and no query that knows what filtering on a middle node means. The public tree is cached in-process for five minutes and every write here drops that cache, or an admin renames something, reloads, sees the old name and concludes the save failed.\n\nUnlike the public tree this shows inactive categories — a retired one is exactly what an admin came to look at — and counts places using it as a *sub*category as well, because that is what decides whether it can be removed at all.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The full tree, flat, with usage counts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "nameVi": {
+                            "type": "string"
+                          },
+                          "iconKey": {
+                            "type": "string",
+                            "description": "Sprite key for the marker and chip icon"
+                          },
+                          "colorHex": {
+                            "type": "string"
+                          },
+                          "placeCount": {
+                            "type": "integer",
+                            "description": "Approved, non-deleted places in this category"
+                          },
+                          "parentId": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "uuid"
+                          },
+                          "sortOrder": {
+                            "type": "integer"
+                          },
+                          "isActive": {
+                            "type": "boolean"
+                          },
+                          "subcategoryPlaceCount": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "slug",
+                          "name",
+                          "nameVi",
+                          "iconKey",
+                          "colorHex",
+                          "placeCount",
+                          "parentId",
+                          "sortOrder",
+                          "isActive",
+                          "subcategoryPlaceCount"
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Add a category",
+        "description": "The taxonomy the whole app is organised by — every chip, every marker colour, every filter. It was read-only until now: `GET /categories` and nothing else, so adding a category meant editing the seed and redeploying.\n\nThe tree is two levels by design (§11): a third has no UI to render it and no query that knows what filtering on a middle node means. The public tree is cached in-process for five minutes and every write here drops that cache, or an admin renames something, reloads, sees the old name and concludes the save failed.\n\nThe slug appears in `?category=` in shareable URLs, so it is restricted to lowercase letters, numbers and hyphens — a URL nobody can type is a URL nobody shares. Uniqueness is enforced by the index rather than a pre-flight check, which races: two admins adding \"bakery\" at once would both pass it.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "slug": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 40,
+                    "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 60
+                  },
+                  "nameVi": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 60
+                  },
+                  "iconKey": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "colorHex": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}$"
+                  },
+                  "parentId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "sortOrder": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "maximum": 999,
+                    "default": 0
+                  }
+                },
+                "required": [
+                  "slug",
+                  "name",
+                  "nameVi",
+                  "iconKey",
+                  "colorHex"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The new category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "nameVi": {
+                          "type": "string"
+                        },
+                        "iconKey": {
+                          "type": "string",
+                          "description": "Sprite key for the marker and chip icon"
+                        },
+                        "colorHex": {
+                          "type": "string"
+                        },
+                        "placeCount": {
+                          "type": "integer",
+                          "description": "Approved, non-deleted places in this category"
+                        },
+                        "parentId": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "uuid"
+                        },
+                        "sortOrder": {
+                          "type": "integer"
+                        },
+                        "isActive": {
+                          "type": "boolean"
+                        },
+                        "subcategoryPlaceCount": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "That slug is taken",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/categories/{id}": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Rename, recolour, reorder or retire",
+        "description": "The taxonomy the whole app is organised by — every chip, every marker colour, every filter. It was read-only until now: `GET /categories` and nothing else, so adding a category meant editing the seed and redeploying.\n\nThe tree is two levels by design (§11): a third has no UI to render it and no query that knows what filtering on a middle node means. The public tree is cached in-process for five minutes and every write here drops that cache, or an admin renames something, reloads, sees the old name and concludes the save failed.\n\nThe slug cannot be changed: every link anyone has shared with `?category=cafe` in it would break.\n\n`isActive: false` retires a category — it leaves the picker while every listing keeps the label it was filed under. That is the move for a category with places, since deleting one is refused.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 60
+                  },
+                  "nameVi": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 60
+                  },
+                  "iconKey": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "colorHex": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}$"
+                  },
+                  "parentId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "sortOrder": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "maximum": 999,
+                    "default": 0
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "nameVi": {
+                          "type": "string"
+                        },
+                        "iconKey": {
+                          "type": "string",
+                          "description": "Sprite key for the marker and chip icon"
+                        },
+                        "colorHex": {
+                          "type": "string"
+                        },
+                        "placeCount": {
+                          "type": "integer",
+                          "description": "Approved, non-deleted places in this category"
+                        },
+                        "parentId": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "uuid"
+                        },
+                        "sortOrder": {
+                          "type": "integer"
+                        },
+                        "isActive": {
+                          "type": "boolean"
+                        },
+                        "subcategoryPlaceCount": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Remove an unused category",
+        "description": "The taxonomy the whole app is organised by — every chip, every marker colour, every filter. It was read-only until now: `GET /categories` and nothing else, so adding a category meant editing the seed and redeploying.\n\nThe tree is two levels by design (§11): a third has no UI to render it and no query that knows what filtering on a middle node means. The public tree is cached in-process for five minutes and every write here drops that cache, or an admin renames something, reloads, sees the old name and concludes the save failed.\n\nOnly a category nothing points at. `onDelete: Restrict` would refuse anyway; this turns that into an answer a moderator can act on, and names the alternative — retire it, and the places keep their label.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deleted": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "deleted"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Places or subcategories still use it",
             "content": {
               "application/json": {
                 "schema": {

@@ -73,7 +73,7 @@ export function ReasonDialog({
       onClick={(event) => {
         if (event.target === ref.current) onClose();
       }}
-      className="bg-surface m-auto w-[min(32rem,calc(100vw-2rem))] rounded-lg p-0 shadow-xl backdrop:bg-ink/40 backdrop:backdrop-blur-[2px]"
+      className="bg-surface backdrop:bg-ink/40 m-auto w-[min(32rem,calc(100vw-2rem))] rounded-lg p-0 shadow-xl backdrop:backdrop-blur-[2px]"
     >
       <form
         method="dialog"
