@@ -38,7 +38,9 @@ export function useDirections(
 
 /** "12 min" / "12 phút" — the number people actually compare. */
 export function formatDuration(seconds: number, locale: Locale): string {
-  const minutes = Math.round(seconds / 60);
+  // Floored at one. A forty-metre hop rounds to zero, and "0 phút" next to a
+  // real distance reads as a broken number rather than as "no time at all".
+  const minutes = Math.max(1, Math.round(seconds / 60));
   if (minutes < 60) return formatUnit(minutes, 'minute', locale);
 
   const hours = Math.floor(minutes / 60);

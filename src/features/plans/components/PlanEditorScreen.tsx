@@ -6,6 +6,7 @@ import Link from 'next/link';
 import {
   ArrowLeft,
   CalendarDays,
+  Check,
   ChevronDown,
   ChevronUp,
   Clock,
@@ -72,7 +73,7 @@ export function PlanEditorScreen({ planId }: { planId: string }) {
 
   if (plan.isPending) {
     return (
-      <div className="px-safe px-5 pt-safe">
+      <div className="px-safe pt-safe px-5">
         <div className="bg-surface-sunken mt-6 h-8 w-2/3 animate-pulse rounded" />
         <div className="mt-6 space-y-3">
           {Array.from({ length: 3 }, (_, index) => (
@@ -85,7 +86,7 @@ export function PlanEditorScreen({ planId }: { planId: string }) {
 
   if (plan.error != null || !plan.data) {
     return (
-      <div className="px-safe px-5 pt-safe">
+      <div className="px-safe pt-safe px-5">
         <EmptyState
           className="pt-20"
           title={describeError(plan.error)}
@@ -273,80 +274,45 @@ function StopCard({
   };
 
   return (
-    <div className="bg-surface flex gap-3 rounded-lg p-3 shadow-sm">
-      <div className="bg-surface-sunken relative size-14 shrink-0 overflow-hidden rounded-md">
-        <PlaceImage
-          url={stop.place.coverImageUrl}
-          blurhash={stop.place.coverBlurhash}
-          name={stop.place.name}
-          categorySlug={stop.place.category.slug}
-          categoryColor={stop.place.category.colorHex}
-          sizes="56px"
-          fallbackSize="sm"
-        />
-      </div>
+    <div className="bg-surface rounded-lg p-3 shadow-sm">
+      <div className="flex gap-3">
+        <div className="bg-surface-sunken relative size-14 shrink-0 overflow-hidden rounded-md">
+          <PlaceImage
+            url={stop.place.coverImageUrl}
+            blurhash={stop.place.coverBlurhash}
+            name={stop.place.name}
+            categorySlug={stop.place.category.slug}
+            categoryColor={stop.place.category.colorHex}
+            sizes="56px"
+            fallbackSize="sm"
+          />
+        </div>
 
-      <div className="min-w-0 flex-1">
-        <Link
-          href={`/place/${stop.place.slug}`}
-          className="text-primary block truncate text-[0.9375rem] font-semibold"
-        >
-          {stop.place.name}
-        </Link>
-        <p className="text-ink-subtle mt-0.5 truncate text-xs">
-          {categoryName(stop.place.category, locale)} ·{' '}
-          {stop.place.district ?? stop.place.province}
-        </p>
-
-        {/* Stated, never hidden. A stop that vanished from a day somebody
-            arranged, with nothing to explain it, is the worse outcome. */}
-        {stop.place.isUnavailable && (
-          <p className="text-danger mt-1 flex items-center gap-1 text-xs">
-            <TriangleAlert className="size-3.5 shrink-0" aria-hidden />
-            {t('plan.unavailable')}
+        <div className="min-w-0 flex-1">
+          <Link
+            href={`/place/${stop.place.slug}`}
+            className="text-primary block truncate text-[0.9375rem] font-semibold"
+          >
+            {stop.place.name}
+          </Link>
+          <p className="text-ink-subtle mt-0.5 truncate text-xs">
+            {categoryName(stop.place.category, locale)} ·{' '}
+            {stop.place.district ?? stop.place.province}
           </p>
-        )}
 
-        {editingTime ? (
-          <div className="mt-2 flex items-center gap-2">
-            <label className="flex items-center gap-1.5 text-xs">
-              <span className="text-ink-subtle">{t('plan.from')}</span>
-              <input
-                type="time"
-                autoFocus
-                value={toTimeInput(stop.startsAtMin)}
-                onChange={(event) => {
-                  setTime('startsAtMin', event.target.value);
-                }}
-                className={fieldClass('h-9 w-[6.5rem] px-2 text-xs')}
-              />
-            </label>
-            <label className="flex items-center gap-1.5 text-xs">
-              <span className="text-ink-subtle">{t('plan.to')}</span>
-              <input
-                type="time"
-                value={toTimeInput(stop.endsAtMin)}
-                onChange={(event) => {
-                  setTime('endsAtMin', event.target.value);
-                }}
-                className={fieldClass('h-9 w-[6.5rem] px-2 text-xs')}
-              />
-            </label>
-            <button
-              type="button"
-              onClick={() => {
-                setEditingTime(false);
-              }}
-              className="text-primary shrink-0 text-xs font-medium"
-            >
-              {t('common.done')}
-            </button>
-          </div>
-        ) : (
+          {/* Stated, never hidden. A stop that vanished from a day somebody
+            arranged, with nothing to explain it, is the worse outcome. */}
+          {stop.place.isUnavailable && (
+            <p className="text-danger mt-1 flex items-center gap-1 text-xs">
+              <TriangleAlert className="size-3.5 shrink-0" aria-hidden />
+              {t('plan.unavailable')}
+            </p>
+          )}
+
           <button
             type="button"
             onClick={() => {
-              setEditingTime(true);
+              setEditingTime((open) => !open);
             }}
             className={cn(
               'mt-1.5 inline-flex items-center gap-1.5 text-xs font-medium',
@@ -364,44 +330,93 @@ function StopCard({
               </span>
             )}
           </button>
-        )}
+        </div>
+
+        <div className="flex shrink-0 flex-col items-center gap-0.5">
+          <button
+            type="button"
+            disabled={isFirst}
+            aria-label={t('plan.moveUp')}
+            onClick={() => {
+              onMove(index, -1);
+            }}
+            className="text-ink-subtle flex size-8 items-center justify-center rounded-full disabled:opacity-30"
+          >
+            <ChevronUp className="size-4" aria-hidden />
+          </button>
+          <button
+            type="button"
+            disabled={isLast}
+            aria-label={t('plan.moveDown')}
+            onClick={() => {
+              onMove(index, 1);
+            }}
+            className="text-ink-subtle flex size-8 items-center justify-center rounded-full disabled:opacity-30"
+          >
+            <ChevronDown className="size-4" aria-hidden />
+          </button>
+          <button
+            type="button"
+            aria-label={t('plan.removeStop')}
+            disabled={removeStop.isPending}
+            onClick={() => {
+              removeStop.mutate(stop.id);
+            }}
+            className="text-ink-subtle hover:text-danger flex size-8 items-center justify-center rounded-full"
+          >
+            <Trash2 className="size-4" aria-hidden />
+          </button>
+        </div>
       </div>
 
-      <div className="flex shrink-0 flex-col items-center gap-0.5">
-        <button
-          type="button"
-          disabled={isFirst}
-          aria-label={t('plan.moveUp')}
-          onClick={() => {
-            onMove(index, -1);
-          }}
-          className="text-ink-subtle flex size-8 items-center justify-center rounded-full disabled:opacity-30"
-        >
-          <ChevronUp className="size-4" aria-hidden />
-        </button>
-        <button
-          type="button"
-          disabled={isLast}
-          aria-label={t('plan.moveDown')}
-          onClick={() => {
-            onMove(index, 1);
-          }}
-          className="text-ink-subtle flex size-8 items-center justify-center rounded-full disabled:opacity-30"
-        >
-          <ChevronDown className="size-4" aria-hidden />
-        </button>
-        <button
-          type="button"
-          aria-label={t('plan.removeStop')}
-          disabled={removeStop.isPending}
-          onClick={() => {
-            removeStop.mutate(stop.id);
-          }}
-          className="text-ink-subtle hover:text-danger flex size-8 items-center justify-center rounded-full"
-        >
-          <Trash2 className="size-4" aria-hidden />
-        </button>
-      </div>
+      {/*
+        The time editor spans the whole card rather than sitting in the middle
+        column beside the thumbnail and the move buttons.
+
+        It used to live there, with two fixed 6.5rem inputs and a "Done"
+        button, inside a column about 220px wide on a 375px phone. Fixed-width
+        flex children cannot shrink, so the second input was clipped by the
+        card edge and Done sat 44px off the right of the screen — reachable by
+        nothing. The inputs are `flex-1 min-w-0` now, which is what lets them
+        give way instead of overflowing.
+      */}
+      {editingTime && (
+        <div className="border-border mt-3 flex items-end gap-2 border-t pt-3">
+          <label className="min-w-0 flex-1">
+            <span className="text-ink-subtle block text-xs">{t('plan.from')}</span>
+            <input
+              type="time"
+              autoFocus
+              value={toTimeInput(stop.startsAtMin)}
+              onChange={(event) => {
+                setTime('startsAtMin', event.target.value);
+              }}
+              className={fieldClass('mt-1 h-10 w-full min-w-0 px-2 text-sm')}
+            />
+          </label>
+          <label className="min-w-0 flex-1">
+            <span className="text-ink-subtle block text-xs">{t('plan.to')}</span>
+            <input
+              type="time"
+              value={toTimeInput(stop.endsAtMin)}
+              onChange={(event) => {
+                setTime('endsAtMin', event.target.value);
+              }}
+              className={fieldClass('mt-1 h-10 w-full min-w-0 px-2 text-sm')}
+            />
+          </label>
+          <button
+            type="button"
+            aria-label={t('common.done')}
+            onClick={() => {
+              setEditingTime(false);
+            }}
+            className="bg-primary-tint text-primary flex size-10 shrink-0 items-center justify-center rounded-md"
+          >
+            <Check className="size-4" aria-hidden />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
