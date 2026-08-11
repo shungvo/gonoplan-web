@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { Search, User } from 'lucide-react';
+import { AuthSheet } from '@/features/auth/components/AuthSheet';
 import { HomeMap } from '@/features/map/components/HomeMap';
 import { LocationChip } from '@/features/location/components/LocationChip';
 import { useLocationStore } from '@/features/location/store';
@@ -93,6 +94,7 @@ export function HomeScreen() {
   const { coordinates, label, source } = useLocationStore();
   const { user } = useSessionStore();
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
+  const [authOpen, setAuthOpen] = useState(false);
 
   const origin = coordinates ?? FALLBACK_ORIGIN;
 
@@ -270,6 +272,9 @@ export function HomeScreen() {
             track(place.id, 'CLICK', 'HOME_FEED');
             setSelectedPlaceId(place.id);
           }}
+          onRequireAuth={() => {
+            setAuthOpen(true);
+          }}
         />
       </section>
 
@@ -314,6 +319,11 @@ export function HomeScreen() {
           setSelectedPlaceId(null);
         }}
       />
+
+      {/* The grid's bookmarks need somewhere to send a signed-out visitor. The
+          sheet carries its own; the grid had nothing, so tapping save while
+          signed out did precisely nothing. */}
+      <AuthSheet open={authOpen} onOpenChange={setAuthOpen} reason={t('detail.signInToSave')} />
     </div>
   );
 }

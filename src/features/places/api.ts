@@ -17,7 +17,9 @@ export interface NearbyParams extends Coordinates {
 
 export function fetchNearbyPlaces(params: NearbyParams): Promise<ApiResult<PlaceCard[]>> {
   return api.getWithMeta<PlaceCard[]>('/places', {
-    withAuth: false,
+    // Carries the session when there is one: the server decides `isSaved` per
+    // viewer, and without the token every card comes back unsaved.
+    withAuth: 'optional',
     query: {
       lat: params.latitude,
       lng: params.longitude,
@@ -50,7 +52,9 @@ export function fetchPlaceDetail(
 
 export function searchPlaces(query: string, origin?: Coordinates | null): Promise<PlaceCard[]> {
   return api.get<PlaceCard[]>('/places/search', {
-    withAuth: false,
+    // Same as the list, plus: the server attaches a signed-in caller's search
+    // to their account, which is what later personalises recommendations.
+    withAuth: 'optional',
     query: {
       q: query,
       ...(origin ? { lat: origin.latitude, lng: origin.longitude } : {}),

@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/query/keys';
 import { useLocationStore } from '@/features/location/store';
 import { useIsAuthenticated } from '@/features/auth/store';
-import type { PlaceDetail } from '@/features/places/api';
+import { applySavedState, restoreCaches } from '../cache';
 import { fetchSavedPlaces, savePlace, unsavePlace } from '../api';
 
 export function useSavedPlaces() {
@@ -24,40 +24,42 @@ export function useSavedPlaces() {
 /**
  * Save toggle, applied optimistically.
  *
- * Saving is a one-tap gesture people fire while scrolling; a filled heart that
+ * Saving is a one-tap gesture people fire while scrolling; a bookmark that
  * waits on a round trip feels broken. The previous cache is restored on
  * failure, so a rejected save visibly snaps back rather than lying about
  * having worked.
+ *
+ * The write goes to every cached copy of the place rather than to one key.
+ * This used to patch `places.detail(placeId)` alone, which meant the home grid
+ * — fed by `recommendations`, and keyed by nothing this touched — never moved
+ * at all: the POST succeeded and the bookmark stayed empty. The full-page
+ * detail route missed too, because it caches under the slug from the URL while
+ * this only knew the id.
  */
 export function useToggleSave(placeId: string) {
   const queryClient = useQueryClient();
-  const detailKey = queryKeys.places.detail(placeId);
 
   return useMutation({
     mutationFn: (save: boolean) => (save ? savePlace(placeId) : unsavePlace(placeId)),
 
     onMutate: async (save) => {
-      await queryClient.cancelQueries({ queryKey: detailKey });
-      const previous = queryClient.getQueryData<PlaceDetail>(detailKey);
+      // An in-flight read would land after the optimistic write and undo it.
+      await queryClient.cancelQueries({ queryKey: queryKeys.places.all });
+      await queryClient.cancelQueries({ queryKey: queryKeys.recommendations.all });
+      await queryClient.cancelQueries({ queryKey: queryKeys.favorites.all });
 
-      queryClient.setQueryData<PlaceDetail>(detailKey, (old) =>
-        old
-          ? { ...old, isSaved: save, saveCount: old.saveCount + (save ? 1 : -1) }
-          : old,
-      );
-
-      return { previous };
+      return { previous: applySavedState(queryClient, placeId, save) };
     },
 
     onError: (_error, _save, context) => {
-      if (context?.previous) queryClient.setQueryData(detailKey, context.previous);
+      if (context) restoreCaches(queryClient, context.previous);
     },
 
     onSettled: () => {
-      void queryClient.invalidateQueries({ queryKey: detailKey });
-      // The Saved tab's contents changed, and every list shows a save count.
+      // The Saved tab's contents changed, and every card shows a save count.
       void queryClient.invalidateQueries({ queryKey: queryKeys.favorites.all });
       void queryClient.invalidateQueries({ queryKey: queryKeys.places.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.recommendations.all });
     },
   });
 }

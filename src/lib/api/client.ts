@@ -31,8 +31,23 @@ export interface RequestOptions extends Omit<RequestInit, 'body' | 'method'> {
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
   body?: unknown;
   query?: Record<string, string | number | boolean | undefined | null>;
-  /** Set false for public endpoints so a failed refresh never blocks a read. */
-  withAuth?: boolean;
+  /**
+   * How this request treats the session.
+   *
+   * `true` (default) — a signed-in caller is required in practice; a failed
+   * refresh surfaces as an error, which is correct for `/plans` or `/auth/me`.
+   *
+   * `false` — never send the token. For endpoints where it would be ignored,
+   * or where sending it is wrong (`/auth/login`).
+   *
+   * `'optional'` — send it when we have one, but never fail the read over it.
+   * This is what public reads that are *personalised* need: `/places` returns
+   * `isSaved` per viewer, so it has to carry the token, and an expired session
+   * must degrade the discovery screen to anonymous results rather than to an
+   * error. These were marked `false`, and the cost was silent: every card came
+   * back unsaved and every search was recorded against no account.
+   */
+  withAuth?: boolean | 'optional';
 }
 
 /* ─── Access token: memory only ─────────────────────────────────────────────
@@ -123,9 +138,11 @@ async function parseError(response: Response): Promise<ApiError> {
 async function execute<T>(path: string, options: RequestOptions, isRetry: boolean): Promise<ApiResult<T>> {
   const { method = 'GET', body, query, withAuth = true, headers, ...rest } = options;
 
+  const sendsToken = withAuth !== false;
+
   const requestHeaders = new Headers(headers);
   if (body !== undefined) requestHeaders.set('Content-Type', 'application/json');
-  if (withAuth && accessToken) requestHeaders.set('Authorization', `Bearer ${accessToken}`);
+  if (sendsToken && accessToken) requestHeaders.set('Authorization', `Bearer ${accessToken}`);
 
   let response: Response;
   try {
@@ -145,9 +162,12 @@ async function execute<T>(path: string, options: RequestOptions, isRetry: boolea
     const error = await parseError(response);
 
     // Refresh once, then replay. `isRetry` stops an expired-refresh loop.
-    if (error.isAuthExpired && withAuth && !isRetry && !isServer) {
+    if (error.isAuthExpired && sendsToken && !isRetry && !isServer) {
       const refreshed = await refreshAccessToken();
-      if (refreshed) return execute<T>(path, options, true);
+      // A failed refresh has already cleared the token, so replaying an
+      // optional-auth read sends nothing and comes back anonymous — which is
+      // the whole point of that mode. Anything else surfaces the 401.
+      if (refreshed || withAuth === 'optional') return execute<T>(path, options, true);
     }
     throw error;
   }
