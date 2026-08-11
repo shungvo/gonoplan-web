@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { ImagePlus, Loader2, X } from 'lucide-react';
 import { ApiError } from '@/lib/api/errors';
+import { useT } from '@/i18n/I18nProvider';
 import { cn } from '@/lib/utils/cn';
 import { ACCEPT_ATTRIBUTE, UploadError, uploadImage, type UploadPurpose } from '../api';
 
@@ -40,6 +41,7 @@ export function PhotoPicker({
   disabled?: boolean;
   className?: string;
 }) {
+  const t = useT();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -73,7 +75,7 @@ export function PhotoPicker({
         setError(
           cause instanceof UploadError || cause instanceof ApiError
             ? cause.message
-            : 'That photo could not be uploaded.',
+            : t('picker.failed'),
         );
       } finally {
         setUploading((count) => count - 1);
@@ -93,7 +95,7 @@ export function PhotoPicker({
           >
             <Image
               src={photo.url}
-              alt={`Photo ${String(index + 1)}`}
+              alt={t('picker.photoAlt', { position: index + 1 })}
               fill
               sizes="80px"
               className="object-cover"
@@ -104,7 +106,7 @@ export function PhotoPicker({
               onClick={() => {
                 onChange(photos.filter((candidate) => candidate.key !== photo.key));
               }}
-              aria-label={`Remove photo ${String(index + 1)}`}
+              aria-label={t('picker.removePhoto', { position: index + 1 })}
               className="bg-ink/70 absolute top-1 right-1 flex size-6 items-center justify-center rounded-full text-white"
             >
               <X className="size-3.5" aria-hidden />
@@ -118,7 +120,7 @@ export function PhotoPicker({
             className="bg-surface-sunken text-ink-subtle flex size-20 items-center justify-center rounded-md"
           >
             <Loader2 className="size-5 animate-spin" aria-hidden />
-            <span className="sr-only">Uploading photo</span>
+            <span className="sr-only">{t('picker.uploading')}</span>
           </div>
         ))}
 
@@ -135,7 +137,7 @@ export function PhotoPicker({
             )}
           >
             <ImagePlus className="size-5" aria-hidden />
-            <span className="text-[0.6875rem]">Add photo</span>
+            <span className="text-[0.6875rem]">{t('picker.add')}</span>
           </button>
         )}
       </div>

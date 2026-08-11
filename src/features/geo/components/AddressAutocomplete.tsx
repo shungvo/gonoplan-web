@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Loader2, MapPin } from 'lucide-react';
 import { fieldClass } from '@/components/ui/field';
 import { useDebouncedValue } from '@/lib/hooks/useDebouncedValue';
+import { useT } from '@/i18n/I18nProvider';
 import { cn } from '@/lib/utils/cn';
 import { resolveAddress, suggestAddresses, type Address, type LatLng } from '../api';
 
@@ -64,6 +65,7 @@ export function AddressAutocomplete({
   placeholder?: string;
   disabled?: boolean;
 }) {
+  const t = useT();
   const listId = useId();
   const [open, setOpen] = useState(false);
   const [highlight, setHighlight] = useState(-1);
@@ -190,6 +192,7 @@ export function AddressAutocomplete({
         <ul
           id={listId}
           role="listbox"
+          aria-label={t('address.suggestions')}
           className="border-border bg-surface absolute inset-x-0 top-full z-20 mt-1 max-h-64 overflow-y-auto rounded-md border shadow-lg"
         >
           {options.map((option, index) => (

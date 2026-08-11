@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { ApiError } from '@/lib/api/errors';
 import { fieldClass } from '@/components/ui/field';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { useT } from '@/i18n/I18nProvider';
 import { useSessionStore } from '../store';
 import { login, register } from '../api';
 
@@ -37,6 +38,7 @@ export function AuthSheet({
 }
 
 function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () => void }) {
+  const t = useT();
   const [mode, setMode] = useState<Mode>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -70,15 +72,15 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
       }}
     >
       <Drawer.Title className="text-ink text-xl font-semibold tracking-tight">
-        {isRegister ? 'Create your account' : 'Welcome back'}
+        {isRegister ? t('auth.createTitle') : t('auth.welcomeBack')}
       </Drawer.Title>
       <Drawer.Description className="text-ink-muted mt-1 text-sm">
-        {reason ?? 'Save places, write reviews, and get recommendations tuned to you.'}
+        {reason ?? t('auth.pitch')}
       </Drawer.Description>
 
       {isRegister && (
         <label className="mt-4 block">
-          <span className="text-ink text-sm font-semibold">Name</span>
+          <span className="text-ink text-sm font-semibold">{t('auth.name')}</span>
           <input
             type="text"
             value={name}
@@ -92,7 +94,7 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
       )}
 
       <label className="mt-4 block">
-        <span className="text-ink text-sm font-semibold">Email</span>
+        <span className="text-ink text-sm font-semibold">{t('auth.email')}</span>
         <input
           type="email"
           value={email}
@@ -110,7 +112,7 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
       </label>
 
       <label className="mt-4 block">
-        <span className="text-ink text-sm font-semibold">Password</span>
+        <span className="text-ink text-sm font-semibold">{t('auth.password')}</span>
         <input
           type="password"
           value={password}
@@ -121,7 +123,7 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
           className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
         />
         {isRegister && (
-          <span className="text-ink-subtle mt-1 block text-xs">At least 8 characters.</span>
+          <span className="text-ink-subtle mt-1 block text-xs">{t('auth.passwordHint')}</span>
         )}
       </label>
 
@@ -129,7 +131,7 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
         <p role="alert" className="bg-danger/10 text-danger mt-4 rounded-md p-3 text-sm">
           {submit.error instanceof ApiError
             ? submit.error.message
-            : 'Something went wrong. Please try again.'}
+            : t('auth.failed')}
         </p>
       )}
 
@@ -141,7 +143,7 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
         disabled={!canSubmit}
         isLoading={submit.isPending}
       >
-        {isRegister ? 'Create account' : 'Sign in'}
+        {isRegister ? t('auth.createAccount') : t('common.signIn')}
       </Button>
 
       <button
@@ -154,11 +156,13 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
       >
         {isRegister ? (
           <>
-            Already have an account? <span className="text-primary font-medium">Sign in</span>
+            {t('auth.haveAccount')}{' '}
+            <span className="text-primary font-medium">{t('common.signIn')}</span>
           </>
         ) : (
           <>
-            New here? <span className="text-primary font-medium">Create an account</span>
+            {t('auth.newHere')}{' '}
+            <span className="text-primary font-medium">{t('auth.createOne')}</span>
           </>
         )}
       </button>

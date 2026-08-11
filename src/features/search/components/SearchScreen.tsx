@@ -15,6 +15,7 @@ import { searchPlaces } from '@/features/places/api';
 import { useLocationStore } from '@/features/location/store';
 import { searchCities } from '@/features/location/cities';
 import { useDebouncedValue } from '@/lib/hooks/useDebouncedValue';
+import { useT } from '@/i18n/I18nProvider';
 import { queryKeys } from '@/lib/query/keys';
 import { useRecentSearches } from '../store';
 import { fetchPopularSearches } from '../api';
@@ -30,6 +31,7 @@ const MIN_QUERY_LENGTH = 2;
  * among place results.
  */
 export function SearchScreen() {
+  const t = useT();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -92,7 +94,7 @@ export function SearchScreen() {
         <div className="flex items-center gap-2 pt-3 pb-3">
           <button
             type="button"
-            aria-label="Back"
+            aria-label={t('common.back')}
             onClick={() => {
               router.back();
             }}
@@ -113,14 +115,14 @@ export function SearchScreen() {
               // `search` shows a "Search" key on mobile keyboards; results are
               // already live, so submitting only needs to dismiss the keyboard.
               enterKeyHint="search"
-              placeholder="Places, categories, cities"
-              aria-label="Search"
+              placeholder={t('search.placeholder')}
+              aria-label={t('search.label')}
               className="text-ink placeholder:text-ink-subtle w-full bg-transparent text-[0.9375rem] outline-none"
             />
             {query.length > 0 && (
               <button
                 type="button"
-                aria-label="Clear search"
+                aria-label={t('search.clear')}
                 onClick={() => {
                   setQuery('');
                   inputRef.current?.focus();
@@ -138,15 +140,15 @@ export function SearchScreen() {
         {showSuggestions && (
           <div className="space-y-6 pt-2">
             {recent.length > 0 && (
-              <section aria-label="Recent searches">
+              <section aria-label={t('search.recentSearches')}>
                 <div className="flex items-baseline justify-between">
-                  <h2 className="text-ink text-sm font-semibold">Recent</h2>
+                  <h2 className="text-ink text-sm font-semibold">{t('search.recent')}</h2>
                   <button
                     type="button"
                     onClick={clear}
                     className="text-ink-subtle text-xs font-medium"
                   >
-                    Clear
+                    {t('common.clear')}
                   </button>
                 </div>
                 <ul className="mt-2">
@@ -170,7 +172,7 @@ export function SearchScreen() {
                       </button>
                       <button
                         type="button"
-                        aria-label={`Remove ${item} from recent searches`}
+                        aria-label={t('search.removeRecent', { query: item })}
                         onClick={() => {
                           forget(item);
                         }}
@@ -188,10 +190,10 @@ export function SearchScreen() {
                 category grid below serves the same purpose honestly, rather
                 than inventing a "popular" list nobody has searched for. */}
             {popular && popular.length > 0 && (
-              <section aria-label="Popular searches">
+              <section aria-label={t('search.popularSearches')}>
                 <h2 className="text-ink flex items-center gap-1.5 text-sm font-semibold">
                   <TrendingUp className="text-ink-subtle size-4" aria-hidden />
-                  Popular right now
+                  {t('search.popular')}
                 </h2>
                 <div className="mt-2.5 flex flex-wrap gap-2">
                   {popular.map((item) => (
@@ -208,8 +210,8 @@ export function SearchScreen() {
               </section>
             )}
 
-            <section aria-label="Browse by category">
-              <h2 className="text-ink text-sm font-semibold">Browse by category</h2>
+            <section aria-label={t('search.browseCategory')}>
+              <h2 className="text-ink text-sm font-semibold">{t('search.browseCategory')}</h2>
               <div className="mt-2.5 grid grid-cols-2 gap-2.5">
                 {/* Empty categories are hidden: tapping one is a guaranteed
                     dead end, and "Other · 0 places" is an invitation to a
@@ -241,7 +243,7 @@ export function SearchScreen() {
                           {category.name}
                         </span>
                         <span className="text-ink-subtle block truncate text-xs">
-                          {category.placeCount} {category.placeCount === 1 ? 'place' : 'places'}
+                          {t('search.placeCount', { count: category.placeCount })}
                         </span>
                       </span>
                     </button>
@@ -254,8 +256,8 @@ export function SearchScreen() {
         {isSearching && (
           <div className="space-y-4 pt-2">
             {cityMatches.length > 0 && (
-              <section aria-label="Cities">
-                <h2 className="text-ink text-sm font-semibold">Go to city</h2>
+              <section aria-label={t('search.cities')}>
+                <h2 className="text-ink text-sm font-semibold">{t('search.goToCity')}</h2>
                 <ul className="mt-2 space-y-2">
                   {cityMatches.map((city) => (
                     <li key={city.slug}>
@@ -280,7 +282,7 @@ export function SearchScreen() {
                             {city.name}
                           </span>
                           <span className="text-ink-muted block truncate text-xs">
-                            Browse places in {city.nameVi}
+                            {t('search.browseIn', { city: city.nameVi })}
                           </span>
                         </span>
                       </button>
@@ -299,9 +301,9 @@ export function SearchScreen() {
             )}
 
             {results && results.length > 0 && (
-              <section aria-label="Search results">
+              <section aria-label={t('search.results')}>
                 <h2 className="text-ink text-sm font-semibold">
-                  {results.length} {results.length === 1 ? 'place' : 'places'}
+                  {t('search.resultCount', { count: results.length })}
                 </h2>
                 <ul className="mt-2 space-y-2.5">
                   {results.map((place) => (
@@ -321,8 +323,8 @@ export function SearchScreen() {
             {hasNoResults && (
               <EmptyState
                 icon={<Search className="size-7" aria-hidden />}
-                title={`Nothing found for “${debouncedQuery.trim()}”`}
-                description="Try a shorter word, a category like “cafe”, or a different city."
+                title={t('search.nothingFound', { query: debouncedQuery.trim() })}
+                description={t('search.nothingFoundHint')}
               />
             )}
           </div>

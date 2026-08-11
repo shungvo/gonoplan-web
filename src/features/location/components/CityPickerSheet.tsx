@@ -7,6 +7,7 @@ import { CITIES, searchCities, type City } from '../cities';
 import { useLocationStore } from '../store';
 import { Button } from '@/components/ui/Button';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { useT } from '@/i18n/I18nProvider';
 
 interface CityPickerSheetProps {
   open: boolean;
@@ -22,6 +23,7 @@ interface CityPickerSheetProps {
  * shortcut — leaves the user staring at a blank map with no way forward.
  */
 export function CityPickerSheet({ open, onOpenChange }: CityPickerSheetProps) {
+  const t = useT();
   const [query, setQuery] = useState('');
   const { status, setManualLocation, requestLocation } = useLocationStore();
 
@@ -39,12 +41,12 @@ export function CityPickerSheet({ open, onOpenChange }: CityPickerSheetProps) {
 
           <div className="px-5 pt-4 pb-3">
             <Drawer.Title className="text-xl font-semibold tracking-tight text-ink">
-              Choose your location
+              {t('city.title')}
             </Drawer.Title>
             <Drawer.Description className="mt-1 text-sm leading-relaxed text-ink-muted">
               {wasDenied
-                ? 'Location is turned off for Gonoplan. Pick a city and everything still works.'
-                : 'We could not find you automatically. Pick a city to start exploring.'}
+                ? t('city.deniedDescription')
+                : t('city.unavailableDescription')}
             </Drawer.Description>
           </div>
 
@@ -61,7 +63,7 @@ export function CityPickerSheet({ open, onOpenChange }: CityPickerSheetProps) {
                   void requestLocation();
                 }}
               >
-                Try using my location again
+                {t('city.retry')}
               </Button>
             </div>
           )}
@@ -75,8 +77,8 @@ export function CityPickerSheet({ open, onOpenChange }: CityPickerSheetProps) {
                 onChange={(event) => {
                   setQuery(event.target.value);
                 }}
-                placeholder="Search a city"
-                aria-label="Search a city"
+                placeholder={t('city.searchPlaceholder')}
+                aria-label={t('city.searchPlaceholder')}
                 className="w-full bg-transparent text-[0.9375rem] text-ink outline-none placeholder:text-ink-subtle"
               />
             </div>
@@ -85,7 +87,7 @@ export function CityPickerSheet({ open, onOpenChange }: CityPickerSheetProps) {
           <div className="flex-1 overflow-y-auto overscroll-contain px-5 pb-safe">
             {results.length === 0 ? (
               <p className="py-10 text-center text-sm text-ink-muted">
-                No city matches “{query}”.
+                {t('city.noMatch', { query })}
               </p>
             ) : (
               <ul className="pb-6">

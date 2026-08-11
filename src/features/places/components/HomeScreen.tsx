@@ -17,6 +17,9 @@ import { PlaceCardStack } from './PlaceCardStack';
 import { PlaceGrid } from './PlaceGrid';
 import { PlaceSheet } from './PlaceSheet';
 import { formatDistance } from '@/lib/geo/grid';
+import { useLocale, useT } from '@/i18n/I18nProvider';
+import type { TranslateFn } from '@/i18n/translate';
+import type { CollectionKey } from '@/features/recommendations/api';
 import { cn } from '@/lib/utils/cn';
 
 /**
@@ -30,11 +33,13 @@ function SectionHeading({
   title,
   note,
   onViewAll,
+  viewAllLabel,
   className,
 }: {
   title: string;
   note?: string | undefined;
   onViewAll?: (() => void) | undefined;
+  viewAllLabel?: string;
   className?: string;
 }) {
   return (
@@ -49,7 +54,7 @@ function SectionHeading({
           onClick={onViewAll}
           className="text-primary shrink-0 text-sm font-medium"
         >
-          View all
+          {viewAllLabel}
         </button>
       )}
     </div>
@@ -60,6 +65,19 @@ function SectionHeading({
 const FALLBACK_ORIGIN = { latitude: 10.7769, longitude: 106.7009 };
 
 /**
+ * A rail's heading, in the reader's language.
+ *
+ * The API sends a `title` as well as a `key`, and this deliberately uses the
+ * key. Same rule as error codes: the wire carries a stable identifier and the
+ * screen carries the prose, so translating a rail never depends on the server
+ * knowing who is reading. `fallback` covers the rails the API omits — an
+ * account-only one for a guest, an evening one before evening.
+ */
+function railTitle(t: TranslateFn, rail: { key: CollectionKey } | undefined, fallback: CollectionKey): string {
+  return t(`collection.${rail?.key ?? fallback}.title`);
+}
+
+/**
  * Home (§14) — the discovery loop.
  *
  * Selection lives here rather than inside the map, because a marker tap and a
@@ -68,6 +86,8 @@ const FALLBACK_ORIGIN = { latitude: 10.7769, longitude: 106.7009 };
  * state nothing outside this screen ever reads.
  */
 export function HomeScreen() {
+  const t = useT();
+  const locale = useLocale();
   const router = useRouter();
   const { coordinates, label, source } = useLocationStore();
   const { user } = useSessionStore();
@@ -119,7 +139,7 @@ export function HomeScreen() {
         <div className="flex items-center gap-3">
           <Link
             href="/profile"
-            aria-label={user ? `Signed in as ${user.name}` : 'Sign in'}
+            aria-label={user ? t('home.signedInAs', { name: user.name }) : t('common.signIn')}
             className="bg-primary-tint text-primary flex size-11 shrink-0 items-center justify-center rounded-full text-base font-semibold shadow-sm"
           >
             {user ? (
@@ -153,7 +173,7 @@ export function HomeScreen() {
         >
           <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
           <span className="text-ink-subtle truncate text-[0.9375rem]">
-            Where do you want to go?
+            {t('home.searchPlaceholder')}
           </span>
         </button>
       </header>
@@ -164,9 +184,10 @@ export function HomeScreen() {
         are looking for; on open, a specific suggestion is the faster route to
         a decision. The map is still one scroll away for anyone who wants it.
       */}
-      <section className="mt-5" aria-label={featured?.title ?? 'Recommended for you'}>
+      <section className="mt-5" aria-label={railTitle(t, featured, 'recommended-for-you')}>
         <SectionHeading
-          title={featured?.title ?? 'Recommended for you'}
+          title={railTitle(t, featured, 'recommended-for-you')}
+          viewAllLabel={t('home.viewAll')}
           onViewAll={() => {
             router.push('/explore');
           }}
@@ -187,9 +208,10 @@ export function HomeScreen() {
           answers "what is close", and this is how you say "actually, coffee".
           Each chip lands on Explore already filtered rather than filtering in
           place, because the answer is a list and this screen is not one. */}
-      <section className="mt-7" aria-label="Categories">
+      <section className="mt-7" aria-label={t('home.categories')}>
         <SectionHeading
-          title="Categories"
+          title={t('home.categories')}
+          viewAllLabel={t('home.viewAll')}
           onViewAll={() => {
             router.push('/explore');
           }}
@@ -224,12 +246,17 @@ export function HomeScreen() {
         </div>
       </section>
 
-      <section className="mt-7" aria-label={nearby?.title ?? 'Popular near you'}>
+      <section className="mt-7" aria-label={railTitle(t, nearby, 'popular-near-you')}>
         <SectionHeading
-          title={nearby?.title ?? 'Popular near you'}
+          title={railTitle(t, nearby, 'popular-near-you')}
           // Says so out loud when the search had to widen, rather than
           // silently showing places an hour away as if they were nearby.
-          note={nearby?.widened ? `within ${formatDistance(nearby.radiusMeters)}` : undefined}
+          note={
+            nearby?.widened
+              ? t('home.withinRadius', { distance: formatDistance(nearby.radiusMeters, locale) })
+              : undefined
+          }
+          viewAllLabel={t('home.viewAll')}
           onViewAll={() => {
             router.push('/explore');
           }}
@@ -245,8 +272,8 @@ export function HomeScreen() {
         />
       </section>
 
-      <section className="mt-7 px-5" aria-label="Map">
-        <SectionHeading title="On the map" className="px-0 pb-3" />
+      <section className="mt-7 px-5" aria-label={t('home.map')}>
+        <SectionHeading title={t('home.onTheMap')} className="px-0 pb-3" />
         <HomeMap
           className="h-72"
           selectedPlaceId={selectedPlaceId}
@@ -259,14 +286,14 @@ export function HomeScreen() {
           rather than claiming an evening that has not arrived. */}
       <div className="mt-7">
         <PlaceRail
-          title={tonight?.title ?? 'Open right now'}
+          title={railTitle(t, tonight, 'good-for-tonight')}
           places={tonight?.places}
           isPending={collections.isPending}
           onSelect={(place) => {
             track(place.id, 'CLICK', 'HOME_FEED');
             setSelectedPlaceId(place.id);
           }}
-          emptyMessage="Everything nearby is closed at the moment."
+          emptyMessage={t('home.nothingOpen')}
         />
       </div>
 
@@ -274,7 +301,7 @@ export function HomeScreen() {
           claim a precision the app does not have. */}
       {label && source !== 'NONE' && (
         <p className="text-ink-subtle mt-7 px-5 text-center text-xs">
-          Showing places around {label}
+          {t('home.showingAround', { label })}
         </p>
       )}
 

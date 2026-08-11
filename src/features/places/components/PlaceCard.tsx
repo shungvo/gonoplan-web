@@ -1,6 +1,7 @@
 'use client';
 
 import { Clock } from 'lucide-react';
+import { useLocale, useT } from '@/i18n/I18nProvider';
 import { PlaceImage } from './PlaceImage';
 import { Rating, PriceRange } from '@/components/ui/Rating';
 import { formatDistance } from '@/lib/geo/grid';
@@ -22,6 +23,9 @@ export interface PlaceCardProps {
  * show everything is a card nobody can scan while walking.
  */
 export function PlaceCard({ place, onSelect, priority = false, className }: PlaceCardProps) {
+  const t = useT();
+  const locale = useLocale();
+
   return (
     <button
       type="button"
@@ -56,7 +60,7 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
         {place.isOpenNow && (
           <span className="bg-surface/90 text-success absolute top-2.5 right-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[0.6875rem] font-semibold backdrop-blur-sm">
             <Clock className="size-3" aria-hidden />
-            Open
+            {t('place.openNow')}
           </span>
         )}
       </div>
@@ -72,7 +76,7 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
         </div>
 
         <p className="text-ink-subtle mt-1.5 truncate text-xs">
-          {place.distanceM !== null && <span>{formatDistance(place.distanceM)} · </span>}
+          {place.distanceM !== null && <span>{formatDistance(place.distanceM, locale)} · </span>}
           {place.district ?? place.province}
         </p>
       </div>

@@ -1,4 +1,8 @@
+'use client';
+
 import { Star } from 'lucide-react';
+import { useLocale, useT } from '@/i18n/I18nProvider';
+import { formatNumber, formatRating } from '@/i18n/format';
 import { cn } from '@/lib/utils/cn';
 
 export interface RatingProps {
@@ -16,6 +20,8 @@ export interface RatingProps {
  * is also what people actually compare.
  */
 export function Rating({ value, reviewCount, size = 'sm', className }: RatingProps) {
+  const t = useT();
+  const locale = useLocale();
   const hasReviews = reviewCount === undefined || reviewCount > 0;
 
   return (
@@ -35,14 +41,14 @@ export function Rating({ value, reviewCount, size = 'sm', className }: RatingPro
       />
       {hasReviews ? (
         <>
-          <span className="font-semibold text-ink">{value.toFixed(1)}</span>
+          <span className="font-semibold text-ink">{formatRating(value, locale)}</span>
           {reviewCount !== undefined && (
-            <span className="text-ink-subtle">({reviewCount})</span>
+            <span className="text-ink-subtle">({formatNumber(reviewCount, locale)})</span>
           )}
         </>
       ) : (
         // "New" is honest and inviting; "0.0" reads as bad rather than unrated.
-        <span className="font-medium text-ink-subtle">New</span>
+        <span className="font-medium text-ink-subtle">{t('place.new')}</span>
       )}
     </span>
   );

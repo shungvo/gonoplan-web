@@ -6,6 +6,8 @@ import { MapCanvas } from '@/features/map/components/MapCanvas';
 import { Button } from '@/components/ui/Button';
 import { useLocationStore } from '@/features/location/store';
 import { formatDistance } from '@/lib/geo/grid';
+import { useLocale, useT } from '@/i18n/I18nProvider';
+import type { MessageKey } from '@/i18n/messages/keys';
 import { cn } from '@/lib/utils/cn';
 import { trackNow } from '@/features/recommendations/track';
 import { useDirections, formatDuration } from '../useDirections';
@@ -13,7 +15,7 @@ import type { TravelMode } from '../api';
 
 interface ModeOption {
   mode: TravelMode;
-  label: string;
+  labelKey: MessageKey;
   icon: LucideIcon;
 }
 
@@ -23,9 +25,9 @@ interface ModeOption {
  * routing provider treats two wheels as driving.
  */
 const MODES: ModeOption[] = [
-  { mode: 'driving', label: 'Drive', icon: Car },
-  { mode: 'cycling', label: 'Cycle', icon: Bike },
-  { mode: 'walking', label: 'Walk', icon: Footprints },
+  { mode: 'driving', labelKey: 'route.drive', icon: Car },
+  { mode: 'cycling', labelKey: 'route.cycle', icon: Bike },
+  { mode: 'walking', labelKey: 'route.walk', icon: Footprints },
 ];
 
 /**
@@ -41,6 +43,8 @@ export function RouteToPlace({
 }: {
   place: { id: string; name: string; latitude: number; longitude: number; address: string | null };
 }) {
+  const t = useT();
+  const locale = useLocale();
   const { coordinates, status, requestLocation } = useLocationStore();
   const [mode, setMode] = useState<TravelMode>('driving');
 
@@ -63,15 +67,15 @@ export function RouteToPlace({
   return (
     <section className="border-border mt-5 border-t pt-4">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-ink text-sm font-semibold">Getting there</h2>
+        <h2 className="text-ink text-sm font-semibold">{t('route.title')}</h2>
 
         {coordinates && (
           <div
             className="bg-surface-sunken flex rounded-full p-0.5"
             role="group"
-            aria-label="Travel mode"
+            aria-label={t('route.travelMode')}
           >
-            {MODES.map(({ mode: value, label, icon: Icon }) => (
+            {MODES.map(({ mode: value, labelKey, icon: Icon }) => (
               <button
                 key={value}
                 type="button"
@@ -85,7 +89,7 @@ export function RouteToPlace({
                 )}
               >
                 <Icon className="size-3.5" aria-hidden />
-                {label}
+                {t(labelKey)}
               </button>
             ))}
           </div>
@@ -117,7 +121,7 @@ export function RouteToPlace({
           target="_blank"
           rel="noopener noreferrer"
           className="absolute inset-0"
-          aria-label={`Open directions to ${place.name} in Google Maps`}
+          aria-label={t('route.openInMapsFor', { name: place.name })}
           onClick={() => {
             trackNow(place.id, 'DIRECTIONS', 'DETAIL');
           }}
@@ -133,8 +137,8 @@ export function RouteToPlace({
         <div className="bg-surface-sunken mt-3 rounded-md px-3.5 py-3">
           <p className="text-ink-muted text-sm">
             {status === 'DENIED'
-              ? 'Location is blocked, so we cannot measure the trip from where you are. You can still open directions in Maps.'
-              : 'Share your location to see how long it takes to get here.'}
+              ? t('route.blocked')
+              : t('route.shareLocation')}
           </p>
           {status !== 'DENIED' && (
             <Button
@@ -146,28 +150,26 @@ export function RouteToPlace({
               }}
             >
               <MapPin className="size-4" aria-hidden />
-              Use my location
+              {t('route.useMyLocation')}
             </Button>
           )}
         </div>
       ) : (
         <div className="mt-3 flex items-center gap-3">
           <p className="min-w-0 flex-1 text-sm">
-            {directions.isPending && <span className="text-ink-muted">Finding a route…</span>}
+            {directions.isPending && <span className="text-ink-muted">{t('route.finding')}</span>}
             {directions.error && (
-              <span className="text-ink-muted">
-                No {mode} route we can measure — Maps may still have one.
-              </span>
+              <span className="text-ink-muted">{t('route.none')}</span>
             )}
             {directions.data && (
               <>
                 <span className="text-ink font-semibold">
-                  {formatDuration(directions.data.durationS)}
+                  {formatDuration(directions.data.durationS, locale)}
                 </span>
                 <span className="text-ink-muted">
                   {' · '}
-                  {formatDistance(directions.data.distanceM)}
-                  {directions.data.isFallbackProvider && ' · estimated'}
+                  {formatDistance(directions.data.distanceM, locale)}
+                  {directions.data.isFallbackProvider && ` · ${t('route.estimated')}`}
                 </span>
               </>
             )}
@@ -188,7 +190,7 @@ export function RouteToPlace({
             }}
           >
             <Navigation className="size-4" aria-hidden />
-            Open in Maps
+            {t('route.openInMaps')}
           </a>
         </div>
       )}

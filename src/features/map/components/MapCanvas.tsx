@@ -25,6 +25,7 @@ import {
 import type { MapBounds, PlaceMarker } from '@/lib/map/types';
 import { fetchCategories, flattenCategories } from '@/features/categories/api';
 import { useMapMarkers } from '../hooks/useMapMarkers';
+import { useT } from '@/i18n/I18nProvider';
 import { cn } from '@/lib/utils/cn';
 
 const SOURCE_ID = 'places';
@@ -169,6 +170,7 @@ export function MapCanvas({
   const spritesLoadedRef = useRef(false);
 
   const [isReady, setIsReady] = useState(false);
+  const t = useT();
   const [mapError, setMapError] = useState<string | null>(null);
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [currentZoom, setCurrentZoom] = useState(zoom);
@@ -774,7 +776,7 @@ export function MapCanvas({
 
       {mapError && (
         <div className="bg-surface-sunken absolute inset-0 flex flex-col items-center justify-center gap-2 px-6 text-center">
-          <p className="text-ink text-sm font-semibold">Map unavailable</p>
+          <p className="text-ink text-sm font-semibold">{t('map.unavailable')}</p>
           <p className="text-ink-muted max-w-[18rem] text-xs leading-relaxed">{mapError}</p>
         </div>
       )}
@@ -782,7 +784,7 @@ export function MapCanvas({
       {markerPage?.capped && (
         <div className="pointer-events-none absolute inset-x-0 top-3 flex justify-center">
           <span className="bg-ink/75 rounded-full px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm">
-            Showing the top places — zoom in for more
+            {t('map.capped')}
           </span>
         </div>
       )}
@@ -802,7 +804,7 @@ export function MapCanvas({
         >
           <button
             type="button"
-            aria-label="Zoom in"
+            aria-label={t('map.zoomIn')}
             onClick={() => {
               zoomBy(1);
             }}
@@ -812,7 +814,7 @@ export function MapCanvas({
           </button>
           <button
             type="button"
-            aria-label="Zoom out"
+            aria-label={t('map.zoomOut')}
             onClick={() => {
               zoomBy(-1);
             }}

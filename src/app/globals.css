@@ -336,7 +336,7 @@
  * screen is a piece of component state three levels down — one selector beats
  * threading a boolean through both.
  */
-body:has([data-immersive]) nav[aria-label='Main'] {
+body:has([data-immersive]) nav[data-nav='main'] {
   background-image: none;
 }
 

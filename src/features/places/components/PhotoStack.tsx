@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion, useReducedMotion, type PanInfo } from 'motion/react';
 import { ChevronLeft, ChevronRight, ImageOff } from 'lucide-react';
 import { swipeIntent } from './PlaceCardStack';
+import { useT } from '@/i18n/I18nProvider';
 import { cn } from '@/lib/utils/cn';
 
 export interface StackPhoto {
@@ -39,6 +40,7 @@ export function PhotoStack({
   /** Names the subject, since the photos themselves carry no description. */
   alt: string;
 }) {
+  const t = useT();
   const [index, setIndex] = useState(0);
   const reduceMotion = useReducedMotion();
 
@@ -51,7 +53,7 @@ export function PhotoStack({
         )}
       >
         <ImageOff className="size-6" aria-hidden />
-        <p className="text-xs">No photos yet</p>
+        <p className="text-xs">{t('photos.none')}</p>
       </div>
     );
   }
@@ -139,8 +141,8 @@ export function PhotoStack({
               them invisible *and* unclickable. */}
           <div className="pointer-events-none absolute inset-x-0 top-24 z-10 flex justify-between px-2">
             {[
-              { delta: -1, label: 'Previous photo', Icon: ChevronLeft },
-              { delta: 1, label: 'Next photo', Icon: ChevronRight },
+              { delta: -1, label: t('photos.previous'), Icon: ChevronLeft },
+              { delta: 1, label: t('photos.next'), Icon: ChevronRight },
             ].map(({ delta, label, Icon }) => (
               <button
                 key={label}

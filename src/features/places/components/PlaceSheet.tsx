@@ -8,6 +8,7 @@ import { ApiError } from '@/lib/api/errors';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { BottomSheet, SHEET_SNAP_POINTS } from '@/components/ui/BottomSheet';
+import { useT } from '@/i18n/I18nProvider';
 
 /**
  * The heights this sheet rests at, and the one it opens to.
@@ -27,6 +28,7 @@ export interface PlaceSheetProps {
 }
 
 export function PlaceSheet({ placeId, onClose }: PlaceSheetProps) {
+  const t = useT();
   const coordinates = useLocationStore((state) => state.coordinates);
   const { data: place, isPending, error } = usePlaceDetail(placeId, coordinates);
 
@@ -52,17 +54,17 @@ export function PlaceSheet({ placeId, onClose }: PlaceSheetProps) {
           <EmptyState
             title={
               error instanceof ApiError && error.status === 404
-                ? 'This place is no longer available'
-                : 'Could not load this place'
+                ? t('place.gone')
+                : t('place.loadFailed')
             }
             description={
               error instanceof ApiError && error.isRetryable
-                ? 'Check your connection and try again.'
+                ? t('place.checkConnection')
                 : undefined
             }
             action={
               <Button variant="secondary" size="sm" onClick={onClose}>
-                Close
+                {t('common.close')}
               </Button>
             }
           />

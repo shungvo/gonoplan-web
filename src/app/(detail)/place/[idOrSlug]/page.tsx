@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { fetchPlaceDetail } from '@/features/places/api';
+import { getT } from '@/i18n/server';
 import { PlacePageClient } from './PlacePageClient';
 
 /**
@@ -13,6 +14,7 @@ export async function generateMetadata({
   params,
 }: PageProps<'/place/[idOrSlug]'>): Promise<Metadata> {
   const { idOrSlug } = await params;
+  const t = await getT();
 
   /*
    * Fetched, not derived from the slug.
@@ -30,7 +32,10 @@ export async function generateMetadata({
 
     const description =
       place.description?.slice(0, 160) ??
-      `${place.category.name} in ${place.district ?? place.province}. Discover it on Gonoplan.`;
+      t('meta.placeDescription', {
+        category: place.category.name,
+        area: place.district ?? place.province,
+      });
 
     return {
       title: place.name,
@@ -45,7 +50,7 @@ export async function generateMetadata({
   } catch {
     // A deleted place or an unreachable API must not break the page render —
     // the client component shows a proper "no longer available" state.
-    return { title: 'Place', description: 'Discover places on Gonoplan.' };
+    return { title: t('meta.placeFallback'), description: t('meta.placeFallbackDescription') };
   }
 }
 

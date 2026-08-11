@@ -4,9 +4,10 @@ import { useState } from 'react';
 import { Drawer } from 'vaul';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
-import { ApiError } from '@/lib/api/errors';
 import { fieldClass } from '@/components/ui/field';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { useT } from '@/i18n/I18nProvider';
+import { useErrorMessage } from '@/i18n/useErrorMessage';
 import { replyToReview, type OwnerReview } from '../api';
 
 const MAX_LENGTH = 1000;
@@ -33,6 +34,8 @@ export function ReplySheet({
 }
 
 function ReplyForm({ review, onDone }: { review: OwnerReview; onDone: () => void }) {
+  const t = useT();
+  const describeError = useErrorMessage();
   const [content, setContent] = useState('');
   const queryClient = useQueryClient();
 
@@ -55,10 +58,14 @@ function ReplyForm({ review, onDone }: { review: OwnerReview; onDone: () => void
       }}
     >
       <Drawer.Title className="text-ink text-xl font-semibold tracking-tight">
-        Reply as the business
+        {t('reply.title')}
       </Drawer.Title>
       <Drawer.Description className="text-ink-muted mt-1 text-sm">
-        {review.place.name} · {review.authorName} left {review.rating}★
+        {t('reply.context', {
+          place: review.place.name,
+          name: review.authorName,
+          rating: review.rating,
+        })}
       </Drawer.Description>
 
       {review.content && (
@@ -73,8 +80,8 @@ function ReplyForm({ review, onDone }: { review: OwnerReview; onDone: () => void
           setContent(event.target.value.slice(0, MAX_LENGTH));
         }}
         rows={5}
-        aria-label="Your reply"
-        placeholder="Thank them, or explain what you have changed."
+        aria-label={t('reply.label')}
+        placeholder={t('reply.placeholder')}
         className={fieldClass('mt-3 resize-none p-3.5 text-[0.9375rem] leading-relaxed')}
       />
       <p className="text-ink-subtle mt-1 text-right text-xs">
@@ -83,7 +90,7 @@ function ReplyForm({ review, onDone }: { review: OwnerReview; onDone: () => void
 
       {submit.error && (
         <p role="alert" className="bg-danger/10 text-danger mt-3 rounded-md p-3 text-sm">
-          {submit.error instanceof ApiError ? submit.error.message : 'Could not post your reply.'}
+          {describeError(submit.error)}
         </p>
       )}
 
@@ -95,11 +102,11 @@ function ReplyForm({ review, onDone }: { review: OwnerReview; onDone: () => void
         disabled={content.trim().length === 0}
         isLoading={submit.isPending}
       >
-        Post reply
+        {t('reply.post')}
       </Button>
 
       <p className="text-ink-subtle mt-3 pb-4 text-center text-xs">
-        Your reply is public and shows your business name.
+        {t('reply.publicNotice')}
       </p>
     </form>
   );

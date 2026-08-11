@@ -3,6 +3,7 @@
 import { Bookmark } from 'lucide-react';
 import { useToggleSave } from '../hooks/useFavorites';
 import { useIsAuthenticated } from '@/features/auth/store';
+import { useT } from '@/i18n/I18nProvider';
 import { cn } from '@/lib/utils/cn';
 
 /**
@@ -25,6 +26,7 @@ export function SaveButton({
   variant?: 'icon' | 'labelled';
   className?: string;
 }) {
+  const t = useT();
   const isAuthenticated = useIsAuthenticated();
   const toggle = useToggleSave(placeId);
 
@@ -36,7 +38,7 @@ export function SaveButton({
     toggle.mutate(!isSaved);
   };
 
-  const label = isSaved ? 'Remove from saved' : 'Save this place';
+  const label = isSaved ? t('saved.removeAction') : t('saved.add');
 
   if (variant === 'labelled') {
     return (
@@ -53,7 +55,7 @@ export function SaveButton({
         )}
       >
         <Bookmark className={cn('size-[1.125rem]', isSaved && 'fill-current')} aria-hidden />
-        {isSaved ? 'Saved' : 'Save'}
+        {isSaved ? t('saved.saved') : t('saved.save')}
       </button>
     );
   }

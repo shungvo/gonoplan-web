@@ -4,11 +4,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'motion/react';
 import { Compass, Home, Bookmark, User, type LucideIcon } from 'lucide-react';
+import { useT } from '@/i18n/I18nProvider';
+import type { MessageKey } from '@/i18n/messages/keys';
 import { cn } from '@/lib/utils/cn';
 
 interface NavItem {
   href: string;
-  label: string;
+  /** A key, not a string: the labels below are read by screen readers. */
+  labelKey: MessageKey;
   icon: LucideIcon;
 }
 
@@ -18,18 +21,23 @@ interface NavItem {
  * makes the whole app read as unfinished.
  */
 const NAV_ITEMS: NavItem[] = [
-  { href: '/', label: 'Home', icon: Home },
-  { href: '/explore', label: 'Explore', icon: Compass },
-  { href: '/saved', label: 'Saved', icon: Bookmark },
-  { href: '/profile', label: 'Profile', icon: User },
+  { href: '/', labelKey: 'nav.home', icon: Home },
+  { href: '/explore', labelKey: 'nav.explore', icon: Compass },
+  { href: '/saved', labelKey: 'nav.saved', icon: Bookmark },
+  { href: '/profile', labelKey: 'nav.profile', icon: User },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
+  const t = useT();
 
   return (
     <nav
-      aria-label="Main"
+      aria-label={t('nav.main')}
+      /* The hook globals.css matches on. It used to select the aria-label,
+         which stopped working the moment that label became translatable —
+         a selector must not depend on prose. */
+      data-nav="main"
       className={cn(
         'fixed inset-x-0 bottom-0 z-40',
         // The gradient fades content out beneath the floating bar instead of
@@ -56,7 +64,7 @@ export function BottomNav() {
         panned and never settled into being one object.
       */}
       <ul className="mx-auto flex w-fit items-center gap-1 rounded-full bg-surface p-1.5 shadow-lg">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+        {NAV_ITEMS.map(({ href, labelKey, icon: Icon }) => {
           const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href);
 
           return (
@@ -88,7 +96,7 @@ export function BottomNav() {
                   strokeWidth={isActive ? 2.4 : 1.8}
                   aria-hidden
                 />
-                <span className="sr-only">{label}</span>
+                <span className="sr-only">{t(labelKey)}</span>
               </Link>
             </li>
           );

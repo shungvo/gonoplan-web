@@ -6,11 +6,12 @@ import { useMutation } from '@tanstack/react-query';
 import { Check } from 'lucide-react';
 
 import { Button } from '@/components/ui/Button';
-import { ApiError } from '@/lib/api/errors';
 import { api } from '@/lib/api/client';
 import { cn } from '@/lib/utils/cn';
 import { fieldClass } from '@/components/ui/field';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { useT } from '@/i18n/I18nProvider';
+import { useErrorMessage } from '@/i18n/useErrorMessage';
 
 type Reason = 'CLOSED_PERMANENTLY' | 'INCORRECT_INFO' | 'DUPLICATE' | 'SPAM' | 'INAPPROPRIATE' | 'OTHER';
 
@@ -20,13 +21,13 @@ type Reason = 'CLOSED_PERMANENTLY' | 'INCORRECT_INFO' | 'DUPLICATE' | 'SPAM' | '
  * OFFENSIVE is deliberately absent — it belongs to reviews and accounts, and
  * offering it here produces reports a moderator cannot act on.
  */
-const REASONS: Array<{ value: Reason; label: string; hint: string }> = [
-  { value: 'CLOSED_PERMANENTLY', label: 'Permanently closed', hint: 'It has shut down for good' },
-  { value: 'INCORRECT_INFO', label: 'Wrong information', hint: 'Address, hours or phone are wrong' },
-  { value: 'DUPLICATE', label: 'Duplicate listing', hint: 'This place is already on Gonoplan' },
-  { value: 'SPAM', label: 'Spam or fake', hint: 'It is advertising, or does not exist' },
-  { value: 'INAPPROPRIATE', label: 'Inappropriate', hint: 'Offensive content or images' },
-  { value: 'OTHER', label: 'Something else', hint: 'Tell us what is wrong' },
+const REASONS: Reason[] = [
+  'CLOSED_PERMANENTLY',
+  'INCORRECT_INFO',
+  'DUPLICATE',
+  'SPAM',
+  'INAPPROPRIATE',
+  'OTHER',
 ];
 
 const MAX_DESCRIPTION = 1000;
@@ -74,6 +75,8 @@ function ReportForm({
   placeName: string;
   onDone: () => void;
 }) {
+  const t = useT();
+  const describeError = useErrorMessage();
   const [reason, setReason] = useState<Reason | null>(null);
   const [description, setDescription] = useState('');
 
@@ -98,15 +101,15 @@ function ReportForm({
           <Check className="size-6" aria-hidden />
         </span>
         <Drawer.Title className="text-ink mt-3 text-lg font-semibold tracking-tight">
-          {submit.data.alreadyReported ? 'Already with our team' : 'Thanks for telling us'}
+          {submit.data.alreadyReported ? t('report.alreadyTitle') : t('report.thanksTitle')}
         </Drawer.Title>
         <p className="text-ink-muted mt-1.5 text-sm leading-relaxed">
           {submit.data.alreadyReported
-            ? 'You have already reported this place and we are still looking at it.'
-            : 'Someone will review this listing. We do not share who reported it.'}
+            ? t('report.alreadyBody')
+            : t('report.thanksBody')}
         </p>
         <Button fullWidth size="lg" className="mt-5 mb-4" onClick={onDone}>
-          Done
+          {t('common.done')}
         </Button>
       </div>
     );
@@ -121,30 +124,30 @@ function ReportForm({
       }}
     >
       <Drawer.Title className="text-ink text-xl font-semibold tracking-tight">
-        Report this place
+        {t('report.title')}
       </Drawer.Title>
       <Drawer.Description className="text-ink-muted mt-1 text-sm">
         {placeName}
       </Drawer.Description>
 
       <fieldset className="mt-4">
-        <legend className="sr-only">Reason</legend>
+        <legend className="sr-only">{t('report.reason')}</legend>
         <div className="space-y-2">
           {REASONS.map((option) => (
             <label
-              key={option.value}
+              key={option}
               className={cn(
                 'flex cursor-pointer items-start gap-3 rounded-md p-3 transition-colors',
-                reason === option.value ? 'bg-primary-tint' : 'bg-surface-sunken',
+                reason === option ? 'bg-primary-tint' : 'bg-surface-sunken',
               )}
             >
               <input
                 type="radio"
                 name="reason"
-                value={option.value}
-                checked={reason === option.value}
+                value={option}
+                checked={reason === option}
                 onChange={() => {
-                  setReason(option.value);
+                  setReason(option);
                 }}
                 className="accent-primary mt-0.5 size-4 shrink-0"
               />
@@ -152,12 +155,14 @@ function ReportForm({
                 <span
                   className={cn(
                     'block text-sm font-medium',
-                    reason === option.value ? 'text-primary' : 'text-ink',
+                    reason === option ? 'text-primary' : 'text-ink',
                   )}
                 >
-                  {option.label}
+                  {t(`report.${option}`)}
                 </span>
-                <span className="text-ink-subtle block text-xs">{option.hint}</span>
+                <span className="text-ink-subtle block text-xs">
+                  {t(`report.${option}.hint`)}
+                </span>
               </span>
             </label>
           ))}
@@ -166,9 +171,9 @@ function ReportForm({
 
       <label className="mt-4 block">
         <span className="text-ink text-sm font-semibold">
-          Details{' '}
+          {t('report.details')}{' '}
           <span className="text-ink-subtle font-normal">
-            {reason === 'OTHER' ? '(required)' : '(optional)'}
+            {reason === 'OTHER' ? t('report.required') : t('common.optional')}
           </span>
         </span>
         <textarea
@@ -177,16 +182,14 @@ function ReportForm({
             setDescription(event.target.value.slice(0, MAX_DESCRIPTION));
           }}
           rows={3}
-          placeholder="What did you see? Anything specific helps."
+          placeholder={t('report.detailsPlaceholder')}
           className={fieldClass('mt-1.5 resize-none p-3.5 text-[0.9375rem] leading-relaxed')}
         />
       </label>
 
       {submit.error && (
         <p role="alert" className="bg-danger/10 text-danger mt-3 rounded-md p-3 text-sm">
-          {submit.error instanceof ApiError
-            ? submit.error.message
-            : 'Could not send your report. Try again in a moment.'}
+          {describeError(submit.error)}
         </p>
       )}
 
@@ -198,11 +201,11 @@ function ReportForm({
         disabled={reason === null || needsDescription}
         isLoading={submit.isPending}
       >
-        Send report
+        {t('report.send')}
       </Button>
 
       <p className="text-ink-subtle mt-3 pb-4 text-center text-xs">
-        Your name is never shown publicly. Only moderators see who reported a place.
+        {t('report.privacy')}
       </p>
     </form>
   );

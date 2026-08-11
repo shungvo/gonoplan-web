@@ -6,6 +6,7 @@ import { MapPin } from 'lucide-react';
 
 import { PlaceImage } from './PlaceImage';
 import { formatDistance } from '@/lib/geo/grid';
+import { useLocale, useT } from '@/i18n/I18nProvider';
 import { cn } from '@/lib/utils/cn';
 import type { PlaceCard } from '../api';
 
@@ -74,6 +75,8 @@ export function PlaceCardStack({
   onSelect,
   className,
 }: PlaceCardStackProps) {
+  const t = useT();
+  const locale = useLocale();
   const [index, setIndex] = useState(0);
   const reduceMotion = useReducedMotion();
 
@@ -145,7 +148,11 @@ export function PlaceCardStack({
                 // again below; exposing them would make the screen read twice.
                 {...(isActive
                   ? {
-                      'aria-label': `${place.name}. Recommendation ${String(index + 1)} of ${String(total)}. Use the left and right arrow keys to browse.`,
+                      'aria-label': t('stack.cardLabel', {
+                        name: place.name,
+                        position: index + 1,
+                        total,
+                      }),
                     }
                   : { tabIndex: -1, 'aria-hidden': true })}
                 /*
@@ -208,7 +215,7 @@ export function PlaceCardStack({
                         <span aria-hidden>·</span>
                         <span className="inline-flex items-center gap-1">
                           <MapPin className="size-3" aria-hidden />
-                          {formatDistance(place.distanceM)}
+                          {formatDistance(place.distanceM, locale)}
                         </span>
                       </>
                     )}

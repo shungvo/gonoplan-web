@@ -1,12 +1,17 @@
 import type { Metadata } from 'next';
 import { AdminShell } from '@/features/admin/components/AdminShell';
+import { getT } from '@/i18n/server';
 
-export const metadata: Metadata = {
-  title: 'Admin',
-  // Nothing here should ever be indexed, even though every route is behind an
-  // authenticated API — a crawled URL is still an invitation to probe it.
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT();
+
+  return {
+    title: t('meta.admin'),
+    // Nothing here should ever be indexed, even though every route is behind
+    // an authenticated API — a crawled URL is still an invitation to probe it.
+    robots: { index: false, follow: false },
+  };
+}
 
 /**
  * The admin route group.

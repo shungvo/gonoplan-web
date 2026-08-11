@@ -1045,6 +1045,12 @@
               "string",
               "null"
             ]
+          },
+          "cannotReviewCode": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [
@@ -1053,7 +1059,8 @@
           "breakdown",
           "myReviewId",
           "canReview",
-          "cannotReviewReason"
+          "cannotReviewReason",
+          "cannotReviewCode"
         ]
       },
       "OwnerProfile": {
@@ -7763,6 +7770,12 @@
                             "string",
                             "null"
                           ]
+                        },
+                        "cannotReviewCode": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         }
                       },
                       "required": [
@@ -7771,7 +7784,8 @@
                         "breakdown",
                         "myReviewId",
                         "canReview",
-                        "cannotReviewReason"
+                        "cannotReviewReason",
+                        "cannotReviewCode"
                       ]
                     },
                     "meta": {

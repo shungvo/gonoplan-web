@@ -1,6 +1,7 @@
 'use client';
 
 import { Clock } from 'lucide-react';
+import { useLocale, useT } from '@/i18n/I18nProvider';
 import { PlaceImage } from './PlaceImage';
 import { Rating, PriceRange } from '@/components/ui/Rating';
 import { SaveButton } from '@/features/favorites/components/SaveButton';
@@ -31,6 +32,9 @@ export function PlaceGrid({
   onRequireAuth,
   className,
 }: PlaceGridProps) {
+  const t = useT();
+  const locale = useLocale();
+
   if (isPending) {
     return (
       <div className={cn('grid grid-cols-2 gap-3 px-5', className)}>
@@ -77,7 +81,7 @@ export function PlaceGrid({
               {place.isOpenNow && (
                 <span className="bg-surface/90 text-success absolute bottom-2.5 left-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[0.625rem] font-semibold backdrop-blur-sm">
                   <Clock className="size-2.5" aria-hidden />
-                  Open
+                  {t('place.openNow')}
                 </span>
               )}
             </button>
@@ -109,7 +113,7 @@ export function PlaceGrid({
 
             {place.distanceM !== null && (
               <p className="text-ink-subtle mt-0.5 truncate text-xs">
-                {formatDistance(place.distanceM)} · {place.district ?? place.province}
+                {formatDistance(place.distanceM, locale)} · {place.district ?? place.province}
               </p>
             )}
           </button>

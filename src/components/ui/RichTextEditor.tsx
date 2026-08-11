@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import { RichText } from './RichText';
 import { fieldClass } from './field';
+import { useT } from '@/i18n/I18nProvider';
+import type { MessageKey } from '@/i18n/messages/keys';
 import { cn } from '@/lib/utils/cn';
 
 /**
@@ -33,13 +35,13 @@ type Wrap = { before: string; after: string };
 type LinePrefix = { prefix: string };
 type Action = Wrap | LinePrefix;
 
-const TOOLS: Array<{ label: string; icon: typeof Bold; action: Action }> = [
-  { label: 'Bold', icon: Bold, action: { before: '**', after: '**' } },
-  { label: 'Italic', icon: Italic, action: { before: '*', after: '*' } },
-  { label: 'Heading', icon: Heading, action: { prefix: '## ' } },
-  { label: 'Bullet list', icon: List, action: { prefix: '- ' } },
-  { label: 'Numbered list', icon: ListOrdered, action: { prefix: '1. ' } },
-  { label: 'Link', icon: Link2, action: { before: '[', after: '](https://)' } },
+const TOOLS: Array<{ labelKey: MessageKey; icon: typeof Bold; action: Action }> = [
+  { labelKey: 'editor.bold', icon: Bold, action: { before: '**', after: '**' } },
+  { labelKey: 'editor.italic', icon: Italic, action: { before: '*', after: '*' } },
+  { labelKey: 'editor.heading', icon: Heading, action: { prefix: '## ' } },
+  { labelKey: 'editor.bulletList', icon: List, action: { prefix: '- ' } },
+  { labelKey: 'editor.numberedList', icon: ListOrdered, action: { prefix: '1. ' } },
+  { labelKey: 'editor.link', icon: Link2, action: { before: '[', after: '](https://)' } },
 ];
 
 export function RichTextEditor({
@@ -59,6 +61,7 @@ export function RichTextEditor({
   rows?: number;
   id?: string;
 }) {
+  const t = useT();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [preview, setPreview] = useState(false);
 
@@ -107,16 +110,16 @@ export function RichTextEditor({
   return (
     <div>
       <div className="mb-2 flex flex-wrap items-center gap-1">
-        {TOOLS.map(({ label, icon: Icon, action }) => (
+        {TOOLS.map(({ labelKey, icon: Icon, action }) => (
           <button
-            key={label}
+            key={labelKey}
             type="button"
             disabled={disabled || preview}
             onClick={() => {
               apply(action);
             }}
-            aria-label={label}
-            title={label}
+            aria-label={t(labelKey)}
+            title={t(labelKey)}
             className="text-ink-muted hover:bg-surface-sunken flex size-9 items-center justify-center rounded-sm disabled:opacity-40"
           >
             <Icon className="size-4" aria-hidden />
@@ -139,7 +142,7 @@ export function RichTextEditor({
           ) : (
             <Eye className="size-3.5" aria-hidden />
           )}
-          {preview ? 'Edit' : 'Preview'}
+          {preview ? t('common.edit') : t('common.preview')}
         </button>
       </div>
 
@@ -148,7 +151,7 @@ export function RichTextEditor({
           {value.trim() ? (
             <RichText source={value} />
           ) : (
-            <p className="text-ink-subtle text-sm">Nothing to preview yet.</p>
+            <p className="text-ink-subtle text-sm">{t('editor.nothingToPreview')}</p>
           )}
         </div>
       ) : (

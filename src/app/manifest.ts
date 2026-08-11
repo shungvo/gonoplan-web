@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { getLocale, getT } from '@/i18n/server';
 
 /**
  * PWA manifest (§33).
@@ -8,11 +9,14 @@ import type { MetadataRoute } from 'next';
  * screenshots are filled in during Phase 13 (PWA), together with the service
  * worker.
  */
-export default function manifest(): MetadataRoute.Manifest {
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const locale = await getLocale();
+  const t = await getT();
+
   return {
-    name: 'Gonoplan — discover where to go',
+    name: t('manifest.name'),
     short_name: 'Gonoplan',
-    description: 'Discover where to go, eat and stay — wherever you are.',
+    description: t('meta.appDescription'),
     start_url: '/',
     scope: '/',
     display: 'standalone',
@@ -20,7 +24,7 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: '#ffffff',
     theme_color: '#ffffff',
     categories: ['travel', 'lifestyle', 'navigation'],
-    lang: 'en',
+    lang: locale,
     dir: 'ltr',
     icons: [
       { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },

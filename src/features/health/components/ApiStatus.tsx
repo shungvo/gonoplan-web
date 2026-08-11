@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { CheckCircle2, AlertTriangle, LoaderCircle } from 'lucide-react';
 import { api } from '@/lib/api/client';
+import { useT } from '@/i18n/I18nProvider';
 import { cn } from '@/lib/utils/cn';
 
 interface HealthReport {
@@ -25,6 +26,7 @@ interface HealthReport {
  * and TanStack Query. If this renders green, the plumbing is real.
  */
 export function ApiStatus() {
+  const t = useT();
   const { data, isPending, isError, error } = useQuery({
     queryKey: ['health'],
     queryFn: () => api.get<HealthReport>('/health/ready', { withAuth: false }),
@@ -60,17 +62,17 @@ export function ApiStatus() {
       <div className="min-w-0 text-sm">
         <p className="font-semibold text-ink">
           {tone === 'pending'
-            ? 'Checking API…'
+            ? t('status.checking')
             : tone === 'ok'
-              ? 'API connected'
-              : 'API unreachable'}
+              ? t('status.connected')
+              : t('status.unreachable')}
         </p>
         <p className="mt-0.5 text-ink-muted">
           {isError
             ? error.message
             : data
               ? `PostGIS ${data.checks.database.postgisVersion?.split(' ')[0] ?? '—'} · ${String(data.checks.database.latencyMs ?? 0)}ms · ${data.environment}`
-              : 'Proxying /api/v1 → Express'}
+              : t('status.proxying')}
         </p>
       </div>
     </div>

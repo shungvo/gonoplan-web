@@ -1,3 +1,5 @@
+import type { Locale } from '@/i18n/config';
+import { formatDecimal, formatNumber } from '@/i18n/format';
 const METERS_PER_DEGREE_LATITUDE = 111_320;
 
 export interface Coordinates {
@@ -67,8 +69,11 @@ export function haversineMeters(from: Coordinates, to: Coordinates): number {
 }
 
 /** "450 m" / "1.2 km" — distance the way a person would say it. */
-export function formatDistance(meters: number): string {
-  if (meters < 1000) return `${String(Math.round(meters / 10) * 10)} m`;
-  if (meters < 10_000) return `${(meters / 1000).toFixed(1)} km`;
-  return `${String(Math.round(meters / 1000))} km`;
+export function formatDistance(meters: number, locale: Locale): string {
+  // `km` and `m` are the same in both languages; the decimal mark is not.
+  // `toFixed(1)` always writes a full stop, so "1.2 km" sat next to "4,6" on
+  // the same card until this took a locale.
+  if (meters < 1000) return `${formatNumber(Math.round(meters / 10) * 10, locale)} m`;
+  if (meters < 10_000) return `${formatDecimal(meters / 1000, locale)} km`;
+  return `${formatNumber(Math.round(meters / 1000), locale)} km`;
 }

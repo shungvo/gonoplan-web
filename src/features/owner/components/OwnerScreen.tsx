@@ -28,6 +28,9 @@ import {
   fetchPlaceAnalytics,
   type OwnerReview,
 } from '../api';
+import { useLocale, useT } from '@/i18n/I18nProvider';
+import { formatNumber, formatRating } from '@/i18n/format';
+import type { MessageKey } from '@/i18n/messages/keys';
 import { cn } from '@/lib/utils/cn';
 
 type Tab = 'places' | 'reviews';
@@ -47,6 +50,8 @@ const STATUS_STYLE: Record<string, string> = {
  * the server returns `canManagePlaces` and the reason for exactly this reason.
  */
 export function OwnerScreen() {
+  const t = useT();
+  const locale = useLocale();
   const router = useRouter();
   const { user, isInitializing } = useSessionStore();
   const [authOpen, setAuthOpen] = useState(false);
@@ -100,14 +105,14 @@ export function OwnerScreen() {
           onClick={() => {
             router.push('/profile');
           }}
-          aria-label="Back"
+          aria-label={t('common.back')}
           className="text-ink-muted -ml-2 mt-3 flex size-9 items-center justify-center rounded-full"
         >
           <ArrowLeft className="size-5" aria-hidden />
         </button>
 
         <h1 className="text-ink mt-1 text-[1.75rem] leading-tight font-semibold tracking-tight">
-          Your business
+          {t('owner.title')}
         </h1>
       </header>
 
@@ -119,15 +124,15 @@ export function OwnerScreen() {
         {!isInitializing && !user && (
           <EmptyState
             icon={<Store className="size-7" aria-hidden />}
-            title="Sign in to manage a business"
-            description="Claim your place, respond to reviews, and see how many people are finding you."
+            title={t('owner.signInTitle')}
+            description={t('owner.signInBody')}
             action={
               <Button
                 onClick={() => {
                   setAuthOpen(true);
                 }}
               >
-                Sign in
+                {t('common.signIn')}
               </Button>
             }
           />
@@ -150,8 +155,10 @@ export function OwnerScreen() {
                     {dashboard.data.profile.businessName}
                   </p>
                   <p className="text-ink-muted mt-0.5 text-sm">
-                    {dashboard.data.totals.published} published ·{' '}
-                    {dashboard.data.totals.pending} awaiting review
+                    {t('owner.counts', {
+                      published: dashboard.data.totals.published,
+                      pending: dashboard.data.totals.pending,
+                    })}
                   </p>
                 </div>
                 <span
@@ -160,7 +167,7 @@ export function OwnerScreen() {
                     STATUS_STYLE[dashboard.data.profile.status] ?? 'bg-surface-sunken text-ink',
                   )}
                 >
-                  {dashboard.data.profile.status.toLowerCase()}
+                  {t(`ownerStatus.${dashboard.data.profile.status}`)}
                 </span>
               </div>
 
@@ -171,23 +178,24 @@ export function OwnerScreen() {
                 <p className="bg-surface-sunken text-ink-muted mt-3 flex items-start gap-2 rounded-md p-3 text-sm">
                   <AlertCircle className="text-warning mt-0.5 size-4 shrink-0" aria-hidden />
                   <span>
-                    {dashboard.data.profile.rejectionReason ??
-                      'Your business is awaiting approval. You can still see everything here meanwhile.'}
+                    {dashboard.data.profile.rejectionReason ?? t('owner.pendingNotice')}
                   </span>
                 </p>
               )}
 
               <dl className="mt-4 grid grid-cols-3 gap-2 text-center">
-                {[
-                  { label: 'Views', value: dashboard.data.totals.views },
-                  { label: 'Saves', value: dashboard.data.totals.saves },
-                  { label: 'Reviews', value: dashboard.data.totals.reviews },
-                ].map((stat) => (
-                  <div key={stat.label} className="bg-surface-sunken rounded-md py-2.5">
+                {(
+                  [
+                    { labelKey: 'owner.views', value: dashboard.data.totals.views },
+                    { labelKey: 'owner.saves', value: dashboard.data.totals.saves },
+                    { labelKey: 'owner.reviews', value: dashboard.data.totals.reviews },
+                  ] as Array<{ labelKey: MessageKey; value: number }>
+                ).map((stat) => (
+                  <div key={stat.labelKey} className="bg-surface-sunken rounded-md py-2.5">
                     <dd className="text-ink text-lg leading-none font-semibold tabular-nums">
-                      {stat.value}
+                      {formatNumber(stat.value, locale)}
                     </dd>
-                    <dt className="text-ink-subtle mt-1 text-xs">{stat.label}</dt>
+                    <dt className="text-ink-subtle mt-1 text-xs">{t(stat.labelKey)}</dt>
                   </div>
                 ))}
               </dl>
@@ -200,7 +208,7 @@ export function OwnerScreen() {
                   setTab('places');
                 }}
               >
-                Places
+                {t('owner.places')}
               </Chip>
               <Chip
                 selected={tab === 'reviews'}
@@ -209,7 +217,7 @@ export function OwnerScreen() {
                 }}
               >
                 <MessageSquare className="size-3.5" aria-hidden />
-                Reviews
+                {t('owner.reviews')}
                 {dashboard.data.totals.unanswered > 0 && (
                   // Sizes to its content with a floor, and caps at 99+. A fixed
                   // circle clipped "540" to "540" with the edges cut off, which
@@ -217,7 +225,7 @@ export function OwnerScreen() {
                   <span className="bg-danger ml-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[0.625rem] font-semibold text-white tabular-nums">
                     {dashboard.data.totals.unanswered > 99
                       ? '99+'
-                      : dashboard.data.totals.unanswered}
+                      : formatNumber(dashboard.data.totals.unanswered, locale)}
                   </span>
                 )}
               </Chip>
@@ -228,8 +236,8 @@ export function OwnerScreen() {
                 {places.data?.length === 0 && (
                   <EmptyState
                     icon={<Store className="size-7" aria-hidden />}
-                    title="No places yet"
-                    description="Places you submit and claim will appear here with their review status."
+                    title={t('owner.noPlacesTitle')}
+                    description={t('owner.noPlacesBody')}
                   />
                 )}
 
@@ -246,7 +254,7 @@ export function OwnerScreen() {
                           STATUS_STYLE[place.status] ?? 'bg-surface-sunken text-ink',
                         )}
                       >
-                        {place.status.toLowerCase()}
+                        {t(`placeStatus.${place.status}`)}
                       </span>
                     </div>
 
@@ -259,16 +267,17 @@ export function OwnerScreen() {
                     {place.hasPendingRevision && (
                       <p className="text-ink-muted mt-2.5 flex items-center gap-1.5 text-xs">
                         <Clock className="size-3.5" aria-hidden />
-                        Your changes are awaiting review
+                        {t('owner.revisionPending')}
                       </p>
                     )}
 
                     <div className="text-ink-subtle mt-3 flex items-center gap-3 text-xs tabular-nums">
-                      <span>{place.viewCount} views</span>
-                      <span>{place.saveCount} saves</span>
+                      <span>{t('owner.viewCount', { count: place.viewCount })}</span>
+                      <span>{t('owner.saveCount', { count: place.saveCount })}</span>
                       <span>
-                        {place.reviewCount} reviews
-                        {place.reviewCount > 0 && ` · ${place.averageRating.toFixed(1)}★`}
+                        {t('owner.reviewCount', { count: place.reviewCount })}
+                        {place.reviewCount > 0 &&
+                          ` · ${formatRating(place.averageRating, locale)}★`}
                       </span>
                     </div>
 
@@ -280,7 +289,9 @@ export function OwnerScreen() {
                       className="text-primary mt-3 inline-flex items-center gap-1.5 text-xs font-medium"
                     >
                       <BarChart3 className="size-3.5" aria-hidden />
-                      {expandedPlaceId === place.id ? 'Hide' : 'Show'} last 30 days
+                      {expandedPlaceId === place.id
+                        ? t('owner.hideLast30')
+                        : t('owner.showLast30')}
                     </button>
 
                     {expandedPlaceId === place.id && (
@@ -305,7 +316,7 @@ export function OwnerScreen() {
                       setUnansweredOnly(true);
                     }}
                   >
-                    Needs a reply
+                    {t('owner.needsReply')}
                   </Chip>
                   <Chip
                     selected={!unansweredOnly}
@@ -313,18 +324,18 @@ export function OwnerScreen() {
                       setUnansweredOnly(false);
                     }}
                   >
-                    All
+                    {t('owner.all')}
                   </Chip>
                 </div>
 
                 {reviews.data?.length === 0 && (
                   <EmptyState
                     icon={<MessageSquare className="size-7" aria-hidden />}
-                    title={unansweredOnly ? 'Everything answered' : 'No reviews yet'}
+                    title={unansweredOnly ? t('owner.allAnswered') : t('owner.noReviews')}
                     description={
                       unansweredOnly
-                        ? 'Every review on your places has a reply.'
-                        : 'Reviews on your places will appear here.'
+                        ? t('owner.allAnsweredBody')
+                        : t('owner.noReviewsBody')
                     }
                   />
                 )}
@@ -334,7 +345,7 @@ export function OwnerScreen() {
                     <article key={review.id} className="bg-surface rounded-lg p-4 shadow-sm">
                       <p className="text-ink-subtle text-xs">{review.place.name}</p>
                       <p className="text-ink mt-1 text-sm font-semibold">
-                        {review.authorName} · {review.rating}★
+                        {review.authorName} · {formatNumber(review.rating, locale)}★
                       </p>
                       {review.content && (
                         <p className="text-ink-muted mt-1.5 text-sm leading-relaxed">
@@ -355,7 +366,7 @@ export function OwnerScreen() {
                             setReplyTo(review);
                           }}
                         >
-                          Reply
+                          {t('owner.reply')}
                         </Button>
                       )}
                     </article>
@@ -372,7 +383,7 @@ export function OwnerScreen() {
       <AuthSheet
         open={authOpen}
         onOpenChange={setAuthOpen}
-        reason="Sign in to manage your business on Gonoplan."
+        reason={t('owner.signInReason')}
       />
       <ReplySheet
         review={replyTo}

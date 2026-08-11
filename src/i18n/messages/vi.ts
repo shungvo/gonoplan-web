@@ -1,0 +1,480 @@
+import type { Messages } from './keys';
+
+/**
+ * The Vietnamese catalogue, in the same order as `en.ts` so the two can be
+ * read side by side.
+ *
+ * Vietnamese has one plural form, so a count is written straight into the
+ * sentence — "3 địa điểm", never "3 địa điểms". Where English needs `one` and
+ * `other`, the entry here is a plain string.
+ */
+export const vi: Messages = {
+  // ─── Common ───────────────────────────────────────────────────────────────
+  'common.cancel': 'Huỷ',
+  'common.save': 'Lưu',
+  'common.remove': 'Gỡ',
+  'common.close': 'Đóng',
+  'common.back': 'Quay lại',
+  'common.retry': 'Thử lại',
+  'common.loading': 'Đang tải',
+  'common.optional': '(không bắt buộc)',
+  'common.somethingWrong': 'Đã có lỗi xảy ra.',
+  'common.offline': 'Không kết nối được Gonoplan. Kiểm tra mạng giúp bạn.',
+  'common.signIn': 'Đăng nhập',
+  'common.seeAll': 'Xem tất cả',
+  'common.apply': 'Áp dụng',
+  'common.clear': 'Xoá',
+  'common.reset': 'Đặt lại',
+  'common.done': 'Xong',
+  'common.edit': 'Sửa',
+  'common.delete': 'Xoá',
+  'common.submit': 'Gửi',
+  'common.confirm': 'Xác nhận',
+  'common.preview': 'Xem trước',
+
+  // ─── Navigation ───────────────────────────────────────────────────────────
+  'nav.home': 'Trang chủ',
+  'nav.explore': 'Khám phá',
+  'nav.saved': 'Đã lưu',
+  'nav.profile': 'Cá nhân',
+  'nav.main': 'Chính',
+
+  // ─── Language ─────────────────────────────────────────────────────────────
+  'language.title': 'Ngôn ngữ',
+  'language.description': 'Áp dụng cho toàn app, và theo tài khoản sang máy khác.',
+
+  // ─── Page titles ──────────────────────────────────────────────────────────
+  'meta.saved': 'Đã lưu',
+  'meta.profile': 'Cá nhân',
+  'meta.explore': 'Khám phá',
+  'meta.search': 'Tìm kiếm',
+  'meta.owner': 'Doanh nghiệp của bạn',
+  'meta.addPlace': 'Thêm địa điểm',
+  'meta.addPlaceDescription':
+    'Giới thiệu một nơi đáng đi. Mọi đề xuất đều được duyệt trước khi hiển thị.',
+  'meta.admin': 'Quản trị',
+  'meta.appDescription': 'Tìm chỗ đi chơi, ăn uống và nghỉ ngơi — ở bất cứ đâu bạn đang đứng.',
+  'meta.placeFallback': 'Địa điểm',
+  'meta.placeFallbackDescription': 'Khám phá địa điểm trên Gonoplan.',
+  'meta.placeDescription': '{category} ở {area}. Khám phá trên Gonoplan.',
+  'manifest.name': 'Gonoplan — tìm chỗ đáng đi',
+
+  // ─── Home ─────────────────────────────────────────────────────────────────
+  'home.searchPlaceholder': 'Bạn muốn đi đâu?',
+  'home.signedInAs': 'Đang đăng nhập bằng {name}',
+  'home.categories': 'Danh mục',
+  'home.map': 'Bản đồ',
+  'home.onTheMap': 'Trên bản đồ',
+  'home.viewAll': 'Xem tất cả',
+  'home.withinRadius': 'trong {distance}',
+  'home.nothingOpen': 'Quanh đây đang đóng cửa hết rồi.',
+  'home.showingAround': 'Đang xem các địa điểm quanh {label}',
+
+  'collection.popular-near-you.title': 'Được ưa chuộng gần bạn',
+  'collection.popular-near-you.subtitle': 'Nơi mọi người thật sự đang tới',
+  'collection.best-rated.title': 'Đánh giá cao nhất',
+  'collection.best-rated.subtitle': 'Tốt đều, không chỉ một lần',
+  'collection.hidden-gems.title': 'Viên ngọc ẩn',
+  'collection.hidden-gems.subtitle': 'Được yêu thích, chưa đông',
+  'collection.good-for-tonight.title': 'Hợp cho tối nay',
+  'collection.good-for-tonight.subtitle': 'Đang mở, ở gần',
+  'collection.recommended-for-you.title': 'Gợi ý cho bạn',
+  'collection.recommended-for-you.subtitle': 'Dựa trên những nơi bạn hay quay lại',
+
+  // ─── Places ───────────────────────────────────────────────────────────────
+  'place.openNow': 'Đang mở',
+  'place.new': 'Mới',
+  'place.nothingYet': 'Chưa có gì ở đây.',
+  'place.gone': 'Địa điểm này không còn nữa',
+  'place.loadFailed': 'Không tải được địa điểm này',
+  'place.checkConnection': 'Kiểm tra kết nối rồi thử lại giúp bạn.',
+  'place.reviewCount': '{count} đánh giá',
+
+  // ─── Saved ────────────────────────────────────────────────────────────────
+  'saved.title': 'Đã lưu',
+  'saved.count': '{count} địa điểm bạn muốn ghé',
+  'saved.signedOutTitle': 'Đăng nhập để giữ lại các địa điểm',
+  'saved.signedOutDescription':
+    'Địa điểm đã lưu đồng bộ giữa các thiết bị, nên danh sách lập trên xe buýt vẫn còn lúc đi ăn tối.',
+  'saved.emptyTitle': 'Chưa lưu gì cả',
+  'saved.emptyDescription': 'Chạm vào dấu trang ở bất kỳ địa điểm nào để giữ lại đây.',
+  'saved.explore': 'Khám phá địa điểm',
+  'saved.add': 'Lưu địa điểm này',
+  'saved.removeAction': 'Bỏ khỏi danh sách đã lưu',
+  'saved.saved': 'Đã lưu',
+  'saved.save': 'Lưu',
+
+  // ─── Location ─────────────────────────────────────────────────────────────
+  'location.myLocation': 'Vị trí của tôi',
+  'location.finding': 'Đang tìm bạn…',
+  'location.locating': 'Đang định vị…',
+  'location.choose': 'Chọn vị trí của bạn',
+  'location.lastKnown': '{coordinates} (vị trí gần nhất)',
+
+  // ─── Search ───────────────────────────────────────────────────────────────
+  'search.label': 'Tìm kiếm',
+  'search.placeholder': 'Địa điểm, danh mục, thành phố',
+  'search.clear': 'Xoá ô tìm kiếm',
+  'search.recent': 'Gần đây',
+  'search.recentSearches': 'Tìm kiếm gần đây',
+  'search.removeRecent': 'Xoá {query} khỏi tìm kiếm gần đây',
+  'search.popular': 'Đang được tìm nhiều',
+  'search.popularSearches': 'Tìm kiếm phổ biến',
+  'search.browseCategory': 'Xem theo danh mục',
+  'search.cities': 'Thành phố',
+  'search.goToCity': 'Chuyển tới thành phố',
+  'search.browseIn': 'Xem địa điểm ở {city}',
+  'search.results': 'Kết quả tìm kiếm',
+  'search.resultCount': '{count} địa điểm',
+  'search.placeCount': '{count} địa điểm',
+  'search.nothingFound': 'Không tìm thấy gì cho “{query}”',
+  'search.nothingFoundHint': 'Thử từ ngắn hơn, một danh mục như “cà phê”, hoặc thành phố khác.',
+
+  // ─── Auth ─────────────────────────────────────────────────────────────────
+  'auth.createTitle': 'Tạo tài khoản',
+  'auth.welcomeBack': 'Chào bạn quay lại',
+  'auth.pitch': 'Lưu địa điểm, viết đánh giá và nhận gợi ý hợp với bạn.',
+  'auth.name': 'Tên',
+  'auth.email': 'Email',
+  'auth.password': 'Mật khẩu',
+  'auth.passwordHint': 'Ít nhất 8 ký tự.',
+  'auth.createAccount': 'Tạo tài khoản',
+  'auth.haveAccount': 'Đã có tài khoản?',
+  'auth.newHere': 'Lần đầu tới đây?',
+  'auth.createOne': 'Tạo tài khoản',
+  'auth.failed': 'Đã có lỗi xảy ra. Bạn thử lại nhé.',
+
+  // ─── City picker ──────────────────────────────────────────────────────────
+  'city.title': 'Chọn vị trí của bạn',
+  'city.deniedDescription':
+    'Gonoplan đang bị tắt quyền vị trí. Chọn một thành phố là mọi thứ vẫn chạy bình thường.',
+  'city.unavailableDescription':
+    'Chúng tôi không tự tìm được bạn. Chọn một thành phố để bắt đầu khám phá.',
+  'city.retry': 'Thử lại bằng vị trí của tôi',
+  'city.searchPlaceholder': 'Tìm thành phố',
+  'city.noMatch': 'Không có thành phố nào khớp “{query}”.',
+
+  // ─── Place detail ─────────────────────────────────────────────────────────
+  'detail.typical': 'trung bình',
+  'detail.getDirections': 'Chỉ đường',
+  'detail.directions': 'Chỉ đường',
+  'detail.share': 'Chia sẻ địa điểm này',
+  'detail.openFullPage': 'Mở trang đầy đủ',
+  'detail.call': 'Gọi',
+  'detail.website': 'Website',
+  'detail.about': 'Giới thiệu',
+  'detail.readMore': 'Xem thêm',
+  'detail.showLess': 'Thu gọn',
+  'detail.photos': 'Ảnh',
+  'detail.reportListing': 'Báo cáo vấn đề với địa điểm này',
+  'detail.signInToSave': 'Đăng nhập để lưu địa điểm và quay lại sau.',
+
+  // ─── Opening hours ────────────────────────────────────────────────────────
+  'hours.notListed': 'Chưa có giờ mở cửa',
+  'hours.openNow': 'Đang mở cửa',
+  'hours.closed': 'Đóng cửa',
+  'hours.open24': 'Mở cả ngày',
+
+  // ─── Getting there ────────────────────────────────────────────────────────
+  'route.title': 'Đường đi',
+  'route.travelMode': 'Phương tiện',
+  'route.drive': 'Lái xe',
+  'route.cycle': 'Xe đạp',
+  'route.walk': 'Đi bộ',
+  'route.openInMapsFor': 'Mở chỉ đường tới {name} trong Google Maps',
+  'route.blocked':
+    'Quyền vị trí đang bị chặn nên không đo được quãng đường từ chỗ bạn. Bạn vẫn mở được chỉ đường trong Maps.',
+  'route.shareLocation': 'Chia sẻ vị trí để xem mất bao lâu để tới đây.',
+  'route.useMyLocation': 'Dùng vị trí của tôi',
+  'route.finding': 'Đang tìm đường…',
+  'route.none': 'Không đo được tuyến đường — Maps có thể vẫn có.',
+  'route.estimated': 'ước tính',
+  'route.openInMaps': 'Mở trong Maps',
+
+  // ─── Photos ───────────────────────────────────────────────────────────────
+  'photos.none': 'Chưa có ảnh',
+  'photos.previous': 'Ảnh trước',
+  'photos.next': 'Ảnh sau',
+
+  // ─── Card stack ───────────────────────────────────────────────────────────
+  'stack.cardLabel':
+    '{name}. Gợi ý {position} trong {total}. Dùng phím mũi tên trái phải để xem tiếp.',
+
+  // ─── Explore ──────────────────────────────────────────────────────────────
+  'explore.title': 'Khám phá',
+  'explore.fullMap': 'Toàn bản đồ',
+  'explore.searchPlaces': 'Tìm địa điểm',
+  'explore.searchAround': 'Tìm quanh {label}',
+  'explore.list': 'Danh sách',
+  'explore.openNow': 'Đang mở',
+  'explore.clearRoute': 'Bỏ tuyến đường',
+  'explore.noRouteTo': 'Không có đường tới {name}',
+  'explore.distanceTo': '{distance} tới {name}',
+  'explore.showRouteTo': 'Xem đường tới {name}',
+  'explore.nothingInView': 'Chưa tải được gì ở khu vực này — thử kéo bản đồ lại, hoặc nới bộ lọc.',
+  'explore.loadFailed': 'Không tải được địa điểm',
+  'explore.serverProblem': 'Có lỗi ở phía chúng tôi. Bạn thử lại sau một lát nhé.',
+  'explore.noMatches': 'Không có gì khớp bộ lọc của bạn',
+  'explore.noMatchesHint': 'Thử bỏ bớt một bộ lọc hoặc mở rộng phạm vi tìm.',
+  'explore.emptyArea': 'Quanh đây chưa có gì',
+  'explore.emptyAreaHint':
+    'Gonoplan vẫn đang bổ sung khu vực này. Thử chọn thành phố khác trong phần chọn vị trí.',
+  'explore.clearFilters': 'Xoá bộ lọc',
+  'explore.resultCount': '{count} địa điểm',
+  'explore.withinRadius': 'trong {distance}',
+
+  // ─── Server-originated messages ───────────────────────────────────────────
+  'error.AUTH_REQUIRED': 'Đăng nhập để tiếp tục',
+  'error.AUTH_INVALID_CREDENTIALS': 'Email và mật khẩu không khớp',
+  'error.AUTH_TOKEN_EXPIRED': 'Phiên đăng nhập đã hết hạn — đăng nhập lại nhé',
+  'error.AUTH_EMAIL_TAKEN': 'Đã có tài khoản dùng email này',
+  'error.AUTH_ACCOUNT_SUSPENDED': 'Tài khoản này đã bị tạm ngưng',
+  'error.AUTH_FORBIDDEN': 'Bạn không có quyền làm việc này',
+  'error.VALIDATION_FAILED': 'Có thông tin chưa hợp lệ — kiểm tra lại các ô phía trên',
+  'error.PLACE_NOT_FOUND': 'Không tìm thấy địa điểm đó',
+  'error.PLACE_NOT_APPROVED': 'Địa điểm này chưa khả dụng',
+  'error.PLACE_ALREADY_EXISTS': 'Đã có một địa điểm tương tự ở đây',
+  'error.PLACE_EDIT_FORBIDDEN': 'Bạn không sửa được địa điểm này',
+  'error.REVIEW_NOT_FOUND': 'Không tìm thấy đánh giá đó',
+  'error.REVIEW_ALREADY_EXISTS': 'Bạn đã đánh giá địa điểm này rồi',
+  'error.REVIEW_OWN_PLACE_FORBIDDEN': 'Bạn không thể tự đánh giá quán của mình',
+  'error.REVIEW_EDIT_WINDOW_EXPIRED': 'Đánh giá chỉ sửa được trong 24 giờ',
+  'error.OWNER_NOT_APPROVED': 'Doanh nghiệp của bạn vẫn đang được duyệt',
+  'error.REPORT_SELF_FORBIDDEN': 'Bạn không thể báo cáo nội dung của chính mình',
+  'error.REPORT_ALREADY_HANDLED': 'Báo cáo này đã được xử lý',
+  'error.UPLOAD_INVALID_TYPE': 'Định dạng tệp này không được hỗ trợ',
+  'error.UPLOAD_TOO_LARGE': 'Ảnh này quá lớn',
+  'error.UPLOAD_VERIFICATION_FAILED': 'Không xác minh được ảnh này',
+  'error.ROUTE_NOT_FOUND': 'Không có đường giữa hai điểm này',
+  'error.ADDRESS_NOT_FOUND': 'Không có địa chỉ tại điểm này',
+  'error.RATE_LIMIT_EXCEEDED': 'Bạn thao tác hơi nhanh — chậm lại một chút nhé',
+  'error.PROVIDER_UNAVAILABLE': 'Dịch vụ này đang không khả dụng',
+  'error.SERVICE_UNAVAILABLE': 'Dịch vụ này đang không khả dụng',
+  'error.NETWORK_ERROR': 'Không kết nối được Gonoplan. Kiểm tra mạng giúp bạn.',
+  'error.INTERNAL_ERROR': 'Có lỗi ở phía chúng tôi',
+
+  // ─── Reviews ──────────────────────────────────────────────────────────────
+  'reviews.title': 'Đánh giá',
+  'reviews.write': 'Viết đánh giá',
+  'reviews.none': 'Chưa có đánh giá nào — bạn viết đầu tiên nhé.',
+  'reviews.showingFirst': 'Đang hiển thị {count} đánh giá đầu tiên',
+  'reviews.sortHelpful': 'Hữu ích nhất',
+  'reviews.sortRecent': 'Mới nhất',
+  'reviews.sortHigh': 'Cao nhất',
+  'reviews.sortLow': 'Thấp nhất',
+  'reviews.you': 'Bạn',
+  'reviews.ratingOutOf': '{rating} trên 5',
+  'reviews.helpful': 'Hữu ích',
+  'reviews.owner': 'chủ quán',
+  'reviews.photoAlt': 'Ảnh {position} trong đánh giá của {name}',
+  'reviews.today': 'Hôm nay',
+  'reviews.yesterday': 'Hôm qua',
+
+  // ─── Write a review ───────────────────────────────────────────────────────
+  'write.editTitle': 'Sửa đánh giá của bạn',
+  'write.newTitle': 'Đánh giá địa điểm này',
+  'write.tellMore': 'Kể thêm cho mọi người',
+  'write.contentPlaceholder': 'Điều gì đáng nhớ? Có gì nên biết trước khi tới không?',
+  'write.photos': 'Ảnh',
+  'write.saveFailed': 'Không lưu được đánh giá của bạn.',
+  'write.saveChanges': 'Lưu thay đổi',
+  'write.post': 'Đăng đánh giá',
+  'write.editWindow': 'Đánh giá sửa được trong 24 giờ sau khi đăng.',
+  'write.publicNotice': 'Đánh giá của bạn hiển thị công khai kèm tên bạn.',
+
+  // ─── Report ───────────────────────────────────────────────────────────────
+  'report.title': 'Báo cáo địa điểm này',
+  'report.reason': 'Lý do',
+  'report.details': 'Chi tiết',
+  'report.required': '(bắt buộc)',
+  'report.detailsPlaceholder': 'Bạn thấy gì? Càng cụ thể càng tốt.',
+  'report.send': 'Gửi báo cáo',
+  'report.privacy':
+    'Tên bạn không bao giờ hiển thị công khai. Chỉ người kiểm duyệt thấy ai đã báo cáo.',
+  'report.failed': 'Không gửi được báo cáo. Bạn thử lại sau một lát nhé.',
+  'report.alreadyTitle': 'Đội ngũ đã nhận được rồi',
+  'report.alreadyBody': 'Bạn đã báo cáo địa điểm này và chúng tôi vẫn đang xem xét.',
+  'report.thanksTitle': 'Cảm ơn bạn đã báo',
+  'report.thanksBody': 'Sẽ có người kiểm tra địa điểm này. Chúng tôi không tiết lộ ai đã báo cáo.',
+  'report.CLOSED_PERMANENTLY': 'Đã đóng cửa hẳn',
+  'report.CLOSED_PERMANENTLY.hint': 'Nơi này đã ngừng hoạt động',
+  'report.INCORRECT_INFO': 'Thông tin sai',
+  'report.INCORRECT_INFO.hint': 'Địa chỉ, giờ mở cửa hoặc số điện thoại sai',
+  'report.DUPLICATE': 'Trùng lặp',
+  'report.DUPLICATE.hint': 'Địa điểm này đã có trên Gonoplan',
+  'report.SPAM': 'Spam hoặc giả mạo',
+  'report.SPAM.hint': 'Đây là quảng cáo, hoặc không tồn tại',
+  'report.INAPPROPRIATE': 'Không phù hợp',
+  'report.INAPPROPRIATE.hint': 'Nội dung hoặc hình ảnh phản cảm',
+  'report.OTHER': 'Vấn đề khác',
+  'report.OTHER.hint': 'Cho chúng tôi biết vấn đề là gì',
+
+  // ─── Photo picker ─────────────────────────────────────────────────────────
+  'picker.photoAlt': 'Ảnh {position}',
+  'picker.removePhoto': 'Gỡ ảnh {position}',
+  'picker.uploading': 'Đang tải ảnh lên',
+  'picker.add': 'Thêm ảnh',
+  'picker.failed': 'Không tải được ảnh này lên.',
+
+  // ─── Add a place ──────────────────────────────────────────────────────────
+  'submit.signInTitle': 'Đăng nhập để thêm địa điểm',
+  'submit.signInBody':
+    'Đề xuất được ghi nhận vào tài khoản của bạn, và chúng tôi có thể cần hỏi thêm.',
+  'submit.goToSignIn': 'Tới trang đăng nhập',
+  'submit.doneTitle': 'Đã gửi để duyệt',
+  'submit.doneBody':
+    'Người kiểm duyệt sẽ xem {name} trước khi hiển thị. Trong lúc đó bạn tìm thấy nó trong trang cá nhân.',
+  'submit.backToExplore': 'Về Khám phá',
+  'submit.addAnother': 'Thêm địa điểm khác',
+  'submit.title': 'Thêm địa điểm',
+  'submit.intro': 'Mọi thứ ở đây đều được kiểm duyệt trước khi lên sóng.',
+  'submit.name': 'Tên',
+  'submit.namePlaceholder': 'The Workshop Coffee',
+  'submit.category': 'Danh mục',
+  'submit.description': 'Mô tả',
+  'submit.descriptionHint': 'Hỗ trợ in đậm, tiêu đề và danh sách. Hãy nói vì sao nơi này đáng đi.',
+  'submit.descriptionPlaceholder':
+    'Quán rang xay nhỏ trong con hẻm yên tĩnh.\n\n- Cà phê nguyên bản, đổi hàng tuần\n- Đủ yên để ngồi làm việc',
+  'submit.photos': 'Ảnh',
+  'submit.photosHint': 'Tối đa tám ảnh. Ảnh đầu tiên làm ảnh bìa.',
+  'submit.address': 'Địa chỉ',
+  'submit.addressHint': 'Gõ vài chữ rồi chọn gợi ý — ghim và các ô bên dưới tự điền.',
+  'submit.addressPlaceholder': '27 Ngô Đức Kế, Phường Bến Nghé',
+  'submit.province': 'Tỉnh / Thành phố',
+  'submit.district': 'Quận / Huyện',
+  'submit.districtPlaceholder': 'Quận 1',
+  'submit.ward': 'Phường / Xã',
+  'submit.wardPlaceholder': 'Phường Bến Nghé',
+  'submit.pin': 'Ghim đúng vị trí',
+  'submit.pinHint': 'Kéo bản đồ để dời ghim.',
+  'submit.useMyLocation': 'Dùng vị trí của tôi',
+  'submit.useThisAddress': 'Dùng địa chỉ này',
+  'submit.fallbackWarning': 'Lấy từ dịch vụ địa chỉ dành cho môi trường phát triển — kiểm tra lại trước khi gửi.',
+  'submit.priceRange': 'Mức giá',
+  'submit.phone': 'Điện thoại',
+  'submit.phonePlaceholder': '028 3822 1234',
+  'submit.website': 'Website',
+  'submit.failed': 'Không gửi được. Bạn thử lại nhé.',
+  'submit.send': 'Gửi để duyệt',
+
+  'priceRange.BUDGET': 'Bình dân',
+  'priceRange.MODERATE': 'Vừa phải',
+  'priceRange.EXPENSIVE': 'Đắt',
+  'priceRange.LUXURY': 'Sang trọng',
+
+  // ─── Address autocomplete ─────────────────────────────────────────────────
+  'address.suggestions': 'Gợi ý địa chỉ',
+
+  // ─── Rich text editor ─────────────────────────────────────────────────────
+  'editor.bold': 'In đậm',
+  'editor.italic': 'In nghiêng',
+  'editor.heading': 'Tiêu đề',
+  'editor.bulletList': 'Danh sách gạch đầu dòng',
+  'editor.numberedList': 'Danh sách đánh số',
+  'editor.link': 'Liên kết',
+  'editor.nothingToPreview': 'Chưa có gì để xem trước.',
+
+  // ─── Owner ────────────────────────────────────────────────────────────────
+  'owner.title': 'Doanh nghiệp của bạn',
+  'owner.signInTitle': 'Đăng nhập để quản lý doanh nghiệp',
+  'owner.signInBody':
+    'Nhận địa điểm của bạn, trả lời đánh giá và xem có bao nhiêu người đang tìm thấy bạn.',
+  'owner.signInReason': 'Đăng nhập để quản lý doanh nghiệp của bạn trên Gonoplan.',
+  'owner.counts': '{published} đã đăng · {pending} đang chờ duyệt',
+  'owner.pendingNotice':
+    'Doanh nghiệp của bạn đang chờ duyệt. Trong lúc đó bạn vẫn xem được mọi thứ ở đây.',
+  'owner.views': 'Lượt xem',
+  'owner.saves': 'Lượt lưu',
+  'owner.reviews': 'Đánh giá',
+  'owner.places': 'Địa điểm',
+  'owner.noPlacesTitle': 'Chưa có địa điểm nào',
+  'owner.noPlacesBody':
+    'Các địa điểm bạn gửi và nhận sẽ hiện ở đây kèm trạng thái duyệt.',
+  'owner.revisionPending': 'Thay đổi của bạn đang chờ duyệt',
+  'owner.viewCount': '{count} lượt xem',
+  'owner.saveCount': '{count} lượt lưu',
+  'owner.reviewCount': '{count} đánh giá',
+  'owner.showLast30': 'Xem 30 ngày gần nhất',
+  'owner.hideLast30': 'Ẩn 30 ngày gần nhất',
+  'owner.needsReply': 'Cần trả lời',
+  'owner.all': 'Tất cả',
+  'owner.allAnswered': 'Đã trả lời hết',
+  'owner.allAnsweredBody': 'Mọi đánh giá ở địa điểm của bạn đều đã có phản hồi.',
+  'owner.noReviews': 'Chưa có đánh giá nào',
+  'owner.noReviewsBody': 'Đánh giá về địa điểm của bạn sẽ hiện ở đây.',
+  'owner.reply': 'Trả lời',
+
+  'placeStatus.PENDING': 'đang chờ duyệt',
+  'placeStatus.APPROVED': 'đã đăng',
+  'placeStatus.REJECTED': 'bị từ chối',
+  'placeStatus.SUSPENDED': 'bị tạm ngưng',
+  'placeStatus.DRAFT': 'bản nháp',
+  'placeStatus.DELETED': 'đã xoá',
+
+  // ─── Register a business ──────────────────────────────────────────────────
+  'register.title': 'Đăng ký doanh nghiệp',
+  'register.body':
+    'Nhận địa điểm của bạn, trả lời đánh giá và xem có bao nhiêu người đang tìm thấy bạn. Mỗi đăng ký đều được quản trị viên duyệt trước khi hoạt động.',
+  'register.name': 'Tên doanh nghiệp',
+  'register.namePlaceholder': 'Hòa Hospitality Group',
+  'register.email': 'Email liên hệ',
+  'register.emailPlaceholder': 'contact@yourbusiness.vn',
+  'register.phone': 'Điện thoại',
+  'register.phonePlaceholder': '+84 28 1234 5678',
+  'register.failed': 'Không đăng ký được doanh nghiệp.',
+  'register.submit': 'Đăng ký',
+
+  // ─── Owner reply ──────────────────────────────────────────────────────────
+  'reply.title': 'Trả lời với tư cách doanh nghiệp',
+  'reply.context': '{place} · {name} đã chấm {rating}★',
+  'reply.label': 'Phản hồi của bạn',
+  'reply.placeholder': 'Cảm ơn khách, hoặc nói rõ bạn đã thay đổi điều gì.',
+  'reply.failed': 'Không đăng được phản hồi.',
+  'reply.post': 'Đăng phản hồi',
+  'reply.publicNotice': 'Phản hồi hiển thị công khai kèm tên doanh nghiệp của bạn.',
+
+  // ─── Place page ───────────────────────────────────────────────────────────
+  'page.back': 'Quay lại',
+  'page.goneBody': 'Có thể nó đã bị gỡ, hoặc liên kết đã cũ.',
+  'page.backToApp': 'Về Gonoplan',
+
+  // ─── Star input ───────────────────────────────────────────────────────────
+  'stars.groupLabel': 'Đánh giá của bạn',
+  'stars.starLabel': '{count} sao — {word}',
+  'stars.prompt': 'Chạm để chấm điểm',
+  'stars.1': 'Tệ',
+  'stars.2': 'Tạm',
+  'stars.3': 'Ổn',
+  'stars.4': 'Tốt',
+  'stars.5': 'Tuyệt vời',
+
+  // ─── Map ──────────────────────────────────────────────────────────────────
+  'map.unavailable': 'Bản đồ không khả dụng',
+  'map.capped': 'Đang hiện các địa điểm nổi bật — phóng to để xem thêm',
+  'map.zoomIn': 'Phóng to',
+  'map.zoomOut': 'Thu nhỏ',
+
+  // ─── API status ───────────────────────────────────────────────────────────
+  'status.checking': 'Đang kiểm tra API…',
+  'status.connected': 'API đã kết nối',
+  'status.unreachable': 'Không kết nối được API',
+  'status.proxying': 'Đang proxy /api/v1 → Express',
+
+  // ─── Profile ──────────────────────────────────────────────────────────────
+  'profile.title': 'Cá nhân',
+  'profile.guestTitle': 'Bạn đang xem với tư cách khách',
+  'profile.guestDescription':
+    'Đăng nhập để lưu địa điểm, viết đánh giá và nhận gợi ý hợp với bạn.',
+  'profile.signInCta': 'Đăng nhập hoặc tạo tài khoản',
+  'profile.administrator': 'Quản trị viên',
+  'profile.businessOwner': 'Chủ doanh nghiệp',
+  'profile.addPlace': 'Thêm địa điểm',
+  'profile.yourBusiness': 'Doanh nghiệp của bạn',
+  'profile.registerBusiness': 'Đăng ký doanh nghiệp',
+  'profile.signOut': 'Đăng xuất',
+
+  'ownerStatus.PENDING': 'đang chờ duyệt',
+  'ownerStatus.APPROVED': 'đã duyệt',
+  'ownerStatus.REJECTED': 'bị từ chối',
+  'ownerStatus.SUSPENDED': 'bị tạm ngưng',
+};

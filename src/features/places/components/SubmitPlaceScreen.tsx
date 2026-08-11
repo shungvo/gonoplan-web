@@ -16,7 +16,8 @@ import { fetchCategories } from '@/features/categories/api';
 import { useLocationStore } from '@/features/location/store';
 import { useSessionStore } from '@/features/auth/store';
 import { useDebouncedValue } from '@/lib/hooks/useDebouncedValue';
-import { ApiError } from '@/lib/api/errors';
+import { useT } from '@/i18n/I18nProvider';
+import { useErrorMessage } from '@/i18n/useErrorMessage';
 import { submitPlace, PRICE_RANGES, type PriceRange } from '../api';
 
 const DESCRIPTION_MAX = 2000;
@@ -47,12 +48,15 @@ function Field({
   label,
   hint,
   required,
+  optionalLabel,
   children,
   htmlFor,
 }: {
   label: string;
   hint?: string;
   required?: boolean;
+  /** Passed in rather than translated here: `Field` is not a hook consumer. */
+  optionalLabel: string;
   children: React.ReactNode;
   htmlFor?: string;
 }) {
@@ -60,7 +64,7 @@ function Field({
     <div className="mt-5">
       <label htmlFor={htmlFor} className="text-ink block text-sm font-semibold">
         {label}
-        {!required && <span className="text-ink-subtle font-normal"> (optional)</span>}
+        {!required && <span className="text-ink-subtle font-normal"> {optionalLabel}</span>}
       </label>
       {hint && <p className="text-ink-subtle mt-0.5 text-xs">{hint}</p>}
       <div className="mt-2">{children}</div>
@@ -81,6 +85,8 @@ function Field({
  * is ceremony, not guidance.
  */
 export function SubmitPlaceScreen() {
+  const t = useT();
+  const describeError = useErrorMessage();
   const router = useRouter();
   const { user } = useSessionStore();
   const { coordinates } = useLocationStore();
@@ -184,9 +190,9 @@ export function SubmitPlaceScreen() {
     return (
       <div className="px-safe px-5 pt-10 text-center">
         <MapPin className="text-ink-subtle mx-auto size-8" aria-hidden />
-        <h1 className="text-ink mt-3 text-lg font-semibold">Sign in to add a place</h1>
+        <h1 className="text-ink mt-3 text-lg font-semibold">{t('submit.signInTitle')}</h1>
         <p className="text-ink-muted mt-1 text-sm">
-          Submissions are credited to your account, and we may need to ask you about them.
+          {t('submit.signInBody')}
         </p>
         <Button
           className="mt-4"
@@ -194,7 +200,7 @@ export function SubmitPlaceScreen() {
             router.push('/profile');
           }}
         >
-          Go to sign in
+          {t('submit.goToSignIn')}
         </Button>
       </div>
     );
@@ -206,12 +212,11 @@ export function SubmitPlaceScreen() {
         <div className="bg-success/10 text-success mx-auto flex size-14 items-center justify-center rounded-full">
           <Check className="size-7" aria-hidden />
         </div>
-        <h1 className="text-ink mt-4 text-lg font-semibold">Submitted for review</h1>
+        <h1 className="text-ink mt-4 text-lg font-semibold">{t('submit.doneTitle')}</h1>
         {/* Says what happens next. "Thanks!" with no timeline is how people
             conclude nothing happened and submit it again. */}
         <p className="text-ink-muted mx-auto mt-1 max-w-xs text-sm">
-          A moderator will check {name.trim()} before it appears. You will find it under your
-          profile in the meantime.
+          {t('submit.doneBody', { name: name.trim() })}
         </p>
         <div className="mt-5 flex justify-center gap-2">
           <Button
@@ -220,7 +225,7 @@ export function SubmitPlaceScreen() {
               router.push('/explore');
             }}
           >
-            Back to Explore
+            {t('submit.backToExplore')}
           </Button>
           <Button
             onClick={() => {
@@ -231,7 +236,7 @@ export function SubmitPlaceScreen() {
               setPhotos([]);
             }}
           >
-            Add another
+            {t('submit.addAnother')}
           </Button>
         </div>
       </div>
@@ -246,32 +251,32 @@ export function SubmitPlaceScreen() {
           onClick={() => {
             router.back();
           }}
-          aria-label="Go back"
+          aria-label={t('common.back')}
           className="text-ink -ml-2 flex size-10 items-center justify-center rounded-full"
         >
           <ArrowLeft className="size-5" aria-hidden />
         </button>
-        <h1 className="text-ink text-xl font-semibold tracking-tight">Add a place</h1>
+        <h1 className="text-ink text-xl font-semibold tracking-tight">{t('submit.title')}</h1>
       </header>
 
       <div className="px-5">
         <p className="text-ink-muted mt-2 text-sm">
-          Everything here is checked by a moderator before it goes live.
+          {t('submit.intro')}
         </p>
 
-        <Field label="Name" required htmlFor="place-name">
+        <Field optionalLabel={t('common.optional')} label={t('submit.name')} required htmlFor="place-name">
           <input
             id="place-name"
             value={name}
             onChange={(event) => {
               setName(event.target.value.slice(0, 120));
             }}
-            placeholder="The Workshop Coffee"
+            placeholder={t('submit.namePlaceholder')}
             className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
           />
         </Field>
 
-        <Field label="Category" required>
+        <Field optionalLabel={t('common.optional')} label={t('submit.category')} required>
           <div className="flex flex-wrap gap-2">
             {categories.data?.map((category) => (
               <Chip
@@ -289,8 +294,9 @@ export function SubmitPlaceScreen() {
         </Field>
 
         <Field
-          label="Description"
-          hint="Bold, headings and lists are supported. Say what makes it worth going."
+          optionalLabel={t('common.optional')}
+          label={t('submit.description')}
+          hint={t('submit.descriptionHint')}
           htmlFor="place-description"
         >
           <RichTextEditor
@@ -299,20 +305,19 @@ export function SubmitPlaceScreen() {
             onChange={setDescription}
             maxLength={DESCRIPTION_MAX}
             disabled={submit.isPending}
-            placeholder={
-              'Small roaster on a quiet lane.\n\n- Single origin, changes weekly\n- Quiet enough to work'
-            }
+            placeholder={t('submit.descriptionPlaceholder')}
           />
         </Field>
 
-        <Field label="Photos" hint="Up to eight. The first becomes the cover.">
+        <Field optionalLabel={t('common.optional')} label={t('submit.photos')} hint={t('submit.photosHint')}>
           <PhotoPicker photos={photos} onChange={setPhotos} max={8} disabled={submit.isPending} />
         </Field>
 
         <Field
-          label="Address"
+          optionalLabel={t('common.optional')}
+          label={t('submit.address')}
           required
-          hint="Start typing and pick a match — the pin and the fields below fill themselves."
+          hint={t('submit.addressHint')}
           htmlFor="place-address"
         >
           <AddressAutocomplete
@@ -326,13 +331,13 @@ export function SubmitPlaceScreen() {
               setPinPlaced(true);
             }}
             near={pin}
-            placeholder="27 Ngô Đức Kế, Phường Bến Nghé"
+            placeholder={t('submit.addressPlaceholder')}
             disabled={submit.isPending}
           />
         </Field>
 
         <div className="flex gap-3">
-          <Field label="Province / City" required htmlFor="place-province">
+          <Field optionalLabel={t('common.optional')} label={t('submit.province')} required htmlFor="place-province">
             <input
               id="place-province"
               value={province}
@@ -342,27 +347,27 @@ export function SubmitPlaceScreen() {
               className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
             />
           </Field>
-          <Field label="District" htmlFor="place-district">
+          <Field optionalLabel={t('common.optional')} label={t('submit.district')} htmlFor="place-district">
             <input
               id="place-district"
               value={district}
               onChange={(event) => {
                 setDistrict(event.target.value.slice(0, 100));
               }}
-              placeholder="Quận 1"
+              placeholder={t('submit.districtPlaceholder')}
               className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
             />
           </Field>
         </div>
 
-        <Field label="Ward" htmlFor="place-ward">
+        <Field optionalLabel={t('common.optional')} label={t('submit.ward')} htmlFor="place-ward">
           <input
             id="place-ward"
             value={ward}
             onChange={(event) => {
               setWard(event.target.value.slice(0, 100));
             }}
-            placeholder="Phường Bến Nghé"
+            placeholder={t('submit.wardPlaceholder')}
             className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
           />
         </Field>
@@ -378,7 +383,7 @@ export function SubmitPlaceScreen() {
           stay editable, and the link between them is always a suggestion
           somebody accepts.
         */}
-        <Field label="Pin the exact spot" required hint="Drag the map to move the pin.">
+        <Field optionalLabel={t('common.optional')} label={t('submit.pin')} required hint={t('submit.pinHint')}>
           <div className="border-border relative h-56 overflow-hidden rounded-md border">
             <MapCanvas
               className="absolute inset-0"
@@ -424,7 +429,7 @@ export function SubmitPlaceScreen() {
                 className="text-primary inline-flex items-center gap-1.5 text-xs font-medium"
               >
                 <Crosshair className="size-3.5" aria-hidden />
-                Use my location
+                {t('submit.useMyLocation')}
               </button>
             )}
           </div>
@@ -443,7 +448,7 @@ export function SubmitPlaceScreen() {
                   className="text-primary mt-1.5 inline-flex items-center gap-1.5 text-xs font-medium"
                 >
                   <Wand2 className="size-3.5" aria-hidden />
-                  Use this address
+                  {t('submit.useThisAddress')}
                 </button>
                 {/*
                   Said out loud, because the fallback geocoder's Vietnamese
@@ -453,7 +458,7 @@ export function SubmitPlaceScreen() {
                 */}
                 {pinAddress.data.isFallbackProvider && (
                   <p className="text-ink-subtle mt-1 text-xs">
-                    From the development address service — check it before submitting.
+                    {t('submit.fallbackWarning')}
                   </p>
                 )}
               </div>
@@ -461,7 +466,7 @@ export function SubmitPlaceScreen() {
           )}
         </Field>
 
-        <Field label="Price range">
+        <Field optionalLabel={t('common.optional')} label={t('submit.priceRange')}>
           <div className="flex flex-wrap gap-2">
             {PRICE_RANGES.map((range) => (
               <Chip
@@ -471,14 +476,14 @@ export function SubmitPlaceScreen() {
                   setPriceRange((current) => (current === range ? '' : range));
                 }}
               >
-                {range.charAt(0) + range.slice(1).toLowerCase()}
+                {t(`priceRange.${range}`)}
               </Chip>
             ))}
           </div>
         </Field>
 
         <div className="flex gap-3">
-          <Field label="Phone" htmlFor="place-phone">
+          <Field optionalLabel={t('common.optional')} label={t('submit.phone')} htmlFor="place-phone">
             <input
               id="place-phone"
               type="tel"
@@ -486,11 +491,11 @@ export function SubmitPlaceScreen() {
               onChange={(event) => {
                 setPhone(event.target.value.slice(0, 30));
               }}
-              placeholder="028 3822 1234"
+              placeholder={t('submit.phonePlaceholder')}
               className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
             />
           </Field>
-          <Field label="Website" htmlFor="place-website">
+          <Field optionalLabel={t('common.optional')} label={t('submit.website')} htmlFor="place-website">
             <input
               id="place-website"
               type="url"
@@ -506,9 +511,7 @@ export function SubmitPlaceScreen() {
 
         {submit.error && (
           <p role="alert" className="bg-danger/10 text-danger mt-5 rounded-md p-3 text-sm">
-            {submit.error instanceof ApiError
-              ? submit.error.message
-              : 'Could not submit that. Please try again.'}
+            {describeError(submit.error)}
           </p>
         )}
 
@@ -522,7 +525,7 @@ export function SubmitPlaceScreen() {
             submit.mutate();
           }}
         >
-          Submit for review
+          {t('submit.send')}
         </Button>
       </div>
     </div>

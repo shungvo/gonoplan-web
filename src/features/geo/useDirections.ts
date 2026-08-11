@@ -1,5 +1,8 @@
 'use client';
 
+import type { Locale } from '@/i18n/config';
+import { formatUnit } from '@/i18n/format';
+
 import { useQuery } from '@tanstack/react-query';
 import { fetchDirections, type Route, type TravelMode } from './api';
 import type { Coordinates } from '@/lib/geo/grid';
@@ -33,12 +36,14 @@ export function useDirections(
   });
 }
 
-/** "12 min" — the number people actually compare. */
-export function formatDuration(seconds: number): string {
+/** "12 min" / "12 phút" — the number people actually compare. */
+export function formatDuration(seconds: number, locale: Locale): string {
   const minutes = Math.round(seconds / 60);
-  if (minutes < 60) return `${String(minutes)} min`;
+  if (minutes < 60) return formatUnit(minutes, 'minute', locale);
 
   const hours = Math.floor(minutes / 60);
   const rest = minutes % 60;
-  return rest === 0 ? `${String(hours)} hr` : `${String(hours)} hr ${String(rest)} min`;
+  return rest === 0
+    ? formatUnit(hours, 'hour', locale)
+    : `${formatUnit(hours, 'hour', locale)} ${formatUnit(rest, 'minute', locale)}`;
 }

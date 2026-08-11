@@ -1843,6 +1843,7 @@ export interface paths {
                                 myReviewId: string | null;
                                 canReview: boolean;
                                 cannotReviewReason: string | null;
+                                cannotReviewCode: string | null;
                             };
                             meta?: {
                                 cursor?: string | null;
@@ -7922,6 +7923,7 @@ export interface components {
             myReviewId: string | null;
             canReview: boolean;
             cannotReviewReason: string | null;
+            cannotReviewCode: string | null;
         };
         OwnerProfile: {
             /** Format: uuid */

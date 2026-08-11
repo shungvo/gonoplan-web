@@ -5,10 +5,11 @@ import { Drawer } from 'vaul';
 import { StarInput } from './StarInput';
 import { Button } from '@/components/ui/Button';
 import { useCreateReview, useUpdateReview } from '../hooks/useReviews';
-import { ApiError } from '@/lib/api/errors';
 import { fieldClass } from '@/components/ui/field';
 import { PhotoPicker, type PickedPhoto } from '@/features/uploads/components/PhotoPicker';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { useT } from '@/i18n/I18nProvider';
+import { useErrorMessage } from '@/i18n/useErrorMessage';
 import type { Review } from '../api';
 
 const MAX_LENGTH = 2000;
@@ -61,6 +62,8 @@ function ReviewForm({
   existing: Review | null;
   onDone: () => void;
 }) {
+  const t = useT();
+  const describeError = useErrorMessage();
   const [rating, setRating] = useState(existing?.rating ?? 0);
   const [content, setContent] = useState(existing?.content ?? '');
 
@@ -108,7 +111,7 @@ function ReviewForm({
   return (
     <div className="pb-safe overflow-y-auto px-5 pt-4">
       <Drawer.Title className="text-ink text-xl font-semibold tracking-tight">
-        {existing ? 'Edit your review' : 'Rate this place'}
+        {existing ? t('write.editTitle') : t('write.newTitle')}
       </Drawer.Title>
       <Drawer.Description className="text-ink-muted mt-1 text-sm">{placeName}</Drawer.Description>
 
@@ -117,7 +120,8 @@ function ReviewForm({
       </div>
 
       <label htmlFor="review-content" className="text-ink mt-5 block text-sm font-semibold">
-        Tell people more <span className="text-ink-subtle font-normal">(optional)</span>
+        {t('write.tellMore')}{' '}
+        <span className="text-ink-subtle font-normal">{t('common.optional')}</span>
       </label>
       <textarea
         id="review-content"
@@ -127,7 +131,7 @@ function ReviewForm({
         }}
         rows={5}
         disabled={pending}
-        placeholder="What stood out? Anything worth knowing before going?"
+        placeholder={t('write.contentPlaceholder')}
         className={fieldClass('mt-2 resize-none p-3.5 text-[0.9375rem] leading-relaxed')}
       />
       <p className="text-ink-subtle mt-1 text-right text-xs">
@@ -135,7 +139,8 @@ function ReviewForm({
       </p>
 
       <p className="text-ink mt-4 text-sm font-semibold">
-        Photos <span className="text-ink-subtle font-normal">(optional)</span>
+        {t('write.photos')}{' '}
+        <span className="text-ink-subtle font-normal">{t('common.optional')}</span>
       </p>
       {/* Re-encoded in the browser before upload, which both shrinks the file
           and strips the EXIF a phone writes into it — including where the
@@ -144,7 +149,7 @@ function ReviewForm({
 
       {error && (
         <p role="alert" className="bg-danger/10 text-danger mt-3 rounded-md p-3 text-sm">
-          {error instanceof ApiError ? error.message : 'Could not save your review.'}
+          {describeError(error)}
         </p>
       )}
 
@@ -158,13 +163,13 @@ function ReviewForm({
         isLoading={pending}
         onClick={submit}
       >
-        {existing ? 'Save changes' : 'Post review'}
+        {existing ? t('write.saveChanges') : t('write.post')}
       </Button>
 
       <p className="text-ink-subtle mt-3 pb-4 text-center text-xs leading-relaxed">
         {existing
-          ? 'Reviews can be edited for 24 hours after posting.'
-          : 'Your review is public and shows your name.'}
+          ? t('write.editWindow')
+          : t('write.publicNotice')}
       </p>
     </div>
   );

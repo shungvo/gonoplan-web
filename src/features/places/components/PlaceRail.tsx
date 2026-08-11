@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { PlaceCard, PlaceCardSkeleton } from './PlaceCard';
+import { useT } from '@/i18n/I18nProvider';
 import type { PlaceCard as PlaceCardDto } from '../api';
 import { cn } from '@/lib/utils/cn';
 
@@ -31,11 +32,12 @@ export function PlaceRail({
   isPending,
   onSelect,
   note,
-  emptyMessage = 'Nothing here yet.',
+  emptyMessage,
   action,
   priority = false,
   className,
 }: PlaceRailProps) {
+  const t = useT();
   const isEmpty = !isPending && (places?.length ?? 0) === 0;
 
   return (
@@ -47,7 +49,7 @@ export function PlaceRail({
 
       {isEmpty ? (
         <div className="bg-surface mx-5 mt-3 rounded-lg p-5 text-center shadow-sm">
-          <p className="text-ink-muted text-sm">{emptyMessage}</p>
+          <p className="text-ink-muted text-sm">{emptyMessage ?? t('place.nothingYet')}</p>
           {action && <div className="mt-3 flex justify-center">{action}</div>}
         </div>
       ) : (

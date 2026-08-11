@@ -13,13 +13,17 @@ import {
   useToggleHelpful,
 } from '../hooks/useReviews';
 import type { Review, ReviewSort } from '../api';
+import { useLocale, useT } from '@/i18n/I18nProvider';
+import { formatNumber, formatRating } from '@/i18n/format';
+import { useCodeMessage } from '@/i18n/useErrorMessage';
+import type { MessageKey } from '@/i18n/messages/keys';
 import { cn } from '@/lib/utils/cn';
 
-const SORTS: Array<{ value: ReviewSort; label: string }> = [
-  { value: 'helpful', label: 'Most helpful' },
-  { value: 'recent', label: 'Newest' },
-  { value: 'rating_high', label: 'Highest' },
-  { value: 'rating_low', label: 'Lowest' },
+const SORTS: Array<{ value: ReviewSort; labelKey: MessageKey }> = [
+  { value: 'helpful', labelKey: 'reviews.sortHelpful' },
+  { value: 'recent', labelKey: 'reviews.sortRecent' },
+  { value: 'rating_high', labelKey: 'reviews.sortHigh' },
+  { value: 'rating_low', labelKey: 'reviews.sortLow' },
 ];
 
 /**
@@ -31,6 +35,9 @@ const SORTS: Array<{ value: ReviewSort; label: string }> = [
  * left to infer them and eventually render a button the API refuses.
  */
 export function ReviewSection({ placeId, placeName }: { placeId: string; placeName: string }) {
+  const t = useT();
+  const locale = useLocale();
+  const refusalMessage = useCodeMessage();
   const [sort, setSort] = useState<ReviewSort>('helpful');
   const [writing, setWriting] = useState(false);
   const [editing, setEditing] = useState<Review | null>(null);
@@ -47,7 +54,8 @@ export function ReviewSection({ placeId, placeName }: { placeId: string; placeNa
     <section className="border-border mt-5 border-t pt-4">
       <div className="flex items-baseline justify-between">
         <h2 className="text-ink text-sm font-semibold">
-          Reviews {total > 0 && <span className="text-ink-subtle">({total})</span>}
+          {t('reviews.title')}{' '}
+          {total > 0 && <span className="text-ink-subtle">({formatNumber(total, locale)})</span>}
         </h2>
       </div>
 
@@ -55,7 +63,7 @@ export function ReviewSection({ placeId, placeName }: { placeId: string; placeNa
         <div className="mt-3 flex items-center gap-4">
           <div className="text-center">
             <p className="text-ink text-3xl leading-none font-semibold">
-              {summary.averageRating.toFixed(1)}
+              {formatRating(summary.averageRating, locale)}
             </p>
             <span className="mt-1 flex justify-center gap-0.5">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -82,14 +90,18 @@ export function ReviewSection({ placeId, placeName }: { placeId: string; placeNa
 
               return (
                 <div key={star} className="flex items-center gap-2">
-                  <span className="text-ink-subtle w-2 text-right text-[0.625rem]">{star}</span>
+                  <span className="text-ink-subtle w-2 text-right text-[0.625rem]">
+                    {formatNumber(star, locale)}
+                  </span>
                   <span className="bg-surface-sunken h-1.5 flex-1 overflow-hidden rounded-full">
                     <span
                       className="bg-warning block h-full rounded-full"
                       style={{ width: `${String(percent)}%` }}
                     />
                   </span>
-                  <span className="text-ink-subtle w-6 text-[0.625rem]">{count}</span>
+                  <span className="text-ink-subtle w-6 text-[0.625rem]">
+                    {formatNumber(count, locale)}
+                  </span>
                 </div>
               );
             })}
@@ -108,7 +120,7 @@ export function ReviewSection({ placeId, placeName }: { placeId: string; placeNa
               setWriting(true);
             }}
           >
-            Write a review
+            {t('reviews.write')}
           </Button>
         )}
 
@@ -116,7 +128,11 @@ export function ReviewSection({ placeId, placeName }: { placeId: string; placeNa
             actionable; a missing button is just confusing. */}
         {summary && !summary.canReview && summary.cannotReviewReason && (
           <p className="bg-surface-sunken text-ink-muted rounded-md p-3 text-center text-sm">
-            {summary.cannotReviewReason}
+            {/* By code where there is one, by the server's prose otherwise.
+                Until the API grew `cannotReviewCode`, this line was the one
+                place a Vietnamese screen showed an English sentence with no
+                way to translate it. */}
+            {refusalMessage(summary.cannotReviewCode) ?? summary.cannotReviewReason}
           </p>
         )}
       </div>
@@ -131,7 +147,7 @@ export function ReviewSection({ placeId, placeName }: { placeId: string; placeNa
                 setSort(option.value);
               }}
             >
-              {option.label}
+              {t(option.labelKey)}
             </Chip>
           ))}
         </div>
@@ -147,7 +163,7 @@ export function ReviewSection({ placeId, placeName }: { placeId: string; placeNa
 
         {!isPending && reviews.length === 0 && (
           <p className="bg-surface text-ink-muted rounded-lg p-5 text-center text-sm shadow-sm">
-            No reviews yet — be the first to write one.
+            {t('reviews.none')}
           </p>
         )}
 
@@ -170,7 +186,7 @@ export function ReviewSection({ placeId, placeName }: { placeId: string; placeNa
 
         {page?.meta?.hasMore && (
           <p className="text-ink-subtle pt-1 text-center text-xs">
-            Showing the first {reviews.length} reviews
+            {t('reviews.showingFirst', { count: reviews.length })}
           </p>
         )}
       </div>

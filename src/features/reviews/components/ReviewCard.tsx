@@ -2,18 +2,11 @@
 
 import Image from 'next/image';
 import { Star, ThumbsUp, Store } from 'lucide-react';
+import { useLocale, useT } from '@/i18n/I18nProvider';
+import { formatNumber, formatRelativeTime } from '@/i18n/format';
+import { useNow } from '@/lib/utils/useNow';
 import { cn } from '@/lib/utils/cn';
 import type { Review } from '../api';
-
-function relativeTime(iso: string): string {
-  const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
-
-  if (days < 1) return 'Today';
-  if (days === 1) return 'Yesterday';
-  if (days < 30) return `${String(days)} days ago`;
-  if (days < 365) return `${String(Math.floor(days / 30))} months ago`;
-  return `${String(Math.floor(days / 365))} years ago`;
-}
 
 export function ReviewCard({
   review,
@@ -26,6 +19,10 @@ export function ReviewCard({
   onEdit?: () => void;
   onDelete?: () => void;
 }) {
+  const t = useT();
+  const locale = useLocale();
+  const now = useNow();
+
   return (
     <article className="bg-surface rounded-lg p-4 shadow-sm">
       <div className="flex items-start gap-3">
@@ -38,7 +35,7 @@ export function ReviewCard({
             <p className="text-ink truncate text-sm font-semibold">{review.author.name}</p>
             {review.isMine && (
               <span className="bg-primary-tint text-primary shrink-0 rounded-full px-2 py-0.5 text-[0.625rem] font-semibold">
-                You
+                {t('reviews.you')}
               </span>
             )}
           </div>
@@ -46,7 +43,7 @@ export function ReviewCard({
           <div className="mt-1 flex items-center gap-2">
             <span
               className="flex items-center gap-0.5"
-              aria-label={`${String(review.rating)} out of 5`}
+              aria-label={t('reviews.ratingOutOf', { rating: review.rating })}
             >
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star
@@ -59,7 +56,14 @@ export function ReviewCard({
                 />
               ))}
             </span>
-            <span className="text-ink-subtle text-xs">{relativeTime(review.createdAt)}</span>
+            {/* `useNow` ticks, so "2 minutes ago" does not sit frozen while
+                somebody reads the page — and it starts at 0 on the server so
+                the markup matches on hydration. */}
+            <span className="text-ink-subtle text-xs">
+              {now === 0
+                ? review.createdAt.slice(0, 10)
+                : formatRelativeTime(new Date(review.createdAt), now, locale)}
+            </span>
           </div>
         </div>
       </div>
@@ -87,7 +91,10 @@ export function ReviewCard({
             >
               <Image
                 src={image.url}
-                alt={`Photo ${String(index + 1)} from ${review.author.name}'s review`}
+                alt={t('reviews.photoAlt', {
+                  position: index + 1,
+                  name: review.author.name,
+                })}
                 fill
                 sizes="80px"
                 className="object-cover"
@@ -104,7 +111,7 @@ export function ReviewCard({
           <p className="text-ink flex items-center gap-1.5 text-xs font-semibold">
             <Store className="text-primary size-3.5" aria-hidden />
             {review.reply.businessName}
-            <span className="text-ink-subtle font-normal">· owner</span>
+            <span className="text-ink-subtle font-normal">· {t('reviews.owner')}</span>
           </p>
           <p className="text-ink-muted mt-1.5 text-sm leading-relaxed">{review.reply.content}</p>
         </div>
@@ -125,20 +132,20 @@ export function ReviewCard({
             )}
           >
             <ThumbsUp className={cn('size-3.5', review.hasVoted && 'fill-current')} aria-hidden />
-            Helpful
-            {review.helpfulCount > 0 && <span>· {review.helpfulCount}</span>}
+            {t('reviews.helpful')}
+            {review.helpfulCount > 0 && <span>· {formatNumber(review.helpfulCount, locale)}</span>}
           </button>
         )}
 
         {review.isMine && review.canEdit && (
           <button type="button" onClick={onEdit} className="text-primary text-xs font-medium">
-            Edit
+            {t('common.edit')}
           </button>
         )}
 
         {review.isMine && (
           <button type="button" onClick={onDelete} className="text-ink-subtle text-xs font-medium">
-            Delete
+            {t('common.delete')}
           </button>
         )}
       </div>

@@ -14,6 +14,7 @@ import { useNearbyPlaces } from '../hooks/usePlaces';
 import { MapCanvas } from '@/features/map/components/MapCanvas';
 import type { MapBounds } from '@/lib/map/types';
 import { useDirections, formatDuration } from '@/features/geo/useDirections';
+import { useLocale, useT } from '@/i18n/I18nProvider';
 import { cn } from '@/lib/utils/cn';
 import { fetchCategories } from '@/features/categories/api';
 import { useLocationStore } from '@/features/location/store';
@@ -47,6 +48,8 @@ const MAP_STRIP_HEIGHT = '50dvh';
  * who wants to compare options, and comparison needs a column, not a carousel.
  */
 export function ExploreScreen() {
+  const t = useT();
+  const locale = useLocale();
   const router = useRouter();
   const params = useSearchParams();
   const { coordinates, label } = useLocationStore();
@@ -252,7 +255,7 @@ export function ExploreScreen() {
             >
               <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
               <span className="text-ink-subtle truncate text-[0.9375rem]">
-                {label ? `Search around ${label}` : 'Search places'}
+                {label ? t('explore.searchAround', { label }) : t('explore.searchPlaces')}
               </span>
             </button>
             <button
@@ -263,7 +266,7 @@ export function ExploreScreen() {
               className="bg-surface text-ink flex h-12 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-medium shadow-md active:scale-[0.98]"
             >
               <List className="size-4" aria-hidden />
-              List
+              {t('explore.list')}
             </button>
           </div>
 
@@ -275,7 +278,7 @@ export function ExploreScreen() {
               }}
             >
               <SlidersHorizontal className="size-3.5" aria-hidden />
-              Open now
+              {t('explore.openNow')}
             </Chip>
             {categories?.map((category) => (
               <Chip
@@ -307,18 +310,23 @@ export function ExploreScreen() {
             <div className="bg-surface pointer-events-auto mt-2 flex items-center gap-3 rounded-full px-4 py-2.5 shadow-lg">
               <Route className="text-primary size-4 shrink-0" aria-hidden />
               <p className="min-w-0 flex-1 truncate text-sm">
-                {directions.isPending && <span className="text-ink-muted">Finding a route…</span>}
+                {directions.isPending && <span className="text-ink-muted">{t('route.finding')}</span>}
                 {directions.error && (
-                  <span className="text-ink-muted">No route to {routeTarget.name}</span>
+                  <span className="text-ink-muted">
+                    {t('explore.noRouteTo', { name: routeTarget.name })}
+                  </span>
                 )}
                 {directions.data && (
                   <>
                     <span className="text-ink font-semibold">
-                      {formatDuration(directions.data.durationS)}
+                      {formatDuration(directions.data.durationS, locale)}
                     </span>
                     <span className="text-ink-muted">
                       {' · '}
-                      {formatDistance(directions.data.distanceM)} to {routeTarget.name}
+                      {t('explore.distanceTo', {
+                        distance: formatDistance(directions.data.distanceM, locale),
+                        name: routeTarget.name,
+                      })}
                     </span>
                   </>
                 )}
@@ -328,7 +336,7 @@ export function ExploreScreen() {
                 onClick={() => {
                   setRouteToId(null);
                 }}
-                aria-label="Clear route"
+                aria-label={t('explore.clearRoute')}
                 className="text-ink-subtle -mr-1 flex size-8 shrink-0 items-center justify-center rounded-full"
               >
                 <X className="size-4" aria-hidden />
@@ -350,7 +358,7 @@ export function ExploreScreen() {
         >
           {placesInView.length === 0 ? (
             <p className="bg-surface/95 text-ink-muted mx-4 rounded-lg px-4 py-3 text-center text-sm shadow-md backdrop-blur-md">
-              Nothing loaded in this area — try moving the map back, or widen your filters.
+              {t('explore.nothingInView')}
             </p>
           ) : (
             <div className="flex snap-x snap-mandatory scroll-pl-4 scrollbar-none gap-3 overflow-x-auto px-4">
@@ -388,7 +396,7 @@ export function ExploreScreen() {
                       onClick={() => {
                         setRouteToId(place.id);
                       }}
-                      aria-label={`Show the route to ${place.name}`}
+                      aria-label={t('explore.showRouteTo', { name: place.name })}
                       className={cn(
                         'absolute right-2 bottom-2 flex size-9 items-center justify-center rounded-full shadow-sm',
                         routeToId === place.id
@@ -454,7 +462,7 @@ export function ExploreScreen() {
       <header className="pt-safe-float relative z-10 px-5">
         <div className="flex items-center gap-2">
           <h1 className="text-ink flex-1 text-[1.75rem] leading-tight font-semibold tracking-tight drop-shadow-[0_1px_2px_rgb(255_255_255/0.9)]">
-            Explore
+            {t('explore.title')}
           </h1>
           <button
             type="button"
@@ -464,7 +472,7 @@ export function ExploreScreen() {
             className="bg-surface text-ink flex h-11 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-medium shadow-md active:scale-[0.98]"
           >
             <Map className="size-4" aria-hidden />
-            Full map
+            {t('explore.fullMap')}
           </button>
         </div>
 
@@ -476,7 +484,7 @@ export function ExploreScreen() {
           className="bg-surface mt-3 flex h-12 w-full items-center gap-3 rounded-full px-4 text-left shadow-md active:scale-[0.99]"
         >
           <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
-          <span className="text-ink-subtle text-[0.9375rem]">Search places</span>
+          <span className="text-ink-subtle text-[0.9375rem]">{t('explore.searchPlaces')}</span>
         </button>
       </header>
 
@@ -524,7 +532,7 @@ export function ExploreScreen() {
             }}
           >
             <SlidersHorizontal className="size-3.5" aria-hidden />
-            Open now
+            {t('explore.openNow')}
           </Chip>
 
           {categories?.map((category) => (
@@ -559,11 +567,11 @@ export function ExploreScreen() {
           {!isPending && error && (
             <EmptyState
               icon={<Compass className="size-7" aria-hidden />}
-              title="Could not load places"
+              title={t('explore.loadFailed')}
               description={
                 error instanceof ApiError && error.isRetryable
-                  ? 'Check your connection and try again.'
-                  : 'Something went wrong at our end. Try again in a moment.'
+                  ? t('place.checkConnection')
+                  : t('explore.serverProblem')
               }
               action={
                 <Button
@@ -573,7 +581,7 @@ export function ExploreScreen() {
                     void refetch();
                   }}
                 >
-                  Try again
+                  {t('common.retry')}
                 </Button>
               }
             />
@@ -582,11 +590,11 @@ export function ExploreScreen() {
           {!isPending && !error && data && data.places.length === 0 && (
             <EmptyState
               icon={<Compass className="size-7" aria-hidden />}
-              title={hasFilters ? 'Nothing matches your filters' : 'Nothing around here yet'}
+              title={hasFilters ? t('explore.noMatches') : t('explore.emptyArea')}
               description={
                 hasFilters
-                  ? 'Try removing a filter or widening your search.'
-                  : 'Gonoplan is still filling in this area. Try another city from the location picker.'
+                  ? t('explore.noMatchesHint')
+                  : t('explore.emptyAreaHint')
               }
               action={
                 hasFilters ? (
@@ -598,7 +606,7 @@ export function ExploreScreen() {
                       setOpenNow(false);
                     }}
                   >
-                    Clear filters
+                    {t('explore.clearFilters')}
                   </Button>
                 ) : undefined
               }
@@ -608,8 +616,11 @@ export function ExploreScreen() {
           {!isPending && !error && data && data.places.length > 0 && (
             <>
               <p className="text-ink-subtle mb-2.5 text-xs">
-                {data.places.length} places
-                {data.widened && ` within ${formatDistance(data.radiusMeters)}`}
+                {t('explore.resultCount', { count: data.places.length })}
+                {data.widened &&
+                  ` ${t('explore.withinRadius', {
+                    distance: formatDistance(data.radiusMeters, locale),
+                  })}`}
               </p>
               <ul className="space-y-2.5">
                 {data.places.map((place) => (

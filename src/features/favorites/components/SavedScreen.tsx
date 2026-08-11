@@ -11,6 +11,7 @@ import {
 } from '@/features/places/components/PlaceListItem';
 import { PlaceSheet } from '@/features/places/components/PlaceSheet';
 import { useIsAuthenticated } from '@/features/auth/store';
+import { useT } from '@/i18n/I18nProvider';
 import { useSavedPlaces } from '../hooks/useFavorites';
 
 /**
@@ -21,6 +22,7 @@ import { useSavedPlaces } from '../hooks/useFavorites';
  * "nothing here" screen would tell a signed-out visitor their saves are gone.
  */
 export function SavedScreen() {
+  const t = useT();
   const router = useRouter();
   const isAuthenticated = useIsAuthenticated();
   const { data, isPending } = useSavedPlaces();
@@ -32,11 +34,11 @@ export function SavedScreen() {
     <div className="px-safe">
       <header className="pt-safe px-5">
         <h1 className="text-ink pt-6 text-[1.75rem] leading-tight font-semibold tracking-tight">
-          Saved
+          {t('saved.title')}
         </h1>
         {isAuthenticated && places.length > 0 && (
           <p className="text-ink-muted mt-1 text-sm">
-            {places.length} {places.length === 1 ? 'place' : 'places'} you want to visit
+            {t('saved.count', { count: places.length })}
           </p>
         )}
       </header>
@@ -45,15 +47,15 @@ export function SavedScreen() {
         {!isAuthenticated && (
           <EmptyState
             icon={<Bookmark className="size-7" aria-hidden />}
-            title="Sign in to keep your places"
-            description="Saved places sync across your devices, so a shortlist made on the bus is still there at dinner."
+            title={t('saved.signedOutTitle')}
+            description={t('saved.signedOutDescription')}
             action={
               <Button
                 onClick={() => {
                   router.push('/profile');
                 }}
               >
-                Sign in
+                {t('common.signIn')}
               </Button>
             }
           />
@@ -70,8 +72,8 @@ export function SavedScreen() {
         {isAuthenticated && !isPending && places.length === 0 && (
           <EmptyState
             icon={<Bookmark className="size-7" aria-hidden />}
-            title="Nothing saved yet"
-            description="Tap the bookmark on any place to keep it here."
+            title={t('saved.emptyTitle')}
+            description={t('saved.emptyDescription')}
             action={
               <Button
                 variant="secondary"
@@ -80,7 +82,7 @@ export function SavedScreen() {
                   router.push('/explore');
                 }}
               >
-                Explore places
+                {t('saved.explore')}
               </Button>
             }
           />

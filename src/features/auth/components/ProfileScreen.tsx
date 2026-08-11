@@ -7,10 +7,13 @@ import { ChevronRight, LogOut, MapPinPlus, Shield, Store, User } from 'lucide-re
 import { AuthSheet } from './AuthSheet';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { useT } from '@/i18n/I18nProvider';
+import { LocaleSwitcher } from '@/i18n/LocaleSwitcher';
 import { useSessionStore } from '../store';
 import { logout } from '../api';
 
 export function ProfileScreen() {
+  const t = useT();
   const router = useRouter();
   const { user, isInitializing, clear } = useSessionStore();
   const [authOpen, setAuthOpen] = useState(false);
@@ -28,7 +31,7 @@ export function ProfileScreen() {
     <div className="px-safe">
       <header className="pt-safe px-5">
         <h1 className="text-ink pt-6 text-[1.75rem] leading-tight font-semibold tracking-tight">
-          Profile
+          {t('profile.title')}
         </h1>
       </header>
 
@@ -49,15 +52,15 @@ export function ProfileScreen() {
         {!isInitializing && !user && (
           <EmptyState
             icon={<User className="size-7" aria-hidden />}
-            title="You're browsing as a guest"
-            description="Sign in to save places, write reviews, and get recommendations tuned to you."
+            title={t('profile.guestTitle')}
+            description={t('profile.guestDescription')}
             action={
               <Button
                 onClick={() => {
                   setAuthOpen(true);
                 }}
               >
-                Sign in or create an account
+                {t('profile.signInCta')}
               </Button>
             }
           />
@@ -80,15 +83,15 @@ export function ProfileScreen() {
                 {user.role === 'ADMIN' && (
                   <p className="bg-surface text-ink flex items-center gap-2.5 rounded-lg p-3.5 text-sm shadow-sm">
                     <Shield className="text-primary size-4" aria-hidden />
-                    Administrator
+                    {t('profile.administrator')}
                   </p>
                 )}
                 {user.ownerProfileId && (
                   <p className="bg-surface text-ink flex items-center gap-2.5 rounded-lg p-3.5 text-sm shadow-sm">
                     <Store className="text-primary size-4" aria-hidden />
-                    Business owner
-                    {user.ownerStatus !== 'APPROVED' && (
-                      <span className="text-ink-subtle">· {user.ownerStatus?.toLowerCase()}</span>
+                    {t('profile.businessOwner')}
+                    {user.ownerStatus && user.ownerStatus !== 'APPROVED' && (
+                      <span className="text-ink-subtle">· {t(`ownerStatus.${user.ownerStatus}`)}</span>
                     )}
                   </p>
                 )}
@@ -108,7 +111,7 @@ export function ProfileScreen() {
               className="bg-surface mt-3 flex w-full items-center gap-2.5 rounded-lg p-3.5 text-left shadow-sm active:scale-[0.99]"
             >
               <MapPinPlus className="text-primary size-4 shrink-0" aria-hidden />
-              <span className="text-ink flex-1 text-sm font-medium">Add a place</span>
+              <span className="text-ink flex-1 text-sm font-medium">{t('profile.addPlace')}</span>
               <ChevronRight className="text-ink-subtle size-4 shrink-0" aria-hidden />
             </button>
 
@@ -123,7 +126,7 @@ export function ProfileScreen() {
             >
               <Store className="text-primary size-4 shrink-0" aria-hidden />
               <span className="text-ink flex-1 text-sm font-medium">
-                {user.ownerProfileId ? 'Your business' : 'Register your business'}
+                {user.ownerProfileId ? t('profile.yourBusiness') : t('profile.registerBusiness')}
               </span>
               <ChevronRight className="text-ink-subtle size-4 shrink-0" aria-hidden />
             </button>
@@ -137,10 +140,17 @@ export function ProfileScreen() {
                 void signOut();
               }}
             >
-              Sign out
+              {t('profile.signOut')}
             </Button>
           </>
         )}
+      </div>
+
+      {/* Outside the signed-in branch on purpose: the person who most needs
+          this control is the one who cannot read the screen it is on, and
+          that person has not necessarily signed in. */}
+      <div className="mt-6 px-5">
+        <LocaleSwitcher />
       </div>
 
       <AuthSheet open={authOpen} onOpenChange={setAuthOpen} />

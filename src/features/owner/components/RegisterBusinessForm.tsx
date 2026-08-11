@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Store } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { ApiError } from '@/lib/api/errors';
 import { fieldClass } from '@/components/ui/field';
+import { useT } from '@/i18n/I18nProvider';
+import { useErrorMessage } from '@/i18n/useErrorMessage';
 import { registerBusiness } from '../api';
 
 /**
@@ -16,6 +17,8 @@ import { registerBusiness } from '../api';
  * has seen the dashboard loses most of them. The admin queue can ask for more.
  */
 export function RegisterBusinessForm({ onRegistered }: { onRegistered: () => void }) {
+  const t = useT();
+  const describeError = useErrorMessage();
   const [businessName, setBusinessName] = useState('');
   const [businessEmail, setBusinessEmail] = useState('');
   const [businessPhone, setBusinessPhone] = useState('');
@@ -43,19 +46,18 @@ export function RegisterBusinessForm({ onRegistered }: { onRegistered: () => voi
       </span>
 
       <h2 className="text-ink mt-3 text-lg font-semibold tracking-tight">
-        Register your business
+        {t('register.title')}
       </h2>
       <p className="text-ink-muted mt-1 text-sm leading-relaxed">
-        Claim your place, reply to reviews, and see how many people are finding you. An
-        administrator reviews every registration before it goes live.
+        {t('register.body')}
       </p>
 
       <label className="mt-4 block">
-        <span className="text-ink text-sm font-semibold">Business name</span>
+        <span className="text-ink text-sm font-semibold">{t('register.name')}</span>
         <input
           type="text"
           value={businessName}
-          placeholder="Hòa Hospitality Group"
+          placeholder={t('register.namePlaceholder')}
           onChange={(event) => {
             setBusinessName(event.target.value);
           }}
@@ -65,12 +67,13 @@ export function RegisterBusinessForm({ onRegistered }: { onRegistered: () => voi
 
       <label className="mt-3 block">
         <span className="text-ink text-sm font-semibold">
-          Contact email <span className="text-ink-subtle font-normal">(optional)</span>
+          {t('register.email')}{' '}
+          <span className="text-ink-subtle font-normal">{t('common.optional')}</span>
         </span>
         <input
           type="email"
           value={businessEmail}
-          placeholder="contact@yourbusiness.vn"
+          placeholder={t('register.emailPlaceholder')}
           onChange={(event) => {
             setBusinessEmail(event.target.value);
           }}
@@ -82,12 +85,13 @@ export function RegisterBusinessForm({ onRegistered }: { onRegistered: () => voi
 
       <label className="mt-3 block">
         <span className="text-ink text-sm font-semibold">
-          Phone <span className="text-ink-subtle font-normal">(optional)</span>
+          {t('register.phone')}{' '}
+          <span className="text-ink-subtle font-normal">{t('common.optional')}</span>
         </span>
         <input
           type="tel"
           value={businessPhone}
-          placeholder="+84 28 1234 5678"
+          placeholder={t('register.phonePlaceholder')}
           onChange={(event) => {
             setBusinessPhone(event.target.value);
           }}
@@ -98,9 +102,7 @@ export function RegisterBusinessForm({ onRegistered }: { onRegistered: () => voi
 
       {submit.error && (
         <p role="alert" className="bg-danger/10 text-danger mt-3 rounded-md p-3 text-sm">
-          {submit.error instanceof ApiError
-            ? submit.error.message
-            : 'Could not register your business.'}
+          {describeError(submit.error)}
         </p>
       )}
 
@@ -112,7 +114,7 @@ export function RegisterBusinessForm({ onRegistered }: { onRegistered: () => voi
         disabled={businessName.trim().length < 2}
         isLoading={submit.isPending}
       >
-        Register
+        {t('register.submit')}
       </Button>
     </form>
   );

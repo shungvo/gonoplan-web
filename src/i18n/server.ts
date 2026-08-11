@@ -1,0 +1,34 @@
+import 'server-only';
+
+import { cookies, headers } from 'next/headers';
+import { DEFAULT_LOCALE, LOCALE_COOKIE, isLocale, negotiateLocale, type Locale } from './config';
+import { getMessages } from './messages';
+import { createTranslator, type TranslateFn } from './translate';
+
+/**
+ * The locale for this request: an explicit choice first, the browser's
+ * preference second.
+ *
+ * Reading a cookie makes every route dynamic, and that is the price of this
+ * approach rather than an oversight. It buys server-rendered HTML that is
+ * already in the right language — the alternative, deciding on the client,
+ * paints the whole app in English and then swaps it, which for a
+ * Vietnamese-first audience is the wrong way round. Nothing here is
+ * statically generated anyway: every screen's content is per-user or
+ * per-location, and place detail already fetches in `generateMetadata`.
+ */
+export async function getLocale(): Promise<Locale> {
+  const chosen = (await cookies()).get(LOCALE_COOKIE)?.value;
+  if (isLocale(chosen)) return chosen;
+
+  const accept = (await headers()).get('accept-language');
+  return negotiateLocale(accept);
+}
+
+/** `t` for Server Components, matching `useT()` on the client. */
+export async function getT(): Promise<TranslateFn> {
+  const locale = await getLocale();
+  return createTranslator(locale, getMessages(locale));
+}
+
+export { DEFAULT_LOCALE };

@@ -75,14 +75,14 @@ describe('haversineMeters', () => {
 
 describe('formatDistance', () => {
   it('rounds metres to the nearest ten, because GPS is not precise', () => {
-    expect(formatDistance(447)).toBe('450 m');
+    expect(formatDistance(447, 'en')).toBe('450 m');
   });
 
   it('switches to kilometres with one decimal', () => {
-    expect(formatDistance(1240)).toBe('1.2 km');
+    expect(formatDistance(1240, 'en')).toBe('1.2 km');
   });
 
   it('drops the decimal once it stops being meaningful', () => {
-    expect(formatDistance(14_600)).toBe('15 km');
+    expect(formatDistance(14_600, 'en')).toBe('15 km');
   });
 });

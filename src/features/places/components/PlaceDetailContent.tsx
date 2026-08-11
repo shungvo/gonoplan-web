@@ -15,6 +15,8 @@ import { ReportSheet } from '@/features/reports/ReportSheet';
 import { Rating, PriceRange } from '@/components/ui/Rating';
 import { Button } from '@/components/ui/Button';
 import { formatDistance } from '@/lib/geo/grid';
+import { useLocale, useT } from '@/i18n/I18nProvider';
+import { formatNumber } from '@/i18n/format';
 import { cn } from '@/lib/utils/cn';
 import { useSessionStore } from '@/features/auth/store';
 import type { PlaceDetail } from '../api';
@@ -32,6 +34,8 @@ export function PlaceDetailContent({
   place: PlaceDetail;
   compact?: boolean;
 }) {
+  const t = useT();
+  const locale = useLocale();
   const [authOpen, setAuthOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [aboutExpanded, setAboutExpanded] = useState(false);
@@ -139,7 +143,7 @@ export function PlaceDetailContent({
                 {place.distanceM !== null && (
                   <span className="text-ink-muted inline-flex items-center gap-1 text-sm">
                     <Navigation className="size-3.5" aria-hidden />
-                    {formatDistance(place.distanceM)}
+                    {formatDistance(place.distanceM, locale)}
                   </span>
                 )}
               </div>
@@ -151,7 +155,7 @@ export function PlaceDetailContent({
             {place.priceRange && (
               <div className="shrink-0 text-right">
                 <PriceRange value={place.priceRange} className="text-lg" />
-                <p className="text-ink-subtle text-[0.6875rem]">typical</p>
+                <p className="text-ink-subtle text-[0.6875rem]">{t('detail.typical')}</p>
               </div>
             )}
           </div>
@@ -173,7 +177,7 @@ export function PlaceDetailContent({
                 window.open(directionsUrl, '_blank', 'noopener,noreferrer');
               }}
             >
-              Get directions
+              {t('detail.getDirections')}
             </Button>
             <SaveButton
               placeId={place.id}
@@ -186,7 +190,7 @@ export function PlaceDetailContent({
             <Button
               variant="secondary"
               size="lg"
-              aria-label="Share this place"
+              aria-label={t('detail.share')}
               onClick={() => {
                 void share();
               }}
@@ -212,7 +216,7 @@ export function PlaceDetailContent({
             href={`/place/${place.slug}`}
             className="bg-surface-sunken text-ink mt-3 flex w-full items-center justify-between rounded-lg px-4 py-3.5 text-sm font-medium active:scale-[0.99]"
           >
-            Open full page
+            {t('detail.openFullPage')}
             <ChevronRight className="text-ink-subtle size-4 shrink-0" aria-hidden />
           </Link>
         )}
@@ -237,7 +241,7 @@ export function PlaceDetailContent({
                   className="bg-surface-sunken text-ink inline-flex h-10 items-center gap-2 rounded-sm px-3.5 text-sm font-medium"
                 >
                   <Phone className="size-4" aria-hidden />
-                  Call
+                  {t('detail.call')}
                 </a>
               )}
               {place.website && (
@@ -248,7 +252,7 @@ export function PlaceDetailContent({
                   className="bg-surface-sunken text-ink inline-flex h-10 items-center gap-2 rounded-sm px-3.5 text-sm font-medium"
                 >
                   <Globe className="size-4" aria-hidden />
-                  Website
+                  {t('detail.website')}
                 </a>
               )}
             </div>
@@ -257,7 +261,7 @@ export function PlaceDetailContent({
 
         {place.description && (
           <section className="border-border mt-5 border-t pt-4">
-            <h2 className="text-ink text-sm font-semibold">About</h2>
+            <h2 className="text-ink text-sm font-semibold">{t('detail.about')}</h2>
             {/* Clamped by lines, and the toggle appears only when the text is
                 actually clamped — measured, not guessed. A character-count
                 threshold got this wrong immediately: a 145-character
@@ -281,7 +285,7 @@ export function PlaceDetailContent({
                 }}
                 className="text-primary mt-1 text-sm font-medium"
               >
-                {aboutExpanded ? 'Show less' : 'Read more'}
+                {aboutExpanded ? t('detail.showLess') : t('detail.readMore')}
               </button>
             )}
           </section>
@@ -297,9 +301,9 @@ export function PlaceDetailContent({
         {place.images.length > 1 && (
           <section className="border-border mt-5 border-t pt-4">
             <h2 className="text-ink text-sm font-semibold">
-              Photos
+              {t('detail.photos')}
               <span className="text-ink-subtle ml-2 text-xs font-normal">
-                {place.images.length}
+                {formatNumber(place.images.length, locale)}
               </span>
             </h2>
             <PhotoStack className="mt-3" alt={place.name} photos={place.images} />
@@ -325,7 +329,7 @@ export function PlaceDetailContent({
           className="text-ink-subtle hover:text-ink-muted mt-6 inline-flex items-center gap-1.5 text-xs font-medium"
         >
           <Flag className="size-3.5" aria-hidden />
-          Report a problem with this listing
+          {t('detail.reportListing')}
         </button>
 
         {/* Clearance for the fixed bar, which would otherwise cover the last
@@ -354,7 +358,7 @@ export function PlaceDetailContent({
                 className="border-border bg-surface text-ink inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-lg border text-[0.9375rem] font-medium active:scale-[0.98]"
               >
                 <Phone className="size-[1.125rem]" aria-hidden />
-                Call
+                {t('detail.call')}
               </a>
             )}
             <Button
@@ -365,7 +369,7 @@ export function PlaceDetailContent({
                 window.open(directionsUrl, '_blank', 'noopener,noreferrer');
               }}
             >
-              Directions
+              {t('detail.directions')}
             </Button>
           </div>
         </div>
@@ -374,7 +378,7 @@ export function PlaceDetailContent({
       <AuthSheet
         open={authOpen}
         onOpenChange={setAuthOpen}
-        reason="Sign in to save places and come back to them later."
+        reason={t('detail.signInToSave')}
       />
       <ReportSheet
         placeId={place.id}

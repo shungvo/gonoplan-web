@@ -3,6 +3,8 @@
 import { useEffect } from 'react';
 import { ChevronDown, MapPin, LoaderCircle, MapPinOff } from 'lucide-react';
 import { useLocationStore } from '../store';
+import { useLocale, useT } from '@/i18n/I18nProvider';
+import { formatNumber } from '@/i18n/format';
 import { cn } from '@/lib/utils/cn';
 
 /**
@@ -24,6 +26,8 @@ export function LocationChip({
    */
   variant?: 'chip' | 'header';
 } = {}) {
+  const t = useT();
+  const locale = useLocale();
   const { status, source, coordinates, label, requestLocation } = useLocationStore();
 
   useEffect(() => {
@@ -36,15 +40,22 @@ export function LocationChip({
   const isPrompting = status === 'PROMPTING';
 
   const text = (() => {
-    if (isPrompting) return 'Finding you…';
+    if (isPrompting) return t('location.finding');
     if (label) return label;
     if (coordinates) {
-      const suffix = source === 'LAST_KNOWN' ? ' (last known)' : '';
-      return `${coordinates.latitude.toFixed(3)}, ${coordinates.longitude.toFixed(3)}${suffix}`;
+      // Formatted for the locale: the decimal mark is a comma in Vietnamese,
+      // and a coordinate is the one place on this screen where mixing the two
+      // conventions is most obvious.
+      const point = `${formatCoordinate(coordinates.latitude)}, ${formatCoordinate(coordinates.longitude)}`;
+      return source === 'LAST_KNOWN' ? t('location.lastKnown', { coordinates: point }) : point;
     }
-    if (isDenied) return 'Choose your location';
-    return 'Locating…';
+    if (isDenied) return t('location.choose');
+    return t('location.locating');
   })();
+
+  function formatCoordinate(value: number): string {
+    return formatNumber(Math.round(value * 1000) / 1000, locale);
+  }
 
   const Icon = isPrompting ? LoaderCircle : isDenied ? MapPinOff : MapPin;
 
@@ -66,7 +77,7 @@ export function LocationChip({
         className="flex min-w-0 flex-col items-center px-2"
       >
         <span className="flex items-center gap-0.5 text-xs text-ink-muted">
-          My location
+          {t('location.myLocation')}
           <ChevronDown className="size-3.5" aria-hidden />
         </span>
         <span className="mt-0.5 flex max-w-full items-center gap-1">

@@ -11,6 +11,7 @@ import { useLocationStore } from '@/features/location/store';
 import { ApiError } from '@/lib/api/errors';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
+import { useT } from '@/i18n/I18nProvider';
 
 /**
  * Full-page place detail, for shared links and direct navigation.
@@ -19,6 +20,7 @@ import { Button } from '@/components/ui/Button';
  * "detail page" implementation would drift from the sheet within two features.
  */
 export function PlacePageClient({ idOrSlug }: { idOrSlug: string }) {
+  const t = useT();
   const router = useRouter();
   const coordinates = useLocationStore((state) => state.coordinates);
 
@@ -62,7 +64,7 @@ export function PlacePageClient({ idOrSlug }: { idOrSlug: string }) {
           className="inline-flex h-10 items-center gap-1.5 rounded-full bg-surface pr-4 pl-3 text-sm font-medium text-ink shadow-sm active:scale-95"
         >
           <ChevronLeft className="size-5" aria-hidden />
-          Back
+          {t('page.back')}
         </button>
 
         <div className="flex items-center gap-2">
@@ -81,7 +83,7 @@ export function PlacePageClient({ idOrSlug }: { idOrSlug: string }) {
             onClick={() => {
               void share();
             }}
-            aria-label="Share this place"
+            aria-label={t('detail.share')}
             disabled={!place}
             className="flex size-10 items-center justify-center rounded-full bg-surface text-ink shadow-sm active:scale-95 disabled:opacity-50"
           >
@@ -106,13 +108,13 @@ export function PlacePageClient({ idOrSlug }: { idOrSlug: string }) {
           className="pt-24"
           title={
             error instanceof ApiError && error.status === 404
-              ? 'This place is no longer available'
-              : 'Could not load this place'
+              ? t('place.gone')
+              : t('place.loadFailed')
           }
           description={
             error instanceof ApiError && error.status === 404
-              ? 'It may have been removed, or the link may be out of date.'
-              : 'Check your connection and try again.'
+              ? t('page.goneBody')
+              : t('place.checkConnection')
           }
           action={
             <Button
@@ -121,7 +123,7 @@ export function PlacePageClient({ idOrSlug }: { idOrSlug: string }) {
                 router.push('/');
               }}
             >
-              Back to Gonoplan
+              {t('page.backToApp')}
             </Button>
           }
         />
@@ -132,7 +134,7 @@ export function PlacePageClient({ idOrSlug }: { idOrSlug: string }) {
       <AuthSheet
         open={authOpen}
         onOpenChange={setAuthOpen}
-        reason="Sign in to save places and come back to them later."
+        reason={t('detail.signInToSave')}
       />
     </div>
   );

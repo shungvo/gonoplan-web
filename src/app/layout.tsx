@@ -1,25 +1,31 @@
 import type { Metadata, Viewport } from 'next';
 import { Geist } from 'next/font/google';
 import { QueryProvider } from '@/lib/query/QueryProvider';
+import { I18nProvider } from '@/i18n/I18nProvider';
+import { getLocale, getT } from '@/i18n/server';
 import './globals.css';
 
 const geist = Geist({ variable: '--font-geist-sans', subsets: ['latin', 'vietnamese'] });
 
-export const metadata: Metadata = {
-  title: { default: 'Gonoplan', template: '%s · Gonoplan' },
-  description: 'Discover where to go, eat and stay — wherever you are.',
-  applicationName: 'Gonoplan',
-  manifest: '/manifest.webmanifest',
-  appleWebApp: {
-    // Makes an iOS home-screen launch open without Safari chrome. iOS has no
-    // `beforeinstallprompt`, so this metadata plus a hand-rolled "Add to Home
-    // Screen" hint is the entire iOS install story (Phase 13).
-    capable: true,
-    title: 'Gonoplan',
-    statusBarStyle: 'default',
-  },
-  formatDetection: { telephone: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT();
+
+  return {
+    title: { default: 'Gonoplan', template: '%s · Gonoplan' },
+    description: t('meta.appDescription'),
+    applicationName: 'Gonoplan',
+    manifest: '/manifest.webmanifest',
+    appleWebApp: {
+      // Makes an iOS home-screen launch open without Safari chrome. iOS has no
+      // `beforeinstallprompt`, so this metadata plus a hand-rolled "Add to Home
+      // Screen" hint is the entire iOS install story (Phase 13).
+      capable: true,
+      title: 'Gonoplan',
+      statusBarStyle: 'default',
+    },
+    formatDetection: { telephone: false },
+  };
+}
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -43,11 +49,17 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({ children }: LayoutProps<'/'>) {
+export default async function RootLayout({ children }: LayoutProps<'/'>) {
+  // Resolved here rather than per screen so `lang` and every string below it
+  // agree, and so a Client Component never has to guess before hydration.
+  const locale = await getLocale();
+
   return (
-    <html lang="en" className={`${geist.variable} antialiased`}>
+    <html lang={locale} className={`${geist.variable} antialiased`}>
       <body className="font-sans">
-        <QueryProvider>{children}</QueryProvider>
+        <I18nProvider locale={locale}>
+          <QueryProvider>{children}</QueryProvider>
+        </I18nProvider>
       </body>
     </html>
   );

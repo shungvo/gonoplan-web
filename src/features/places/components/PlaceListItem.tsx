@@ -1,6 +1,7 @@
 'use client';
 
 import { PlaceImage } from './PlaceImage';
+import { useLocale, useT } from '@/i18n/I18nProvider';
 import { Rating, PriceRange } from '@/components/ui/Rating';
 import { formatDistance } from '@/lib/geo/grid';
 import { cn } from '@/lib/utils/cn';
@@ -20,6 +21,9 @@ export interface PlaceListItemProps {
  * results per screen.
  */
 export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps) {
+  const t = useT();
+  const locale = useLocale();
+
   return (
     <button
       type="button"
@@ -59,14 +63,16 @@ export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps
             aria-hidden
           />
           <span className="truncate">{place.category.name}</span>
-          {place.isOpenNow && <span className="text-success shrink-0 font-semibold">· Open</span>}
+          {place.isOpenNow && (
+            <span className="text-success shrink-0 font-semibold">· {t('place.openNow')}</span>
+          )}
         </p>
 
         <div className="mt-1.5 flex items-center gap-2">
           <Rating value={place.averageRating} reviewCount={place.reviewCount} />
           <PriceRange value={place.priceRange} />
           {place.distanceM !== null && (
-            <span className="text-ink-subtle text-xs">{formatDistance(place.distanceM)}</span>
+            <span className="text-ink-subtle text-xs">{formatDistance(place.distanceM, locale)}</span>
           )}
         </div>
       </div>

@@ -1,9 +1,11 @@
 'use client';
 
 import { Star } from 'lucide-react';
+import { useT } from '@/i18n/I18nProvider';
+import type { MessageKey } from '@/i18n/messages/keys';
 import { cn } from '@/lib/utils/cn';
 
-const LABELS = ['', 'Poor', 'Fair', 'Good', 'Great', 'Excellent'];
+const LABEL_KEYS: MessageKey[] = ['stars.1', 'stars.2', 'stars.3', 'stars.4', 'stars.5'];
 
 /**
  * Five tappable stars with a word attached.
@@ -21,16 +23,21 @@ export function StarInput({
   onChange: (rating: number) => void;
   disabled?: boolean;
 }) {
+  const t = useT();
+
+  /** The word for a rating — "Great" — which is what anchors the number. */
+  const word = (rating: number): string => t(LABEL_KEYS[rating - 1] ?? 'stars.3');
+
   return (
     <div>
-      <div role="radiogroup" aria-label="Your rating" className="flex items-center gap-1.5">
+      <div role="radiogroup" aria-label={t('stars.groupLabel')} className="flex items-center gap-1.5">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
             type="button"
             role="radio"
             aria-checked={value === star}
-            aria-label={`${String(star)} ${star === 1 ? 'star' : 'stars'} — ${LABELS[star] ?? ''}`}
+            aria-label={t('stars.starLabel', { count: star, word: word(star) })}
             disabled={disabled}
             onClick={() => {
               onChange(star);
@@ -53,7 +60,7 @@ export function StarInput({
 
       {/* Reserved height, so choosing a rating does not shift the form. */}
       <p className="text-ink-muted mt-1 h-5 text-center text-sm font-medium">
-        {value > 0 ? LABELS[value] : 'Tap to rate'}
+        {value > 0 ? word(value) : t('stars.prompt')}
       </p>
     </div>
   );
