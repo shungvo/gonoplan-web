@@ -22,6 +22,7 @@ import { useLocale, useT } from '@/i18n/I18nProvider';
 import type { TranslateFn } from '@/i18n/translate';
 import type { CollectionKey } from '@/features/recommendations/api';
 import { categoryName } from '@/features/categories/name';
+import { CategoryGlyph } from '@/features/categories/CategoryGlyph';
 import { cn } from '@/lib/utils/cn';
 
 /**
@@ -232,10 +233,20 @@ export function HomeScreen() {
                   }}
                   className="border-border bg-surface text-ink inline-flex h-11 shrink-0 snap-start items-center gap-2 rounded-full border px-4 text-sm font-medium transition-transform active:scale-[0.97]"
                 >
-                  <span
-                    className="size-2 shrink-0 rounded-full"
-                    style={{ backgroundColor: category.colorHex }}
-                    aria-hidden
+                  {/*
+                    The category's own glyph, in the category's own colour.
+
+                    A coloured dot is a legend without a key: it says these
+                    eight things differ without saying how, and the reader has
+                    to get to the word anyway. The same glyph is already on the
+                    map pins and in search, so the shape is worth something
+                    before the word is read.
+                  */}
+                  <CategoryGlyph
+                    slug={category.slug}
+                    color={category.colorHex}
+                    className="size-[1.125rem] shrink-0"
+                    strokeWidth={2}
                   />
                   {categoryName(category, locale)}
                 </button>
