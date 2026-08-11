@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useT } from '@/i18n/I18nProvider';
+import type { MessageKey } from '@/i18n/messages/keys';
 import { cn } from '@/lib/utils/cn';
 
 type Series = 'users' | 'places' | 'reviews';
@@ -12,10 +14,10 @@ interface Point {
   reviews: number;
 }
 
-const SERIES: Array<{ key: Series; label: string; className: string }> = [
-  { key: 'users', label: 'Signups', className: 'bg-primary/70' },
-  { key: 'places', label: 'Submissions', className: 'bg-accent/70' },
-  { key: 'reviews', label: 'Reviews', className: 'bg-success/70' },
+const SERIES: Array<{ key: Series; labelKey: MessageKey; className: string }> = [
+  { key: 'users', labelKey: 'chart.signups', className: 'bg-primary/70' },
+  { key: 'places', labelKey: 'chart.submissions', className: 'bg-accent/70' },
+  { key: 'reviews', labelKey: 'chart.reviews', className: 'bg-success/70' },
 ];
 
 /**
@@ -31,6 +33,7 @@ const SERIES: Array<{ key: Series; label: string; className: string }> = [
  * operator is looking for.
  */
 export function TrendChart({ data }: { data: Point[] }) {
+  const t = useT();
   const [series, setSeries] = useState<Series>('users');
 
   const active = SERIES.find((item) => item.key === series) ?? SERIES[0];
@@ -58,7 +61,7 @@ export function TrendChart({ data }: { data: Point[] }) {
               )}
             >
               <span className={cn('size-2.5 rounded-full', item.className)} aria-hidden />
-              {item.label}
+              {t(item.labelKey)}
             </button>
           );
         })}

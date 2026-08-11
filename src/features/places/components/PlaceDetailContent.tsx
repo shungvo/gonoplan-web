@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/Button';
 import { formatDistance } from '@/lib/geo/grid';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { formatNumber } from '@/i18n/format';
+import { categoryName } from '@/features/categories/name';
 import { cn } from '@/lib/utils/cn';
 import { useSessionStore } from '@/features/auth/store';
 import type { PlaceDetail } from '../api';
@@ -114,7 +115,7 @@ export function PlaceDetailContent({
             className="absolute top-3 left-3 rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold text-white"
             style={{ backgroundColor: `${place.category.colorHex}e6` }}
           >
-            {place.category.name}
+            {categoryName(place.category, locale)}
             {place.subcategory ? ` · ${place.subcategory.name}` : ''}
           </span>
         </div>

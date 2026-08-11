@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
+import { useT } from '@/i18n/I18nProvider';
+import { useEnumLabel } from '@/i18n/useEnumLabel';
 import { cn } from '@/lib/utils/cn';
 import { Card, PageHeader, QueueEmpty, RowSkeleton, TimeAgo } from './primitives';
 import { fetchAuditLog } from '../api';
@@ -27,17 +29,19 @@ const ACTION_TONE: Record<string, string> = {
 };
 
 export function AuditScreen() {
+  const t = useT();
+  const label = useEnumLabel();
   const entries = useQuery({ queryKey: ['admin', 'audit'], queryFn: () => fetchAuditLog() });
 
   return (
     <>
       <PageHeader
-        title="Audit log"
-        description="Append-only. Every entry was written in the same transaction as the change it describes, so there are no gaps for actions that failed halfway."
+        title={t('admin.audit')}
+        description={t('audit.description')}
       />
 
       {entries.isPending && <RowSkeleton rows={5} />}
-      {entries.data?.length === 0 && <QueueEmpty label="No moderation actions recorded yet." />}
+      {entries.data?.length === 0 && <QueueEmpty label={t('audit.empty')} />}
 
       <Card className="p-0">
         <ul className="divide-border divide-y">
@@ -49,7 +53,7 @@ export function AuditScreen() {
                   ACTION_TONE[entry.action] ?? 'bg-surface-sunken text-ink-muted',
                 )}
               >
-                {entry.action.toLowerCase().replace(/_/g, ' ')}
+                {label('action', entry.action)}
               </span>
 
               <div className="min-w-0 flex-1">
@@ -65,7 +69,8 @@ export function AuditScreen() {
                     </Link>
                   ) : (
                     <span className="text-ink-muted">
-                      {entry.target?.label ?? `${entry.targetType.toLowerCase()} (removed)`}
+                      {entry.target?.label ??
+                        t('audit.removedTarget', { type: entry.targetType.toLowerCase() })}
                     </span>
                   )}
                 </p>

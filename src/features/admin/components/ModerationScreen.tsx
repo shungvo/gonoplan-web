@@ -8,6 +8,10 @@ import { ExternalLink, MapPin } from 'lucide-react';
 
 import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
+import { useLocale, useT } from '@/i18n/I18nProvider';
+import { formatDate } from '@/i18n/format';
+import type { TranslateFn } from '@/i18n/translate';
+import type { MessageKey } from '@/i18n/messages/keys';
 import { Card, PageHeader, QueueEmpty, RowSkeleton, StatusBadge, TimeAgo } from './primitives';
 import { ReasonDialog } from './ReasonDialog';
 import {
@@ -27,11 +31,11 @@ import {
 
 type Tab = 'places' | 'revisions' | 'owners' | 'reports';
 
-const TABS: Array<{ key: Tab; label: string }> = [
-  { key: 'places', label: 'Places' },
-  { key: 'revisions', label: 'Edits' },
-  { key: 'owners', label: 'Businesses' },
-  { key: 'reports', label: 'Reports' },
+const TABS: Array<{ key: Tab; labelKey: MessageKey }> = [
+  { key: 'places', labelKey: 'moderation.places' },
+  { key: 'revisions', labelKey: 'moderation.revisions' },
+  { key: 'owners', labelKey: 'moderation.owners' },
+  { key: 'reports', labelKey: 'moderation.reports' },
 ];
 
 function isTab(value: string | null): value is Tab {
@@ -48,6 +52,8 @@ interface PendingDecision {
 }
 
 export function ModerationScreen() {
+  const t = useT();
+  const locale = useLocale();
   const router = useRouter();
   const params = useSearchParams();
   const queryClient = useQueryClient();
@@ -101,7 +107,7 @@ export function ModerationScreen() {
 
   return (
     <>
-      <PageHeader title="Moderation" description="Oldest first. Every decision is audited." />
+      <PageHeader title={t('admin.moderation')} description={t('moderation.description')} />
 
       <div className="mb-5 flex flex-wrap gap-2">
         {TABS.map((item) => (
@@ -112,7 +118,7 @@ export function ModerationScreen() {
               router.replace(`/admin/moderation?tab=${item.key}`, { scroll: false });
             }}
           >
-            {item.label}
+            {t(item.labelKey)}
           </Chip>
         ))}
       </div>
@@ -120,7 +126,7 @@ export function ModerationScreen() {
       {tab === 'places' && (
         <div className="space-y-3">
           {places.isPending && <RowSkeleton />}
-          {places.data?.length === 0 && <QueueEmpty label="No places waiting for review." />}
+          {places.data?.length === 0 && <QueueEmpty label={t('moderation.noPlaces')} />}
 
           {places.data?.map((place) => (
             <Card key={place.id}>
@@ -129,11 +135,11 @@ export function ModerationScreen() {
                   <h3 className="text-ink font-semibold">{place.name}</h3>
                   <p className="text-ink-muted mt-0.5 flex items-center gap-1.5 text-sm">
                     <MapPin className="size-3.5 shrink-0" aria-hidden />
-                    {place.address ?? 'No address given'}
+                    {place.address ?? t('moderation.noAddress')}
                   </p>
                   <p className="text-ink-subtle mt-1 text-xs">
-                    {place.category.name} · submitted by{' '}
-                    {place.submittedBy?.name ?? 'a removed account'} ·{' '}
+                    {place.category.name} · {t('moderation.submittedBy')}{' '}
+                    {place.submittedBy?.name ?? t('moderation.removedAccountBy')} ·{' '}
                     <TimeAgo iso={place.createdAt} />
                   </p>
                 </div>
@@ -144,7 +150,7 @@ export function ModerationScreen() {
                   rel="noreferrer noopener"
                   className="text-primary inline-flex shrink-0 items-center gap-1 text-xs font-medium"
                 >
-                  Check the location
+                  {t('moderation.checkLocation')}
                   <ExternalLink className="size-3" aria-hidden />
                 </a>
               </div>
@@ -163,7 +169,7 @@ export function ModerationScreen() {
                     run(() => approvePlace(place.id));
                   }}
                 >
-                  Approve and publish
+                  {t('moderation.approvePublish')}
                 </Button>
                 <Button
                   size="sm"
@@ -172,7 +178,7 @@ export function ModerationScreen() {
                     setDecision({ kind: 'reject-place', id: place.id, label: place.name });
                   }}
                 >
-                  Reject
+                  {t('moderation.reject')}
                 </Button>
               </div>
             </Card>
@@ -183,7 +189,7 @@ export function ModerationScreen() {
       {tab === 'revisions' && (
         <div className="space-y-3">
           {revisions.isPending && <RowSkeleton />}
-          {revisions.data?.length === 0 && <QueueEmpty label="No proposed edits waiting." />}
+          {revisions.data?.length === 0 && <QueueEmpty label={t('moderation.noRevisions')} />}
 
           {revisions.data?.map((revision) => (
             <Card key={revision.id}>
@@ -191,7 +197,10 @@ export function ModerationScreen() {
                 <div>
                   <h3 className="text-ink font-semibold">{revision.place.name}</h3>
                   <p className="text-ink-subtle mt-0.5 text-xs">
-                    Proposed by {revision.submittedBy?.name ?? 'a removed account'} ·{' '}
+                    {t('moderation.proposedBy', {
+                      name: revision.submittedBy?.name ?? t('moderation.removedAccountBy'),
+                    })}{' '}
+                    ·{' '}
                     <TimeAgo iso={revision.createdAt} />
                   </p>
                 </div>
@@ -200,7 +209,7 @@ export function ModerationScreen() {
                   target="_blank"
                   className="text-primary inline-flex items-center gap-1 text-xs font-medium"
                 >
-                  See the live listing
+                  {t('moderation.seeListing')}
                   <ExternalLink className="size-3" aria-hidden />
                 </Link>
               </div>
@@ -229,7 +238,7 @@ export function ModerationScreen() {
                     run(() => approveRevision(revision.id));
                   }}
                 >
-                  Apply the changes
+                  {t('moderation.applyChanges')}
                 </Button>
                 <Button
                   size="sm"
@@ -242,7 +251,7 @@ export function ModerationScreen() {
                     });
                   }}
                 >
-                  Discard
+                  {t('moderation.discard')}
                 </Button>
               </div>
             </Card>
@@ -253,7 +262,7 @@ export function ModerationScreen() {
       {tab === 'owners' && (
         <div className="space-y-3">
           {owners.isPending && <RowSkeleton />}
-          {owners.data?.length === 0 && <QueueEmpty label="No businesses waiting for approval." />}
+          {owners.data?.length === 0 && <QueueEmpty label={t('moderation.noOwners')} />}
 
           {owners.data?.map((owner) => (
             <Card key={owner.id}>
@@ -262,15 +271,22 @@ export function ModerationScreen() {
                 {owner.user.name} · {owner.user.email}
               </p>
               <p className="text-ink-subtle mt-1 text-xs">
-                Applied <TimeAgo iso={owner.createdAt} /> · account joined{' '}
-                {new Date(owner.user.joinedAt).toLocaleDateString()} · {owner.placeCount} places ·{' '}
-                {owner.documentCount} documents
+                {t('moderation.applied')} <TimeAgo iso={owner.createdAt} /> ·{' '}
+                {t('moderation.ownerMetaRest', {
+                  joined: formatDate(owner.user.joinedAt, locale),
+                  places: owner.placeCount,
+                  documents: owner.documentCount,
+                })}
               </p>
 
               <dl className="text-ink-muted mt-3 space-y-1 text-sm">
-                {owner.businessEmail && <dd>Contact: {owner.businessEmail}</dd>}
-                {owner.businessPhone && <dd>Phone: {owner.businessPhone}</dd>}
-                {owner.taxId && <dd>Tax ID: {owner.taxId}</dd>}
+                {owner.businessEmail && (
+                  <dd>{t('moderation.contact', { value: owner.businessEmail })}</dd>
+                )}
+                {owner.businessPhone && (
+                  <dd>{t('moderation.phone', { value: owner.businessPhone })}</dd>
+                )}
+                {owner.taxId && <dd>{t('moderation.taxId', { value: owner.taxId })}</dd>}
               </dl>
 
               <div className="mt-4 flex gap-2">
@@ -281,7 +297,7 @@ export function ModerationScreen() {
                     run(() => approveOwner(owner.id));
                   }}
                 >
-                  Approve
+                  {t('moderation.approve')}
                 </Button>
                 <Button
                   size="sm"
@@ -294,7 +310,7 @@ export function ModerationScreen() {
                     });
                   }}
                 >
-                  Reject
+                  {t('moderation.reject')}
                 </Button>
               </div>
             </Card>
@@ -305,7 +321,7 @@ export function ModerationScreen() {
       {tab === 'reports' && (
         <div className="space-y-3">
           {reports.isPending && <RowSkeleton />}
-          {reports.data?.length === 0 && <QueueEmpty label="No open reports." />}
+          {reports.data?.length === 0 && <QueueEmpty label={t('moderation.noReports')} />}
 
           {reports.data?.map((report) => (
             <ReportCard
@@ -315,7 +331,7 @@ export function ModerationScreen() {
                 setDecision({
                   kind: 'resolve-report',
                   id: report.id,
-                  label: report.target?.label ?? 'this report',
+                  label: report.target?.label ?? t('moderation.thisReport'),
                   outcome,
                 });
               }}
@@ -326,14 +342,14 @@ export function ModerationScreen() {
 
       <ReasonDialog
         open={decision !== null}
-        title={decisionTitle(decision)}
-        description={decisionDescription(decision)}
-        confirmLabel={decisionConfirm(decision)}
+        title={decisionTitle(t, decision)}
+        description={decisionDescription(t, decision)}
+        confirmLabel={decisionConfirm(t, decision)}
         destructive={decision?.kind !== 'resolve-report'}
         placeholder={
           decision?.kind === 'resolve-report'
-            ? 'What did you do about it? Only other moderators see this.'
-            : 'Explain the decision. The person affected will see this.'
+            ? t('moderation.resolvePlaceholder')
+            : t('admin.reasonPlaceholder')
         }
         isPending={act.isPending}
         error={act.error}
@@ -371,6 +387,8 @@ function ReportCard({
   report: AdminReport;
   onDecide: (outcome: 'RESOLVED' | 'DISMISSED') => void;
 }) {
+  const t = useT();
+
   return (
     <Card>
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -390,7 +408,7 @@ function ReportCard({
           {/* Null when the target was deleted after the report was filed. The
               row still has to render and still has to be resolvable. */}
           <h3 className="text-ink mt-2 font-semibold">
-            {report.target?.label ?? 'Target no longer exists'}
+            {report.target?.label ?? t('moderation.targetGone')}
           </h3>
           {report.target?.detail && (
             <p className="text-ink-muted mt-0.5 line-clamp-2 text-sm">{report.target.detail}</p>
@@ -405,7 +423,7 @@ function ReportCard({
               target="_blank"
               className="text-primary inline-flex items-center gap-1 text-xs font-medium"
             >
-              Open
+              {t('admin.open')}
               <ExternalLink className="size-3" aria-hidden />
             </Link>
           )}
@@ -419,7 +437,9 @@ function ReportCard({
       )}
 
       <p className="text-ink-subtle mt-2 text-xs">
-        Reported by {report.reporter?.name ?? 'a removed account'}
+        {t('moderation.reportedBy', {
+          name: report.reporter?.name ?? t('moderation.removedAccount'),
+        })}
       </p>
 
       {/* Resolving does nothing to the target by design — the moderator acts
@@ -431,7 +451,7 @@ function ReportCard({
             onDecide('RESOLVED');
           }}
         >
-          Mark handled
+          {t('moderation.markHandled')}
         </Button>
         <Button
           size="sm"
@@ -440,50 +460,57 @@ function ReportCard({
             onDecide('DISMISSED');
           }}
         >
-          Dismiss
+          {t('moderation.dismiss')}
         </Button>
       </div>
     </Card>
   );
 }
 
-function decisionTitle(decision: PendingDecision | null): string {
+// `t` is threaded in rather than these becoming hooks: they are pure mappings
+// from a decision to a sentence, and a hook here would force the dialog's
+// three strings to be recomputed inside the component that already has them.
+function decisionTitle(t: TranslateFn, decision: PendingDecision | null): string {
   switch (decision?.kind) {
     case 'reject-place':
-      return `Reject “${decision.label}”`;
+      return t('moderation.rejectPlaceTitle', { label: decision.label });
     case 'reject-revision':
-      return `Discard the edit to “${decision.label}”`;
+      return t('moderation.rejectRevisionTitle', { label: decision.label });
     case 'reject-owner':
-      return `Reject ${decision.label}`;
+      return t('moderation.rejectOwnerTitle', { label: decision.label });
     case 'resolve-report':
-      return decision.outcome === 'DISMISSED' ? 'Dismiss this report' : 'Mark this report handled';
+      return decision.outcome === 'DISMISSED'
+        ? t('moderation.dismissReportTitle')
+        : t('moderation.resolveReportTitle');
     default:
       return '';
   }
 }
 
-function decisionDescription(decision: PendingDecision | null): string {
+function decisionDescription(t: TranslateFn, decision: PendingDecision | null): string {
   switch (decision?.kind) {
     case 'reject-place':
-      return 'The submitter sees this reason and can fix and resubmit. Nothing is deleted.';
+      return t('moderation.rejectPlaceBody');
     case 'reject-revision':
-      return 'The live listing is untouched — only the proposed change is discarded.';
+      return t('moderation.rejectRevisionBody');
     case 'reject-owner':
-      return 'They can correct the details and resubmit, which returns the application to the queue.';
+      return t('moderation.rejectOwnerBody');
     case 'resolve-report':
-      return 'This closes the report. It does not change the reported content — do that on the listing itself first.';
+      return t('moderation.resolveReportBody');
     default:
       return '';
   }
 }
 
-function decisionConfirm(decision: PendingDecision | null): string {
+function decisionConfirm(t: TranslateFn, decision: PendingDecision | null): string {
   switch (decision?.kind) {
     case 'reject-revision':
-      return 'Discard the edit';
+      return t('moderation.rejectRevisionConfirm');
     case 'resolve-report':
-      return decision.outcome === 'DISMISSED' ? 'Dismiss' : 'Mark handled';
+      return decision.outcome === 'DISMISSED'
+        ? t('moderation.dismiss')
+        : t('moderation.markHandled');
     default:
-      return 'Reject';
+      return t('moderation.reject');
   }
 }

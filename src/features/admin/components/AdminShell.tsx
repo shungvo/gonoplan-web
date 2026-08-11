@@ -9,33 +9,40 @@ import { ClipboardList, FileClock, LayoutDashboard, Store, Tags, Users } from 'l
 import { useSessionStore } from '@/features/auth/store';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
+import { useLocale, useT } from '@/i18n/I18nProvider';
+import { formatNumber } from '@/i18n/format';
+import type { MessageKey } from '@/i18n/messages/keys';
 import { cn } from '@/lib/utils/cn';
 import { fetchOverview } from '../api';
 
 interface NavItem {
   href: string;
-  label: string;
+  labelKey: MessageKey;
   icon: ReactNode;
   /** Which overview queue drives this item's badge, if any. */
   queue?: 'moderation';
 }
 
 const NAV: NavItem[] = [
-  { href: '/admin', label: 'Overview', icon: <LayoutDashboard className="size-4" aria-hidden /> },
+  {
+    href: '/admin',
+    labelKey: 'admin.overview',
+    icon: <LayoutDashboard className="size-4" aria-hidden />,
+  },
   {
     href: '/admin/moderation',
-    label: 'Moderation',
+    labelKey: 'admin.moderation',
     icon: <ClipboardList className="size-4" aria-hidden />,
     queue: 'moderation',
   },
-  { href: '/admin/content', label: 'Content', icon: <Store className="size-4" aria-hidden /> },
+  { href: '/admin/content', labelKey: 'admin.content', icon: <Store className="size-4" aria-hidden /> },
+  { href: '/admin/taxonomy', labelKey: 'admin.taxonomy', icon: <Tags className="size-4" aria-hidden /> },
+  { href: '/admin/users', labelKey: 'admin.users', icon: <Users className="size-4" aria-hidden /> },
   {
-    href: '/admin/taxonomy',
-    label: 'Taxonomy',
-    icon: <Tags className="size-4" aria-hidden />,
+    href: '/admin/audit',
+    labelKey: 'admin.audit',
+    icon: <FileClock className="size-4" aria-hidden />,
   },
-  { href: '/admin/users', label: 'Users', icon: <Users className="size-4" aria-hidden /> },
-  { href: '/admin/audit', label: 'Audit log', icon: <FileClock className="size-4" aria-hidden /> },
 ];
 
 /**
@@ -47,6 +54,8 @@ const NAV: NavItem[] = [
  * layout would make the primary use case the worst-served one.
  */
 export function AdminShell({ children }: { children: ReactNode }) {
+  const t = useT();
+  const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
   const { user, isInitializing } = useSessionStore();
@@ -84,11 +93,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <div className="max-w-sm">
           <EmptyState
             icon={<LayoutDashboard className="size-7" aria-hidden />}
-            title="Administrators only"
+            title={t('admin.only')}
             description={
               user
-                ? 'This area is limited to Gonoplan administrators. If you think you should have access, ask an existing administrator.'
-                : 'Sign in with an administrator account to continue.'
+                ? t('admin.onlyBody')
+                : t('admin.signInBody')
             }
             action={
               <Button
@@ -96,7 +105,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                   router.push('/');
                 }}
               >
-                Back to Gonoplan
+                {t('page.backToApp')}
               </Button>
             }
           />
@@ -110,7 +119,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
       <aside className="border-border bg-surface sticky top-0 hidden h-dvh w-60 shrink-0 border-r px-4 py-6 md:block">
         <Link href="/" className="text-ink px-2 text-lg font-semibold tracking-tight">
           Gonoplan
-          <span className="text-ink-subtle ml-1.5 text-xs font-medium">admin</span>
+          <span className="text-ink-subtle ml-1.5 text-xs font-medium">{t('admin.label')}</span>
         </Link>
 
         <nav className="mt-6 space-y-1">
@@ -132,10 +141,10 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 )}
               >
                 {item.icon}
-                <span className="flex-1">{item.label}</span>
+                <span className="flex-1">{t(item.labelKey)}</span>
                 {item.queue === 'moderation' && pending > 0 && (
                   <span className="bg-danger inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[0.6875rem] font-semibold text-white tabular-nums">
-                    {pending > 99 ? '99+' : pending}
+                    {pending > 99 ? '99+' : formatNumber(pending, locale)}
                   </span>
                 )}
               </Link>
@@ -162,7 +171,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 pathname === item.href ? 'bg-primary-tint text-primary' : 'text-ink-muted',
               )}
             >
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           ))}
         </nav>

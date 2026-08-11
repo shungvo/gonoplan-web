@@ -6,7 +6,9 @@ import { Plus, Search, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
 import { fieldClass } from '@/components/ui/field';
-import { ApiError } from '@/lib/api/errors';
+import { useT } from '@/i18n/I18nProvider';
+import { useErrorMessage } from '@/i18n/useErrorMessage';
+import type { TranslateFn } from '@/i18n/translate';
 import { cn } from '@/lib/utils/cn';
 import {
   createCategory,
@@ -39,6 +41,8 @@ const BLANK = { slug: '', name: '', nameVi: '', iconKey: 'map-pin', colorHex: '#
  * out the catalogue is missing bakeries, and where you add the category.
  */
 export function TaxonomyScreen() {
+  const t = useT();
+  const describeError = useErrorMessage();
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>('categories');
   const [draft, setDraft] = useState(BLANK);
@@ -93,8 +97,8 @@ export function TaxonomyScreen() {
   return (
     <>
       <PageHeader
-        title="Taxonomy"
-        description="The categories everything is filed under, and what people searched for and did not find."
+        title={t('admin.taxonomy')}
+        description={t('taxonomy.description')}
       />
 
       <div className="mb-5 flex gap-2">
@@ -104,7 +108,7 @@ export function TaxonomyScreen() {
             setTab('categories');
           }}
         >
-          Categories
+          {t('taxonomy.categories')}
         </Chip>
         <Chip
           selected={tab === 'demand'}
@@ -112,7 +116,7 @@ export function TaxonomyScreen() {
             setTab('demand');
           }}
         >
-          Unmet demand
+          {t('taxonomy.demand')}
         </Chip>
       </div>
 
@@ -120,18 +124,18 @@ export function TaxonomyScreen() {
         <>
           {adding ? (
             <Card className="mb-4">
-              <h3 className="text-ink text-sm font-semibold">New category</h3>
+              <h3 className="text-ink text-sm font-semibold">{t('taxonomy.newCategory')}</h3>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 {(
                   [
-                    ['slug', 'Slug', 'bakery'],
-                    ['name', 'Name (English)', 'Bakery'],
-                    ['nameVi', 'Name (Vietnamese)', 'Tiệm bánh'],
-                    ['iconKey', 'Icon key', 'bakery'],
+                    ['slug', 'taxonomy.slug', 'bakery'],
+                    ['name', 'taxonomy.nameEn', 'Bakery'],
+                    ['nameVi', 'taxonomy.nameVi', 'Tiệm bánh'],
+                    ['iconKey', 'taxonomy.iconKey', 'bakery'],
                   ] as const
-                ).map(([key, label, placeholder]) => (
+                ).map(([key, labelKey, placeholder]) => (
                   <label key={key} className="block">
-                    <span className="text-ink-muted text-xs font-medium">{label}</span>
+                    <span className="text-ink-muted text-xs font-medium">{t(labelKey)}</span>
                     <input
                       value={draft[key]}
                       onChange={(event) => {
@@ -144,7 +148,7 @@ export function TaxonomyScreen() {
                 ))}
 
                 <label className="block">
-                  <span className="text-ink-muted text-xs font-medium">Colour</span>
+                  <span className="text-ink-muted text-xs font-medium">{t('taxonomy.colour')}</span>
                   <div className="mt-1 flex items-center gap-2">
                     <input
                       type="color"
@@ -167,7 +171,7 @@ export function TaxonomyScreen() {
 
               {add.error && (
                 <p role="alert" className="bg-danger/10 text-danger mt-3 rounded-md p-2.5 text-sm">
-                  {add.error instanceof ApiError ? add.error.message : 'Could not create that.'}
+                  {describeError(add.error)}
                 </p>
               )}
 
@@ -180,7 +184,7 @@ export function TaxonomyScreen() {
                     add.mutate();
                   }}
                 >
-                  Create
+                  {t('taxonomy.create')}
                 </Button>
                 <Button
                   size="sm"
@@ -190,7 +194,7 @@ export function TaxonomyScreen() {
                     add.reset();
                   }}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
               </div>
             </Card>
@@ -203,7 +207,7 @@ export function TaxonomyScreen() {
                 setAdding(true);
               }}
             >
-              Add category
+              {t('taxonomy.addCategory')}
             </Button>
           )}
 
@@ -225,6 +229,7 @@ export function TaxonomyScreen() {
                       setDeleteTarget(parent);
                     }}
                     busy={toggleActive.isPending}
+                    t={t}
                   />
 
                   {children.length > 0 && (
@@ -240,6 +245,7 @@ export function TaxonomyScreen() {
                               setDeleteTarget(child);
                             }}
                             busy={toggleActive.isPending}
+                            t={t}
                           />
                         </li>
                       ))}
@@ -262,25 +268,24 @@ export function TaxonomyScreen() {
                   with nothing at all. */}
               <Card className="mb-4">
                 <p className="text-ink-muted text-sm">
-                  <span className="text-ink text-2xl font-semibold tabular-nums">
-                    {Math.round(insights.data.totals.unmetShare * 100)}%
-                  </span>{' '}
-                  of searches in the last 30 days found nothing —{' '}
-                  {insights.data.totals.unmetSearches.toLocaleString()} of{' '}
-                  {insights.data.totals.searches.toLocaleString()}.
+                  {t('taxonomy.unmetShare', {
+                    percent: Math.round(insights.data.totals.unmetShare * 100),
+                    unmet: insights.data.totals.unmetSearches,
+                    total: insights.data.totals.searches,
+                  })}
                 </p>
               </Card>
 
               <h3 className="text-ink mb-2 flex items-center gap-2 text-sm font-semibold">
                 <Search className="size-4" aria-hidden />
-                Searched for, never found
+                {t('taxonomy.unmetTitle')}
               </h3>
               <p className="text-ink-subtle mb-3 text-xs">
-                What to seed next, in the words of the people who wanted it.
+                {t('taxonomy.unmetHint')}
               </p>
 
               {insights.data.unmet.length === 0 ? (
-                <QueueEmpty label="Every search in this window found something." />
+                <QueueEmpty label={t('taxonomy.allFound')} />
               ) : (
                 <div className="mb-6 space-y-2">
                   {insights.data.unmet.map((row) => (
@@ -288,7 +293,8 @@ export function TaxonomyScreen() {
                       <div className="flex items-baseline justify-between gap-3">
                         <p className="text-ink text-sm font-medium">{row.query}</p>
                         <p className="text-ink-subtle shrink-0 text-xs tabular-nums">
-                          {row.searches}× · <TimeAgo iso={row.lastSearchedAt} />
+                          {t('taxonomy.searchCount', { count: row.searches })} ·{' '}
+                          <TimeAgo iso={row.lastSearchedAt} />
                         </p>
                       </div>
                     </Card>
@@ -298,7 +304,7 @@ export function TaxonomyScreen() {
 
               <h3 className="text-ink mb-2 flex items-center gap-2 text-sm font-semibold">
                 <TrendingUp className="size-4" aria-hidden />
-                Found something
+                {t('taxonomy.foundSomething')}
               </h3>
               <div className="space-y-2">
                 {insights.data.popular.slice(0, 10).map((row) => (
@@ -306,7 +312,7 @@ export function TaxonomyScreen() {
                     <div className="flex items-baseline justify-between gap-3">
                       <p className="text-ink-muted text-sm">{row.query}</p>
                       <p className="text-ink-subtle shrink-0 text-xs tabular-nums">
-                        {row.searches}×
+                        {t('taxonomy.searchCount', { count: row.searches })}
                       </p>
                     </div>
                   </Card>
@@ -319,13 +325,13 @@ export function TaxonomyScreen() {
 
       <ReasonDialog
         open={deleteTarget !== null}
-        title={`Remove ${deleteTarget?.name ?? ''}?`}
-        description="Only possible if nothing uses it. If places are filed under it, retire it instead — they keep their label and it leaves the picker."
-        confirmLabel="Remove"
+        title={t('taxonomy.removeTitle', { name: deleteTarget?.name ?? '' })}
+        description={t('taxonomy.removeBody')}
+        confirmLabel={t('common.remove')}
         requireReason={false}
         destructive
         isPending={remove.isPending}
-        {...(remove.error instanceof ApiError ? { error: remove.error.message } : {})}
+        error={remove.error}
         onConfirm={() => {
           if (deleteTarget) remove.mutate(deleteTarget.id);
         }}
@@ -343,11 +349,15 @@ function CategoryRow({
   onToggle,
   onDelete,
   busy,
+  t,
 }: {
   category: AdminCategory;
   onToggle: () => void;
   onDelete: () => void;
   busy: boolean;
+  /* Passed down rather than hooked: this row renders once per category in a
+     list the parent already has a translator for. */
+  t: TranslateFn;
 }) {
   const inUse = category.placeCount + category.subcategoryPlaceCount;
 
@@ -369,24 +379,24 @@ function CategoryRow({
           <span className="text-ink-subtle font-normal"> · {category.nameVi}</span>
           {!category.isActive && (
             <span className="bg-surface-sunken text-ink-subtle ml-2 rounded-full px-2 py-0.5 text-[0.6875rem]">
-              Retired
+              {t('taxonomy.retired')}
             </span>
           )}
         </p>
         <p className="text-ink-subtle mt-0.5 font-mono text-xs">
-          {category.slug} · {inUse} {inUse === 1 ? 'place' : 'places'}
+          {category.slug} · {t('taxonomy.placeCount', { count: inUse })}
         </p>
       </div>
 
       <div className="flex shrink-0 gap-2">
         <Button size="sm" variant="secondary" disabled={busy} onClick={onToggle}>
-          {category.isActive ? 'Retire' : 'Restore'}
+          {category.isActive ? t('taxonomy.retire') : t('taxonomy.restore')}
         </Button>
         {/* Only offered when it would actually work. A delete button that
             always 409s teaches people to ignore the error. */}
         {inUse === 0 && (
           <Button size="sm" variant="danger" onClick={onDelete}>
-            Remove
+            {t('common.remove')}
           </Button>
         )}
       </div>

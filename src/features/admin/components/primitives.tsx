@@ -1,6 +1,9 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { useLocale } from '@/i18n/I18nProvider';
+import { useEnumLabel } from '@/i18n/useEnumLabel';
+import { formatNumber, formatRelativeTime } from '@/i18n/format';
 import { cn } from '@/lib/utils/cn';
 import { useNow } from '@/lib/utils/useNow';
 
@@ -41,6 +44,8 @@ export function Stat({
   hint?: string;
   tone?: 'neutral' | 'warning' | 'danger';
 }) {
+  const locale = useLocale();
+
   return (
     <div className="bg-surface rounded-lg p-4 shadow-sm">
       <p className="text-ink-subtle text-xs font-medium">{label}</p>
@@ -52,7 +57,7 @@ export function Stat({
           tone === 'danger' && 'text-danger',
         )}
       >
-        {typeof value === 'number' ? value.toLocaleString() : value}
+        {typeof value === 'number' ? formatNumber(value, locale) : value}
       </p>
       {hint && <p className="text-ink-subtle mt-1 text-xs">{hint}</p>}
     </div>
@@ -77,6 +82,8 @@ const STATUS_TONE: Record<string, string> = {
 };
 
 export function StatusBadge({ status }: { status: string }) {
+  const label = useEnumLabel();
+
   return (
     <span
       className={cn(
@@ -84,7 +91,7 @@ export function StatusBadge({ status }: { status: string }) {
         STATUS_TONE[status] ?? 'bg-surface-sunken text-ink-muted',
       )}
     >
-      {status.toLowerCase().replace(/_/g, ' ')}
+      {label('status', status)}
     </span>
   );
 }
@@ -103,6 +110,7 @@ export function StatusBadge({ status }: { status: string }) {
 export function TimeAgo({ iso }: { iso: string }) {
   const then = new Date(iso);
   const now = useNow();
+  const locale = useLocale();
 
   if (now === 0) {
     return (
@@ -112,30 +120,13 @@ export function TimeAgo({ iso }: { iso: string }) {
     );
   }
 
-  const seconds = Math.round((now - then.getTime()) / 1000);
-
-  const units: Array<[Intl.RelativeTimeFormatUnit, number]> = [
-    ['second', 60],
-    ['minute', 60],
-    ['hour', 24],
-    ['day', 30],
-    ['month', 12],
-    ['year', Number.POSITIVE_INFINITY],
-  ];
-
-  let value = seconds;
-  let unit: Intl.RelativeTimeFormatUnit = 'second';
-  for (const [name, size] of units) {
-    unit = name;
-    if (Math.abs(value) < size) break;
-    value = Math.round(value / size);
-  }
-
-  const formatter = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
-
   return (
-    <time dateTime={iso} title={then.toLocaleString()} className="text-ink-subtle text-xs">
-      {formatter.format(-value, unit)}
+    <time
+      dateTime={iso}
+      title={then.toLocaleString(locale)}
+      className="text-ink-subtle text-xs"
+    >
+      {formatRelativeTime(then, now, locale)}
     </time>
   );
 }

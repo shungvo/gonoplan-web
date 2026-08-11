@@ -4,6 +4,7 @@ import { PlaceImage } from './PlaceImage';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { Rating, PriceRange } from '@/components/ui/Rating';
 import { formatDistance } from '@/lib/geo/grid';
+import { categoryName } from '@/features/categories/name';
 import { cn } from '@/lib/utils/cn';
 import type { PlaceCard as PlaceCardDto } from '../api';
 
@@ -62,7 +63,7 @@ export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps
             style={{ backgroundColor: place.category.colorHex }}
             aria-hidden
           />
-          <span className="truncate">{place.category.name}</span>
+          <span className="truncate">{categoryName(place.category, locale)}</span>
           {place.isOpenNow && (
             <span className="text-success shrink-0 font-semibold">· {t('place.openNow')}</span>
           )}

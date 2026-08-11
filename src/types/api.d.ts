@@ -777,13 +777,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    lat?: number | null;
-                    lng?: number | null;
+                    lat?: number;
+                    lng?: number;
                     radius?: number;
                     category?: string;
                     priceRange?: string;
-                    minRating?: number | null;
-                    openNow?: boolean | null;
+                    minRating?: number;
+                    openNow?: boolean;
                     sort?: "recommended" | "nearest" | "rating" | "popular" | "newest";
                     limit?: number;
                     cursor?: string;
@@ -815,6 +815,7 @@ export interface paths {
                                     id: string;
                                     slug: string;
                                     name: string;
+                                    nameVi: string;
                                     colorHex: string;
                                 };
                                 latitude: number;
@@ -978,12 +979,12 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
-                    lat?: number | null;
-                    lng?: number | null;
+                query: {
+                    lat: number;
+                    lng: number;
                     radius?: number;
                     category?: string;
-                    openNow?: boolean | null;
+                    openNow?: boolean;
                     limit?: number;
                     cursor?: string;
                 };
@@ -1014,6 +1015,7 @@ export interface paths {
                                     id: string;
                                     slug: string;
                                     name: string;
+                                    nameVi: string;
                                     colorHex: string;
                                 };
                                 latitude: number;
@@ -1144,8 +1146,8 @@ export interface paths {
             parameters: {
                 query: {
                     q: string;
-                    lat?: number | null;
-                    lng?: number | null;
+                    lat?: number;
+                    lng?: number;
                     limit?: number;
                 };
                 header?: never;
@@ -1175,6 +1177,7 @@ export interface paths {
                                     id: string;
                                     slug: string;
                                     name: string;
+                                    nameVi: string;
                                     colorHex: string;
                                 };
                                 latitude: number;
@@ -1286,8 +1289,8 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    lat?: number | null;
-                    lng?: number | null;
+                    lat?: number;
+                    lng?: number;
                 };
                 header?: never;
                 path: {
@@ -1319,6 +1322,7 @@ export interface paths {
                                     id: string;
                                     slug: string;
                                     name: string;
+                                    nameVi: string;
                                     colorHex: string;
                                 };
                                 latitude: number;
@@ -1350,6 +1354,7 @@ export interface paths {
                                     id: string;
                                     slug: string;
                                     name: string;
+                                    nameVi: string;
                                 } | null;
                                 images: {
                                     /** Format: uuid */
@@ -2409,8 +2414,8 @@ export interface paths {
                 query?: {
                     limit?: number;
                     cursor?: string;
-                    lat?: number | null;
-                    lng?: number | null;
+                    lat?: number;
+                    lng?: number;
                 };
                 header?: never;
                 path?: never;
@@ -2439,6 +2444,7 @@ export interface paths {
                                     id: string;
                                     slug: string;
                                     name: string;
+                                    nameVi: string;
                                     colorHex: string;
                                 };
                                 latitude: number;
@@ -2958,7 +2964,7 @@ export interface paths {
             parameters: {
                 query?: {
                     limit?: number;
-                    unanswered?: boolean | null;
+                    unanswered?: boolean;
                 };
                 header?: never;
                 path?: never;
@@ -3857,11 +3863,11 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
-                    fromLat?: number | null;
-                    fromLng?: number | null;
-                    toLat?: number | null;
-                    toLng?: number | null;
+                query: {
+                    fromLat: number;
+                    fromLng: number;
+                    toLat: number;
+                    toLng: number;
                     mode?: "driving" | "walking" | "cycling";
                 };
                 header?: never;
@@ -3970,9 +3976,9 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
-                    lat?: number | null;
-                    lng?: number | null;
+                query: {
+                    lat: number;
+                    lng: number;
                 };
                 header?: never;
                 path?: never;
@@ -4071,8 +4077,8 @@ export interface paths {
             parameters: {
                 query: {
                     address: string;
-                    nearLat?: number | null;
-                    nearLng?: number | null;
+                    nearLat?: number;
+                    nearLng?: number;
                 };
                 header?: never;
                 path?: never;
@@ -4162,8 +4168,8 @@ export interface paths {
             parameters: {
                 query: {
                     input: string;
-                    nearLat?: number | null;
-                    nearLng?: number | null;
+                    nearLat?: number;
+                    nearLng?: number;
                     sessionToken?: string;
                 };
                 header?: never;
@@ -4356,9 +4362,9 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
-                    lat?: number | null;
-                    lng?: number | null;
+                query: {
+                    lat: number;
+                    lng: number;
                     radius?: number;
                     limit?: number;
                 };
@@ -4390,6 +4396,7 @@ export interface paths {
                                         id: string;
                                         slug: string;
                                         name: string;
+                                        nameVi: string;
                                         colorHex: string;
                                     };
                                     latitude: number;
@@ -4499,9 +4506,9 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
-                    lat?: number | null;
-                    lng?: number | null;
+                query: {
+                    lat: number;
+                    lng: number;
                     radius?: number;
                     limit?: number;
                 };
@@ -4536,6 +4543,7 @@ export interface paths {
                                         id: string;
                                         slug: string;
                                         name: string;
+                                        nameVi: string;
                                         colorHex: string;
                                     };
                                     latitude: number;
@@ -7301,7 +7309,7 @@ export interface paths {
                         /** Format: uuid */
                         parentId?: string;
                         /** @default 0 */
-                        sortOrder?: number | null;
+                        sortOrder?: number;
                     };
                 };
             };
@@ -7502,7 +7510,7 @@ export interface paths {
                         /** Format: uuid */
                         parentId?: string;
                         /** @default 0 */
-                        sortOrder?: number | null;
+                        sortOrder?: number;
                         isActive?: boolean;
                     };
                 };
@@ -7788,6 +7796,7 @@ export interface components {
                 id: string;
                 slug: string;
                 name: string;
+                nameVi: string;
                 colorHex: string;
             };
             latitude: number;
@@ -7818,6 +7827,7 @@ export interface components {
                 id: string;
                 slug: string;
                 name: string;
+                nameVi: string;
                 colorHex: string;
             };
             latitude: number;
@@ -7849,6 +7859,7 @@ export interface components {
                 id: string;
                 slug: string;
                 name: string;
+                nameVi: string;
             } | null;
             images: {
                 /** Format: uuid */
@@ -8104,6 +8115,7 @@ export interface components {
                 id: string;
                 slug: string;
                 name: string;
+                nameVi: string;
                 colorHex: string;
             };
             latitude: number;
@@ -8144,6 +8156,7 @@ export interface components {
                     id: string;
                     slug: string;
                     name: string;
+                    nameVi: string;
                     colorHex: string;
                 };
                 latitude: number;
@@ -8190,6 +8203,7 @@ export interface components {
                     id: string;
                     slug: string;
                     name: string;
+                    nameVi: string;
                     colorHex: string;
                 };
                 latitude: number;

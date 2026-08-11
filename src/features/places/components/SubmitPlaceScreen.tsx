@@ -16,7 +16,8 @@ import { fetchCategories } from '@/features/categories/api';
 import { useLocationStore } from '@/features/location/store';
 import { useSessionStore } from '@/features/auth/store';
 import { useDebouncedValue } from '@/lib/hooks/useDebouncedValue';
-import { useT } from '@/i18n/I18nProvider';
+import { useLocale, useT } from '@/i18n/I18nProvider';
+import { categoryName } from '@/features/categories/name';
 import { useErrorMessage } from '@/i18n/useErrorMessage';
 import { submitPlace, PRICE_RANGES, type PriceRange } from '../api';
 
@@ -86,6 +87,7 @@ function Field({
  */
 export function SubmitPlaceScreen() {
   const t = useT();
+  const locale = useLocale();
   const describeError = useErrorMessage();
   const router = useRouter();
   const { user } = useSessionStore();
@@ -287,7 +289,7 @@ export function SubmitPlaceScreen() {
                   setCategoryId(category.id);
                 }}
               >
-                {category.name}
+                {categoryName(category, locale)}
               </Chip>
             ))}
           </div>

@@ -20,6 +20,7 @@ import { formatDistance } from '@/lib/geo/grid';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import type { TranslateFn } from '@/i18n/translate';
 import type { CollectionKey } from '@/features/recommendations/api';
+import { categoryName } from '@/features/categories/name';
 import { cn } from '@/lib/utils/cn';
 
 /**
@@ -234,7 +235,7 @@ export function HomeScreen() {
                     style={{ backgroundColor: category.colorHex }}
                     aria-hidden
                   />
-                  {category.name}
+                  {categoryName(category, locale)}
                 </button>
               ))
             : Array.from({ length: 5 }, (_, index) => (

@@ -15,7 +15,8 @@ import { searchPlaces } from '@/features/places/api';
 import { useLocationStore } from '@/features/location/store';
 import { searchCities } from '@/features/location/cities';
 import { useDebouncedValue } from '@/lib/hooks/useDebouncedValue';
-import { useT } from '@/i18n/I18nProvider';
+import { useLocale, useT } from '@/i18n/I18nProvider';
+import { categoryName } from '@/features/categories/name';
 import { queryKeys } from '@/lib/query/keys';
 import { useRecentSearches } from '../store';
 import { fetchPopularSearches } from '../api';
@@ -32,6 +33,7 @@ const MIN_QUERY_LENGTH = 2;
  */
 export function SearchScreen() {
   const t = useT();
+  const locale = useLocale();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -223,7 +225,7 @@ export function SearchScreen() {
                       key={category.id}
                       type="button"
                       onClick={() => {
-                        runSearch(category.name);
+                        runSearch(categoryName(category, locale));
                       }}
                       className="bg-surface flex items-center gap-3 rounded-lg p-3 text-left shadow-sm active:scale-[0.98]"
                     >
@@ -240,7 +242,7 @@ export function SearchScreen() {
                       </span>
                       <span className="min-w-0">
                         <span className="text-ink block truncate text-sm font-medium">
-                          {category.name}
+                          {categoryName(category, locale)}
                         </span>
                         <span className="text-ink-subtle block truncate text-xs">
                           {t('search.placeCount', { count: category.placeCount })}

@@ -6,6 +6,9 @@ import { Search, Shield, Store } from 'lucide-react';
 
 import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
+import { useT } from '@/i18n/I18nProvider';
+import { useEnumLabel } from '@/i18n/useEnumLabel';
+import type { MessageKey } from '@/i18n/messages/keys';
 import { useSessionStore } from '@/features/auth/store';
 import { Card, PageHeader, QueueEmpty, RowSkeleton, StatusBadge, TimeAgo } from './primitives';
 import { ReasonDialog } from './ReasonDialog';
@@ -20,14 +23,16 @@ import {
   type UserStatus,
 } from '../api';
 
-const FILTERS: Array<{ label: string; value: UserStatus | undefined }> = [
-  { label: 'All', value: undefined },
-  { label: 'Active', value: 'ACTIVE' },
-  { label: 'Banned', value: 'BANNED' },
-  { label: 'Deleted', value: 'DELETED' },
+const FILTERS: Array<{ labelKey: MessageKey; value: UserStatus | undefined }> = [
+  { labelKey: 'users.all', value: undefined },
+  { labelKey: 'users.active', value: 'ACTIVE' },
+  { labelKey: 'users.banned', value: 'BANNED' },
+  { labelKey: 'users.deleted', value: 'DELETED' },
 ];
 
 export function UsersScreen() {
+  const t = useT();
+  const enumLabel = useEnumLabel();
   const queryClient = useQueryClient();
   const { user: currentUser } = useSessionStore();
 
@@ -95,7 +100,7 @@ export function UsersScreen() {
 
   return (
     <>
-      <PageHeader title="Users" description="Search by name or email." />
+      <PageHeader title={t('admin.users')} description={t('users.description')} />
 
       <form
         className="mb-4 flex flex-wrap gap-2"
@@ -115,33 +120,33 @@ export function UsersScreen() {
               setTerm(event.target.value);
             }}
             type="search"
-            placeholder="Name or email"
-            aria-label="Search users"
+            placeholder={t('users.searchPlaceholder')}
+            aria-label={t('users.searchLabel')}
             autoCapitalize="none"
             className="bg-surface text-ink placeholder:text-ink-subtle focus-visible:outline-primary h-11 w-full rounded-md pr-4 pl-10 text-sm shadow-sm outline-none focus-visible:outline-2"
           />
         </label>
         <Button type="submit" size="sm">
-          Search
+          {t('admin.search')}
         </Button>
       </form>
 
       <div className="mb-5 flex flex-wrap gap-2">
         {FILTERS.map((filter) => (
           <Chip
-            key={filter.label}
+            key={filter.labelKey}
             selected={status === filter.value}
             onClick={() => {
               setStatus(filter.value);
             }}
           >
-            {filter.label}
+            {t(filter.labelKey)}
           </Chip>
         ))}
       </div>
 
       {users.isPending && <RowSkeleton />}
-      {users.data?.length === 0 && <QueueEmpty label="No users match that search." />}
+      {users.data?.length === 0 && <QueueEmpty label={t('users.noMatch')} />}
 
       <div className="space-y-2.5">
         {users.data?.map((user) => {
@@ -166,8 +171,11 @@ export function UsersScreen() {
                     </p>
                     <p className="text-ink-muted truncate text-sm">{user.email}</p>
                     <p className="text-ink-subtle mt-1 text-xs">
-                      Joined <TimeAgo iso={user.createdAt} /> · {user._count.reviews} reviews ·{' '}
-                      {user._count.submittedPlaces} submissions
+                      {t('users.joined')} <TimeAgo iso={user.createdAt} /> ·{' '}
+                      {t('users.metaRest', {
+                        reviews: user._count.reviews,
+                        submissions: user._count.submittedPlaces,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -181,7 +189,7 @@ export function UsersScreen() {
                       setExpandedId(isExpanded ? null : user.id);
                     }}
                   >
-                    {isExpanded ? 'Hide' : 'History'}
+                    {isExpanded ? t('users.hide') : t('users.history')}
                   </Button>
 
                   {/* Both refusals are enforced by the server; hiding the
@@ -199,7 +207,7 @@ export function UsersScreen() {
                           unban.mutate(user.id);
                         }}
                       >
-                        Reinstate
+                        {t('users.reinstate')}
                       </Button>
                     ) : (
                       <Button
@@ -209,7 +217,7 @@ export function UsersScreen() {
                           setBanTarget(user);
                         }}
                       >
-                        Ban
+                        {t('users.ban')}
                       </Button>
                     ))}
 
@@ -229,7 +237,9 @@ export function UsersScreen() {
                         });
                       }}
                     >
-                      {user.role === 'REVIEWER' ? 'Remove badge' : 'Make reviewer'}
+                      {user.role === 'REVIEWER'
+                        ? t('users.removeBadge')
+                        : t('users.makeReviewer')}
                     </Button>
                   )}
 
@@ -241,7 +251,7 @@ export function UsersScreen() {
                         setDeleteTarget(user);
                       }}
                     >
-                      Delete
+                      {t('common.delete')}
                     </Button>
                   )}
                 </div>
@@ -257,44 +267,47 @@ export function UsersScreen() {
                     <>
                       <dl className="text-ink-muted grid grid-cols-2 gap-x-6 gap-y-1 text-sm sm:grid-cols-4">
                         <div>
-                          <dt className="text-ink-subtle text-xs">Saved places</dt>
+                          <dt className="text-ink-subtle text-xs">{t('users.savedPlaces')}</dt>
                           <dd className="tabular-nums">{detail.data._count.favorites}</dd>
                         </div>
                         <div>
-                          <dt className="text-ink-subtle text-xs">Email verified</dt>
-                          <dd>{detail.data.emailVerifiedAt ? 'Yes' : 'No'}</dd>
+                          <dt className="text-ink-subtle text-xs">{t('users.emailVerified')}</dt>
+                          <dd>{detail.data.emailVerifiedAt ? t('users.yes') : t('users.no')}</dd>
                         </div>
                         <div>
-                          <dt className="text-ink-subtle text-xs">Last active</dt>
+                          <dt className="text-ink-subtle text-xs">{t('users.lastActive')}</dt>
                           <dd>
                             {detail.data.lastActiveAt ? (
                               <TimeAgo iso={detail.data.lastActiveAt} />
                             ) : (
-                              'Never'
+                              t('users.never')
                             )}
                           </dd>
                         </div>
                         <div>
-                          <dt className="text-ink-subtle text-xs">Business</dt>
+                          <dt className="text-ink-subtle text-xs">{t('users.business')}</dt>
                           <dd className="truncate">
                             {detail.data.ownerProfile?.businessName ?? '—'}
                           </dd>
                         </div>
                       </dl>
 
-                      <h4 className="text-ink mt-4 text-sm font-semibold">Moderation history</h4>
+                      <h4 className="text-ink mt-4 text-sm font-semibold">{t('users.moderationHistory')}</h4>
                       {detail.data.history.length === 0 ? (
                         <p className="text-ink-subtle mt-1 text-sm">
-                          No action has ever been taken against this account.
+                          {t('users.noHistory')}
                         </p>
                       ) : (
                         <ul className="mt-2 space-y-1.5">
                           {detail.data.history.map((entry) => (
                             <li key={entry.id} className="text-sm">
                               <span className="text-ink font-medium">
-                                {entry.action.toLowerCase().replace(/_/g, ' ')}
+                                {enumLabel('action', entry.action)}
                               </span>
-                              <span className="text-ink-subtle"> by {entry.admin.name} · </span>
+                              <span className="text-ink-subtle">
+                                {' '}
+                                {t('users.byAdmin', { name: entry.admin.name })} ·{' '}
+                              </span>
                               <TimeAgo iso={entry.createdAt} />
                               {entry.reason && (
                                 <span className="text-ink-muted block text-xs">
@@ -316,9 +329,9 @@ export function UsersScreen() {
 
       <ReasonDialog
         open={deleteTarget !== null}
-        title={`Delete ${deleteTarget?.name ?? ''}`}
-        description="The account is soft-deleted: their reviews and submissions stay, attributed to a removed user, so nothing they contributed disappears from other people's screens."
-        confirmLabel="Delete account"
+        title={t('users.deleteTitle', { name: deleteTarget?.name ?? '' })}
+        description={t('users.deleteBody')}
+        confirmLabel={t('users.deleteConfirm')}
         destructive
         isPending={remove.isPending}
         onConfirm={(reason) => {
@@ -331,9 +344,9 @@ export function UsersScreen() {
 
       <ReasonDialog
         open={banTarget !== null}
-        title={`Ban ${banTarget?.name ?? ''}`}
-        description="They are signed out everywhere immediately and cannot sign back in. Their reviews and submissions stay published."
-        confirmLabel="Ban this account"
+        title={t('users.banTitle', { name: banTarget?.name ?? '' })}
+        description={t('users.banBody')}
+        confirmLabel={t('users.banConfirm')}
         destructive
         isPending={ban.isPending}
         error={ban.error}

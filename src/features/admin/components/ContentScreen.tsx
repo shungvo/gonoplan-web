@@ -7,6 +7,9 @@ import { ExternalLink, Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
+import { useLocale, useT } from '@/i18n/I18nProvider';
+import { useEnumLabel } from '@/i18n/useEnumLabel';
+import { formatNumber, formatRating } from '@/i18n/format';
 import { Card, PageHeader, QueueEmpty, RowSkeleton, StatusBadge, TimeAgo } from './primitives';
 import { ReasonDialog } from './ReasonDialog';
 import {
@@ -32,6 +35,9 @@ const PLACE_STATUSES = ['APPROVED', 'PENDING', 'REJECTED', 'SUSPENDED'] as const
  * that is already live — the queue only ever shows what has not been decided.
  */
 export function ContentScreen() {
+  const t = useT();
+  const locale = useLocale();
+  const enumLabel = useEnumLabel();
   const queryClient = useQueryClient();
 
   const [tab, setTab] = useState<Tab>('places');
@@ -90,7 +96,7 @@ export function ContentScreen() {
 
   return (
     <>
-      <PageHeader title="Content" description="Everything already published." />
+      <PageHeader title={t('admin.content')} description={t('content.description')} />
 
       <div className="mb-5 flex flex-wrap gap-2">
         <Chip
@@ -99,7 +105,7 @@ export function ContentScreen() {
             setTab('places');
           }}
         >
-          Places
+          {t('content.places')}
         </Chip>
         <Chip
           selected={tab === 'reviews'}
@@ -107,7 +113,7 @@ export function ContentScreen() {
             setTab('reviews');
           }}
         >
-          Reviews
+          {t('content.reviews')}
         </Chip>
       </div>
 
@@ -131,13 +137,13 @@ export function ContentScreen() {
                   setTerm(event.target.value);
                 }}
                 type="search"
-                placeholder="Place name"
-                aria-label="Search places"
+                placeholder={t('content.placeNamePlaceholder')}
+                aria-label={t('content.searchPlaces')}
                 className="bg-surface text-ink placeholder:text-ink-subtle focus-visible:outline-primary h-11 w-full rounded-md pr-4 pl-10 text-sm shadow-sm outline-none focus-visible:outline-2"
               />
             </label>
             <Button type="submit" size="sm">
-              Search
+              {t('admin.search')}
             </Button>
           </form>
 
@@ -148,7 +154,7 @@ export function ContentScreen() {
                 setStatus(undefined);
               }}
             >
-              Any status
+              {t('content.anyStatus')}
             </Chip>
             {PLACE_STATUSES.map((value) => (
               <Chip
@@ -158,13 +164,13 @@ export function ContentScreen() {
                   setStatus(value);
                 }}
               >
-                {value.toLowerCase()}
+                {enumLabel('status', value)}
               </Chip>
             ))}
           </div>
 
           {places.isPending && <RowSkeleton />}
-          {places.data?.length === 0 && <QueueEmpty label="No places match." />}
+          {places.data?.length === 0 && <QueueEmpty label={t('content.noPlaces')} />}
 
           <div className="space-y-2.5">
             {places.data?.map((place) => (
@@ -176,13 +182,20 @@ export function ContentScreen() {
                       <StatusBadge status={place.deletedAt ? 'DELETED' : place.status} />
                     </div>
                     <p className="text-ink-muted mt-0.5 truncate text-sm">
-                      {place.address ?? 'No address'}
+                      {place.address ?? t('content.noAddress')}
                     </p>
                     <p className="text-ink-subtle mt-1 text-xs tabular-nums">
-                      {place.category.name} · {place.viewCount.toLocaleString()} views ·{' '}
-                      {place.reviewCount} reviews
-                      {place.reviewCount > 0 && ` · ${place.averageRating.toFixed(1)}★`}
-                      {place.ownerProfile && ` · claimed by ${place.ownerProfile.businessName}`}
+                      {place.category.name} ·{' '}
+                      {t('content.placeMeta', {
+                        views: place.viewCount,
+                        reviews: place.reviewCount,
+                      })}
+                      {place.reviewCount > 0 &&
+                        ` · ${formatRating(place.averageRating, locale)}★`}
+                      {place.ownerProfile &&
+                        ` · ${t('content.claimedBy', {
+                          name: place.ownerProfile.businessName,
+                        })}`}
                     </p>
                     {place.rejectionReason && (
                       <p className="bg-danger/5 text-danger mt-2 rounded-md p-2 text-xs">
@@ -197,7 +210,7 @@ export function ContentScreen() {
                       target="_blank"
                       className="text-primary inline-flex items-center gap-1 text-xs font-medium"
                     >
-                      Open
+                      {t('admin.open')}
                       <ExternalLink className="size-3" aria-hidden />
                     </Link>
                     {place.status === 'APPROVED' && !place.deletedAt && (
@@ -208,7 +221,7 @@ export function ContentScreen() {
                           setSuspendTarget(place);
                         }}
                       >
-                        Suspend
+                        {t('content.suspend')}
                       </Button>
                     )}
                   </div>
@@ -232,13 +245,15 @@ export function ContentScreen() {
                   setMaxRating(value);
                 }}
               >
-                {value === undefined ? 'All ratings' : `${String(value)}★ and below`}
+                {value === undefined
+                  ? t('content.allRatings')
+                  : t('content.ratingAndBelow', { rating: value })}
               </Chip>
             ))}
           </div>
 
           {reviews.isPending && <RowSkeleton />}
-          {reviews.data?.length === 0 && <QueueEmpty label="No reviews in this band." />}
+          {reviews.data?.length === 0 && <QueueEmpty label={t('content.noReviews')} />}
 
           <div className="space-y-2.5">
             {reviews.data?.map((review) => (
@@ -246,8 +261,8 @@ export function ContentScreen() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="text-ink text-sm font-semibold">
-                      {review.rating}★ · {review.user.name}
-                      <span className="text-ink-subtle font-normal"> on </span>
+                      {formatNumber(review.rating, locale)}★ · {review.user.name}
+                      <span className="text-ink-subtle font-normal"> {t('content.reviewOn')} </span>
                       <Link
                         href={`/place/${review.place.slug}`}
                         target="_blank"
@@ -257,7 +272,8 @@ export function ContentScreen() {
                       </Link>
                     </p>
                     <p className="text-ink-subtle mt-0.5 text-xs">
-                      <TimeAgo iso={review.createdAt} /> · {review.helpfulCount} found this helpful
+                      <TimeAgo iso={review.createdAt} /> ·{' '}
+                      {t('content.foundHelpful', { count: review.helpfulCount })}
                     </p>
                     {review.content && (
                       <p className="text-ink-muted mt-2 text-sm leading-relaxed">
@@ -271,7 +287,7 @@ export function ContentScreen() {
                     {review.reply && (
                       <div className="border-border bg-surface-sunken mt-3 rounded-md border-l-2 p-3">
                         <p className="text-ink flex items-center gap-1.5 text-xs font-semibold">
-                          Reply from {review.reply.businessName}
+                          {t('content.replyFrom', { name: review.reply.businessName })}
                         </p>
                         <p className="text-ink-muted mt-1 text-sm leading-relaxed">
                           {review.reply.content}
@@ -283,7 +299,7 @@ export function ContentScreen() {
                           }}
                           className="text-danger mt-2 text-xs font-medium"
                         >
-                          Remove reply
+                          {t('content.removeReply')}
                         </button>
                       </div>
                     )}
@@ -305,7 +321,7 @@ export function ContentScreen() {
                           });
                         }}
                       >
-                        {review.status === 'HIDDEN' ? 'Restore' : 'Hide'}
+                        {review.status === 'HIDDEN' ? t('content.restore') : t('content.hide')}
                       </Button>
                     )}
                     {review.status !== 'DELETED' && (
@@ -316,7 +332,7 @@ export function ContentScreen() {
                           setDeleteTarget(review);
                         }}
                       >
-                        Delete
+                        {t('common.delete')}
                       </Button>
                     )}
                   </div>
@@ -329,9 +345,9 @@ export function ContentScreen() {
 
       <ReasonDialog
         open={suspendTarget !== null}
-        title={`Suspend “${suspendTarget?.name ?? ''}”`}
-        description="It disappears from search and the map. Its reviews and history are kept, and approving it again restores it with its original publish date."
-        confirmLabel="Suspend"
+        title={t('content.suspendTitle', { name: suspendTarget?.name ?? '' })}
+        description={t('content.suspendBody')}
+        confirmLabel={t('content.suspend')}
         destructive
         isPending={suspend.isPending}
         error={suspend.error}
@@ -348,9 +364,9 @@ export function ContentScreen() {
           whose contents are silently discarded is worse than no box. */}
       <ReasonDialog
         open={replyTarget !== null}
-        title="Remove this reply"
-        description="Only the owner's reply is removed — the review itself stays exactly as it is. Hiding the whole thread would punish the reviewer for what the business wrote."
-        confirmLabel="Remove reply"
+        title={t('content.removeReplyTitle')}
+        description={t('content.removeReplyBody')}
+        confirmLabel={t('content.removeReply')}
         destructive
         isPending={removeReply.isPending}
         onConfirm={(reason) => {
@@ -363,9 +379,9 @@ export function ContentScreen() {
 
       <ReasonDialog
         open={deleteTarget !== null}
-        title="Delete this review"
-        description="The place's rating is recalculated without it. The review is soft-deleted, so it can still be produced if the decision is disputed."
-        confirmLabel="Delete the review"
+        title={t('content.deleteReviewTitle')}
+        description={t('content.deleteReviewBody')}
+        confirmLabel={t('content.deleteReviewConfirm')}
         requireReason={false}
         destructive
         isPending={removeReview.isPending}

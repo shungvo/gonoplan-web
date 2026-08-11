@@ -7,6 +7,8 @@ import { MapPin } from 'lucide-react';
 import { PlaceImage } from './PlaceImage';
 import { formatDistance } from '@/lib/geo/grid';
 import { useLocale, useT } from '@/i18n/I18nProvider';
+import { formatRating } from '@/i18n/format';
+import { categoryName } from '@/features/categories/name';
 import { cn } from '@/lib/utils/cn';
 import type { PlaceCard } from '../api';
 
@@ -209,7 +211,7 @@ export function PlaceCardStack({
                     {place.name}
                   </span>
                   <span className="mt-1 flex items-center gap-2 text-xs text-white/85">
-                    <span>{place.category.name}</span>
+                    <span>{categoryName(place.category, locale)}</span>
                     {place.distanceM !== null && (
                       <>
                         <span aria-hidden>·</span>
@@ -222,7 +224,7 @@ export function PlaceCardStack({
                     {place.reviewCount > 0 && (
                       <>
                         <span aria-hidden>·</span>
-                        <span>{place.averageRating.toFixed(1)}★</span>
+                        <span>{formatRating(place.averageRating, locale)}★</span>
                       </>
                     )}
                   </span>

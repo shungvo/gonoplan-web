@@ -15,6 +15,7 @@ import { MapCanvas } from '@/features/map/components/MapCanvas';
 import type { MapBounds } from '@/lib/map/types';
 import { useDirections, formatDuration } from '@/features/geo/useDirections';
 import { useLocale, useT } from '@/i18n/I18nProvider';
+import { categoryName } from '@/features/categories/name';
 import { cn } from '@/lib/utils/cn';
 import { fetchCategories } from '@/features/categories/api';
 import { useLocationStore } from '@/features/location/store';
@@ -289,7 +290,7 @@ export function ExploreScreen() {
                   toggleCategory(category.slug);
                 }}
               >
-                {category.name}
+                {categoryName(category, locale)}
               </Chip>
             ))}
           </div>
@@ -544,7 +545,7 @@ export function ExploreScreen() {
                 toggleCategory(category.slug);
               }}
             >
-              {category.name}
+              {categoryName(category, locale)}
             </Chip>
           ))}
         </div>

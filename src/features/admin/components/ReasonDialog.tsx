@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { ApiError } from '@/lib/api/errors';
+import { useT } from '@/i18n/I18nProvider';
+import { useErrorMessage } from '@/i18n/useErrorMessage';
 
 export interface ReasonDialogProps {
   open: boolean;
@@ -11,7 +12,8 @@ export interface ReasonDialogProps {
   confirmLabel: string;
   /** Negative actions demand a reason; approvals do not. */
   requireReason?: boolean;
-  placeholder?: string;
+  /** Defaults to the generic explanation prompt. */
+  placeholder?: string | undefined;
   destructive?: boolean;
   isPending?: boolean;
   error?: unknown;
@@ -37,13 +39,15 @@ export function ReasonDialog({
   description,
   confirmLabel,
   requireReason = true,
-  placeholder = 'Explain the decision. The person affected will see this.',
+  placeholder,
   destructive = false,
   isPending = false,
   error,
   onConfirm,
   onClose,
 }: ReasonDialogProps) {
+  const t = useT();
+  const describeError = useErrorMessage();
   const ref = useRef<HTMLDialogElement>(null);
   const [reason, setReason] = useState('');
 
@@ -88,7 +92,7 @@ export function ReasonDialog({
 
         {requireReason && (
           <label className="mt-4 block">
-            <span className="text-ink text-sm font-semibold">Reason</span>
+            <span className="text-ink text-sm font-semibold">{t('admin.reason')}</span>
             <textarea
               value={reason}
               onChange={(event) => {
@@ -96,7 +100,7 @@ export function ReasonDialog({
               }}
               rows={3}
               autoFocus
-              placeholder={placeholder}
+              placeholder={placeholder ?? t('admin.reasonPlaceholder')}
               className="bg-surface-sunken text-ink placeholder:text-ink-subtle focus-visible:outline-primary mt-1.5 w-full resize-none rounded-md p-3 text-sm leading-relaxed outline-none focus-visible:outline-2"
             />
             <span className="text-ink-subtle mt-1 block text-right text-xs tabular-nums">
@@ -107,13 +111,13 @@ export function ReasonDialog({
 
         {error != null && (
           <p role="alert" className="bg-danger/10 text-danger mt-3 rounded-md p-3 text-sm">
-            {error instanceof ApiError ? error.message : 'That action could not be completed.'}
+            {describeError(error)}
           </p>
         )}
 
         <div className="mt-5 flex justify-end gap-2">
           <Button type="button" variant="secondary" size="sm" onClick={onClose}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button
             type="submit"
