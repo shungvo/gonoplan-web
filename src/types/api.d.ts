@@ -3954,6 +3954,379 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/geo/reverse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The address at a point
+         * @description Turns a dragged pin into a written address. Cached for ninety days against coordinates rounded to about eleven metres, which is what stops a drag costing one metered call per frame.
+         *
+         *     Every part below `formatted` is nullable: an address in a new development frequently has no ward the provider knows, and a caller that assumes otherwise renders "undefined, Quận 7".
+         */
+        get: {
+            parameters: {
+                query?: {
+                    lat?: number | null;
+                    lng?: number | null;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The address at that point */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                formatted: string;
+                                street: string | null;
+                                ward: string | null;
+                                district: string | null;
+                                province: string | null;
+                                latitude: number;
+                                longitude: number;
+                                provider: string;
+                                isFallbackProvider: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Nothing is there — open sea, or a point the provider has no data for */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description The address provider is unreachable, or unconfigured in production */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/forward": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Candidate addresses for a written address
+         * @description Turns a complete written address into ranked candidates with coordinates. `nearLat`/`nearLng` bias the search towards where the map is looking — the difference between "Nguyễn Huệ" meaning the street underfoot and the one in another city. They must be given together or not at all.
+         *
+         *     For a half-typed address use `/geo/autocomplete` instead: this endpoint wants a whole one and returns nothing for a fragment.
+         */
+        get: {
+            parameters: {
+                query: {
+                    address: string;
+                    nearLat?: number | null;
+                    nearLng?: number | null;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Ranked candidates, best first. Empty when nothing matches */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                formatted: string;
+                                street: string | null;
+                                ward: string | null;
+                                district: string | null;
+                                province: string | null;
+                                latitude: number;
+                                longitude: number;
+                                provider: string;
+                                isFallbackProvider: boolean;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description The address provider is unreachable, or unconfigured in production */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/autocomplete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Address suggestions while typing
+         * @description Called on nearly every keystroke, which is why it sits on its own rate-limit tier and why it deliberately returns **no coordinates**: providers bill those separately, and resolving all ten suggestions per keystroke is how this feature becomes a quota incident.
+         *
+         *     Pass the chosen suggestion's `ref` to `/geo/resolve` for the coordinates. Send the same `sessionToken` to both and the provider bills the run once rather than per keystroke; it is generated by the client, opaque to this API, and never parsed.
+         */
+        get: {
+            parameters: {
+                query: {
+                    input: string;
+                    nearLat?: number | null;
+                    nearLng?: number | null;
+                    sessionToken?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Suggestions, best first */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                ref: string;
+                                primary: string;
+                                secondary: string;
+                            }[];
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description The address provider is unreachable, or unconfigured in production */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/geo/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The address behind a suggestion
+         * @description Second half of the autocomplete flow: exchanges a suggestion `ref` for the full address and its coordinates. The `ref` is an opaque provider identifier — pass back exactly what `/geo/autocomplete` returned and do not attempt to read it.
+         */
+        get: {
+            parameters: {
+                query: {
+                    ref: string;
+                    sessionToken?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The address the suggestion stood for */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                formatted: string;
+                                street: string | null;
+                                ward: string | null;
+                                district: string | null;
+                                province: string | null;
+                                latitude: number;
+                                longitude: number;
+                                provider: string;
+                                isFallbackProvider: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description The reference is unknown or has expired */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description The address provider is unreachable, or unconfigured in production */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/recommendations": {
         parameters: {
             query?: never;
@@ -7700,6 +8073,22 @@ export interface components {
             mode: "driving" | "walking" | "cycling";
             provider: string;
             isFallbackProvider: boolean;
+        };
+        Address: {
+            formatted: string;
+            street: string | null;
+            ward: string | null;
+            district: string | null;
+            province: string | null;
+            latitude: number;
+            longitude: number;
+            provider: string;
+            isFallbackProvider: boolean;
+        };
+        AddressSuggestion: {
+            ref: string;
+            primary: string;
+            secondary: string;
         };
         RankedPlace: {
             isSaved: boolean;

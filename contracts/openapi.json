@@ -1699,6 +1699,80 @@
           "isFallbackProvider"
         ]
       },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "formatted": {
+            "type": "string"
+          },
+          "street": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ward": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "district": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "province": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "isFallbackProvider": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "formatted",
+          "street",
+          "ward",
+          "district",
+          "province",
+          "latitude",
+          "longitude",
+          "provider",
+          "isFallbackProvider"
+        ]
+      },
+      "AddressSuggestion": {
+        "type": "object",
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "primary": {
+            "type": "string"
+          },
+          "secondary": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ref",
+          "primary",
+          "secondary"
+        ]
+      },
       "RankedPlace": {
         "type": "object",
         "properties": {
@@ -11724,6 +11798,672 @@
           },
           "503": {
             "description": "The routing provider is unreachable, or unconfigured in production",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/geo/reverse": {
+      "get": {
+        "tags": [
+          "Geo"
+        ],
+        "summary": "The address at a point",
+        "description": "Turns a dragged pin into a written address. Cached for ninety days against coordinates rounded to about eleven metres, which is what stops a drag costing one metered call per frame.\n\nEvery part below `formatted` is nullable: an address in a new development frequently has no ward the provider knows, and a caller that assumes otherwise renders \"undefined, Quận 7\".",
+        "parameters": [
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -90,
+              "maximum": 90
+            },
+            "required": false,
+            "name": "lat",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -180,
+              "maximum": 180
+            },
+            "required": false,
+            "name": "lng",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The address at that point",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "formatted": {
+                          "type": "string"
+                        },
+                        "street": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "ward": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "district": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "province": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "latitude": {
+                          "type": "number"
+                        },
+                        "longitude": {
+                          "type": "number"
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "isFallbackProvider": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "formatted",
+                        "street",
+                        "ward",
+                        "district",
+                        "province",
+                        "latitude",
+                        "longitude",
+                        "provider",
+                        "isFallbackProvider"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing is there — open sea, or a point the provider has no data for",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The address provider is unreachable, or unconfigured in production",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/geo/forward": {
+      "get": {
+        "tags": [
+          "Geo"
+        ],
+        "summary": "Candidate addresses for a written address",
+        "description": "Turns a complete written address into ranked candidates with coordinates. `nearLat`/`nearLng` bias the search towards where the map is looking — the difference between \"Nguyễn Huệ\" meaning the street underfoot and the one in another city. They must be given together or not at all.\n\nFor a half-typed address use `/geo/autocomplete` instead: this endpoint wants a whole one and returns nothing for a fragment.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 300
+            },
+            "required": true,
+            "name": "address",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -90,
+              "maximum": 90
+            },
+            "required": false,
+            "name": "nearLat",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -180,
+              "maximum": 180
+            },
+            "required": false,
+            "name": "nearLng",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ranked candidates, best first. Empty when nothing matches",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "formatted": {
+                            "type": "string"
+                          },
+                          "street": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "ward": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "district": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "province": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "latitude": {
+                            "type": "number"
+                          },
+                          "longitude": {
+                            "type": "number"
+                          },
+                          "provider": {
+                            "type": "string"
+                          },
+                          "isFallbackProvider": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "formatted",
+                          "street",
+                          "ward",
+                          "district",
+                          "province",
+                          "latitude",
+                          "longitude",
+                          "provider",
+                          "isFallbackProvider"
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The address provider is unreachable, or unconfigured in production",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/geo/autocomplete": {
+      "get": {
+        "tags": [
+          "Geo"
+        ],
+        "summary": "Address suggestions while typing",
+        "description": "Called on nearly every keystroke, which is why it sits on its own rate-limit tier and why it deliberately returns **no coordinates**: providers bill those separately, and resolving all ten suggestions per keystroke is how this feature becomes a quota incident.\n\nPass the chosen suggestion's `ref` to `/geo/resolve` for the coordinates. Send the same `sessionToken` to both and the provider bills the run once rather than per keystroke; it is generated by the client, opaque to this API, and never parsed.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 200
+            },
+            "required": true,
+            "name": "input",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -90,
+              "maximum": 90
+            },
+            "required": false,
+            "name": "nearLat",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -180,
+              "maximum": 180
+            },
+            "required": false,
+            "name": "nearLng",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "required": false,
+            "name": "sessionToken",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Suggestions, best first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "ref": {
+                            "type": "string"
+                          },
+                          "primary": {
+                            "type": "string"
+                          },
+                          "secondary": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "ref",
+                          "primary",
+                          "secondary"
+                        ]
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The address provider is unreachable, or unconfigured in production",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/geo/resolve": {
+      "get": {
+        "tags": [
+          "Geo"
+        ],
+        "summary": "The address behind a suggestion",
+        "description": "Second half of the autocomplete flow: exchanges a suggestion `ref` for the full address and its coordinates. The `ref` is an opaque provider identifier — pass back exactly what `/geo/autocomplete` returned and do not attempt to read it.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "required": true,
+            "name": "ref",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "required": false,
+            "name": "sessionToken",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The address the suggestion stood for",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "formatted": {
+                          "type": "string"
+                        },
+                        "street": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "ward": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "district": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "province": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "latitude": {
+                          "type": "number"
+                        },
+                        "longitude": {
+                          "type": "number"
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "isFallbackProvider": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "formatted",
+                        "street",
+                        "ward",
+                        "district",
+                        "province",
+                        "latitude",
+                        "longitude",
+                        "provider",
+                        "isFallbackProvider"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The reference is unknown or has expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The address provider is unreachable, or unconfigured in production",
             "content": {
               "application/json": {
                 "schema": {

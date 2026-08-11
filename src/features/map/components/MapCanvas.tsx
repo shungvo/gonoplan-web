@@ -100,7 +100,13 @@ export interface MapCanvasProps {
   /** Renders enlarged and above its neighbours. */
   selectedPlaceId?: string | null;
   onSelectPlace?: (placeId: string) => void;
-  onViewportChange?: (bounds: MapBounds, zoom: number) => void;
+  /**
+   * `byUser` distinguishes a pan or a pinch from the map settling on its own —
+   * the initial `load`, a programmatic recentre, a container resize. A caller
+   * that treats the second as a deliberate choice acts on wherever the map
+   * happened to open.
+   */
+  onViewportChange?: (bounds: MapBounds, zoom: number, byUser: boolean) => void;
   /** GeoJSON [lng, lat] pairs. Drawn beneath the markers, and fitted on change. */
   route?: Array<[number, number]> | null;
   /**
@@ -496,7 +502,7 @@ export function MapCanvas({
       }
     });
 
-    const emitViewport = () => {
+    const emitViewport = (event?: { originalEvent?: unknown }) => {
       const b = map.getBounds();
       const next: MapBounds = {
         minLng: b.getWest(),
@@ -509,7 +515,11 @@ export function MapCanvas({
       // request unmade, with no conditional layer setup to get wrong.
       if (showPlaceMarkers) setBounds(next);
       setCurrentZoom(map.getZoom());
-      onViewportChange?.(next, map.getZoom());
+      // MapLibre attaches the DOM event that caused a move, and only when one
+      // did. That is the difference between a pan and `load`, `easeTo` or a
+      // resize — and comparing coordinates cannot tell them apart, because a
+      // resize shifts the reported centre by tens of metres on its own.
+      onViewportChange?.(next, map.getZoom(), event?.originalEvent !== undefined);
     };
 
     /*

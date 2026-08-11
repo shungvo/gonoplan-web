@@ -3,16 +3,19 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Check, Crosshair, MapPin } from 'lucide-react';
+import { ArrowLeft, Check, Crosshair, MapPin, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
 import { fieldClass } from '@/components/ui/field';
 import { RichTextEditor } from '@/components/ui/RichTextEditor';
 import { PhotoPicker, type PickedPhoto } from '@/features/uploads/components/PhotoPicker';
 import { MapCanvas } from '@/features/map/components/MapCanvas';
+import { AddressAutocomplete } from '@/features/geo/components/AddressAutocomplete';
+import { reverseGeocodeOrNull, type Address } from '@/features/geo/api';
 import { fetchCategories } from '@/features/categories/api';
 import { useLocationStore } from '@/features/location/store';
 import { useSessionStore } from '@/features/auth/store';
+import { useDebouncedValue } from '@/lib/hooks/useDebouncedValue';
 import { ApiError } from '@/lib/api/errors';
 import { submitPlace, PRICE_RANGES, type PriceRange } from '../api';
 
@@ -20,6 +23,25 @@ const DESCRIPTION_MAX = 2000;
 
 /** Ho Chi Minh City, for the pin's starting position with no location. */
 const FALLBACK = { latitude: 10.7769, longitude: 106.7009 };
+
+/**
+ * Long enough that the lookup waits for the map to settle rather than firing
+ * once per frame of a pan.
+ */
+const PIN_SETTLE_MS = 700;
+
+/**
+ * What goes in the address field once a geocoder has answered.
+ *
+ * The street line when the provider gave one, because ward, district and
+ * province each have their own field and repeating them here is how a listing
+ * ends up reading "…, Quận 1, Hồ Chí Minh, Quận 1, Hồ Chí Minh". The whole
+ * line when it did not, which is the honest fallback rather than a guess at
+ * where to cut.
+ */
+function addressLine(found: Address): string {
+  return found.street ?? found.formatted;
+}
 
 function Field({
   label,
@@ -69,17 +91,66 @@ export function SubmitPlaceScreen() {
   const [address, setAddress] = useState('');
   const [province, setProvince] = useState('Hồ Chí Minh');
   const [district, setDistrict] = useState('');
+  const [ward, setWard] = useState('');
   const [phone, setPhone] = useState('');
   const [website, setWebsite] = useState('');
   const [priceRange, setPriceRange] = useState<PriceRange | ''>('');
   const [photos, setPhotos] = useState<PickedPhoto[]>([]);
   const [pin, setPin] = useState(coordinates ?? FALLBACK);
 
+  /**
+   * Whether the pin is where someone put it, or merely where the map opened.
+   *
+   * Without this the form would look up an address the moment it mounts and
+   * offer the centre of Ho Chi Minh City to somebody who has not touched
+   * anything yet. A known location is different: standing at the place is the
+   * usual way of adding one, so that pin counts as placed from the start.
+   */
+  const [pinPlaced, setPinPlaced] = useState(coordinates !== null);
+
   const categories = useQuery({
     queryKey: ['categories'],
     queryFn: fetchCategories,
     staleTime: 30 * 60_000,
   });
+
+  const settledPin = useDebouncedValue(pin, PIN_SETTLE_MS);
+
+  /**
+   * The address under the pin, offered rather than applied.
+   *
+   * Filling the field automatically would mean a small nudge of the map
+   * silently overwrites an address somebody typed by hand — including the
+   * alley addresses no geocoder knows, which are exactly the places this app
+   * exists to collect. So it stays a suggestion and a button.
+   */
+  const pinAddress = useQuery({
+    queryKey: [
+      'geo',
+      'reverse',
+      settledPin.latitude.toFixed(4),
+      settledPin.longitude.toFixed(4),
+    ],
+    queryFn: () => reverseGeocodeOrNull(settledPin),
+    enabled: pinPlaced,
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  /**
+   * Applies a geocoded address to the form.
+   *
+   * Only overwrites the administrative fields the provider actually filled: a
+   * result with no ward must not blank the ward somebody typed, and "the
+   * geocoder does not know" is not the same as "there is none".
+   */
+  const applyAddress = (found: Address, movePin: boolean) => {
+    setAddress(addressLine(found));
+    if (found.ward) setWard(found.ward);
+    if (found.district) setDistrict(found.district);
+    if (found.province) setProvince(found.province);
+    if (movePin) setPin({ latitude: found.latitude, longitude: found.longitude });
+  };
 
   const submit = useMutation({
     mutationFn: () =>
@@ -92,6 +163,7 @@ export function SubmitPlaceScreen() {
         province: province.trim(),
         ...(description.trim() ? { description: description.trim() } : {}),
         ...(district.trim() ? { district: district.trim() } : {}),
+        ...(ward.trim() ? { ward: ward.trim() } : {}),
         ...(phone.trim() ? { phone: phone.trim() } : {}),
         ...(website.trim() ? { website: website.trim() } : {}),
         ...(priceRange ? { priceRange } : {}),
@@ -237,15 +309,25 @@ export function SubmitPlaceScreen() {
           <PhotoPicker photos={photos} onChange={setPhotos} max={8} disabled={submit.isPending} />
         </Field>
 
-        <Field label="Address" required htmlFor="place-address">
-          <input
+        <Field
+          label="Address"
+          required
+          hint="Start typing and pick a match — the pin and the fields below fill themselves."
+          htmlFor="place-address"
+        >
+          <AddressAutocomplete
             id="place-address"
             value={address}
-            onChange={(event) => {
-              setAddress(event.target.value.slice(0, 300));
+            onChange={setAddress}
+            onPick={(found) => {
+              applyAddress(found, true);
+              // Choosing a suggestion is placing the pin, so the map is now
+              // somewhere deliberate and worth reading back.
+              setPinPlaced(true);
             }}
+            near={pin}
             placeholder="27 Ngô Đức Kế, Phường Bến Nghé"
-            className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
+            disabled={submit.isPending}
           />
         </Field>
 
@@ -273,13 +355,28 @@ export function SubmitPlaceScreen() {
           </Field>
         </div>
 
-        {/*
-          The pin, and the address, both.
+        <Field label="Ward" htmlFor="place-ward">
+          <input
+            id="place-ward"
+            value={ward}
+            onChange={(event) => {
+              setWard(event.target.value.slice(0, 100));
+            }}
+            placeholder="Phường Bến Nghé"
+            className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
+          />
+        </Field>
 
-          Neither is inferred from the other: geocoding an address gets the
-          wrong side of the street often enough to matter for a place a
-          traveller is walking to, and a pin alone gives a moderator nothing to
-          verify against.
+        {/*
+          The pin, and the address, both — and each can now offer to fill the
+          other.
+
+          Neither is *derived* from the other, which is the part that matters.
+          Geocoding an address gets the wrong side of the street often enough
+          to matter for somebody walking to it, and a pin alone gives a
+          moderator nothing to verify against. So both are still required, both
+          stay editable, and the link between them is always a suggestion
+          somebody accepts.
         */}
         <Field label="Pin the exact spot" required hint="Drag the map to move the pin.">
           <div className="border-border relative h-56 overflow-hidden rounded-md border">
@@ -289,7 +386,7 @@ export function SubmitPlaceScreen() {
               zoom={16}
               showPlaceMarkers={false}
               showZoomControls={false}
-              onViewportChange={(bounds) => {
+              onViewportChange={(bounds, _zoom, byUser) => {
                 // The pin is fixed at the centre of the frame and the map moves
                 // under it — a marker you drag on a phone is a marker your
                 // thumb is covering at the moment of the drop.
@@ -297,6 +394,11 @@ export function SubmitPlaceScreen() {
                   latitude: (bounds.minLat + bounds.maxLat) / 2,
                   longitude: (bounds.minLng + bounds.maxLng) / 2,
                 });
+
+                // Only a pan counts as choosing a spot. The map also reports
+                // its centre on load and after a resize, and acting on those
+                // means offering an address for wherever the app opened.
+                if (byUser) setPinPlaced(true);
               }}
             />
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -317,6 +419,7 @@ export function SubmitPlaceScreen() {
                 type="button"
                 onClick={() => {
                   setPin(coordinates);
+                  setPinPlaced(true);
                 }}
                 className="text-primary inline-flex items-center gap-1.5 text-xs font-medium"
               >
@@ -325,6 +428,37 @@ export function SubmitPlaceScreen() {
               </button>
             )}
           </div>
+
+          {/* Only worth showing when it would actually change something. */}
+          {pinAddress.data && addressLine(pinAddress.data) !== address && (
+            <div className="border-border bg-surface-sunken mt-2 flex items-start gap-2.5 rounded-md border p-3">
+              <MapPin className="text-ink-subtle mt-0.5 size-4 shrink-0" aria-hidden />
+              <div className="min-w-0 flex-1">
+                <p className="text-ink text-sm">{pinAddress.data.formatted}</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (pinAddress.data) applyAddress(pinAddress.data, false);
+                  }}
+                  className="text-primary mt-1.5 inline-flex items-center gap-1.5 text-xs font-medium"
+                >
+                  <Wand2 className="size-3.5" aria-hidden />
+                  Use this address
+                </button>
+                {/*
+                  Said out loud, because the fallback geocoder's Vietnamese
+                  ward and house-number coverage is materially worse than the
+                  real one's, and an address that looks confident is the wrong
+                  thing to trust silently.
+                */}
+                {pinAddress.data.isFallbackProvider && (
+                  <p className="text-ink-subtle mt-1 text-xs">
+                    From the development address service — check it before submitting.
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
         </Field>
 
         <Field label="Price range">
