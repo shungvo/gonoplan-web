@@ -159,12 +159,12 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
         {isRegister ? (
           <>
             {t('auth.haveAccount')}{' '}
-            <span className="text-primary font-medium">{t('common.signIn')}</span>
+            <span className="text-primary font-medium underline underline-offset-4">{t('common.signIn')}</span>
           </>
         ) : (
           <>
             {t('auth.newHere')}{' '}
-            <span className="text-primary font-medium">{t('auth.createOne')}</span>
+            <span className="text-primary font-medium underline underline-offset-4">{t('auth.createOne')}</span>
           </>
         )}
       </button>

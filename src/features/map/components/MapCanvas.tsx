@@ -771,7 +771,7 @@ export function MapCanvas({
       <div ref={containerRef} className="h-full w-full touch-none" />
 
       {!isReady && !mapError && (
-        <div className="from-primary-tint via-surface to-accent-tint absolute inset-0 animate-pulse bg-gradient-to-br" />
+        <div className="from-surface-sunken via-surface to-surface-sunken absolute inset-0 animate-pulse bg-gradient-to-br" />
       )}
 
       {mapError && (

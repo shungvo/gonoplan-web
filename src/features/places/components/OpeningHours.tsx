@@ -100,7 +100,7 @@ export function OpeningHours({
         className="flex w-full items-center gap-2 text-left"
       >
         <Clock className="text-ink-subtle size-4 shrink-0" aria-hidden />
-        <span className={cn('text-sm font-semibold', isOpenNow ? 'text-success' : 'text-danger')}>
+        <span className={cn('text-sm font-semibold', isOpenNow ? 'text-ink' : 'text-ink-subtle')}>
           {isOpenNow ? t('hours.openNow') : t('hours.closed')}
         </span>
         <span className="text-ink-muted truncate text-sm">· {describe(todayIndex)}</span>

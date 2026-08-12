@@ -60,7 +60,7 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
         {/* Only shown when open. A "Closed" badge on every card at 2am makes the
             whole screen look shut; absence reads as neutral. */}
         {place.isOpenNow && (
-          <span className="bg-surface/90 text-success absolute top-2.5 right-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1 text-2xs font-semibold backdrop-blur-sm">
+          <span className="bg-surface/90 text-ink absolute top-2.5 right-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1 text-2xs font-semibold backdrop-blur-sm">
             <Clock className="size-3" aria-hidden />
             {t('place.openNow')}
           </span>

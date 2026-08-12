@@ -109,7 +109,7 @@ export function LocationChip({
           <Icon
             className={cn(
               'size-4 shrink-0',
-              isDenied ? 'text-accent' : 'text-primary',
+              isDenied ? 'text-warning' : 'text-primary',
               isPrompting && 'animate-spin',
             )}
             aria-hidden
@@ -127,7 +127,7 @@ export function LocationChip({
       className={cn(
         'inline-flex max-w-full items-center gap-1.5 rounded-full px-3 py-1.5',
         'text-sm font-medium press-soft',
-        isDenied ? 'bg-accent-tint text-accent' : 'bg-primary-tint text-primary',
+        isDenied ? 'bg-warning/10 text-warning' : 'bg-primary-tint text-primary',
       )}
     >
       <Icon className={cn('size-4 shrink-0', isPrompting && 'animate-spin')} aria-hidden />

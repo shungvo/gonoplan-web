@@ -9,59 +9,81 @@
  */
 @theme {
   /* ─── Brand ─────────────────────────────────────────────────────────── */
-  /* Azure. Every hue below is pulled toward blue rather than left neutral — a
-     warm grey against a cool primary is what makes a light theme look dirty,
-     and it is the difference between "blue app" and "app with blue buttons".
+  /*
+   * Monochrome, on purpose.
+   *
+   * The palette was azure and coral, and blue was doing two unrelated jobs:
+   * marking what is interactive *and* colouring every heading. A place card's
+   * `<h3>` was brand blue — a heading is not a link, and once the brand colour
+   * is on the type as well as the buttons, nothing is left for it to single
+   * out. That is the whole reason a screen ends up looking busy.
+   *
+   * With the chrome achromatic there are exactly three sources of colour left
+   * in the app, and each of them is content rather than decoration: the
+   * photographs, the category marks, and red on the one action that destroys
+   * something. Colour now means "this is a thing in the world", never "this is
+   * a piece of user interface".
+   *
+   * White on this: 17.72:1. It as type on every surface: 17.72 / 16.13 / 15.16.
+   * Nothing in the ramp is close to a contrast floor, which is the practical
+   * dividend of dropping hue — a neutral has no chroma to trade away.
+   */
+  --color-primary: #18181b;
+  --color-primary-tint: #f0f0f3;
 
-     The exact blue is measured, not picked by eye. A brighter azure (#1683f0)
-     looks better in a static mockup but carries white button text at only
-     3.79:1 — under AA, on the one control that must never be hard to read.
-
-     This one clears AA in all four directions it is actually used: white on it
-     (5.19), and it as type on white (5.19), on the background (4.68) and on
-     sunken (4.55). The last two are what forced the final nudge — a blue that
-     passes on white but fails on the tinted background is a trap, because
-     nothing at the call site says which surface it will land on. One blue,
-     safe everywhere, so there is no second "blue for text" token to keep in
-     step with this one. */
-  --color-primary: #0f6ccd;
-  --color-primary-soft: #6fb4f7;
-  --color-primary-tint: #e4f0fe;
-
-  /* Warm counterweight. A blue-only palette reads like a utility screen; the
-     map, category markers and the location states need a colour that is not
-     the brand. Coral is blue's complement, so it stays legible on top of it. */
-  --color-accent: #ff7a59;
-  --color-accent-tint: #fff1ec;
+  /*
+   * No accent.
+   *
+   * Coral existed as "a colour that is not the brand" for the map and the
+   * location states. In a monochrome system the brand is not a colour, so
+   * there is nothing to be a counterweight to — those places take ink, and
+   * the map's own markers carry the category hues, which is the only colour
+   * that should be on a map of places anyway.
+   */
 
   /* ─── Semantic ──────────────────────────────────────────────────────── */
-  --color-success: #14c08a;
-  --color-warning: #f5b02e;
-  --color-danger: #f2545b;
+  /*
+   * Kept, and quietened. These are the only hues left in the chrome, so they
+   * have to earn it: each one says something that position and weight cannot,
+   * and each is now dark enough to be read as type rather than only used as a
+   * fill. The old set was tuned to sit beside a bright azure and reads as
+   * shouting next to ink — 4.8, 5.0 and 4.6 on white, where the previous
+   * amber managed 1.8 and was unusable as text at all.
+   */
+  --color-success: #15803d;
+  --color-warning: #a16207;
+  --color-danger: #dc2626;
 
   /* ─── Surfaces ──────────────────────────────────────────────────────── */
-  /* White is the ground, not an accent.
-     The page was a light blue with white cards floating on it, which spends
-     colour on every square inch and leaves nothing louder for the things that
-     should be. Inverted: the page is white, and colour is what marks something
-     out.
-
-     The cost is that a white card on a white page has no edge of its own, so
-     cards now carry a hairline border as well as a shadow — a shadow alone on
-     white reads as a smudge rather than a lift. `sunken` is the one tinted
-     surface left, for the insets that must read as recessed: inputs,
-     skeletons, image placeholders. */
-  --color-background: #ffffff;
+  /*
+   * The page is a shade off white and the cards are white.
+   *
+   * It was white on white, with a hairline ring inside every shadow doing the
+   * separating — which worked, but made the ring load-bearing for the whole
+   * layout. A neutral page gives the cards something to be lighter than, so
+   * elevation reads from the surface itself rather than from a 1px line.
+   *
+   * The earlier objection to a tinted page was that it "spends colour on every
+   * square inch". A grey has no colour to spend, so it does not apply: this
+   * costs a step of lightness, not the app's one accent.
+   */
+  --color-background: #f4f4f6;
   --color-surface: #ffffff;
-  --color-surface-sunken: #f2f6fb;
+  --color-surface-sunken: #ededf0;
 
   /* ─── Text ──────────────────────────────────────────────────────────── */
-  --color-ink: #14202e;
-  --color-ink-muted: #5a6b7d;
-  --color-ink-subtle: #8a9aab;
-  /* Carries more weight now that it is drawing the edge of every card rather
-     than only separating stacked rows. */
-  --color-border: #e6ecf4;
+  /*
+   * One ramp, no hue. Every step clears AA as body text on all three surfaces
+   * — the old `ink-subtle` managed 3.1 on white and was carrying distances,
+   * counts and timestamps at that contrast.
+   *
+   * Blue is two points up from red and green rather than equal, so the greys
+   * never read warm against the photographs they sit under.
+   */
+  --color-ink: #101013; /* 19.0 on white */
+  --color-ink-muted: #55555f; /* 7.37 */
+  --color-ink-subtle: #6e6e79; /* 5.04, was 3.1 */
+  --color-border: #e4e4e8;
 
   /* ─── Type ──────────────────────────────────────────────────────────── */
   /* Four steps Tailwind's default scale does not have, and which the app was
@@ -96,31 +118,28 @@
   /* Layered shadows rather than glassmorphism, which §16 rules out. Each
      level pairs a tight contact shadow with a wide ambient one — that pairing
      is what reads as physical depth instead of a flat grey blur.
-     Tinted navy, not black: a neutral shadow greys out the surface it falls on
-     and the cards stop looking like they are in the same room as the page.
 
-     Every level now opens with a 1px hairline ring. On a white page a white
-     card has no edge of its own, and a soft shadow alone reads as a smudge
-     underneath rather than a lift. Putting the edge here rather than adding
-     `border` to thirty-eight components keeps it where elevation is already
-     defined — a card that is raised gets an edge by being raised.
+     Neutral now, not navy. The tint existed because a grey shadow under a
+     blue-leaning palette looked like dirt on the surface it fell on; against
+     an achromatic page the opposite is true, and a navy shadow is the one
+     coloured thing left in the chrome — visible as a blue haze under every
+     card once there is no blue anywhere else to explain it.
 
-     0.08, not 0.05: at 0.05 the line resolves to #f3f6f8, about three percent
-     off white, which held up on a 2x screenshot and would not on a phone in
-     daylight. The whole layout now leans on this line to separate a white card
-     from a white page, so it is worth the extra two percent. */
+     Every level opens with a 1px hairline ring. It matters less than it did
+     now that the page is a shade darker than the cards, but a ring plus a
+     shadow is what makes an edge survive a bright phone screen outdoors. */
   --shadow-sm:
-    0 0 0 1px rgb(19 66 116 / 0.08), 0 1px 2px rgb(19 66 116 / 0.04),
-    0 2px 6px rgb(19 66 116 / 0.05);
+    0 0 0 1px rgb(16 16 24 / 0.08), 0 1px 2px rgb(16 16 24 / 0.04),
+    0 2px 6px rgb(16 16 24 / 0.05);
   --shadow-md:
-    0 0 0 1px rgb(19 66 116 / 0.08), 0 2px 6px rgb(19 66 116 / 0.05),
-    0 10px 20px rgb(19 66 116 / 0.08);
+    0 0 0 1px rgb(16 16 24 / 0.08), 0 2px 6px rgb(16 16 24 / 0.05),
+    0 10px 20px rgb(16 16 24 / 0.08);
   --shadow-lg:
-    0 0 0 1px rgb(19 66 116 / 0.08), 0 4px 10px rgb(19 66 116 / 0.05),
-    0 18px 36px rgb(19 66 116 / 0.1);
+    0 0 0 1px rgb(16 16 24 / 0.08), 0 4px 10px rgb(16 16 24 / 0.05),
+    0 18px 36px rgb(16 16 24 / 0.1);
   --shadow-xl:
-    0 0 0 1px rgb(19 66 116 / 0.08), 0 8px 18px rgb(19 66 116 / 0.06),
-    0 28px 56px rgb(19 66 116 / 0.12);
+    0 0 0 1px rgb(16 16 24 / 0.08), 0 8px 18px rgb(16 16 24 / 0.06),
+    0 28px 56px rgb(16 16 24 / 0.12);
   /*
    * The ladder, and what decides which rung something is on.
    *
@@ -140,16 +159,16 @@
    * navy: a coloured surface lit from above throws a shadow tinted by itself,
    * and a grey one under a red button reads as a sticker on glass.
    */
-  --shadow-primary: 0 8px 24px rgb(15 108 205 / 0.3);
-  --shadow-danger: 0 8px 24px rgb(242 84 91 / 0.28);
+  --shadow-primary: 0 10px 24px rgb(16 16 24 / 0.28);
+  --shadow-danger: 0 8px 24px rgb(220 38 38 / 0.28);
   /* Pressed: the object goes down toward the page, so the gap under it closes.
      Scale alone moves the shape and leaves the shadow behind it, which reads
      as the button shrinking rather than being pushed. */
-  --shadow-pressed: 0 0 0 1px rgb(19 66 116 / 0.08), 0 1px 2px rgb(19 66 116 / 0.06);
+  --shadow-pressed: 0 0 0 1px rgb(16 16 24 / 0.08), 0 1px 2px rgb(16 16 24 / 0.06);
   /* Two layers, like the others: a tight contact shadow that separates the
      sheet's edge from whatever is behind it, and a wide ambient one that makes
      it read as lifted. A single soft shadow at this size just looks like haze. */
-  --shadow-sheet: 0 -2px 8px rgb(19 66 116 / 0.1), 0 -12px 40px rgb(19 66 116 / 0.22);
+  --shadow-sheet: 0 -2px 8px rgb(16 16 24 / 0.1), 0 -12px 40px rgb(16 16 24 / 0.22);
 
   /* ─── Motion ────────────────────────────────────────────────────────── */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);

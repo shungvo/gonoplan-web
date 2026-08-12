@@ -57,7 +57,7 @@ function SectionHeading({
         <button
           type="button"
           onClick={onViewAll}
-          className="text-primary shrink-0 text-sm font-medium"
+          className="text-primary shrink-0 text-sm font-medium underline decoration-border underline-offset-4"
         >
           {viewAllLabel}
         </button>

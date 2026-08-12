@@ -82,7 +82,7 @@ export function PlaceGrid({
               </span>
 
               {place.isOpenNow && (
-                <span className="bg-surface/90 text-success absolute bottom-2.5 left-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1 text-3xs font-semibold backdrop-blur-sm">
+                <span className="bg-surface/90 text-ink absolute bottom-2.5 left-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1 text-3xs font-semibold backdrop-blur-sm">
                   <Clock className="size-2.5" aria-hidden />
                   {t('place.openNow')}
                 </span>

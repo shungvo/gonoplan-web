@@ -16,7 +16,7 @@ interface Point {
 
 const SERIES: Array<{ key: Series; labelKey: MessageKey; className: string }> = [
   { key: 'users', labelKey: 'chart.signups', className: 'bg-primary/70' },
-  { key: 'places', labelKey: 'chart.submissions', className: 'bg-accent/70' },
+  { key: 'places', labelKey: 'chart.submissions', className: 'bg-warning/70' },
   { key: 'reviews', labelKey: 'chart.reviews', className: 'bg-success/70' },
 ];
 

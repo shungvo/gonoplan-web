@@ -21,7 +21,7 @@ const MapCanvas = dynamic(
     // Matches the canvas's own loading state and the final gradient, so there
     // is no flash or layout shift when the real map takes over.
     loading: () => (
-      <div className="h-full w-full animate-pulse bg-gradient-to-br from-primary-tint via-surface to-accent-tint" />
+      <div className="h-full w-full animate-pulse bg-gradient-to-br from-surface-sunken via-surface to-surface-sunken" />
     ),
   },
 );
