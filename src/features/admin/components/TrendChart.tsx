@@ -66,8 +66,12 @@ export function TrendChart({ data }: { data: Point[] }) {
           );
         })}
 
+        {/* Was `{total} in {days} days`, in English, on a screen that is
+            otherwise translated — and formatted with a bare `toLocaleString()`,
+            which reads the browser's locale rather than the one the operator
+            chose in the app. */}
         <span className="text-ink-muted ml-auto text-sm tabular-nums">
-          {total.toLocaleString()} in {data.length} days
+          {t('chart.totalOverDays', { count: total, days: data.length })}
         </span>
       </div>
 

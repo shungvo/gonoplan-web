@@ -7645,6 +7645,21 @@ export interface paths {
                                     owners: number;
                                     reports: number;
                                 };
+                                queueAges: {
+                                    places: string | null;
+                                    revisions: string | null;
+                                    owners: string | null;
+                                    reports: string | null;
+                                };
+                                placesByStatus: {
+                                    /** @enum {string} */
+                                    status: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "DELETED";
+                                    places: number;
+                                }[];
+                                ratings: {
+                                    rating: number;
+                                    reviews: number;
+                                }[];
                                 topPlaces: {
                                     /** Format: uuid */
                                     id: string;
@@ -7658,6 +7673,7 @@ export interface paths {
                                     /** Format: uuid */
                                     id: string;
                                     name: string;
+                                    nameVi: string;
                                     colorHex: string;
                                     places: number;
                                 }[];
@@ -7745,6 +7761,11 @@ export interface paths {
                                     users: number;
                                     places: number;
                                     reviews: number;
+                                }[];
+                                moderation: {
+                                    date: string;
+                                    approved: number;
+                                    rejected: number;
                                 }[];
                                 topPlaces: {
                                     /** Format: uuid */
@@ -9911,6 +9932,21 @@ export interface components {
                 owners: number;
                 reports: number;
             };
+            queueAges: {
+                places: string | null;
+                revisions: string | null;
+                owners: string | null;
+                reports: string | null;
+            };
+            placesByStatus: {
+                /** @enum {string} */
+                status: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED" | "DELETED";
+                places: number;
+            }[];
+            ratings: {
+                rating: number;
+                reviews: number;
+            }[];
             topPlaces: {
                 /** Format: uuid */
                 id: string;
@@ -9924,6 +9960,7 @@ export interface components {
                 /** Format: uuid */
                 id: string;
                 name: string;
+                nameVi: string;
                 colorHex: string;
                 places: number;
             }[];
@@ -9935,6 +9972,11 @@ export interface components {
                 users: number;
                 places: number;
                 reviews: number;
+            }[];
+            moderation: {
+                date: string;
+                approved: number;
+                rejected: number;
             }[];
             topPlaces: {
                 /** Format: uuid */

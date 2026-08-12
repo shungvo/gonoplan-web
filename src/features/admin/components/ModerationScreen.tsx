@@ -12,7 +12,15 @@ import { useLocale, useT } from '@/i18n/I18nProvider';
 import { formatDate } from '@/i18n/format';
 import type { TranslateFn } from '@/i18n/translate';
 import type { MessageKey } from '@/i18n/messages/keys';
-import { Card, PageHeader, QueueEmpty, RowSkeleton, StatusBadge, TimeAgo } from './primitives';
+import {
+  Card,
+  CardGrid,
+  PageHeader,
+  QueueEmpty,
+  RowSkeleton,
+  StatusBadge,
+  TimeAgo,
+} from './primitives';
 import { ReasonDialog } from './ReasonDialog';
 import {
   approveOwner,
@@ -151,220 +159,227 @@ export function ModerationScreen() {
       </div>
 
       {tab === 'places' && (
-        <div className="space-y-3">
+        <>
           {places.isPending && <RowSkeleton />}
           {places.data?.length === 0 && <QueueEmpty label={t('moderation.noPlaces')} />}
 
-          {places.data?.map((place) => (
-            <Card key={place.id}>
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <h3 className="text-ink font-semibold">{place.name}</h3>
-                  <p className="text-ink-muted mt-0.5 flex items-center gap-1.5 text-sm">
-                    <MapPin className="size-3.5 shrink-0" aria-hidden />
-                    {place.address ?? t('moderation.noAddress')}
-                  </p>
-                  <p className="text-ink-subtle mt-1 text-xs">
-                    {place.category.name} · {t('moderation.submittedBy')}{' '}
-                    {place.submittedBy?.name ?? t('moderation.removedAccountBy')} ·{' '}
-                    <TimeAgo iso={place.createdAt} />
-                  </p>
+          <CardGrid>
+            {places.data?.map((place) => (
+              <Card key={place.id}>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="text-ink font-semibold">{place.name}</h3>
+                    <p className="text-ink-muted mt-0.5 flex items-center gap-1.5 text-sm">
+                      <MapPin className="size-3.5 shrink-0" aria-hidden />
+                      {place.address ?? t('moderation.noAddress')}
+                    </p>
+                    <p className="text-ink-subtle mt-1 text-xs">
+                      {place.category.name} · {t('moderation.submittedBy')}{' '}
+                      {place.submittedBy?.name ?? t('moderation.removedAccountBy')} ·{' '}
+                      <TimeAgo iso={place.createdAt} />
+                    </p>
+                  </div>
+
+                  <a
+                    href={`https://www.google.com/maps?q=${String(place.latitude)},${String(place.longitude)}`}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="text-primary inline-flex shrink-0 items-center gap-1 text-xs font-medium"
+                  >
+                    {t('moderation.checkLocation')}
+                    <ExternalLink className="size-3" aria-hidden />
+                  </a>
                 </div>
 
-                <a
-                  href={`https://www.google.com/maps?q=${String(place.latitude)},${String(place.longitude)}`}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="text-primary inline-flex shrink-0 items-center gap-1 text-xs font-medium"
-                >
-                  {t('moderation.checkLocation')}
-                  <ExternalLink className="size-3" aria-hidden />
-                </a>
-              </div>
+                {place.description && (
+                  <p className="text-ink-muted bg-surface-sunken mt-3 rounded-md p-3 text-sm leading-relaxed">
+                    {place.description}
+                  </p>
+                )}
 
-              {place.description && (
-                <p className="text-ink-muted bg-surface-sunken mt-3 rounded-md p-3 text-sm leading-relaxed">
-                  {place.description}
-                </p>
-              )}
-
-              <div className="mt-4 flex gap-2">
-                <Button
-                  size="sm"
-                  isLoading={act.isPending}
-                  onClick={() => {
-                    run(() => approvePlace(place.id));
-                  }}
-                >
-                  {t('moderation.approvePublish')}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => {
-                    setDecision({ kind: 'reject-place', id: place.id, label: place.name });
-                  }}
-                >
-                  {t('moderation.reject')}
-                </Button>
-              </div>
-            </Card>
-          ))}
-        </div>
+                <div className="mt-4 flex gap-2">
+                  <Button
+                    size="sm"
+                    isLoading={act.isPending}
+                    onClick={() => {
+                      run(() => approvePlace(place.id));
+                    }}
+                  >
+                    {t('moderation.approvePublish')}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setDecision({ kind: 'reject-place', id: place.id, label: place.name });
+                    }}
+                  >
+                    {t('moderation.reject')}
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </CardGrid>
+        </>
       )}
 
       {tab === 'revisions' && (
-        <div className="space-y-3">
+        <>
           {revisions.isPending && <RowSkeleton />}
           {revisions.data?.length === 0 && <QueueEmpty label={t('moderation.noRevisions')} />}
 
-          {revisions.data?.map((revision) => (
-            <Card key={revision.id}>
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <h3 className="text-ink font-semibold">{revision.place.name}</h3>
-                  <p className="text-ink-subtle mt-0.5 text-xs">
-                    {t('moderation.proposedBy', {
-                      name: revision.submittedBy?.name ?? t('moderation.removedAccountBy'),
-                    })}{' '}
-                    ·{' '}
-                    <TimeAgo iso={revision.createdAt} />
-                  </p>
+          <CardGrid>
+            {revisions.data?.map((revision) => (
+              <Card key={revision.id}>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-ink font-semibold">{revision.place.name}</h3>
+                    <p className="text-ink-subtle mt-0.5 text-xs">
+                      {t('moderation.proposedBy', {
+                        name: revision.submittedBy?.name ?? t('moderation.removedAccountBy'),
+                      })}{' '}
+                      · <TimeAgo iso={revision.createdAt} />
+                    </p>
+                  </div>
+                  <Link
+                    href={`/place/${revision.place.slug}`}
+                    target="_blank"
+                    className="text-primary inline-flex items-center gap-1 text-xs font-medium"
+                  >
+                    {t('moderation.seeListing')}
+                    <ExternalLink className="size-3" aria-hidden />
+                  </Link>
                 </div>
-                <Link
-                  href={`/place/${revision.place.slug}`}
-                  target="_blank"
-                  className="text-primary inline-flex items-center gap-1 text-xs font-medium"
-                >
-                  {t('moderation.seeListing')}
-                  <ExternalLink className="size-3" aria-hidden />
-                </Link>
-              </div>
 
-              {/* The proposed values only. The live listing is one click away,
+                {/* The proposed values only. The live listing is one click away,
                   and rendering a red/green diff of every field would be mostly
                   unchanged rows. */}
-              <dl className="border-border mt-3 divide-y rounded-md border text-sm">
-                {Object.entries(revision.payload).map(([field, value]) => (
-                  <div key={field} className="flex gap-4 px-3 py-2">
-                    <dt className="text-ink-subtle w-32 shrink-0 text-xs">{field}</dt>
-                    <dd className="text-ink min-w-0 flex-1 break-words">
-                      {typeof value === 'object'
-                        ? JSON.stringify(value)
-                        : String(value as string | number | boolean)}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+                <dl className="border-border mt-3 divide-y rounded-md border text-sm">
+                  {Object.entries(revision.payload).map(([field, value]) => (
+                    <div key={field} className="flex gap-4 px-3 py-2">
+                      <dt className="text-ink-subtle w-32 shrink-0 text-xs">{field}</dt>
+                      <dd className="text-ink min-w-0 flex-1 break-words">
+                        {typeof value === 'object'
+                          ? JSON.stringify(value)
+                          : String(value as string | number | boolean)}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
 
-              <div className="mt-4 flex gap-2">
-                <Button
-                  size="sm"
-                  isLoading={act.isPending}
-                  onClick={() => {
-                    run(() => approveRevision(revision.id));
-                  }}
-                >
-                  {t('moderation.applyChanges')}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => {
-                    setDecision({
-                      kind: 'reject-revision',
-                      id: revision.id,
-                      label: revision.place.name,
-                    });
-                  }}
-                >
-                  {t('moderation.discard')}
-                </Button>
-              </div>
-            </Card>
-          ))}
-        </div>
+                <div className="mt-4 flex gap-2">
+                  <Button
+                    size="sm"
+                    isLoading={act.isPending}
+                    onClick={() => {
+                      run(() => approveRevision(revision.id));
+                    }}
+                  >
+                    {t('moderation.applyChanges')}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setDecision({
+                        kind: 'reject-revision',
+                        id: revision.id,
+                        label: revision.place.name,
+                      });
+                    }}
+                  >
+                    {t('moderation.discard')}
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </CardGrid>
+        </>
       )}
 
       {tab === 'owners' && (
-        <div className="space-y-3">
+        <>
           {owners.isPending && <RowSkeleton />}
           {owners.data?.length === 0 && <QueueEmpty label={t('moderation.noOwners')} />}
 
-          {owners.data?.map((owner) => (
-            <Card key={owner.id}>
-              <h3 className="text-ink font-semibold">{owner.businessName}</h3>
-              <p className="text-ink-muted mt-0.5 text-sm">
-                {owner.user.name} · {owner.user.email}
-              </p>
-              <p className="text-ink-subtle mt-1 text-xs">
-                {t('moderation.applied')} <TimeAgo iso={owner.createdAt} /> ·{' '}
-                {t('moderation.ownerMetaRest', {
-                  joined: formatDate(owner.user.joinedAt, locale),
-                  places: owner.placeCount,
-                  documents: owner.documentCount,
-                })}
-              </p>
+          <CardGrid>
+            {owners.data?.map((owner) => (
+              <Card key={owner.id}>
+                <h3 className="text-ink font-semibold">{owner.businessName}</h3>
+                <p className="text-ink-muted mt-0.5 text-sm">
+                  {owner.user.name} · {owner.user.email}
+                </p>
+                <p className="text-ink-subtle mt-1 text-xs">
+                  {t('moderation.applied')} <TimeAgo iso={owner.createdAt} /> ·{' '}
+                  {t('moderation.ownerMetaRest', {
+                    joined: formatDate(owner.user.joinedAt, locale),
+                    places: owner.placeCount,
+                    documents: owner.documentCount,
+                  })}
+                </p>
 
-              <dl className="text-ink-muted mt-3 space-y-1 text-sm">
-                {owner.businessEmail && (
-                  <dd>{t('moderation.contact', { value: owner.businessEmail })}</dd>
-                )}
-                {owner.businessPhone && (
-                  <dd>{t('moderation.phone', { value: owner.businessPhone })}</dd>
-                )}
-                {owner.taxId && <dd>{t('moderation.taxId', { value: owner.taxId })}</dd>}
-              </dl>
+                <dl className="text-ink-muted mt-3 space-y-1 text-sm">
+                  {owner.businessEmail && (
+                    <dd>{t('moderation.contact', { value: owner.businessEmail })}</dd>
+                  )}
+                  {owner.businessPhone && (
+                    <dd>{t('moderation.phone', { value: owner.businessPhone })}</dd>
+                  )}
+                  {owner.taxId && <dd>{t('moderation.taxId', { value: owner.taxId })}</dd>}
+                </dl>
 
-              <div className="mt-4 flex gap-2">
-                <Button
-                  size="sm"
-                  isLoading={act.isPending}
-                  onClick={() => {
-                    run(() => approveOwner(owner.id));
-                  }}
-                >
-                  {t('moderation.approve')}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => {
-                    setDecision({
-                      kind: 'reject-owner',
-                      id: owner.id,
-                      label: owner.businessName,
-                    });
-                  }}
-                >
-                  {t('moderation.reject')}
-                </Button>
-              </div>
-            </Card>
-          ))}
-        </div>
+                <div className="mt-4 flex gap-2">
+                  <Button
+                    size="sm"
+                    isLoading={act.isPending}
+                    onClick={() => {
+                      run(() => approveOwner(owner.id));
+                    }}
+                  >
+                    {t('moderation.approve')}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setDecision({
+                        kind: 'reject-owner',
+                        id: owner.id,
+                        label: owner.businessName,
+                      });
+                    }}
+                  >
+                    {t('moderation.reject')}
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </CardGrid>
+        </>
       )}
 
       {tab === 'reports' && (
-        <div className="space-y-3">
+        <>
           {reports.isPending && <RowSkeleton />}
           {reports.data?.length === 0 && <QueueEmpty label={t('moderation.noReports')} />}
 
-          {reports.data?.map((report) => (
-            <ReportCard
-              key={report.id}
-              report={report}
-              onDecide={(outcome) => {
-                setDecision({
-                  kind: 'resolve-report',
-                  id: report.id,
-                  label: report.target?.label ?? t('moderation.thisReport'),
-                  outcome,
-                });
-              }}
-            />
-          ))}
-        </div>
+          <CardGrid>
+            {reports.data?.map((report) => (
+              <ReportCard
+                key={report.id}
+                report={report}
+                onDecide={(outcome) => {
+                  setDecision({
+                    kind: 'resolve-report',
+                    id: report.id,
+                    label: report.target?.label ?? t('moderation.thisReport'),
+                    outcome,
+                  });
+                }}
+              />
+            ))}
+          </CardGrid>
+        </>
       )}
 
       <ReasonDialog
@@ -430,8 +445,7 @@ function ReportCard({
               {t(`reportReason.${report.reason}`)}
             </span>
             <span className="text-ink-subtle text-xs">
-              {t(`moderation.targetType.${report.targetType}`)} ·{' '}
-              <TimeAgo iso={report.createdAt} />
+              {t(`moderation.targetType.${report.targetType}`)} · <TimeAgo iso={report.createdAt} />
             </span>
             {report.openReportsOnTarget > 1 && (
               <span className="bg-danger/10 text-danger rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold">

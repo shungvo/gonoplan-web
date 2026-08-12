@@ -33,6 +33,33 @@ export function Card({ children, className }: { children: ReactNode; className?:
   );
 }
 
+/**
+ * A list of cards, in as many columns as the width can carry.
+ *
+ * Every admin list was one card per row, which on a 1280px screen meant a
+ * 1200px-wide card holding a name, an address and two buttons — a queue of
+ * twelve became a page of scrolling for content that would have fitted on one
+ * screen. Moderation is triage: seeing six at once is the difference between
+ * reading a queue and paging through it.
+ *
+ * Two columns, not three. The container caps at 1280px, so a third column
+ * would put each card near 400px, and these cards carry an address, a
+ * paragraph of prose and a row of buttons that would then wrap.
+ *
+ * `items-start` so a short card stays short. Grid items stretch to their row
+ * by default, which would give a one-line entry the height of the review
+ * beside it and put the buttons floating in the middle of it.
+ *
+ * Skeletons and empty states belong outside this, not in it — a "nothing
+ * waiting" panel that occupies the left column and leaves the right one blank
+ * reads as a layout that failed rather than an empty queue.
+ */
+export function CardGrid({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={cn('grid items-start gap-3 lg:grid-cols-2', className)}>{children}</div>
+  );
+}
+
 export function Stat({
   label,
   value,

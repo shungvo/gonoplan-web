@@ -176,7 +176,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
           ))}
         </nav>
 
-        <main className="mx-auto max-w-6xl px-5 py-8 md:px-8">{children}</main>
+        {/* Wider than the reading measure the public app uses, deliberately.
+            Nothing here is prose to be read top to bottom — it is queues to be
+            scanned two abreast and charts to be compared side by side, and at
+            1152px the second column of either was already cramped. */}
+        <main className="mx-auto max-w-7xl px-5 py-8 md:px-8">{children}</main>
       </div>
     </div>
   );

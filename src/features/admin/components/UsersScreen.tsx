@@ -11,7 +11,15 @@ import { useT } from '@/i18n/I18nProvider';
 import { useEnumLabel } from '@/i18n/useEnumLabel';
 import type { MessageKey } from '@/i18n/messages/keys';
 import { useSessionStore } from '@/features/auth/store';
-import { Card, PageHeader, QueueEmpty, RowSkeleton, StatusBadge, TimeAgo } from './primitives';
+import {
+  Card,
+  CardGrid,
+  PageHeader,
+  QueueEmpty,
+  RowSkeleton,
+  StatusBadge,
+  TimeAgo,
+} from './primitives';
 import { ReasonDialog } from './ReasonDialog';
 import {
   banUser,
@@ -165,7 +173,7 @@ export function UsersScreen() {
       {users.isPending && <RowSkeleton />}
       {users.data?.length === 0 && <QueueEmpty label={t('users.noMatch')} />}
 
-      <div className="space-y-2.5">
+      <CardGrid>
         {users.data?.map((user) => {
           const isSelf = user.id === currentUser?.id;
           const isAdmin = user.role === 'ADMIN';
@@ -377,7 +385,7 @@ export function UsersScreen() {
             </Card>
           );
         })}
-      </div>
+      </CardGrid>
 
       <ReasonDialog
         open={deleteTarget !== null}

@@ -18,7 +18,7 @@ import {
   updateCategory,
   type AdminCategory,
 } from '../api';
-import { Card, PageHeader, QueueEmpty, RowSkeleton, TimeAgo } from './primitives';
+import { Card, CardGrid, PageHeader, QueueEmpty, RowSkeleton, TimeAgo } from './primitives';
 import { ReasonDialog } from './ReasonDialog';
 
 type Tab = 'categories' | 'demand';
@@ -217,7 +217,7 @@ export function TaxonomyScreen() {
 
           {categories.isPending && <RowSkeleton />}
 
-          <div className="space-y-2.5">
+          <CardGrid>
             {parents.map((parent) => {
               const children =
                 categories.data?.filter((child) => child.parentId === parent.id) ?? [];
@@ -258,7 +258,7 @@ export function TaxonomyScreen() {
                 </Card>
               );
             })}
-          </div>
+          </CardGrid>
         </>
       )}
 

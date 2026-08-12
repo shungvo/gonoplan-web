@@ -10,7 +10,15 @@ import { Chip } from '@/components/ui/Chip';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { useEnumLabel } from '@/i18n/useEnumLabel';
 import { formatNumber, formatRating } from '@/i18n/format';
-import { Card, PageHeader, QueueEmpty, RowSkeleton, StatusBadge, TimeAgo } from './primitives';
+import {
+  Card,
+  CardGrid,
+  PageHeader,
+  QueueEmpty,
+  RowSkeleton,
+  StatusBadge,
+  TimeAgo,
+} from './primitives';
 import { ReasonDialog } from './ReasonDialog';
 import {
   deleteReview,
@@ -178,7 +186,7 @@ export function ContentScreen() {
           {places.isPending && <RowSkeleton />}
           {places.data?.length === 0 && <QueueEmpty label={t('content.noPlaces')} />}
 
-          <div className="space-y-2.5">
+          <CardGrid>
             {places.data?.map((place) => (
               <Card key={place.id}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -234,7 +242,7 @@ export function ContentScreen() {
                 </div>
               </Card>
             ))}
-          </div>
+          </CardGrid>
         </>
       )}
 
@@ -261,7 +269,7 @@ export function ContentScreen() {
           {reviews.isPending && <RowSkeleton />}
           {reviews.data?.length === 0 && <QueueEmpty label={t('content.noReviews')} />}
 
-          <div className="space-y-2.5">
+          <CardGrid>
             {reviews.data?.map((review) => (
               <Card key={review.id}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -345,7 +353,7 @@ export function ContentScreen() {
                 </div>
               </Card>
             ))}
-          </div>
+          </CardGrid>
         </>
       )}
 

@@ -4093,6 +4093,85 @@
               "reports"
             ]
           },
+          "queueAges": {
+            "type": "object",
+            "properties": {
+              "places": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "revisions": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "owners": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reports": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "places",
+              "revisions",
+              "owners",
+              "reports"
+            ]
+          },
+          "placesByStatus": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "DRAFT",
+                    "PENDING",
+                    "APPROVED",
+                    "REJECTED",
+                    "SUSPENDED",
+                    "DELETED"
+                  ]
+                },
+                "places": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "status",
+                "places"
+              ]
+            }
+          },
+          "ratings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "rating": {
+                  "type": "integer"
+                },
+                "reviews": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "rating",
+                "reviews"
+              ]
+            }
+          },
           "topPlaces": {
             "type": "array",
             "items": {
@@ -4140,6 +4219,9 @@
                 "name": {
                   "type": "string"
                 },
+                "nameVi": {
+                  "type": "string"
+                },
                 "colorHex": {
                   "type": "string"
                 },
@@ -4150,6 +4232,7 @@
               "required": [
                 "id",
                 "name",
+                "nameVi",
                 "colorHex",
                 "places"
               ]
@@ -4159,6 +4242,9 @@
         "required": [
           "totals",
           "queues",
+          "queueAges",
+          "placesByStatus",
+          "ratings",
           "topPlaces",
           "categories"
         ]
@@ -4192,6 +4278,28 @@
                 "users",
                 "places",
                 "reviews"
+              ]
+            }
+          },
+          "moderation": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string"
+                },
+                "approved": {
+                  "type": "integer"
+                },
+                "rejected": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "date",
+                "approved",
+                "rejected"
               ]
             }
           },
@@ -4234,6 +4342,7 @@
         "required": [
           "days",
           "daily",
+          "moderation",
           "topPlaces"
         ]
       },
@@ -20213,6 +20322,85 @@
                             "reports"
                           ]
                         },
+                        "queueAges": {
+                          "type": "object",
+                          "properties": {
+                            "places": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "revisions": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "owners": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "reports": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "places",
+                            "revisions",
+                            "owners",
+                            "reports"
+                          ]
+                        },
+                        "placesByStatus": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "DRAFT",
+                                  "PENDING",
+                                  "APPROVED",
+                                  "REJECTED",
+                                  "SUSPENDED",
+                                  "DELETED"
+                                ]
+                              },
+                              "places": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "status",
+                              "places"
+                            ]
+                          }
+                        },
+                        "ratings": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "rating": {
+                                "type": "integer"
+                              },
+                              "reviews": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "rating",
+                              "reviews"
+                            ]
+                          }
+                        },
                         "topPlaces": {
                           "type": "array",
                           "items": {
@@ -20260,6 +20448,9 @@
                               "name": {
                                 "type": "string"
                               },
+                              "nameVi": {
+                                "type": "string"
+                              },
                               "colorHex": {
                                 "type": "string"
                               },
@@ -20270,6 +20461,7 @@
                             "required": [
                               "id",
                               "name",
+                              "nameVi",
                               "colorHex",
                               "places"
                             ]
@@ -20279,6 +20471,9 @@
                       "required": [
                         "totals",
                         "queues",
+                        "queueAges",
+                        "placesByStatus",
+                        "ratings",
                         "topPlaces",
                         "categories"
                       ]
@@ -20413,6 +20608,28 @@
                             ]
                           }
                         },
+                        "moderation": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "type": "string"
+                              },
+                              "approved": {
+                                "type": "integer"
+                              },
+                              "rejected": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "date",
+                              "approved",
+                              "rejected"
+                            ]
+                          }
+                        },
                         "topPlaces": {
                           "type": "array",
                           "items": {
@@ -20452,6 +20669,7 @@
                       "required": [
                         "days",
                         "daily",
+                        "moderation",
                         "topPlaces"
                       ]
                     },
