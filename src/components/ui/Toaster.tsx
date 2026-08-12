@@ -143,7 +143,7 @@ function ToastRow({ toast }: { toast: Toast }) {
       // `alert` is announced immediately and interrupts; `status` waits for a
       // pause. A failure the user is about to retry cannot wait for a pause.
       role={isError ? 'alert' : 'status'}
-      className="bg-surface border-border pointer-events-auto flex items-start gap-3 rounded-md border p-3 shadow-lg"
+      className="bg-surface border-border pointer-events-auto flex items-start gap-3 rounded-lg border p-3 shadow-lg"
     >
       <span
         className={cn(

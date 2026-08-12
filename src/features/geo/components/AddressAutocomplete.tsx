@@ -193,7 +193,7 @@ export function AddressAutocomplete({
           id={listId}
           role="listbox"
           aria-label={t('address.suggestions')}
-          className="border-border bg-surface absolute inset-x-0 top-full z-20 mt-1 max-h-64 overflow-y-auto rounded-md border shadow-lg"
+          className="border-border bg-surface absolute inset-x-0 top-full z-20 mt-1 max-h-64 overflow-y-auto rounded-lg border shadow-lg"
         >
           {options.map((option, index) => (
             <li key={option.ref} id={`${listId}-${String(index)}`} role="option" aria-selected={index === highlight}>

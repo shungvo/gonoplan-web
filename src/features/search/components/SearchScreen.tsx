@@ -103,7 +103,7 @@ export function SearchScreen() {
             }}
           />
 
-          <div className="bg-surface flex h-12 flex-1 items-center gap-2.5 rounded-md px-3.5 shadow-sm">
+          <div className="bg-surface flex h-12 flex-1 items-center gap-2.5 rounded-full px-4 shadow-sm">
             <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
             <input
               ref={inputRef}
