@@ -649,7 +649,7 @@ export function ExploreScreen() {
                     distance: formatDistance(data.radiusMeters, locale),
                   })}`}
               </p>
-              <ul className="space-y-2.5">
+              <ul className="space-y-5">
                 {data.places.map((place) => (
                   <li key={place.id}>
                     <PlaceListItem

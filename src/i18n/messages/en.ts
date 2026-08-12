@@ -94,6 +94,8 @@ export const en = {
 
   // ─── Places ───────────────────────────────────────────────────────────────
   'place.openNow': 'Open',
+  'place.openUntil': 'Open until {time}',
+  'place.closedNow': 'Closed',
   'place.new': 'New',
   'place.nothingYet': 'Nothing here yet.',
   'place.gone': 'This place is no longer available',

@@ -528,6 +528,12 @@
           "isOpenNow": {
             "type": "boolean"
           },
+          "closesAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "coverImageUrl": {
             "type": [
               "string",
@@ -559,6 +565,7 @@
           "saveCount",
           "distanceM",
           "isOpenNow",
+          "closesAt",
           "coverImageUrl",
           "coverBlurhash"
         ]
@@ -661,6 +668,12 @@
           },
           "isOpenNow": {
             "type": "boolean"
+          },
+          "closesAt": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "coverImageUrl": {
             "type": [
@@ -871,6 +884,7 @@
           "saveCount",
           "distanceM",
           "isOpenNow",
+          "closesAt",
           "coverImageUrl",
           "coverBlurhash",
           "ward",
@@ -2587,6 +2601,12 @@
           "isOpenNow": {
             "type": "boolean"
           },
+          "closesAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "coverImageUrl": {
             "type": [
               "string",
@@ -2656,6 +2676,7 @@
           "saveCount",
           "distanceM",
           "isOpenNow",
+          "closesAt",
           "coverImageUrl",
           "coverBlurhash",
           "score",
@@ -2765,6 +2786,12 @@
                 "isOpenNow": {
                   "type": "boolean"
                 },
+                "closesAt": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
                 "coverImageUrl": {
                   "type": [
                     "string",
@@ -2834,6 +2861,7 @@
                 "saveCount",
                 "distanceM",
                 "isOpenNow",
+                "closesAt",
                 "coverImageUrl",
                 "coverBlurhash",
                 "score",
@@ -2963,6 +2991,12 @@
                 "isOpenNow": {
                   "type": "boolean"
                 },
+                "closesAt": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
                 "coverImageUrl": {
                   "type": [
                     "string",
@@ -3032,6 +3066,7 @@
                 "saveCount",
                 "distanceM",
                 "isOpenNow",
+                "closesAt",
                 "coverImageUrl",
                 "coverBlurhash",
                 "score",
@@ -6191,6 +6226,12 @@
                           "isOpenNow": {
                             "type": "boolean"
                           },
+                          "closesAt": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
                           "coverImageUrl": {
                             "type": [
                               "string",
@@ -6222,6 +6263,7 @@
                           "saveCount",
                           "distanceM",
                           "isOpenNow",
+                          "closesAt",
                           "coverImageUrl",
                           "coverBlurhash"
                         ]
@@ -6709,6 +6751,12 @@
                           "isOpenNow": {
                             "type": "boolean"
                           },
+                          "closesAt": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
                           "coverImageUrl": {
                             "type": [
                               "string",
@@ -6740,6 +6788,7 @@
                           "saveCount",
                           "distanceM",
                           "isOpenNow",
+                          "closesAt",
                           "coverImageUrl",
                           "coverBlurhash"
                         ]
@@ -7082,6 +7131,12 @@
                           "isOpenNow": {
                             "type": "boolean"
                           },
+                          "closesAt": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
                           "coverImageUrl": {
                             "type": [
                               "string",
@@ -7113,6 +7168,7 @@
                           "saveCount",
                           "distanceM",
                           "isOpenNow",
+                          "closesAt",
                           "coverImageUrl",
                           "coverBlurhash"
                         ]
@@ -7384,6 +7440,12 @@
                         "isOpenNow": {
                           "type": "boolean"
                         },
+                        "closesAt": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "coverImageUrl": {
                           "type": [
                             "string",
@@ -7593,6 +7655,7 @@
                         "saveCount",
                         "distanceM",
                         "isOpenNow",
+                        "closesAt",
                         "coverImageUrl",
                         "coverBlurhash",
                         "ward",
@@ -9789,6 +9852,12 @@
                           "isOpenNow": {
                             "type": "boolean"
                           },
+                          "closesAt": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
                           "coverImageUrl": {
                             "type": [
                               "string",
@@ -9820,6 +9889,7 @@
                           "saveCount",
                           "distanceM",
                           "isOpenNow",
+                          "closesAt",
                           "coverImageUrl",
                           "coverBlurhash"
                         ]
@@ -16418,6 +16488,12 @@
                               "isOpenNow": {
                                 "type": "boolean"
                               },
+                              "closesAt": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
                               "coverImageUrl": {
                                 "type": [
                                   "string",
@@ -16487,6 +16563,7 @@
                               "saveCount",
                               "distanceM",
                               "isOpenNow",
+                              "closesAt",
                               "coverImageUrl",
                               "coverBlurhash",
                               "score",
@@ -16742,6 +16819,12 @@
                                 "isOpenNow": {
                                   "type": "boolean"
                                 },
+                                "closesAt": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
                                 "coverImageUrl": {
                                   "type": [
                                     "string",
@@ -16811,6 +16894,7 @@
                                 "saveCount",
                                 "distanceM",
                                 "isOpenNow",
+                                "closesAt",
                                 "coverImageUrl",
                                 "coverBlurhash",
                                 "score",

@@ -87,6 +87,8 @@ export const vi: Messages = {
 
   // ─── Places ───────────────────────────────────────────────────────────────
   'place.openNow': 'Đang mở',
+  'place.openUntil': 'Mở đến {time}',
+  'place.closedNow': 'Đã đóng cửa',
   'place.new': 'Mới',
   'place.nothingYet': 'Chưa có gì ở đây.',
   'place.gone': 'Địa điểm này không còn nữa',

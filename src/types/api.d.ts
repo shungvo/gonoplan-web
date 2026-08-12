@@ -830,6 +830,7 @@ export interface paths {
                                 saveCount: number;
                                 distanceM: number | null;
                                 isOpenNow: boolean;
+                                closesAt: string | null;
                                 coverImageUrl: string | null;
                                 coverBlurhash: string | null;
                             }[];
@@ -1030,6 +1031,7 @@ export interface paths {
                                 saveCount: number;
                                 distanceM: number | null;
                                 isOpenNow: boolean;
+                                closesAt: string | null;
                                 coverImageUrl: string | null;
                                 coverBlurhash: string | null;
                             }[];
@@ -1192,6 +1194,7 @@ export interface paths {
                                 saveCount: number;
                                 distanceM: number | null;
                                 isOpenNow: boolean;
+                                closesAt: string | null;
                                 coverImageUrl: string | null;
                                 coverBlurhash: string | null;
                             }[];
@@ -1337,6 +1340,7 @@ export interface paths {
                                 saveCount: number;
                                 distanceM: number | null;
                                 isOpenNow: boolean;
+                                closesAt: string | null;
                                 coverImageUrl: string | null;
                                 coverBlurhash: string | null;
                                 ward: string | null;
@@ -2467,6 +2471,7 @@ export interface paths {
                                 saveCount: number;
                                 distanceM: number | null;
                                 isOpenNow: boolean;
+                                closesAt: string | null;
                                 coverImageUrl: string | null;
                                 coverBlurhash: string | null;
                             }[];
@@ -5568,6 +5573,7 @@ export interface paths {
                                     saveCount: number;
                                     distanceM: number | null;
                                     isOpenNow: boolean;
+                                    closesAt: string | null;
                                     coverImageUrl: string | null;
                                     coverBlurhash: string | null;
                                     score: number;
@@ -5715,6 +5721,7 @@ export interface paths {
                                     saveCount: number;
                                     distanceM: number | null;
                                     isOpenNow: boolean;
+                                    closesAt: string | null;
                                     coverImageUrl: string | null;
                                     coverBlurhash: string | null;
                                     score: number;
@@ -9089,6 +9096,7 @@ export interface components {
             saveCount: number;
             distanceM: number | null;
             isOpenNow: boolean;
+            closesAt: string | null;
             coverImageUrl: string | null;
             coverBlurhash: string | null;
         };
@@ -9120,6 +9128,7 @@ export interface components {
             saveCount: number;
             distanceM: number | null;
             isOpenNow: boolean;
+            closesAt: string | null;
             coverImageUrl: string | null;
             coverBlurhash: string | null;
             ward: string | null;
@@ -9565,6 +9574,7 @@ export interface components {
             saveCount: number;
             distanceM: number | null;
             isOpenNow: boolean;
+            closesAt: string | null;
             coverImageUrl: string | null;
             coverBlurhash: string | null;
             score: number;
@@ -9606,6 +9616,7 @@ export interface components {
                 saveCount: number;
                 distanceM: number | null;
                 isOpenNow: boolean;
+                closesAt: string | null;
                 coverImageUrl: string | null;
                 coverBlurhash: string | null;
                 score: number;
@@ -9653,6 +9664,7 @@ export interface components {
                 saveCount: number;
                 distanceM: number | null;
                 isOpenNow: boolean;
+                closesAt: string | null;
                 coverImageUrl: string | null;
                 coverBlurhash: string | null;
                 score: number;
