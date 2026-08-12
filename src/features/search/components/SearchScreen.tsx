@@ -232,7 +232,7 @@ export function SearchScreen() {
                         style={{ backgroundColor: categoryTint(category.colorHex) }}
                       >
                         <CategoryGlyph
-                          slug={category.slug}
+                          iconKey={category.iconKey}
                           color={category.colorHex}
                           className="size-[1.125rem]"
                           strokeWidth={2}

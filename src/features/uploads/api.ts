@@ -1,10 +1,21 @@
 import { api } from '@/lib/api/client';
-import type { components } from '@/types/api';
+import type { components, paths } from '@/types/api';
 
 export type UploadSignature = components['schemas']['UploadSignature'];
 export type UploadConfirmation = components['schemas']['UploadConfirmation'];
 
-export type UploadPurpose = 'place' | 'avatar';
+/**
+ * Read off the contract, not re-typed here.
+ *
+ * It was a hand-written union, and adding `checkin` on the server left this
+ * behind — the API accepted the purpose and the client had no name for it. The
+ * signature request's own type is the list the server validates against, so
+ * the next one that appears is a compile error at the call site rather than a
+ * 400 nobody sees until they try it.
+ */
+export type UploadPurpose = NonNullable<
+  paths['/uploads/signature']['post']['requestBody']
+>['content']['application/json']['purpose'];
 
 /** Matches the server allowlist. Anything else is refused before a round trip. */
 const ACCEPTED = ['image/jpeg', 'image/png', 'image/webp'] as const;

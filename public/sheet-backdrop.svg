@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 640" preserveAspectRatio="xMidYMin slice" role="presentation">
+  <!--
+    The bottom sheet's texture — quieter than the page's, and deliberately so.
+
+    Not the same file as `backdrop.svg`. That one is a full-screen composition
+    for a surface the height of a phone; cropped into a panel that is often
+    only 300px tall it lands as a fragment of a shape rather than a shape.
+    This one is drawn for a wide, short box: weighted to the top, where a sheet
+    is visible before its content fills in, and to the edges, because the
+    middle is where forms and lists actually sit.
+
+    ─── The tonal rule ───────────────────────────────────────────────────────
+
+    Nothing here is darker than #F4F4F6 — the page tone, the surface this sheet
+    is elevated above. A sheet with a mark on it darker than the thing it
+    floats over is a sheet that has fallen through, and the elevation ladder is
+    the one thing holding this design system's depth together.
+
+    That also keeps the contrast maths comfortable. `ink-subtle` (#6E6E79) is
+    5.04 on white and 4.585 on #F4F4F6, so the worst case here is the same as
+    the page's best — text on this sheet can only be more legible than the same
+    text on the screen behind it.
+  -->
+  <defs>
+    <linearGradient id="sheetRiseA" x1="1" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#F4F4F6" />
+      <stop offset="0.55" stop-color="#F8F8FA" />
+      <stop offset="1" stop-color="#FFFFFF" />
+    </linearGradient>
+    <linearGradient id="sheetRiseB" x1="0" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#F5F5F7" />
+      <stop offset="1" stop-color="#FDFDFE" />
+    </linearGradient>
+
+    <pattern id="sheetDots" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.5" fill="#F4F4F6" />
+    </pattern>
+  </defs>
+
+  <!-- No background rect: the sheet's own `bg-surface` is the white underneath,
+       and repainting it here would break the moment that token moves. -->
+
+  <!-- Top right: the one large form, bleeding off two edges so it reads as a
+       fragment of something bigger rather than a blob dropped in a corner. -->
+  <path
+    d="M300 -40
+       C 356 26, 396 54, 452 74
+       C 512 96, 540 150, 528 214
+       C 516 278, 452 306, 420 356
+       L 560 356
+       L 560 -40
+       Z"
+    fill="url(#sheetRiseA)"
+  />
+
+  <!-- Top left: a ring cut by the sheet's own rounded corner. -->
+  <circle cx="34" cy="52" r="62" fill="none" stroke="#F5F5F7" stroke-width="14" />
+
+  <!-- A dot patch on the right, below the large form. -->
+  <rect x="404" y="392" width="96" height="80" fill="url(#sheetDots)" />
+
+  <!-- Bottom left: the wave and its line bundle, the same vocabulary as the
+       page wallpaper so the two read as one system. -->
+  <path
+    d="M0 640
+       L0 520
+       C 54 512, 92 548, 134 570
+       C 176 592, 222 590, 258 614
+       C 282 630, 292 636, 296 640
+       Z"
+    fill="url(#sheetRiseB)"
+  />
+
+  <g fill="none" stroke="#F6F6F8" stroke-width="1.5" stroke-linecap="round">
+    <path d="M0 498 C 58 490, 100 528, 144 552 C 188 576, 234 574, 272 600" />
+    <path d="M0 476 C 62 468, 108 508, 154 534 C 200 560, 246 558, 284 586" />
+  </g>
+
+  <!-- One long crease across the middle. A single line, not a bundle: the
+       middle of a sheet is where the content is. -->
+  <path
+    d="M28 300 C 132 284, 214 326, 330 312"
+    fill="none"
+    stroke="#F5F5F7"
+    stroke-width="2"
+    stroke-linecap="round"
+  />
+
+  <!-- A small disc, low left, to give the bottom corner something to hold. -->
+  <circle cx="58" cy="418" r="26" fill="url(#sheetRiseB)" />
+</svg>

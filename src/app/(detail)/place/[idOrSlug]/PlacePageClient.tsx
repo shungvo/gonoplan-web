@@ -20,7 +20,7 @@ import { BackButton } from '@/components/ui/BackButton';
  * Renders the same `PlaceDetailContent` as the bottom sheet. A separate
  * "detail page" implementation would drift from the sheet within two features.
  */
-export function PlacePageClient({ idOrSlug }: { idOrSlug: string }) {
+export function PlacePageClient({ idOrSlug }: { idOrSlug: string | null }) {
   const t = useT();
   const router = useRouter();
   const coordinates = useLocationStore((state) => state.coordinates);

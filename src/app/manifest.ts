@@ -1,3 +1,12 @@
+/*
+ * Static, so it survives `output: 'export'`.
+ *
+ * The manifest is a route handler, and an exported build has no server to run
+ * one — Next refuses to collect it without being told the output never
+ * changes. It never does: every value here is a constant.
+ */
+export const dynamic = 'force-static';
+
 import type { MetadataRoute } from 'next';
 import { getLocale, getT } from '@/i18n/server';
 

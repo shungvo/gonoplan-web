@@ -103,58 +103,71 @@ export function PlaceSheet({ placeId, onClose }: PlaceSheetProps) {
         onClose={onClose}
       />
 
-    <BottomSheet
-      open={placeId !== null}
-      onOpenChange={(open) => {
-        if (!open) onClose();
-      }}
-      snapPoints={SNAP_POINTS}
-      defaultSnapIndex={OPENS_AT}
-      /*
-       * Closed by the button, not by getting rid of it.
-       *
-       * Dragging still moves between the resting heights — that is the whole
-       * interaction — but a drag that runs off the bottom now springs back
-       * instead of dismissing, and the photograph behind is not a dismiss
-       * target either. Somewhere to put a thumb should not be a way to lose
-       * your place.
-       */
-      dismissible={false}
-      // Dimming is saved for full height, where the photo is covered anyway.
-      // At the shorter stops the whole point is that you can see it.
-      dimOnlyWhenFull
-    >
-      <div className="flex-1 overflow-y-auto overscroll-contain">
-        {isPending && placeId !== null && <PlaceSheetSkeleton preview={preview?.place ?? null} />}
+      <BottomSheet
+        open={placeId !== null}
+        onOpenChange={(open) => {
+          if (!open) onClose();
+        }}
+        snapPoints={SNAP_POINTS}
+        defaultSnapIndex={OPENS_AT}
+        /*
+         * Closed by the button, not by getting rid of it.
+         *
+         * Dragging still moves between the resting heights — that is the whole
+         * interaction — but a drag that runs off the bottom now springs back
+         * instead of dismissing, and the photograph behind is not a dismiss
+         * target either. Somewhere to put a thumb should not be a way to lose
+         * your place.
+         */
+        dismissible={false}
+        /*
+         * The one sheet with a long scroll, and the one the inline handle was in
+         * the way of: content was cut 16px below the sheet's edge with an empty
+         * white lid above the cut, so scrolling looked like reading through a
+         * letterbox. Floating, the text passes under the pill and is clipped by
+         * the sheet's own rim.
+         */
+        handle="over-content"
+        // Dimming is saved for full height, where the photo is covered anyway.
+        // At the shorter stops the whole point is that you can see it.
+        dimOnlyWhenFull
+      >
+        {/* `pt-4` is the space the inline handle used to take in the flow.
+            On the scroller rather than above it: padding above would be
+            another band the content cannot enter, which is the thing being
+            removed. Here it holds the first line clear of the pill at rest
+            and still lets it scroll underneath. */}
+        <div className="flex-1 overflow-y-auto overscroll-contain pt-4">
+          {isPending && placeId !== null && <PlaceSheetSkeleton preview={preview?.place ?? null} />}
 
-        {error && (
-          <EmptyState
-            title={
-              error instanceof ApiError && error.status === 404
-                ? t('place.gone')
-                : t('place.loadFailed')
-            }
-            description={
-              error instanceof ApiError && error.isRetryable
-                ? t('place.checkConnection')
-                : undefined
-            }
-            action={
-              <Button variant="secondary" size="sm" onClick={onClose}>
-                {t('common.close')}
-              </Button>
-            }
-          />
-        )}
+          {error && (
+            <EmptyState
+              title={
+                error instanceof ApiError && error.status === 404
+                  ? t('place.gone')
+                  : t('place.loadFailed')
+              }
+              description={
+                error instanceof ApiError && error.isRetryable
+                  ? t('place.checkConnection')
+                  : undefined
+              }
+              action={
+                <Button variant="secondary" size="sm" onClick={onClose}>
+                  {t('common.close')}
+                </Button>
+              }
+            />
+          )}
 
-        {place && (
-          <>
-            <Drawer.Title className="sr-only">{place.name}</Drawer.Title>
-            <PlaceDetailContent place={place} compact />
-          </>
-        )}
-      </div>
-    </BottomSheet>
+          {place && (
+            <>
+              <Drawer.Title className="sr-only">{place.name}</Drawer.Title>
+              <PlaceDetailContent place={place} compact />
+            </>
+          )}
+        </div>
+      </BottomSheet>
     </>
   );
 }
@@ -168,7 +181,12 @@ export function PlaceSheet({ placeId, onClose }: PlaceSheetProps) {
  * the difference without a hydration warning.
  */
 const subscribeToNothing = () => () => undefined;
-const useIsClient = () => useSyncExternalStore(subscribeToNothing, () => true, () => false);
+const useIsClient = () =>
+  useSyncExternalStore(
+    subscribeToNothing,
+    () => true,
+    () => false,
+  );
 
 /**
  * The place, behind its own sheet.
@@ -213,7 +231,7 @@ function Backdrop({
         <motion.div
           // `overflow-hidden` because the photograph inside is deliberately
           // wider than the viewport for the length of the movement.
-          className="pointer-events-auto fixed inset-y-0 inset-x-0 z-40 mx-auto max-w-app overflow-hidden"
+          className="max-w-app pointer-events-auto fixed inset-x-0 inset-y-0 z-40 mx-auto overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -247,7 +265,7 @@ function Backdrop({
               <PlaceGallery
                 photos={place.images}
                 name={place.name}
-                categorySlug={place.category.slug}
+                categoryIconKey={place.category.iconKey}
                 categoryColor={place.category.colorHex}
                 priority
                 className="absolute inset-0"
@@ -286,9 +304,12 @@ function Backdrop({
                       url={preview.coverImageUrl}
                       blurhash={preview.coverBlurhash}
                       name={preview.name}
-                      categorySlug={preview.category.slug}
+                      categoryIconKey={preview.category.iconKey}
                       categoryColor={preview.category.colorHex}
-                      sizes="100vw"
+                      // The column's cap, not the viewport — same reason as
+                      // `PlaceGallery`, and this layer crossfades into it, so
+                      // a different source width would be a visible swap.
+                      sizes="(max-width: 30rem) 100vw, 480px"
                       // Matches what `PlaceGallery` draws for a place with no
                       // photograph. The crossfade only disappears if the two
                       // frames are identical, and the glyph is part of the
@@ -346,7 +367,7 @@ function PlaceSheetSkeleton({ preview }: { preview: PlacePreview | null }) {
       {preview ? (
         <>
           <span
-            className="mb-1.5 inline-flex rounded-full px-2.5 py-1 text-2xs font-semibold text-white"
+            className="text-2xs mb-1.5 inline-flex rounded-full px-2.5 py-1 font-semibold text-white"
             style={{ backgroundColor: categorySolid(preview.category.colorHex) }}
           >
             {categoryName(preview.category, locale)}

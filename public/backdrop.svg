@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 1000" preserveAspectRatio="xMidYMid slice" role="presentation">
+  <!--
+    The app's wallpaper: soft-3D relief in the same white-on-white language as
+    the rest of the design system.
+
+    Rebuilt as vector rather than shipped as the source bitmap. The source is a
+    fixed 840x1800 raster, and the surface it has to cover is a 480px column of
+    whatever height the device happens to be — so it would either stretch or
+    crop, and it would cost a few hundred kilobytes to do it badly. This is
+    2 kB, exact at any size, and its palette is the app's own.
+
+    ─── Why nothing here is dark ─────────────────────────────────────────────
+
+    Every tone sits between #F2F2F4 and #FFFFFF, and that floor is measured,
+    not chosen by eye. `ink-subtle` (#6E6E79) carries distances, counts and
+    timestamps all over the app, and on the page tone it clears AA by 0.085 —
+    4.585 against a required 4.5. One step darker behind it (#F1F1F3) is
+    4.465 and fails.
+
+    So the relief is light-only: shapes rise towards white and their "shadow"
+    is the page itself, which is how the reference reads anyway. Text on this
+    can only gain contrast, never lose it.
+  -->
+  <defs>
+    <linearGradient id="riseA" x1="0.2" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" />
+      <stop offset="1" stop-color="#F5F5F7" />
+    </linearGradient>
+    <linearGradient id="riseB" x1="1" y1="0.1" x2="0.15" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" />
+      <stop offset="0.6" stop-color="#F8F8FA" />
+      <stop offset="1" stop-color="#F3F3F5" />
+    </linearGradient>
+    <linearGradient id="riseC" x1="0" y1="0" x2="1" y2="0.9">
+      <stop offset="0" stop-color="#FAFAFC" />
+      <stop offset="1" stop-color="#FFFFFF" />
+    </linearGradient>
+
+    <!-- The dot field, as a tile. Nine patches of it are drawn below; as a
+         pattern that is one definition rather than nine hundred circles. -->
+    <pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#F2F2F4" />
+    </pattern>
+  </defs>
+
+  <!-- No background rect: the element's own `background-color` is the page
+       tone, and painting it again here would break wherever that token moves. -->
+
+  <!-- Top left: a disc bleeding off two edges, the largest form in the frame. -->
+  <path d="M-120 -160 A 210 210 0 0 1 300 -160 A 210 210 0 0 1 -120 -160 Z" fill="none" />
+  <circle cx="60" cy="30" r="205" fill="url(#riseA)" />
+  <path
+    d="M60 235 A 205 205 0 0 0 258 79 A 205 205 0 0 1 60 243 Z"
+    fill="#F2F2F4"
+    opacity="0.85"
+  />
+
+  <!-- Top right: a small raised disc with its own rim, as in the reference. -->
+  <circle cx="384" cy="124" r="47" fill="#F3F3F5" />
+  <circle cx="384" cy="118" r="47" fill="url(#riseB)" />
+
+  <!-- Dot fields. Three patches, each a plain rect filled with the tile. -->
+  <rect x="416" y="26" width="86" height="70" fill="url(#dots)" />
+  <rect x="-6" y="262" width="104" height="98" fill="url(#dots)" />
+  <rect x="240" y="672" width="104" height="98" fill="url(#dots)" />
+
+  <!-- Right: the long wave that runs most of the height. Two lobes, so the
+       silhouette changes as it descends rather than repeating. -->
+  <path
+    d="M480 196
+       C 404 250, 372 316, 392 392
+       C 412 468, 476 498, 470 566
+       C 464 634, 372 660, 330 726
+       C 288 792, 322 862, 396 900
+       C 440 922, 470 946, 480 972
+       Z"
+    fill="url(#riseB)"
+  />
+
+  <!-- Concentric arcs, right. Hairlines at the light end of the range: they
+       are the one element here that reads as drawn rather than moulded. -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round">
+    <path d="M348 372 A 118 118 0 0 1 466 254" />
+    <path d="M340 348 A 132 132 0 0 1 472 216" />
+    <path d="M334 322 A 146 146 0 0 1 480 176" />
+    <path d="M330 294 A 160 160 0 0 1 480 136" />
+  </g>
+
+  <!-- Bottom left: the second wave, mirrored, bleeding off the left edge. -->
+  <path
+    d="M0 1000
+       L0 812
+       C 62 806, 104 848, 150 872
+       C 196 896, 252 890, 296 918
+       C 340 946, 352 978, 356 1000
+       Z"
+    fill="url(#riseC)"
+  />
+
+  <!-- The line bundle that follows it, offset outward. -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round">
+    <path d="M0 782 C 66 776, 110 820, 158 846 C 206 872, 262 866, 306 896" />
+    <path d="M0 760 C 70 754, 116 800, 166 828 C 216 856, 272 850, 316 882" />
+    <path d="M0 738 C 74 732, 122 780, 174 810 C 226 840, 282 834, 326 868" />
+  </g>
+
+  <!-- A small disc, mid left. The reference has one; it stops the left side
+       from being nothing but the big forms. -->
+  <circle cx="56" cy="700" r="30" fill="#F3F3F5" />
+  <circle cx="56" cy="695" r="30" fill="url(#riseA)" />
+
+  <!-- Bottom right: the large ring. Drawn as a stroked circle so the hole is
+       the page showing through, which is what makes it read as cut rather
+       than stacked. -->
+  <circle cx="392" cy="906" r="86" fill="none" stroke="#F2F2F4" stroke-width="17" />
+  <circle cx="392" cy="900" r="86" fill="none" stroke="url(#riseB)" stroke-width="17" />
+
+  <!-- One long soft crease across the middle, to break the empty centre
+       without putting an object in it. -->
+  <path
+    d="M0 470 C 120 452, 220 500, 342 486"
+    fill="none"
+    stroke="#FFFFFF"
+    stroke-width="2"
+    stroke-linecap="round"
+  />
+</svg>

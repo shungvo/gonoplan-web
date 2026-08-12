@@ -718,8 +718,11 @@ export interface paths {
                                 slug: string;
                                 name: string;
                                 nameVi: string;
-                                /** @description Sprite key for the marker and chip icon */
-                                iconKey: string;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string}
+                                 */
+                                iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                 colorHex: string;
                                 /** @description Approved, non-deleted places in this category */
                                 placeCount: number;
@@ -729,8 +732,11 @@ export interface paths {
                                     slug: string;
                                     name: string;
                                     nameVi: string;
-                                    /** @description Sprite key for the marker and chip icon */
-                                    iconKey: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     colorHex: string;
                                     /** @description Approved, non-deleted places in this category */
                                     placeCount: number;
@@ -816,6 +822,11 @@ export interface paths {
                                     slug: string;
                                     name: string;
                                     nameVi: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     colorHex: string;
                                 };
                                 latitude: number;
@@ -1017,6 +1028,11 @@ export interface paths {
                                     slug: string;
                                     name: string;
                                     nameVi: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     colorHex: string;
                                 };
                                 latitude: number;
@@ -1180,6 +1196,11 @@ export interface paths {
                                     slug: string;
                                     name: string;
                                     nameVi: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     colorHex: string;
                                 };
                                 latitude: number;
@@ -1326,6 +1347,11 @@ export interface paths {
                                     slug: string;
                                     name: string;
                                     nameVi: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     colorHex: string;
                                 };
                                 latitude: number;
@@ -2457,6 +2483,11 @@ export interface paths {
                                     slug: string;
                                     name: string;
                                     nameVi: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     colorHex: string;
                                 };
                                 latitude: number;
@@ -2546,6 +2577,11 @@ export interface paths {
                                 coverImageUrl: string | null;
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string|null}
+                                 */
+                                coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
                                 coverCategoryColor: string | null;
                                 stopPreviews: {
                                     /** Format: uuid */
@@ -2554,6 +2590,11 @@ export interface paths {
                                     coverImageUrl: string | null;
                                     coverBlurhash: string | null;
                                     categorySlug: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     categoryColor: string;
                                 }[];
                                 startsAtMin: number | null;
@@ -2626,6 +2667,11 @@ export interface paths {
                                 coverImageUrl: string | null;
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string|null}
+                                 */
+                                coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
                                 coverCategoryColor: string | null;
                                 stopPreviews: {
                                     /** Format: uuid */
@@ -2634,6 +2680,11 @@ export interface paths {
                                     coverImageUrl: string | null;
                                     coverBlurhash: string | null;
                                     categorySlug: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     categoryColor: string;
                                 }[];
                                 startsAtMin: number | null;
@@ -2659,6 +2710,11 @@ export interface paths {
                                             slug: string;
                                             name: string;
                                             nameVi: string;
+                                            /**
+                                             * @description Sprite key for the marker and chip icon
+                                             * @enum {string}
+                                             */
+                                            iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                             colorHex: string;
                                         };
                                         latitude: number;
@@ -2765,6 +2821,11 @@ export interface paths {
                                 coverImageUrl: string | null;
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string|null}
+                                 */
+                                coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
                                 coverCategoryColor: string | null;
                                 stopPreviews: {
                                     /** Format: uuid */
@@ -2773,6 +2834,11 @@ export interface paths {
                                     coverImageUrl: string | null;
                                     coverBlurhash: string | null;
                                     categorySlug: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     categoryColor: string;
                                 }[];
                                 startsAtMin: number | null;
@@ -2798,6 +2864,11 @@ export interface paths {
                                             slug: string;
                                             name: string;
                                             nameVi: string;
+                                            /**
+                                             * @description Sprite key for the marker and chip icon
+                                             * @enum {string}
+                                             */
+                                            iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                             colorHex: string;
                                         };
                                         latitude: number;
@@ -2951,6 +3022,11 @@ export interface paths {
                                 coverImageUrl: string | null;
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string|null}
+                                 */
+                                coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
                                 coverCategoryColor: string | null;
                                 stopPreviews: {
                                     /** Format: uuid */
@@ -2959,6 +3035,11 @@ export interface paths {
                                     coverImageUrl: string | null;
                                     coverBlurhash: string | null;
                                     categorySlug: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     categoryColor: string;
                                 }[];
                                 startsAtMin: number | null;
@@ -2984,6 +3065,11 @@ export interface paths {
                                             slug: string;
                                             name: string;
                                             nameVi: string;
+                                            /**
+                                             * @description Sprite key for the marker and chip icon
+                                             * @enum {string}
+                                             */
+                                            iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                             colorHex: string;
                                         };
                                         latitude: number;
@@ -3098,6 +3184,11 @@ export interface paths {
                                 coverImageUrl: string | null;
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string|null}
+                                 */
+                                coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
                                 coverCategoryColor: string | null;
                                 stopPreviews: {
                                     /** Format: uuid */
@@ -3106,6 +3197,11 @@ export interface paths {
                                     coverImageUrl: string | null;
                                     coverBlurhash: string | null;
                                     categorySlug: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     categoryColor: string;
                                 }[];
                                 startsAtMin: number | null;
@@ -3131,6 +3227,11 @@ export interface paths {
                                             slug: string;
                                             name: string;
                                             nameVi: string;
+                                            /**
+                                             * @description Sprite key for the marker and chip icon
+                                             * @enum {string}
+                                             */
+                                            iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                             colorHex: string;
                                         };
                                         latitude: number;
@@ -3253,6 +3354,11 @@ export interface paths {
                                 coverImageUrl: string | null;
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string|null}
+                                 */
+                                coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
                                 coverCategoryColor: string | null;
                                 stopPreviews: {
                                     /** Format: uuid */
@@ -3261,6 +3367,11 @@ export interface paths {
                                     coverImageUrl: string | null;
                                     coverBlurhash: string | null;
                                     categorySlug: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     categoryColor: string;
                                 }[];
                                 startsAtMin: number | null;
@@ -3286,6 +3397,11 @@ export interface paths {
                                             slug: string;
                                             name: string;
                                             nameVi: string;
+                                            /**
+                                             * @description Sprite key for the marker and chip icon
+                                             * @enum {string}
+                                             */
+                                            iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                             colorHex: string;
                                         };
                                         latitude: number;
@@ -3404,6 +3520,11 @@ export interface paths {
                                 coverImageUrl: string | null;
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string|null}
+                                 */
+                                coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
                                 coverCategoryColor: string | null;
                                 stopPreviews: {
                                     /** Format: uuid */
@@ -3412,6 +3533,11 @@ export interface paths {
                                     coverImageUrl: string | null;
                                     coverBlurhash: string | null;
                                     categorySlug: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     categoryColor: string;
                                 }[];
                                 startsAtMin: number | null;
@@ -3437,6 +3563,11 @@ export interface paths {
                                             slug: string;
                                             name: string;
                                             nameVi: string;
+                                            /**
+                                             * @description Sprite key for the marker and chip icon
+                                             * @enum {string}
+                                             */
+                                            iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                             colorHex: string;
                                         };
                                         latitude: number;
@@ -3530,6 +3661,11 @@ export interface paths {
                                 coverImageUrl: string | null;
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string|null}
+                                 */
+                                coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
                                 coverCategoryColor: string | null;
                                 stopPreviews: {
                                     /** Format: uuid */
@@ -3538,6 +3674,11 @@ export interface paths {
                                     coverImageUrl: string | null;
                                     coverBlurhash: string | null;
                                     categorySlug: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                     categoryColor: string;
                                 }[];
                                 startsAtMin: number | null;
@@ -3563,6 +3704,11 @@ export interface paths {
                                             slug: string;
                                             name: string;
                                             nameVi: string;
+                                            /**
+                                             * @description Sprite key for the marker and chip icon
+                                             * @enum {string}
+                                             */
+                                            iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                             colorHex: string;
                                         };
                                         latitude: number;
@@ -3619,6 +3765,302 @@ export interface paths {
         };
         trace?: never;
     };
+    "/checkins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Somebody's photographs, or a place's
+         * @description Newest first, keyset-paged on `cursor`. One of `userId` or `placeId` is required: an unfiltered list would be a global feed of every photograph on the platform, which is a product decision and a moderation surface, not something that should fall out of leaving a parameter off.
+         *
+         *     Open to read, but authenticated optionally — `canDelete` has to know who is asking, which is also why the response is `private` rather than shared-cacheable.
+         *
+         *     A check-in is not a review. It carries no rating, it does not move the place's average, and there is no one-per-person rule — five evenings at the same bar are five posts. A review is a judgement other people read to decide; this is a photograph of somewhere real on a day that happened.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    userId?: string;
+                    placeId?: string;
+                    cursor?: string;
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description A page of check-ins */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                items: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    caption: string | null;
+                                    visitedAt: string;
+                                    createdAt: string;
+                                    images: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        /** Format: uri */
+                                        url: string;
+                                        width: number;
+                                        height: number;
+                                        blurhash: string | null;
+                                    }[];
+                                    place: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        district: string | null;
+                                        province: string;
+                                        categoryName: string;
+                                        categoryNameVi: string;
+                                        /**
+                                         * @description Sprite key for the marker and chip icon
+                                         * @enum {string}
+                                         */
+                                        categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
+                                        categoryColor: string;
+                                    };
+                                    author: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        name: string;
+                                        avatarUrl: string | null;
+                                    };
+                                    canDelete: boolean;
+                                }[];
+                                cursor: string | null;
+                                hasMore: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Post a photograph from a place
+         * @description `imageKeys` are storage keys from `/uploads/signature`, and each one is verified through `/uploads/confirm` inside the same transaction that writes the post — a key that fails verification takes the whole check-in with it rather than leaving a post with two of its three pictures.
+         *
+         *     Between one and six images, and at least one: a check-in with no picture is a review with no rating, and the screen it feeds is a grid of pictures.
+         *
+         *     `visitedAt` is the day it happened, not the day it was posted — a photo put up on Sunday from Friday night is still Friday night. It defaults to today.
+         *
+         *     The place must be approved and not deleted. Without that check a post could point at a rejected submission and render as a row nobody else can open.
+         *
+         *     A check-in is not a review. It carries no rating, it does not move the place's average, and there is no one-per-person rule — five evenings at the same bar are five posts. A review is a judgement other people read to decide; this is a photograph of somewhere real on a day that happened.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        placeId: string;
+                        caption?: string;
+                        /** Format: date */
+                        visitedAt?: string;
+                        imageKeys: string[];
+                    };
+                };
+            };
+            responses: {
+                /** @description The new check-in */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                caption: string | null;
+                                visitedAt: string;
+                                createdAt: string;
+                                images: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: uri */
+                                    url: string;
+                                    width: number;
+                                    height: number;
+                                    blurhash: string | null;
+                                }[];
+                                place: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    slug: string;
+                                    name: string;
+                                    district: string | null;
+                                    province: string;
+                                    categoryName: string;
+                                    categoryNameVi: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
+                                    categoryColor: string;
+                                };
+                                author: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    avatarUrl: string | null;
+                                };
+                                canDelete: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/checkins/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete your own check-in
+         * @description Author only, and a hard delete — a check-in contributes to no average and belongs to one person, so "delete" means the photograph is gone rather than hidden. The stored objects are left to the bucket lifecycle rule, the same treatment an abandoned upload gets.
+         *
+         *     Somebody else's check-in answers 404, not 403. Distinguishing the two would turn this endpoint into a way to ask whether a given id exists.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Deleted */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                id: string;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/{id}": {
         parameters: {
             query?: never;
@@ -3665,6 +4107,8 @@ export interface paths {
                                 counts: {
                                     reviews: number;
                                     places: number;
+                                    checkIns: number;
+                                    placesVisited: number;
                                 };
                                 recentReviews: {
                                     /** Format: uuid */
@@ -3699,6 +4143,11 @@ export interface paths {
                                         slug: string;
                                         name: string;
                                         nameVi: string;
+                                        /**
+                                         * @description Sprite key for the marker and chip icon
+                                         * @enum {string}
+                                         */
+                                        iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                         colorHex: string;
                                     };
                                 }[];
@@ -5647,6 +6096,11 @@ export interface paths {
                                         slug: string;
                                         name: string;
                                         nameVi: string;
+                                        /**
+                                         * @description Sprite key for the marker and chip icon
+                                         * @enum {string}
+                                         */
+                                        iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                         colorHex: string;
                                     };
                                     latitude: number;
@@ -5795,6 +6249,11 @@ export interface paths {
                                         slug: string;
                                         name: string;
                                         nameVi: string;
+                                        /**
+                                         * @description Sprite key for the marker and chip icon
+                                         * @enum {string}
+                                         */
+                                        iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                         colorHex: string;
                                     };
                                     latitude: number;
@@ -5990,7 +6449,7 @@ export interface paths {
                 content: {
                     "application/json": {
                         /** @enum {string} */
-                        purpose: "place" | "avatar";
+                        purpose: "place" | "avatar" | "checkin";
                         /** @enum {string} */
                         contentType: "image/jpeg" | "image/png" | "image/webp";
                         sizeBytes: number;
@@ -8518,8 +8977,11 @@ export interface paths {
                                 slug: string;
                                 name: string;
                                 nameVi: string;
-                                /** @description Sprite key for the marker and chip icon */
-                                iconKey: string;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string}
+                                 */
+                                iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                 colorHex: string;
                                 /** @description Approved, non-deleted places in this category */
                                 placeCount: number;
@@ -8579,7 +9041,11 @@ export interface paths {
                         slug: string;
                         name: string;
                         nameVi: string;
-                        iconKey: string;
+                        /**
+                         * @description Sprite key for the marker and chip icon
+                         * @enum {string}
+                         */
+                        iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                         colorHex: string;
                         /** Format: uuid */
                         parentId?: string;
@@ -8604,8 +9070,11 @@ export interface paths {
                                 slug?: string;
                                 name?: string;
                                 nameVi?: string;
-                                /** @description Sprite key for the marker and chip icon */
-                                iconKey?: string;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string}
+                                 */
+                                iconKey?: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                 colorHex?: string;
                                 /** @description Approved, non-deleted places in this category */
                                 placeCount?: number;
@@ -8780,7 +9249,11 @@ export interface paths {
                     "application/json": {
                         name?: string;
                         nameVi?: string;
-                        iconKey?: string;
+                        /**
+                         * @description Sprite key for the marker and chip icon
+                         * @enum {string}
+                         */
+                        iconKey?: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                         colorHex?: string;
                         /** Format: uuid */
                         parentId?: string;
@@ -8806,8 +9279,11 @@ export interface paths {
                                 slug?: string;
                                 name?: string;
                                 nameVi?: string;
-                                /** @description Sprite key for the marker and chip icon */
-                                iconKey?: string;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string}
+                                 */
+                                iconKey?: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                                 colorHex?: string;
                                 /** @description Approved, non-deleted places in this category */
                                 placeCount?: number;
@@ -9127,8 +9603,11 @@ export interface components {
             slug: string;
             name: string;
             nameVi: string;
-            /** @description Sprite key for the marker and chip icon */
-            iconKey: string;
+            /**
+             * @description Sprite key for the marker and chip icon
+             * @enum {string}
+             */
+            iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
             colorHex: string;
             /** @description Approved, non-deleted places in this category */
             placeCount: number;
@@ -9139,8 +9618,11 @@ export interface components {
             slug: string;
             name: string;
             nameVi: string;
-            /** @description Sprite key for the marker and chip icon */
-            iconKey: string;
+            /**
+             * @description Sprite key for the marker and chip icon
+             * @enum {string}
+             */
+            iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
             colorHex: string;
             /** @description Approved, non-deleted places in this category */
             placeCount: number;
@@ -9150,8 +9632,11 @@ export interface components {
                 slug: string;
                 name: string;
                 nameVi: string;
-                /** @description Sprite key for the marker and chip icon */
-                iconKey: string;
+                /**
+                 * @description Sprite key for the marker and chip icon
+                 * @enum {string}
+                 */
+                iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                 colorHex: string;
                 /** @description Approved, non-deleted places in this category */
                 placeCount: number;
@@ -9170,6 +9655,11 @@ export interface components {
                 slug: string;
                 name: string;
                 nameVi: string;
+                /**
+                 * @description Sprite key for the marker and chip icon
+                 * @enum {string}
+                 */
+                iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                 colorHex: string;
             };
             latitude: number;
@@ -9202,6 +9692,11 @@ export interface components {
                 slug: string;
                 name: string;
                 nameVi: string;
+                /**
+                 * @description Sprite key for the marker and chip icon
+                 * @enum {string}
+                 */
+                iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                 colorHex: string;
             };
             latitude: number;
@@ -9330,6 +9825,11 @@ export interface components {
             coverImageUrl: string | null;
             coverBlurhash: string | null;
             coverCategorySlug: string | null;
+            /**
+             * @description Sprite key for the marker and chip icon
+             * @enum {string|null}
+             */
+            coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
             coverCategoryColor: string | null;
             stopPreviews: {
                 /** Format: uuid */
@@ -9338,6 +9838,11 @@ export interface components {
                 coverImageUrl: string | null;
                 coverBlurhash: string | null;
                 categorySlug: string;
+                /**
+                 * @description Sprite key for the marker and chip icon
+                 * @enum {string}
+                 */
+                categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                 categoryColor: string;
             }[];
             startsAtMin: number | null;
@@ -9356,6 +9861,11 @@ export interface components {
             coverImageUrl: string | null;
             coverBlurhash: string | null;
             coverCategorySlug: string | null;
+            /**
+             * @description Sprite key for the marker and chip icon
+             * @enum {string|null}
+             */
+            coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
             coverCategoryColor: string | null;
             stopPreviews: {
                 /** Format: uuid */
@@ -9364,6 +9874,11 @@ export interface components {
                 coverImageUrl: string | null;
                 coverBlurhash: string | null;
                 categorySlug: string;
+                /**
+                 * @description Sprite key for the marker and chip icon
+                 * @enum {string}
+                 */
+                categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                 categoryColor: string;
             }[];
             startsAtMin: number | null;
@@ -9389,6 +9904,11 @@ export interface components {
                         slug: string;
                         name: string;
                         nameVi: string;
+                        /**
+                         * @description Sprite key for the marker and chip icon
+                         * @enum {string}
+                         */
+                        iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                         colorHex: string;
                     };
                     latitude: number;
@@ -9425,6 +9945,11 @@ export interface components {
                     slug: string;
                     name: string;
                     nameVi: string;
+                    /**
+                     * @description Sprite key for the marker and chip icon
+                     * @enum {string}
+                     */
+                    iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                     colorHex: string;
                 };
                 latitude: number;
@@ -9441,6 +9966,97 @@ export interface components {
                 isUnavailable: boolean;
             };
         };
+        CheckIn: {
+            /** Format: uuid */
+            id: string;
+            caption: string | null;
+            visitedAt: string;
+            createdAt: string;
+            images: {
+                /** Format: uuid */
+                id: string;
+                /** Format: uri */
+                url: string;
+                width: number;
+                height: number;
+                blurhash: string | null;
+            }[];
+            place: {
+                /** Format: uuid */
+                id: string;
+                slug: string;
+                name: string;
+                district: string | null;
+                province: string;
+                categoryName: string;
+                categoryNameVi: string;
+                /**
+                 * @description Sprite key for the marker and chip icon
+                 * @enum {string}
+                 */
+                categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
+                categoryColor: string;
+            };
+            author: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                avatarUrl: string | null;
+            };
+            canDelete: boolean;
+        };
+        CheckInImage: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uri */
+            url: string;
+            width: number;
+            height: number;
+            blurhash: string | null;
+        };
+        CheckInPage: {
+            items: {
+                /** Format: uuid */
+                id: string;
+                caption: string | null;
+                visitedAt: string;
+                createdAt: string;
+                images: {
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uri */
+                    url: string;
+                    width: number;
+                    height: number;
+                    blurhash: string | null;
+                }[];
+                place: {
+                    /** Format: uuid */
+                    id: string;
+                    slug: string;
+                    name: string;
+                    district: string | null;
+                    province: string;
+                    categoryName: string;
+                    categoryNameVi: string;
+                    /**
+                     * @description Sprite key for the marker and chip icon
+                     * @enum {string}
+                     */
+                    categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
+                    categoryColor: string;
+                };
+                author: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    avatarUrl: string | null;
+                };
+                canDelete: boolean;
+            }[];
+            cursor: string | null;
+            hasMore: boolean;
+        };
         PublicUser: {
             /** Format: uuid */
             id: string;
@@ -9452,6 +10068,8 @@ export interface components {
             counts: {
                 reviews: number;
                 places: number;
+                checkIns: number;
+                placesVisited: number;
             };
             recentReviews: {
                 /** Format: uuid */
@@ -9486,6 +10104,11 @@ export interface components {
                     slug: string;
                     name: string;
                     nameVi: string;
+                    /**
+                     * @description Sprite key for the marker and chip icon
+                     * @enum {string}
+                     */
+                    iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                     colorHex: string;
                 };
             }[];
@@ -9670,6 +10293,11 @@ export interface components {
                 slug: string;
                 name: string;
                 nameVi: string;
+                /**
+                 * @description Sprite key for the marker and chip icon
+                 * @enum {string}
+                 */
+                iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                 colorHex: string;
             };
             latitude: number;
@@ -9712,6 +10340,11 @@ export interface components {
                     slug: string;
                     name: string;
                     nameVi: string;
+                    /**
+                     * @description Sprite key for the marker and chip icon
+                     * @enum {string}
+                     */
+                    iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                     colorHex: string;
                 };
                 latitude: number;
@@ -9760,6 +10393,11 @@ export interface components {
                     slug: string;
                     name: string;
                     nameVi: string;
+                    /**
+                     * @description Sprite key for the marker and chip icon
+                     * @enum {string}
+                     */
+                    iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
                     colorHex: string;
                 };
                 latitude: number;
@@ -10138,8 +10776,11 @@ export interface components {
             slug: string;
             name: string;
             nameVi: string;
-            /** @description Sprite key for the marker and chip icon */
-            iconKey: string;
+            /**
+             * @description Sprite key for the marker and chip icon
+             * @enum {string}
+             */
+            iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
             colorHex: string;
             /** @description Approved, non-deleted places in this category */
             placeCount: number;

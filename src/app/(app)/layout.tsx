@@ -17,7 +17,7 @@ import { OnboardingGate } from '@/features/onboarding/components/OnboardingGate'
 export default function AppLayout({ children }: LayoutProps<'/'>) {
   return (
     <div className="bg-surface-sunken flex h-dvh justify-center">
-      <div className="border-border bg-background relative flex h-dvh w-full max-w-app flex-col overflow-hidden sm:border-x">
+      <div className="border-border bg-app-backdrop relative flex h-dvh w-full max-w-app flex-col overflow-hidden sm:border-x">
         <main className="flex-1 overflow-y-auto overscroll-contain pb-nav">{children}</main>
         <BottomNav />
         {/* Over the shell rather than in front of a route, so a first-run

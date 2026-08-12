@@ -14,6 +14,7 @@ import { Card, PageHeader, RowSkeleton, Stat, TimeAgo } from './primitives';
 import { BarRow, Legend, SplitBar, StackedDayBars } from './charts';
 import { TrendChart } from './TrendChart';
 import { fetchAnalytics, fetchOverview, fetchSearchInsights } from '../api';
+import { placeHref } from '@/lib/navigation/links';
 
 const WINDOWS = [7, 30, 90] as const;
 
@@ -261,7 +262,7 @@ export function OverviewScreen() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <Link
-                    href={`/place/${place.slug}`}
+                    href={placeHref(place.slug)}
                     className="text-ink hover:text-primary block truncate text-sm font-medium"
                   >
                     {place.name}

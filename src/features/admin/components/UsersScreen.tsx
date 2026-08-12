@@ -21,6 +21,8 @@ import {
   TimeAgo,
 } from './primitives';
 import { ReasonDialog } from './ReasonDialog';
+import { Avatar } from '@/components/ui/Avatar';
+import { userHref } from '@/lib/navigation/links';
 import {
   banUser,
   clearUserBio,
@@ -196,9 +198,7 @@ export function UsersScreen() {
               */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
-                  <span className="bg-primary-tint text-primary flex size-10 shrink-0 items-center justify-center rounded-full font-semibold">
-                    {user.name.trim().charAt(0).toUpperCase()}
-                  </span>
+                  <Avatar name={user.name} url={user.avatarUrl} size="md" />
                   <div className="min-w-0">
                     <p className="text-ink flex items-center gap-1.5 font-semibold">
                       <span className="truncate">{user.name}</span>
@@ -226,7 +226,7 @@ export function UsersScreen() {
                         pushed Delete onto a line of its own. */}
                     {user.status === 'ACTIVE' && (
                       <Link
-                        href={`/u/${user.id}`}
+                        href={userHref(user.id)}
                         target="_blank"
                         className="text-primary mt-1 inline-flex items-center gap-1 text-xs font-medium"
                       >

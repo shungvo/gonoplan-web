@@ -1,12 +1,13 @@
 import Image from 'next/image';
 import { CategoryGlyph } from '@/features/categories/CategoryGlyph';
+import type { CategoryIconKey } from '@/features/categories/api';
 import { cn } from '@/lib/utils/cn';
 
 export interface PlaceImageProps {
   url: string | null;
   blurhash?: string | null;
   name: string;
-  categorySlug: string;
+  categoryIconKey: CategoryIconKey;
   categoryColor: string;
   sizes: string;
   className?: string | undefined;
@@ -32,7 +33,7 @@ const GLYPH_SIZE = { sm: 'size-6', md: 'size-9', lg: 'size-14' } as const;
 export function PlaceImage({
   url,
   name,
-  categorySlug,
+  categoryIconKey,
   categoryColor,
   sizes,
   className,
@@ -62,7 +63,7 @@ export function PlaceImage({
       }}
     >
       <CategoryGlyph
-        slug={categorySlug}
+        iconKey={categoryIconKey}
         color={categoryColor}
         className={cn(GLYPH_SIZE[fallbackSize], 'opacity-45')}
       />

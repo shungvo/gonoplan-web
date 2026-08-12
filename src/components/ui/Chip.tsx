@@ -33,7 +33,7 @@ export function Chip({ children, selected = false, onClick, colorHex, className 
         'inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full px-4',
         'text-sm font-medium whitespace-nowrap',
         'press-soft',
-        selected && !colorHex && 'bg-primary text-white shadow-primary',
+        selected && !colorHex && 'bg-primary text-white',
         // Outlined rather than shadowed when unselected. A row of shadowed
         // pills over a tinted background reads as a row of raised buttons
         // competing with the CTA; a hairline border keeps them as filters.

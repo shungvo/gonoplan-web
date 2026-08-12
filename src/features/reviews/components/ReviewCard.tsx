@@ -12,6 +12,8 @@ import { formatNumber, formatRelativeTime } from '@/i18n/format';
 import { useNow } from '@/lib/utils/useNow';
 import { cn } from '@/lib/utils/cn';
 import type { Review } from '../api';
+import { Avatar } from '@/components/ui/Avatar';
+import { userHref } from '@/lib/navigation/links';
 
 export function ReviewCard({
   review,
@@ -33,9 +35,9 @@ export function ReviewCard({
   return (
     <article className="bg-surface rounded-lg p-4 shadow-sm">
       <div className="flex items-start gap-3">
-        <span className="bg-primary-tint text-primary flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
-          {review.author.name.trim().charAt(0).toUpperCase()}
-        </span>
+        {/* The DTO has carried `author.avatarUrl` since reviews existed; it
+            was the one field nothing drew. */}
+        <Avatar name={review.author.name} url={review.author.avatarUrl} size="sm" />
 
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-2">
@@ -43,13 +45,13 @@ export function ReviewCard({
                 profiles existed, which meant a review told you who wrote it
                 and gave you no way to see anything else they had written. */}
             <Link
-              href={`/u/${review.author.id}`}
+              href={userHref(review.author.id)}
               className="text-ink hover:text-primary truncate text-sm font-semibold"
             >
               {review.author.name}
             </Link>
             {review.isMine && (
-              <span className="bg-primary-tint text-primary shrink-0 rounded-full px-2 py-0.5 text-3xs font-semibold">
+              <span className="bg-primary-tint text-primary text-3xs shrink-0 rounded-full px-2 py-0.5 font-semibold">
                 {t('reviews.you')}
               </span>
             )}

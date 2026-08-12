@@ -18,11 +18,30 @@ import { createTranslator, type TranslateFn } from './translate';
  * per-location, and place detail already fetches in `generateMetadata`.
  */
 export async function getLocale(): Promise<Locale> {
-  const chosen = (await cookies()).get(LOCALE_COOKIE)?.value;
-  if (isLocale(chosen)) return chosen;
+  /*
+   * There is no request to read in a static export.
+   *
+   * The iOS bundle is prerendered at build time, where `cookies()` and
+   * `headers()` throw rather than return nothing — the build fails with
+   * "couldn't be rendered statically because it used cookies()". Falling back
+   * to the default locale is not a downgrade there: the only thing this
+   * decides is the `<title>` in prerendered HTML, and the app's own
+   * `I18nProvider` picks the real locale on the client the moment it mounts.
+   *
+   * Deliberately caught rather than branched on an env flag. The web build
+   * still reaches the lines below on every request, so the two builds share
+   * one code path and the fallback is only taken when there is genuinely
+   * nothing to read.
+   */
+  try {
+    const chosen = (await cookies()).get(LOCALE_COOKIE)?.value;
+    if (isLocale(chosen)) return chosen;
 
-  const accept = (await headers()).get('accept-language');
-  return negotiateLocale(accept);
+    const accept = (await headers()).get('accept-language');
+    return negotiateLocale(accept);
+  } catch {
+    return DEFAULT_LOCALE;
+  }
 }
 
 /** `t` for Server Components, matching `useT()` on the client. */

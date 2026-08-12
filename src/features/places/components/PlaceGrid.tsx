@@ -67,7 +67,7 @@ export function PlaceGrid({
                 url={place.coverImageUrl}
                 blurhash={place.coverBlurhash}
                 name={place.name}
-                categorySlug={place.category.slug}
+                categoryIconKey={place.category.iconKey}
                 categoryColor={place.category.colorHex}
                 sizes="(max-width: 640px) 45vw, 220px"
                 fallbackSize="md"

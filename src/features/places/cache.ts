@@ -1,5 +1,7 @@
 import type { QueryClient, QueryKey } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/query/keys';
+import { toCategoryIconKey } from '@/features/categories/icons';
+import type { CategoryIconKey } from '@/features/categories/api';
 
 /**
  * Everywhere a place is already sitting by the time somebody taps it.
@@ -27,7 +29,19 @@ export interface PlacePreview {
   name: string;
   coverImageUrl: string | null;
   coverBlurhash: string | null;
-  category: { slug: string; colorHex: string; name: string; nameVi?: string | undefined };
+  category: {
+    slug: string;
+    colorHex: string;
+    name: string;
+    nameVi?: string | undefined;
+    /**
+     * Narrowed rather than required. A response cached before `iconKey`
+     * existed still makes a usable preview — the glyph falls back to a dot,
+     * which is what an unknown key draws everywhere else — and rejecting the
+     * whole entry over it would put the sheet back on a grey rectangle.
+     */
+    iconKey: CategoryIconKey;
+  };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -53,6 +67,7 @@ function asPreview(value: Record<string, unknown>): PlacePreview | null {
       colorHex: category['colorHex'],
       name: category['name'],
       nameVi: typeof nameVi === 'string' ? nameVi : undefined,
+      iconKey: toCategoryIconKey(category['iconKey']),
     },
   };
 }

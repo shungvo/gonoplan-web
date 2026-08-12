@@ -7,7 +7,33 @@ import type { NextConfig } from 'next';
  */
 const API_INTERNAL_URL = process.env.API_INTERNAL_URL ?? 'http://localhost:4000';
 
+/**
+ * One build, static, for the browser and for iOS alike.
+ *
+ * It was going to be two — `output: 'export'` behind a flag so the web kept
+ * server rendering and its API proxy — and that was dropped once SSR turned
+ * out not to be wanted. Two build modes means two sets of behaviour to reason
+ * about and only one of them gets tested; a single static bundle is the same
+ * artefact everywhere, which is the whole reason Capacitor can wrap it.
+ *
+ * What goes with SSR: the `rewrites` proxy below stops applying to builds
+ * (`next dev` still honours it), so a built client talks to the API directly
+ * and needs `NEXT_PUBLIC_API_URL` set. That in turn is why the session can no
+ * longer ride an HttpOnly cookie — see `gonoplan-api/src/modules/auth/
+ * cookies.ts`, which explains why a cross-origin API forces `sameSite: 'none'`
+ * and Safari ITP blocks it.
+ */
 const nextConfig: NextConfig = {
+  output: 'export',
+  /*
+   * `route/index.html` rather than `route.html`.
+   *
+   * Capacitor serves the bundle off a local handler that resolves a path to a
+   * file literally — nothing turns `/explore` into `explore.html`. With
+   * trailing slashes every route is a directory with an `index.html` in it,
+   * which is the one shape every static host resolves the same way.
+   */
+  trailingSlash: true,
   reactStrictMode: true,
 
   /**
@@ -35,6 +61,14 @@ const nextConfig: NextConfig = {
   },
 
   images: {
+    /*
+     * The optimiser is a server route (`/_next/image`), and a static export
+     * has no server to run it. Unoptimised is not a downgrade here: every
+     * photo already comes from object storage at a size the client asked for
+     * through `sizes`, so what is lost is a resize the bucket was not doing
+     * anyway.
+     */
+    unoptimized: true,
     /*
      * Every origin a place photo may come from.
      *

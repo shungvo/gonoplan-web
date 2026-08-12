@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { CalendarDays, Clock, MapPin, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -30,9 +30,18 @@ import type { Plan } from '../api';
 export function PlansScreen() {
   const t = useT();
   const router = useRouter();
+  const params = useSearchParams();
   const isAuthenticated = useIsAuthenticated();
   const [composing, setComposing] = useState(false);
-  const [openPlanId, setOpenPlanId] = useState<string | null>(null);
+  /*
+   * Seeded from `?id=`, which is how a plan is linked to.
+   *
+   * The path route `/plan/[id]` still exists for the web, but the app links to
+   * the query form — a static export cannot emit a file per plan id. Read once
+   * on mount rather than synced: after that the sheet owns the state, and
+   * re-reading the URL would reopen a plan somebody has just closed.
+   */
+  const [openPlanId, setOpenPlanId] = useState<string | null>(() => params.get('id'));
   const [openPlaceId, setOpenPlaceId] = useState<string | null>(null);
 
   const plans = usePlans(isAuthenticated);
@@ -41,7 +50,7 @@ export function PlansScreen() {
   return (
     <div className="px-safe">
       <header className="pt-safe-float px-5">
-        <h1 className="text-ink pt-6 text-title leading-tight font-semibold tracking-tight">
+        <h1 className="text-ink text-title pt-6 leading-tight font-semibold tracking-tight">
           {t('plans.title')}
         </h1>
         <p className="text-ink-muted mt-1 text-sm">{t('plans.description')}</p>
@@ -64,11 +73,33 @@ export function PlansScreen() {
         the same component, because two decks that drift apart is two decks.
       */}
       {isAuthenticated && (saved.data?.data.length ?? 0) > 0 && (
-        <section className="mt-5" aria-label={t('plan.savedRail')}>
-          <h2 className="text-ink px-5 text-sm font-semibold">{t('plan.savedRail')}</h2>
+        /*
+          The shortlist, on a raised plate.
+
+          The two halves of this screen ran into each other with nothing but a
+          margin between them. Giving one of them a surface is what separates
+          them; which one gets it decides what the screen is about, and this is
+          the deck — the thing you are choosing from — so it is the deck that
+          is lifted and the plans that lie on the page.
+
+          `shadow-md` on a panel is a step above the ladder's own answer for
+          one, which is `shadow-sm`. Stated rather than hidden: at `sm` this
+          plate would sit *below* the `shadow-md` plan cards further down, and
+          a block that is supposed to lead the screen cannot be the lowest
+          thing on it. The cards inside keep their own `shadow-lg`, so the
+          reading is page → plate → deck, three planes against the plans' two.
+
+          `px-0` on the stack because the plate already carries the inset —
+          the component pads itself for a screen edge that is no longer there.
+        */
+        <section
+          className="bg-surface mx-5 mt-5 rounded-xl p-4 shadow-md"
+          aria-label={t('plan.savedRail')}
+        >
+          <h2 className="text-ink text-sm font-semibold">{t('plan.savedRail')}</h2>
 
           <PlaceCardStack
-            className="mt-3"
+            className="mt-3 px-0"
             places={saved.data?.data}
             onSelect={(place) => {
               setOpenPlaceId(place.id);
@@ -77,7 +108,23 @@ export function PlansScreen() {
         </section>
       )}
 
-      <div className="mt-5 px-5">
+      {/*
+        The plans, on the page.
+
+        No surface of their own, deliberately: the plate above is what makes
+        the two halves read as two, and giving both of them one would put the
+        boundary back where it was — between two blocks that look the same.
+        These are cards on the ground, under a raised shortlist.
+
+        The heading is new either way. The saved deck has been labelled since
+        it arrived and this list never was, so a named section flowed straight
+        into an unnamed one, which was half of what made them run together.
+      */}
+      <section className="mt-6 px-5">
+        {isAuthenticated && (
+          <h2 className="text-ink mb-3 text-sm font-semibold">{t('plans.yours')}</h2>
+        )}
+
         {!isAuthenticated && (
           <EmptyState
             icon={<CalendarDays className="size-7" aria-hidden />}
@@ -137,8 +184,11 @@ export function PlansScreen() {
             </ul>
           </>
         )}
-      </div>
+      </section>
 
+      {/* Clearance under the last card. The section has no surface to bleed to
+          the bottom of the screen any more, so this is back to being a plain
+          spacer above the nav's own clearance. */}
       <div className="h-6" />
 
       <BottomSheet open={composing} onOpenChange={setComposing}>
@@ -209,7 +259,11 @@ function NewPlanForm({ onCreated }: { onCreated: (id: string) => void }) {
 
     create.mutate(
       { title: title.trim(), ...(date ? { date } : {}) },
-      { onSuccess: (plan) => { onCreated(plan.id); } },
+      {
+        onSuccess: (plan) => {
+          onCreated(plan.id);
+        },
+      },
     );
   };
 
@@ -234,7 +288,7 @@ function NewPlanForm({ onCreated }: { onCreated: (id: string) => void }) {
           }}
           placeholder={t('plans.titlePlaceholder')}
           autoFocus
-          className={fieldClass('mt-1.5 h-12 px-3.5 text-md')}
+          className={fieldClass('text-md mt-1.5 h-12 px-3.5')}
         />
       </label>
 
@@ -252,7 +306,7 @@ function NewPlanForm({ onCreated }: { onCreated: (id: string) => void }) {
           onChange={(event) => {
             setDate(event.target.value);
           }}
-          className={fieldClass('mt-1.5 h-12 px-3.5 text-md')}
+          className={fieldClass('text-md mt-1.5 h-12 px-3.5')}
         />
       </label>
 
@@ -299,7 +353,7 @@ function PlanCard({ plan, onOpen }: { plan: Plan; onOpen: () => void }) {
     <button
       type="button"
       onClick={onOpen}
-      className="bg-surface block w-full overflow-hidden rounded-lg p-3.5 text-left shadow-md press-surface"
+      className="bg-surface press-surface block w-full overflow-hidden rounded-lg p-3.5 text-left shadow-md"
     >
       <span className="flex items-start gap-3.5">
         <span className="bg-surface-sunken relative size-[5.5rem] shrink-0 overflow-hidden rounded-md">
@@ -307,7 +361,7 @@ function PlanCard({ plan, onOpen }: { plan: Plan; onOpen: () => void }) {
             url={plan.coverImageUrl}
             blurhash={plan.coverBlurhash}
             name={plan.title}
-            categorySlug={plan.coverCategorySlug ?? 'other'}
+            categoryIconKey={plan.coverCategoryIcon ?? 'dot'}
             categoryColor={plan.coverCategoryColor ?? '#18181b'}
             sizes="88px"
             fallbackSize="sm"
@@ -373,7 +427,7 @@ function PlanCard({ plan, onOpen }: { plan: Plan; onOpen: () => void }) {
                   url={stop.coverImageUrl}
                   blurhash={stop.coverBlurhash}
                   name={stop.name}
-                  categorySlug={stop.categorySlug}
+                  categoryIconKey={stop.categoryIcon}
                   categoryColor={stop.categoryColor}
                   sizes="36px"
                   fallbackSize="sm"

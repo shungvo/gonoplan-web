@@ -39,6 +39,7 @@ import { PlanNote } from './PlanNote';
 import { AddStopSheet } from './AddStopSheet';
 import { SharePlanSheet } from './SharePlanSheet';
 import { BackButton } from '@/components/ui/BackButton';
+import { placeHref } from '@/lib/navigation/links';
 
 /**
  * One day, in order.
@@ -348,7 +349,7 @@ function StopCard({
       <div className="flex gap-3">
         <div className="min-w-0 flex-1">
           <Link
-            href={`/place/${stop.place.slug}`}
+            href={placeHref(stop.place.slug)}
             className="text-ink text-md block leading-snug font-bold"
           >
             {stop.place.name}
@@ -403,7 +404,7 @@ function StopCard({
             url={stop.place.coverImageUrl}
             blurhash={stop.place.coverBlurhash}
             name={stop.place.name}
-            categorySlug={stop.place.category.slug}
+            categoryIconKey={stop.place.category.iconKey}
             categoryColor={stop.place.category.colorHex}
             sizes="72px"
             fallbackSize="sm"

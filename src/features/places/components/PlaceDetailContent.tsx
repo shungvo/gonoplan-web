@@ -22,6 +22,7 @@ import { categorySolid } from '@/features/categories/color';
 import { cn } from '@/lib/utils/cn';
 import { useSessionStore } from '@/features/auth/store';
 import type { PlaceDetail } from '../api';
+import { placeHref } from '@/lib/navigation/links';
 
 /**
  * Place detail body (§21), shared by the bottom sheet and the deep-link page.
@@ -109,7 +110,7 @@ export function PlaceDetailContent({
             <PlaceGallery
               photos={place.images}
               name={place.name}
-              categorySlug={place.category.slug}
+              categoryIconKey={place.category.iconKey}
               categoryColor={place.category.colorHex}
               priority
               className="aspect-[4/3] max-h-[38dvh] w-full rounded-lg shadow-md"
@@ -128,8 +129,15 @@ export function PlaceDetailContent({
             nothing above it to overlap. */}
         <div
           className={cn(
-            'bg-surface',
-            compact ? 'px-5 pt-4' : 'relative mx-2 -mt-10 rounded-lg p-4 shadow-lg',
+            compact
+              ? 'px-5 pt-4'
+              : // On the page this card hangs off the photograph, so it needs a
+                // surface of its own to be opaque against. In the sheet it sits
+                // directly on the sheet's own surface and painting the same
+                // white again was invisible — until the sheet gained a texture,
+                // and this became an opaque rectangle across the top of it with
+                // a hard edge where it stopped.
+                'bg-surface relative mx-2 -mt-10 rounded-lg p-4 shadow-lg',
           )}
         >
           <div className="flex items-start justify-between gap-3">
@@ -231,7 +239,7 @@ export function PlaceDetailContent({
         */}
         {compact && (
           <Link
-            href={`/place/${place.slug}`}
+            href={placeHref(place.slug)}
             className="bg-surface-sunken text-ink mt-3 flex w-full items-center justify-between rounded-lg px-4 py-3.5 text-sm font-medium press-surface"
           >
             {t('detail.openFullPage')}
@@ -392,7 +400,7 @@ export function PlaceDetailContent({
         With no phone number, directions simply takes the full width.
       */}
       {!compact && (
-        <div className="pb-safe-float px-safe border-border bg-surface/95 fixed inset-x-0 bottom-0 z-30 mx-auto max-w-app border-t px-4 pt-3 backdrop-blur-md">
+        <div className="pb-safe-float border-border bg-surface/95 fixed inset-x-0 bottom-0 z-30 mx-auto max-w-app border-t px-4 pt-3 backdrop-blur-md">
           <div className="mx-auto flex max-w-lg gap-2">
             {place.phone && (
               <a

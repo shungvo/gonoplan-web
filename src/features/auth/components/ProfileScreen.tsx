@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import { Bookmark, CalendarDays, ChevronRight, Settings, User } from 'lucide-react';
 import { AuthSheet } from './AuthSheet';
 import { BackButton } from '@/components/ui/BackButton';
@@ -14,6 +13,7 @@ import { ProfileBody } from '@/features/users/components/ProfileBody';
 import { useT } from '@/i18n/I18nProvider';
 import { LocaleSwitcher } from '@/i18n/LocaleSwitcher';
 import { useSessionStore } from '../store';
+import { useGoBack } from '@/lib/navigation/useGoBack';
 
 /**
  * Your own profile.
@@ -28,16 +28,10 @@ import { useSessionStore } from '../store';
  */
 export function ProfileScreen() {
   const t = useT();
-  const router = useRouter();
   const { user, isInitializing } = useSessionStore();
   const [authOpen, setAuthOpen] = useState(false);
 
-  // A shared link or a cold start has no history behind it, so back falls to
-  // home rather than being a button that does nothing.
-  const goBack = () => {
-    if (window.history.length > 1) router.back();
-    else router.push('/');
-  };
+  const goBack = useGoBack();
 
   const profile = useQuery({
     queryKey: ['users', user?.id],

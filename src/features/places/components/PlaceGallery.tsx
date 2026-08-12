@@ -7,6 +7,7 @@ import { PlaceImage } from './PlaceImage';
 import { swipeIntent } from './PlaceCardStack';
 import { useT } from '@/i18n/I18nProvider';
 import { cn } from '@/lib/utils/cn';
+import type { CategoryIconKey } from '@/features/categories/api';
 
 export interface GalleryPhoto {
   id: string;
@@ -29,16 +30,23 @@ export interface GalleryPhoto {
 export function PlaceGallery({
   photos,
   name,
-  categorySlug,
+  categoryIconKey,
   categoryColor,
   className,
-  sizes = '100vw',
+  /**
+   * Both consumers — the page hero and the sheet's backdrop — sit inside the
+   * shell's column, which is capped at `--container-app`. The default was
+   * `100vw`, which is only true on a phone: on a 1440px monitor it made Next
+   * pick a 3840px source for a 446px box, so the hero was a multi-megabyte
+   * download for an image displayed at an eighth of its width.
+   */
+  sizes = '(max-width: 30rem) 100vw, 480px',
   priority = false,
 }: {
   photos: GalleryPhoto[];
   /** Names the subject; the photographs carry no description of their own. */
   name: string;
-  categorySlug: string;
+  categoryIconKey: CategoryIconKey;
   categoryColor: string;
   className?: string;
   sizes?: string;
@@ -59,7 +67,7 @@ export function PlaceGallery({
         <PlaceImage
           url={null}
           name={name}
-          categorySlug={categorySlug}
+          categoryIconKey={categoryIconKey}
           categoryColor={categoryColor}
           sizes={sizes}
           fallbackSize="lg"

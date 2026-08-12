@@ -345,6 +345,65 @@
   }
 }
 
+/*
+ * The app's wallpaper.
+ *
+ * A background-image on the surface itself rather than a positioned layer in
+ * the DOM. A `fixed` or `absolute` decorative div has to be argued into the
+ * right place in the paint order — negative z-index needs the column to become
+ * a stacking context, which would rescope the bottom nav's `z-40` and the
+ * sheets above it; making `main` positioned instead changes the containing
+ * block for every absolutely-positioned thing inside a screen. An element's
+ * own background is painted under its content by definition, so neither
+ * question arises.
+ *
+ * `cover` on a surface that is exactly one viewport tall, which is what the
+ * app shell's column is: the artwork lands full-bleed and does not move while
+ * the content scrolls inside it. Not `background-attachment: fixed`, which
+ * iOS Safari has never handled without tearing.
+ *
+ * Swapping in a bitmap of your own is one line: point the URL at it. Keep it
+ * within the same tonal range — the file says why in more detail.
+ */
+/*
+ * The texture on an elevated surface — a bottom sheet, or the Explore list,
+ * which is drawn as one.
+ *
+ * `100% auto` and anchored to the top, never `cover`. A resizable sheet
+ * changes height continuously while it is dragged, and `cover` recomputes the
+ * scale from that height, so the artwork would zoom under the user's thumb for
+ * the whole gesture. Width is the one dimension that never changes — every
+ * sheet is capped at `--container-app` — so sizing from it holds the picture
+ * still. It also puts the artwork where a sheet is emptiest: the top, before
+ * content fills in.
+ *
+ * `BottomSheet` applies this class for its `texture` backdrop and overrides
+ * only `background-image` for a custom one, so the placement rules live here
+ * once rather than in two places that drift.
+ *
+ * Named `sheet-texture`, not `bg-sheet-texture`, and that is not cosmetic:
+ * `cn()` runs tailwind-merge, which groups anything starting `bg-` as one
+ * conflicting property and keeps only the last. `cn('… bg-surface …',
+ * 'bg-sheet-texture')` therefore *dropped* the sheet's white — the panel went
+ * fully transparent and the photograph behind it showed through the content.
+ * A class that sets `background-image` has no business claiming a name that
+ * says `background-color`.
+ */
+@utility sheet-texture {
+  background-image: url('/sheet-backdrop.svg');
+  background-size: 100% auto;
+  background-position: top center;
+  background-repeat: no-repeat;
+}
+
+@utility bg-app-backdrop {
+  background-color: var(--color-background);
+  background-image: url('/backdrop.svg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 @layer utilities {
   /* Safe areas: the notch, the home indicator, and landscape bezels. */
   .pt-safe {
@@ -374,6 +433,31 @@
   /* Scroll clearance for content behind the floating nav. */
   .pb-nav {
     padding-bottom: var(--nav-clearance);
+  }
+
+  /*
+   * For a full-bleed panel inside a `.pb-nav` scroller.
+   *
+   * `.pb-nav` holds the last row clear of the floating bar by padding the
+   * *scroller*, which is right for a page of cards on the app background —
+   * the gap it leaves is just more background. It is wrong for a panel with
+   * its own surface: Explore's list is drawn as a sheet, and the padding cut
+   * its white edge off 88px above the bottom of the screen, leaving a hard
+   * seam with the page showing beneath it and the nav pill floating in the
+   * strip. A sheet that stops short of the bottom is not a sheet.
+   *
+   * The negative margin lets the panel's box run through the scroller's
+   * padding to the bottom of the scroll range, and the equal padding puts the
+   * clearance back on the inside, where the last card needs it. Both halves in
+   * one class because they are one decision and drift the moment they are two.
+   *
+   * `--nav-clearance`, not `--spacing-nav`: the padding being cancelled
+   * includes the home indicator, and 12px of mismatch is a seam on exactly the
+   * notched phone nobody tests on.
+   */
+  .bleed-past-nav {
+    padding-bottom: var(--nav-clearance);
+    margin-bottom: calc(var(--nav-clearance) * -1);
   }
 
   .scrollbar-none {

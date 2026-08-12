@@ -51,3 +51,21 @@ export async function logout(): Promise<void> {
     setAccessToken(null);
   }
 }
+
+/**
+ * Change something about the signed-in account.
+ *
+ * Partial on purpose: every field is optional server-side, so a caller that
+ * only wants to swap the avatar sends one key rather than resubmitting a whole
+ * profile it did not read. The response is the fresh session user, which is
+ * what the store then holds — re-fetching `/auth/me` afterwards would be a
+ * second round trip for a body the first one already returned.
+ */
+export function updateProfile(input: {
+  name?: string;
+  bio?: string;
+  avatarUrl?: string;
+  locale?: 'vi' | 'en';
+}): Promise<SessionUser> {
+  return api.patch<SessionUser>('/auth/me', input);
+}

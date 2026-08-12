@@ -49,6 +49,12 @@ export const queryKeys = {
     list: () => ['favorites', 'list'] as const,
   },
 
+  checkins: {
+    all: ['checkins'] as const,
+    byUser: (userId: string) => ['checkins', 'user', userId] as const,
+    byPlace: (placeId: string) => ['checkins', 'place', placeId] as const,
+  },
+
   categories: ['categories'] as const,
 
   owner: {

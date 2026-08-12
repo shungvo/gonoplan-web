@@ -204,7 +204,7 @@ export function PlaceCardStack({
                   url={place.coverImageUrl}
                   blurhash={place.coverBlurhash}
                   name={place.name}
-                  categorySlug={place.category.slug}
+                  categoryIconKey={place.category.iconKey}
                   categoryColor={place.category.colorHex}
                   sizes="(max-width: 640px) 100vw, 600px"
                   priority={isActive}

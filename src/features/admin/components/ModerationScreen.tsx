@@ -22,6 +22,7 @@ import {
   TimeAgo,
 } from './primitives';
 import { ReasonDialog } from './ReasonDialog';
+import { placeHref } from '@/lib/navigation/links';
 import {
   approveOwner,
   approvePlace,
@@ -246,7 +247,7 @@ export function ModerationScreen() {
                     </p>
                   </div>
                   <Link
-                    href={`/place/${revision.place.slug}`}
+                    href={placeHref(revision.place.slug)}
                     target="_blank"
                     className="text-primary inline-flex shrink-0 items-center gap-1 text-xs font-medium"
                   >

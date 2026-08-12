@@ -20,6 +20,7 @@ import {
   TimeAgo,
 } from './primitives';
 import { ReasonDialog } from './ReasonDialog';
+import { placeHref } from '@/lib/navigation/links';
 import {
   deleteReview,
   hideReview,
@@ -231,7 +232,7 @@ export function ContentScreen() {
 
                   <div className="flex shrink-0 items-center gap-2">
                     <Link
-                      href={`/place/${place.slug}`}
+                      href={placeHref(place.slug)}
                       target="_blank"
                       className="text-primary inline-flex items-center gap-1 text-xs font-medium"
                     >
@@ -292,7 +293,7 @@ export function ContentScreen() {
                       {formatNumber(review.rating, locale)}★ · {review.user.name}
                       <span className="text-ink-subtle font-normal"> {t('content.reviewOn')} </span>
                       <Link
-                        href={`/place/${review.place.slug}`}
+                        href={placeHref(review.place.slug)}
                         target="_blank"
                         className="hover:text-primary"
                       >

@@ -18,13 +18,42 @@ import {
   updateCategory,
   type AdminCategory,
 } from '../api';
+import type { CategoryIconKey } from '@/features/categories/api';
 import { Card, CardGrid, PageHeader, QueueEmpty, RowSkeleton, TimeAgo } from './primitives';
 import { ReasonDialog } from './ReasonDialog';
 import { categorySolid } from '@/features/categories/color';
+import { CategoryGlyph } from '@/features/categories/CategoryGlyph';
+import { CategoryStyle, type CategoryStyleValue } from './CategoryStyle';
 
 type Tab = 'categories' | 'demand';
 
-const BLANK = { slug: '', name: '', nameVi: '', iconKey: 'map-pin', colorHex: '#0F6CCD' };
+interface CategoryDraft {
+  slug: string;
+  name: string;
+  nameVi: string;
+  iconKey: CategoryIconKey;
+  colorHex: string;
+}
+
+/**
+ * `iconKey` defaulted to `'map-pin'` and the colour to the old brand blue —
+ * neither a value the app can use. There is no `map-pin` shape, so a category
+ * created without touching that field drew a grey dot on every one of its pins,
+ * and the blue sat outside the palette every other category comes from. Both
+ * are now the neutral choice: an honest placeholder that says "not picked yet"
+ * beats a wrong one that looks picked.
+ *
+ * Annotated rather than `satisfies`, which would keep the literal type — then
+ * `useState(BLANK)` infers `iconKey: 'dot'` and rejects every other key the
+ * picker can set.
+ */
+const BLANK: CategoryDraft = {
+  slug: '',
+  name: '',
+  nameVi: '',
+  iconKey: 'dot',
+  colorHex: '#676872',
+};
 
 /**
  * Taxonomy and demand — the two things the admin could see nothing of.
@@ -49,6 +78,18 @@ export function TaxonomyScreen() {
   const [draft, setDraft] = useState(BLANK);
   const [adding, setAdding] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<AdminCategory | null>(null);
+
+  /**
+   * The category whose look is being changed, and what it would become.
+   *
+   * Editing exists because creating was never the whole problem. The icon and
+   * colour of a category already in the table could not be changed from here at
+   * all — `updateCategory` was only ever sent `isActive` — so a category
+   * created through the old free-text form kept its wrong icon permanently. The
+   * live table has one: `dating`, at `iconKey: 'heart'`, a shape that does not
+   * exist.
+   */
+  const [styling, setStyling] = useState<({ id: string } & CategoryStyleValue) | null>(null);
 
   const categories = useQuery({
     queryKey: ['admin', 'categories'],
@@ -81,6 +122,16 @@ export function TaxonomyScreen() {
     },
   });
 
+  const restyle = useMutation({
+    meta: { inlineError: true },
+    mutationFn: ({ id, ...style }: { id: string } & CategoryStyleValue) =>
+      updateCategory(id, style),
+    onSuccess: async () => {
+      setStyling(null);
+      await invalidate();
+    },
+  });
+
   const toggleActive = useMutation({
     mutationFn: (category: AdminCategory) =>
       updateCategory(category.id, { isActive: !category.isActive }),
@@ -101,10 +152,7 @@ export function TaxonomyScreen() {
 
   return (
     <>
-      <PageHeader
-        title={t('admin.taxonomy')}
-        description={t('taxonomy.description')}
-      />
+      <PageHeader title={t('admin.taxonomy')} description={t('taxonomy.description')} />
 
       <div className="mb-5 flex gap-2">
         <Chip
@@ -136,7 +184,6 @@ export function TaxonomyScreen() {
                     ['slug', 'taxonomy.slug', 'bakery'],
                     ['name', 'taxonomy.nameEn', 'Bakery'],
                     ['nameVi', 'taxonomy.nameVi', 'Tiệm bánh'],
-                    ['iconKey', 'taxonomy.iconKey', 'bakery'],
                   ] as const
                 ).map(([key, labelKey, placeholder]) => (
                   <label key={key} className="block">
@@ -151,27 +198,16 @@ export function TaxonomyScreen() {
                     />
                   </label>
                 ))}
+              </div>
 
-                <label className="block">
-                  <span className="text-ink-muted text-xs font-medium">{t('taxonomy.colour')}</span>
-                  <div className="mt-1 flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={draft.colorHex}
-                      onChange={(event) => {
-                        setDraft((current) => ({ ...current, colorHex: event.target.value }));
-                      }}
-                      className="border-border size-10 shrink-0 rounded-sm border"
-                    />
-                    <input
-                      value={draft.colorHex}
-                      onChange={(event) => {
-                        setDraft((current) => ({ ...current, colorHex: event.target.value }));
-                      }}
-                      className={fieldClass('h-10 px-3 font-mono text-sm')}
-                    />
-                  </div>
-                </label>
+              <div className="mt-4">
+                <CategoryStyle
+                  value={draft}
+                  onChange={(next) => {
+                    setDraft((current) => ({ ...current, ...next }));
+                  }}
+                  label={draft.nameVi || draft.name || t('taxonomy.newCategory')}
+                />
               </div>
 
               {add.error && (
@@ -234,6 +270,28 @@ export function TaxonomyScreen() {
                       setDeleteTarget(parent);
                     }}
                     busy={toggleActive.isPending}
+                    editing={styling?.id === parent.id ? styling : null}
+                    onEdit={() => {
+                      setStyling({
+                        id: parent.id,
+                        iconKey: parent.iconKey,
+                        colorHex: parent.colorHex,
+                      });
+                      restyle.reset();
+                    }}
+                    onEditChange={(next) => {
+                      setStyling({ id: parent.id, ...next });
+                    }}
+                    onSave={() => {
+                      if (styling) restyle.mutate(styling);
+                    }}
+                    onCancel={() => {
+                      setStyling(null);
+                      restyle.reset();
+                    }}
+                    saving={restyle.isPending}
+                    saveError={restyle.error}
+                    describeError={describeError}
                     t={t}
                   />
 
@@ -250,6 +308,28 @@ export function TaxonomyScreen() {
                               setDeleteTarget(child);
                             }}
                             busy={toggleActive.isPending}
+                            editing={styling?.id === child.id ? styling : null}
+                            onEdit={() => {
+                              setStyling({
+                                id: child.id,
+                                iconKey: child.iconKey,
+                                colorHex: child.colorHex,
+                              });
+                              restyle.reset();
+                            }}
+                            onEditChange={(next) => {
+                              setStyling({ id: child.id, ...next });
+                            }}
+                            onSave={() => {
+                              if (styling) restyle.mutate(styling);
+                            }}
+                            onCancel={() => {
+                              setStyling(null);
+                              restyle.reset();
+                            }}
+                            saving={restyle.isPending}
+                            saveError={restyle.error}
+                            describeError={describeError}
                             t={t}
                           />
                         </li>
@@ -285,9 +365,7 @@ export function TaxonomyScreen() {
                 <Search className="size-4" aria-hidden />
                 {t('taxonomy.unmetTitle')}
               </h3>
-              <p className="text-ink-subtle mb-3 text-xs">
-                {t('taxonomy.unmetHint')}
-              </p>
+              <p className="text-ink-subtle mb-3 text-xs">{t('taxonomy.unmetHint')}</p>
 
               {insights.data.unmet.length === 0 ? (
                 <QueueEmpty label={t('taxonomy.allFound')} />
@@ -354,12 +432,29 @@ function CategoryRow({
   onToggle,
   onDelete,
   busy,
+  editing,
+  onEdit,
+  onEditChange,
+  onSave,
+  onCancel,
+  saving,
+  saveError,
+  describeError,
   t,
 }: {
   category: AdminCategory;
   onToggle: () => void;
   onDelete: () => void;
   busy: boolean;
+  /** The pending look, while this row is the one being edited. */
+  editing: CategoryStyleValue | null;
+  onEdit: () => void;
+  onEditChange: (next: CategoryStyleValue) => void;
+  onSave: () => void;
+  onCancel: () => void;
+  saving: boolean;
+  saveError: unknown;
+  describeError: (error: unknown) => string;
   /* Passed down rather than hooked: this row renders once per category in a
      list the parent already has a translator for. */
   t: TranslateFn;
@@ -367,44 +462,86 @@ function CategoryRow({
   const inUse = category.placeCount + category.subcategoryPlaceCount;
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <span
-        className="size-5 shrink-0 rounded-full"
-        style={{ backgroundColor: categorySolid(category.colorHex) }}
-        aria-hidden
-      />
-      <div className="min-w-0 flex-1">
-        <p
+    <div>
+      <div className="flex flex-wrap items-center gap-3">
+        {/*
+        The icon in its colour, and the button that changes both.
+
+        A bare colour dot is a legend without a key — it says these eighteen
+        things differ without saying how. It is also the control, because the
+        thing you want to change is the thing you are looking at.
+      */}
+        <button
+          type="button"
+          onClick={editing ? onCancel : onEdit}
+          aria-label={t('taxonomy.editStyle', { name: category.name })}
+          aria-expanded={editing !== null}
           className={cn(
-            'text-sm font-semibold',
-            category.isActive ? 'text-ink' : 'text-ink-subtle',
+            'press-surface flex size-7 shrink-0 items-center justify-center rounded-full text-white',
+            editing && 'ring-ink ring-offset-surface ring-2 ring-offset-2',
           )}
+          style={{ backgroundColor: categorySolid(editing?.colorHex ?? category.colorHex) }}
         >
-          {category.name}
-          <span className="text-ink-subtle font-normal"> · {category.nameVi}</span>
-          {!category.isActive && (
-            <span className="bg-surface-sunken text-ink-subtle ml-2 rounded-full px-2 py-0.5 text-2xs">
-              {t('taxonomy.retired')}
-            </span>
+          <CategoryGlyph
+            iconKey={editing?.iconKey ?? category.iconKey}
+            className="size-4"
+            strokeWidth={2}
+          />
+        </button>
+        <div className="min-w-0 flex-1">
+          <p
+            className={cn(
+              'text-sm font-semibold',
+              category.isActive ? 'text-ink' : 'text-ink-subtle',
+            )}
+          >
+            {category.name}
+            <span className="text-ink-subtle font-normal"> · {category.nameVi}</span>
+            {!category.isActive && (
+              <span className="bg-surface-sunken text-ink-subtle text-2xs ml-2 rounded-full px-2 py-0.5">
+                {t('taxonomy.retired')}
+              </span>
+            )}
+          </p>
+          <p className="text-ink-subtle mt-0.5 font-mono text-xs">
+            {category.slug} · {t('taxonomy.placeCount', { count: inUse })}
+          </p>
+        </div>
+
+        <div className="flex shrink-0 gap-2">
+          <Button size="sm" variant="secondary" disabled={busy} onClick={onToggle}>
+            {category.isActive ? t('taxonomy.retire') : t('taxonomy.restore')}
+          </Button>
+          {/* Only offered when it would actually work. A delete button that
+            always 409s teaches people to ignore the error. */}
+          {inUse === 0 && (
+            <Button size="sm" variant="danger" onClick={onDelete}>
+              {t('common.remove')}
+            </Button>
           )}
-        </p>
-        <p className="text-ink-subtle mt-0.5 font-mono text-xs">
-          {category.slug} · {t('taxonomy.placeCount', { count: inUse })}
-        </p>
+        </div>
       </div>
 
-      <div className="flex shrink-0 gap-2">
-        <Button size="sm" variant="secondary" disabled={busy} onClick={onToggle}>
-          {category.isActive ? t('taxonomy.retire') : t('taxonomy.restore')}
-        </Button>
-        {/* Only offered when it would actually work. A delete button that
-            always 409s teaches people to ignore the error. */}
-        {inUse === 0 && (
-          <Button size="sm" variant="danger" onClick={onDelete}>
-            {t('common.remove')}
-          </Button>
-        )}
-      </div>
+      {editing && (
+        <div className="border-border mt-3 border-t pt-3">
+          <CategoryStyle value={editing} onChange={onEditChange} label={category.nameVi} />
+
+          {saveError !== null && (
+            <p role="alert" className="bg-danger/10 text-danger mt-3 rounded-md p-2.5 text-sm">
+              {describeError(saveError)}
+            </p>
+          )}
+
+          <div className="mt-3 flex gap-2">
+            <Button size="sm" isLoading={saving} onClick={onSave}>
+              {t('common.save')}
+            </Button>
+            <Button size="sm" variant="secondary" onClick={onCancel}>
+              {t('common.cancel')}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

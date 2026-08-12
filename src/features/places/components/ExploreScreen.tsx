@@ -523,7 +523,7 @@ export function ExploreScreen() {
       */}
       <div
         ref={measureSheetRestTop}
-        className="bg-surface shadow-sheet relative z-10 min-h-[70dvh] rounded-t-xl pb-2"
+        className="bg-surface sheet-texture shadow-sheet bleed-past-nav relative z-10 min-h-[70dvh] rounded-t-xl"
       >
         {/*
           The bar needs a box of its own.
@@ -666,7 +666,11 @@ export function ExploreScreen() {
           )}
         </div>
 
-        <div className="h-6" />
+        {/* Was `h-6` doing the job `bleed-past-nav` now does properly: 24px of
+            air under the last card, on a sheet that ended 88px above the
+            bottom of the screen anyway. The clearance is the nav's whole
+            footprint now, so keep only the gap the list itself wants. */}
+        <div className="h-2" />
       </div>
 
       <PlaceSheet

@@ -330,6 +330,26 @@
           },
           "iconKey": {
             "type": "string",
+            "enum": [
+              "cup",
+              "bean",
+              "skyline",
+              "bowl",
+              "pho",
+              "fish",
+              "cart",
+              "glass",
+              "moon",
+              "bed",
+              "house",
+              "sparkle",
+              "leaf",
+              "column",
+              "ticket",
+              "film",
+              "bag",
+              "dot"
+            ],
             "description": "Sprite key for the marker and chip icon"
           },
           "colorHex": {
@@ -368,6 +388,26 @@
           },
           "iconKey": {
             "type": "string",
+            "enum": [
+              "cup",
+              "bean",
+              "skyline",
+              "bowl",
+              "pho",
+              "fish",
+              "cart",
+              "glass",
+              "moon",
+              "bed",
+              "house",
+              "sparkle",
+              "leaf",
+              "column",
+              "ticket",
+              "film",
+              "bag",
+              "dot"
+            ],
             "description": "Sprite key for the marker and chip icon"
           },
           "colorHex": {
@@ -397,6 +437,26 @@
                 },
                 "iconKey": {
                   "type": "string",
+                  "enum": [
+                    "cup",
+                    "bean",
+                    "skyline",
+                    "bowl",
+                    "pho",
+                    "fish",
+                    "cart",
+                    "glass",
+                    "moon",
+                    "bed",
+                    "house",
+                    "sparkle",
+                    "leaf",
+                    "column",
+                    "ticket",
+                    "film",
+                    "bag",
+                    "dot"
+                  ],
                   "description": "Sprite key for the marker and chip icon"
                 },
                 "colorHex": {
@@ -468,6 +528,30 @@
               "nameVi": {
                 "type": "string"
               },
+              "iconKey": {
+                "type": "string",
+                "enum": [
+                  "cup",
+                  "bean",
+                  "skyline",
+                  "bowl",
+                  "pho",
+                  "fish",
+                  "cart",
+                  "glass",
+                  "moon",
+                  "bed",
+                  "house",
+                  "sparkle",
+                  "leaf",
+                  "column",
+                  "ticket",
+                  "film",
+                  "bag",
+                  "dot"
+                ],
+                "description": "Sprite key for the marker and chip icon"
+              },
               "colorHex": {
                 "type": "string"
               }
@@ -477,6 +561,7 @@
               "slug",
               "name",
               "nameVi",
+              "iconKey",
               "colorHex"
             ]
           },
@@ -609,6 +694,30 @@
               "nameVi": {
                 "type": "string"
               },
+              "iconKey": {
+                "type": "string",
+                "enum": [
+                  "cup",
+                  "bean",
+                  "skyline",
+                  "bowl",
+                  "pho",
+                  "fish",
+                  "cart",
+                  "glass",
+                  "moon",
+                  "bed",
+                  "house",
+                  "sparkle",
+                  "leaf",
+                  "column",
+                  "ticket",
+                  "film",
+                  "bag",
+                  "dot"
+                ],
+                "description": "Sprite key for the marker and chip icon"
+              },
               "colorHex": {
                 "type": "string"
               }
@@ -618,6 +727,7 @@
               "slug",
               "name",
               "nameVi",
+              "iconKey",
               "colorHex"
             ]
           },
@@ -1167,6 +1277,33 @@
               "null"
             ]
           },
+          "coverCategoryIcon": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "cup",
+              "bean",
+              "skyline",
+              "bowl",
+              "pho",
+              "fish",
+              "cart",
+              "glass",
+              "moon",
+              "bed",
+              "house",
+              "sparkle",
+              "leaf",
+              "column",
+              "ticket",
+              "film",
+              "bag",
+              "dot"
+            ],
+            "description": "Sprite key for the marker and chip icon"
+          },
           "coverCategoryColor": {
             "type": [
               "string",
@@ -1200,6 +1337,30 @@
                 "categorySlug": {
                   "type": "string"
                 },
+                "categoryIcon": {
+                  "type": "string",
+                  "enum": [
+                    "cup",
+                    "bean",
+                    "skyline",
+                    "bowl",
+                    "pho",
+                    "fish",
+                    "cart",
+                    "glass",
+                    "moon",
+                    "bed",
+                    "house",
+                    "sparkle",
+                    "leaf",
+                    "column",
+                    "ticket",
+                    "film",
+                    "bag",
+                    "dot"
+                  ],
+                  "description": "Sprite key for the marker and chip icon"
+                },
                 "categoryColor": {
                   "type": "string"
                 }
@@ -1210,6 +1371,7 @@
                 "coverImageUrl",
                 "coverBlurhash",
                 "categorySlug",
+                "categoryIcon",
                 "categoryColor"
               ]
             }
@@ -1243,6 +1405,7 @@
           "coverImageUrl",
           "coverBlurhash",
           "coverCategorySlug",
+          "coverCategoryIcon",
           "coverCategoryColor",
           "stopPreviews",
           "startsAtMin",
@@ -1297,6 +1460,33 @@
               "null"
             ]
           },
+          "coverCategoryIcon": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "cup",
+              "bean",
+              "skyline",
+              "bowl",
+              "pho",
+              "fish",
+              "cart",
+              "glass",
+              "moon",
+              "bed",
+              "house",
+              "sparkle",
+              "leaf",
+              "column",
+              "ticket",
+              "film",
+              "bag",
+              "dot"
+            ],
+            "description": "Sprite key for the marker and chip icon"
+          },
           "coverCategoryColor": {
             "type": [
               "string",
@@ -1330,6 +1520,30 @@
                 "categorySlug": {
                   "type": "string"
                 },
+                "categoryIcon": {
+                  "type": "string",
+                  "enum": [
+                    "cup",
+                    "bean",
+                    "skyline",
+                    "bowl",
+                    "pho",
+                    "fish",
+                    "cart",
+                    "glass",
+                    "moon",
+                    "bed",
+                    "house",
+                    "sparkle",
+                    "leaf",
+                    "column",
+                    "ticket",
+                    "film",
+                    "bag",
+                    "dot"
+                  ],
+                  "description": "Sprite key for the marker and chip icon"
+                },
                 "categoryColor": {
                   "type": "string"
                 }
@@ -1340,6 +1554,7 @@
                 "coverImageUrl",
                 "coverBlurhash",
                 "categorySlug",
+                "categoryIcon",
                 "categoryColor"
               ]
             }
@@ -1424,6 +1639,30 @@
                         "nameVi": {
                           "type": "string"
                         },
+                        "iconKey": {
+                          "type": "string",
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
+                          "description": "Sprite key for the marker and chip icon"
+                        },
                         "colorHex": {
                           "type": "string"
                         }
@@ -1433,6 +1672,7 @@
                         "slug",
                         "name",
                         "nameVi",
+                        "iconKey",
                         "colorHex"
                       ]
                     },
@@ -1529,6 +1769,7 @@
           "coverImageUrl",
           "coverBlurhash",
           "coverCategorySlug",
+          "coverCategoryIcon",
           "coverCategoryColor",
           "stopPreviews",
           "startsAtMin",
@@ -1598,6 +1839,30 @@
                   "nameVi": {
                     "type": "string"
                   },
+                  "iconKey": {
+                    "type": "string",
+                    "enum": [
+                      "cup",
+                      "bean",
+                      "skyline",
+                      "bowl",
+                      "pho",
+                      "fish",
+                      "cart",
+                      "glass",
+                      "moon",
+                      "bed",
+                      "house",
+                      "sparkle",
+                      "leaf",
+                      "column",
+                      "ticket",
+                      "film",
+                      "bag",
+                      "dot"
+                    ],
+                    "description": "Sprite key for the marker and chip icon"
+                  },
                   "colorHex": {
                     "type": "string"
                   }
@@ -1607,6 +1872,7 @@
                   "slug",
                   "name",
                   "nameVi",
+                  "iconKey",
                   "colorHex"
                 ]
               },
@@ -1691,6 +1957,380 @@
           "place"
         ]
       },
+      "CheckIn": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "caption": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "visitedAt": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "width": {
+                  "type": "integer"
+                },
+                "height": {
+                  "type": "integer"
+                },
+                "blurhash": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "url",
+                "width",
+                "height",
+                "blurhash"
+              ]
+            }
+          },
+          "place": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "district": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "province": {
+                "type": "string"
+              },
+              "categoryName": {
+                "type": "string"
+              },
+              "categoryNameVi": {
+                "type": "string"
+              },
+              "categoryIcon": {
+                "type": "string",
+                "enum": [
+                  "cup",
+                  "bean",
+                  "skyline",
+                  "bowl",
+                  "pho",
+                  "fish",
+                  "cart",
+                  "glass",
+                  "moon",
+                  "bed",
+                  "house",
+                  "sparkle",
+                  "leaf",
+                  "column",
+                  "ticket",
+                  "film",
+                  "bag",
+                  "dot"
+                ],
+                "description": "Sprite key for the marker and chip icon"
+              },
+              "categoryColor": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "slug",
+              "name",
+              "district",
+              "province",
+              "categoryName",
+              "categoryNameVi",
+              "categoryIcon",
+              "categoryColor"
+            ]
+          },
+          "author": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              },
+              "avatarUrl": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "avatarUrl"
+            ]
+          },
+          "canDelete": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "caption",
+          "visitedAt",
+          "createdAt",
+          "images",
+          "place",
+          "author",
+          "canDelete"
+        ]
+      },
+      "CheckInImage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "blurhash": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "width",
+          "height",
+          "blurhash"
+        ]
+      },
+      "CheckInPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "caption": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "visitedAt": {
+                  "type": "string"
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "images": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "width": {
+                        "type": "integer"
+                      },
+                      "height": {
+                        "type": "integer"
+                      },
+                      "blurhash": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "url",
+                      "width",
+                      "height",
+                      "blurhash"
+                    ]
+                  }
+                },
+                "place": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "district": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "province": {
+                      "type": "string"
+                    },
+                    "categoryName": {
+                      "type": "string"
+                    },
+                    "categoryNameVi": {
+                      "type": "string"
+                    },
+                    "categoryIcon": {
+                      "type": "string",
+                      "enum": [
+                        "cup",
+                        "bean",
+                        "skyline",
+                        "bowl",
+                        "pho",
+                        "fish",
+                        "cart",
+                        "glass",
+                        "moon",
+                        "bed",
+                        "house",
+                        "sparkle",
+                        "leaf",
+                        "column",
+                        "ticket",
+                        "film",
+                        "bag",
+                        "dot"
+                      ],
+                      "description": "Sprite key for the marker and chip icon"
+                    },
+                    "categoryColor": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "slug",
+                    "name",
+                    "district",
+                    "province",
+                    "categoryName",
+                    "categoryNameVi",
+                    "categoryIcon",
+                    "categoryColor"
+                  ]
+                },
+                "author": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "avatarUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "avatarUrl"
+                  ]
+                },
+                "canDelete": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "caption",
+                "visitedAt",
+                "createdAt",
+                "images",
+                "place",
+                "author",
+                "canDelete"
+              ]
+            }
+          },
+          "cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "items",
+          "cursor",
+          "hasMore"
+        ]
+      },
       "PublicUser": {
         "type": "object",
         "properties": {
@@ -1727,11 +2367,19 @@
               },
               "places": {
                 "type": "integer"
+              },
+              "checkIns": {
+                "type": "integer"
+              },
+              "placesVisited": {
+                "type": "integer"
               }
             },
             "required": [
               "reviews",
-              "places"
+              "places",
+              "checkIns",
+              "placesVisited"
             ]
           },
           "recentReviews": {
@@ -1857,6 +2505,30 @@
                     "nameVi": {
                       "type": "string"
                     },
+                    "iconKey": {
+                      "type": "string",
+                      "enum": [
+                        "cup",
+                        "bean",
+                        "skyline",
+                        "bowl",
+                        "pho",
+                        "fish",
+                        "cart",
+                        "glass",
+                        "moon",
+                        "bed",
+                        "house",
+                        "sparkle",
+                        "leaf",
+                        "column",
+                        "ticket",
+                        "film",
+                        "bag",
+                        "dot"
+                      ],
+                      "description": "Sprite key for the marker and chip icon"
+                    },
                     "colorHex": {
                       "type": "string"
                     }
@@ -1866,6 +2538,7 @@
                     "slug",
                     "name",
                     "nameVi",
+                    "iconKey",
                     "colorHex"
                   ]
                 }
@@ -2653,6 +3326,30 @@
               "nameVi": {
                 "type": "string"
               },
+              "iconKey": {
+                "type": "string",
+                "enum": [
+                  "cup",
+                  "bean",
+                  "skyline",
+                  "bowl",
+                  "pho",
+                  "fish",
+                  "cart",
+                  "glass",
+                  "moon",
+                  "bed",
+                  "house",
+                  "sparkle",
+                  "leaf",
+                  "column",
+                  "ticket",
+                  "film",
+                  "bag",
+                  "dot"
+                ],
+                "description": "Sprite key for the marker and chip icon"
+              },
               "colorHex": {
                 "type": "string"
               }
@@ -2662,6 +3359,7 @@
               "slug",
               "name",
               "nameVi",
+              "iconKey",
               "colorHex"
             ]
           },
@@ -2838,6 +3536,30 @@
                     "nameVi": {
                       "type": "string"
                     },
+                    "iconKey": {
+                      "type": "string",
+                      "enum": [
+                        "cup",
+                        "bean",
+                        "skyline",
+                        "bowl",
+                        "pho",
+                        "fish",
+                        "cart",
+                        "glass",
+                        "moon",
+                        "bed",
+                        "house",
+                        "sparkle",
+                        "leaf",
+                        "column",
+                        "ticket",
+                        "film",
+                        "bag",
+                        "dot"
+                      ],
+                      "description": "Sprite key for the marker and chip icon"
+                    },
                     "colorHex": {
                       "type": "string"
                     }
@@ -2847,6 +3569,7 @@
                     "slug",
                     "name",
                     "nameVi",
+                    "iconKey",
                     "colorHex"
                   ]
                 },
@@ -3043,6 +3766,30 @@
                     "nameVi": {
                       "type": "string"
                     },
+                    "iconKey": {
+                      "type": "string",
+                      "enum": [
+                        "cup",
+                        "bean",
+                        "skyline",
+                        "bowl",
+                        "pho",
+                        "fish",
+                        "cart",
+                        "glass",
+                        "moon",
+                        "bed",
+                        "house",
+                        "sparkle",
+                        "leaf",
+                        "column",
+                        "ticket",
+                        "film",
+                        "bag",
+                        "dot"
+                      ],
+                      "description": "Sprite key for the marker and chip icon"
+                    },
                     "colorHex": {
                       "type": "string"
                     }
@@ -3052,6 +3799,7 @@
                     "slug",
                     "name",
                     "nameVi",
+                    "iconKey",
                     "colorHex"
                   ]
                 },
@@ -4589,6 +5337,26 @@
           },
           "iconKey": {
             "type": "string",
+            "enum": [
+              "cup",
+              "bean",
+              "skyline",
+              "bowl",
+              "pho",
+              "fish",
+              "cart",
+              "glass",
+              "moon",
+              "bed",
+              "house",
+              "sparkle",
+              "leaf",
+              "column",
+              "ticket",
+              "film",
+              "bag",
+              "dot"
+            ],
             "description": "Sprite key for the marker and chip icon"
           },
           "colorHex": {
@@ -6012,6 +6780,26 @@
                           },
                           "iconKey": {
                             "type": "string",
+                            "enum": [
+                              "cup",
+                              "bean",
+                              "skyline",
+                              "bowl",
+                              "pho",
+                              "fish",
+                              "cart",
+                              "glass",
+                              "moon",
+                              "bed",
+                              "house",
+                              "sparkle",
+                              "leaf",
+                              "column",
+                              "ticket",
+                              "film",
+                              "bag",
+                              "dot"
+                            ],
                             "description": "Sprite key for the marker and chip icon"
                           },
                           "colorHex": {
@@ -6041,6 +6829,26 @@
                                 },
                                 "iconKey": {
                                   "type": "string",
+                                  "enum": [
+                                    "cup",
+                                    "bean",
+                                    "skyline",
+                                    "bowl",
+                                    "pho",
+                                    "fish",
+                                    "cart",
+                                    "glass",
+                                    "moon",
+                                    "bed",
+                                    "house",
+                                    "sparkle",
+                                    "leaf",
+                                    "column",
+                                    "ticket",
+                                    "film",
+                                    "bag",
+                                    "dot"
+                                  ],
                                   "description": "Sprite key for the marker and chip icon"
                                 },
                                 "colorHex": {
@@ -6278,6 +7086,30 @@
                               "nameVi": {
                                 "type": "string"
                               },
+                              "iconKey": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
                               "colorHex": {
                                 "type": "string"
                               }
@@ -6287,6 +7119,7 @@
                               "slug",
                               "name",
                               "nameVi",
+                              "iconKey",
                               "colorHex"
                             ]
                           },
@@ -6803,6 +7636,30 @@
                               "nameVi": {
                                 "type": "string"
                               },
+                              "iconKey": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
                               "colorHex": {
                                 "type": "string"
                               }
@@ -6812,6 +7669,7 @@
                               "slug",
                               "name",
                               "nameVi",
+                              "iconKey",
                               "colorHex"
                             ]
                           },
@@ -7183,6 +8041,30 @@
                               "nameVi": {
                                 "type": "string"
                               },
+                              "iconKey": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
                               "colorHex": {
                                 "type": "string"
                               }
@@ -7192,6 +8074,7 @@
                               "slug",
                               "name",
                               "nameVi",
+                              "iconKey",
                               "colorHex"
                             ]
                           },
@@ -7492,6 +8375,30 @@
                             "nameVi": {
                               "type": "string"
                             },
+                            "iconKey": {
+                              "type": "string",
+                              "enum": [
+                                "cup",
+                                "bean",
+                                "skyline",
+                                "bowl",
+                                "pho",
+                                "fish",
+                                "cart",
+                                "glass",
+                                "moon",
+                                "bed",
+                                "house",
+                                "sparkle",
+                                "leaf",
+                                "column",
+                                "ticket",
+                                "film",
+                                "bag",
+                                "dot"
+                              ],
+                              "description": "Sprite key for the marker and chip icon"
+                            },
                             "colorHex": {
                               "type": "string"
                             }
@@ -7501,6 +8408,7 @@
                             "slug",
                             "name",
                             "nameVi",
+                            "iconKey",
                             "colorHex"
                           ]
                         },
@@ -9904,6 +10812,30 @@
                               "nameVi": {
                                 "type": "string"
                               },
+                              "iconKey": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
                               "colorHex": {
                                 "type": "string"
                               }
@@ -9913,6 +10845,7 @@
                               "slug",
                               "name",
                               "nameVi",
+                              "iconKey",
                               "colorHex"
                             ]
                           },
@@ -10128,6 +11061,33 @@
                               "null"
                             ]
                           },
+                          "coverCategoryIcon": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "enum": [
+                              "cup",
+                              "bean",
+                              "skyline",
+                              "bowl",
+                              "pho",
+                              "fish",
+                              "cart",
+                              "glass",
+                              "moon",
+                              "bed",
+                              "house",
+                              "sparkle",
+                              "leaf",
+                              "column",
+                              "ticket",
+                              "film",
+                              "bag",
+                              "dot"
+                            ],
+                            "description": "Sprite key for the marker and chip icon"
+                          },
                           "coverCategoryColor": {
                             "type": [
                               "string",
@@ -10161,6 +11121,30 @@
                                 "categorySlug": {
                                   "type": "string"
                                 },
+                                "categoryIcon": {
+                                  "type": "string",
+                                  "enum": [
+                                    "cup",
+                                    "bean",
+                                    "skyline",
+                                    "bowl",
+                                    "pho",
+                                    "fish",
+                                    "cart",
+                                    "glass",
+                                    "moon",
+                                    "bed",
+                                    "house",
+                                    "sparkle",
+                                    "leaf",
+                                    "column",
+                                    "ticket",
+                                    "film",
+                                    "bag",
+                                    "dot"
+                                  ],
+                                  "description": "Sprite key for the marker and chip icon"
+                                },
                                 "categoryColor": {
                                   "type": "string"
                                 }
@@ -10171,6 +11155,7 @@
                                 "coverImageUrl",
                                 "coverBlurhash",
                                 "categorySlug",
+                                "categoryIcon",
                                 "categoryColor"
                               ]
                             }
@@ -10204,6 +11189,7 @@
                           "coverImageUrl",
                           "coverBlurhash",
                           "coverCategorySlug",
+                          "coverCategoryIcon",
                           "coverCategoryColor",
                           "stopPreviews",
                           "startsAtMin",
@@ -10349,6 +11335,33 @@
                             "null"
                           ]
                         },
+                        "coverCategoryIcon": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
+                          "description": "Sprite key for the marker and chip icon"
+                        },
                         "coverCategoryColor": {
                           "type": [
                             "string",
@@ -10382,6 +11395,30 @@
                               "categorySlug": {
                                 "type": "string"
                               },
+                              "categoryIcon": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
                               "categoryColor": {
                                 "type": "string"
                               }
@@ -10392,6 +11429,7 @@
                               "coverImageUrl",
                               "coverBlurhash",
                               "categorySlug",
+                              "categoryIcon",
                               "categoryColor"
                             ]
                           }
@@ -10476,6 +11514,30 @@
                                       "nameVi": {
                                         "type": "string"
                                       },
+                                      "iconKey": {
+                                        "type": "string",
+                                        "enum": [
+                                          "cup",
+                                          "bean",
+                                          "skyline",
+                                          "bowl",
+                                          "pho",
+                                          "fish",
+                                          "cart",
+                                          "glass",
+                                          "moon",
+                                          "bed",
+                                          "house",
+                                          "sparkle",
+                                          "leaf",
+                                          "column",
+                                          "ticket",
+                                          "film",
+                                          "bag",
+                                          "dot"
+                                        ],
+                                        "description": "Sprite key for the marker and chip icon"
+                                      },
                                       "colorHex": {
                                         "type": "string"
                                       }
@@ -10485,6 +11547,7 @@
                                       "slug",
                                       "name",
                                       "nameVi",
+                                      "iconKey",
                                       "colorHex"
                                     ]
                                   },
@@ -10581,6 +11644,7 @@
                         "coverImageUrl",
                         "coverBlurhash",
                         "coverCategorySlug",
+                        "coverCategoryIcon",
                         "coverCategoryColor",
                         "stopPreviews",
                         "startsAtMin",
@@ -10727,6 +11791,33 @@
                             "null"
                           ]
                         },
+                        "coverCategoryIcon": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
+                          "description": "Sprite key for the marker and chip icon"
+                        },
                         "coverCategoryColor": {
                           "type": [
                             "string",
@@ -10760,6 +11851,30 @@
                               "categorySlug": {
                                 "type": "string"
                               },
+                              "categoryIcon": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
                               "categoryColor": {
                                 "type": "string"
                               }
@@ -10770,6 +11885,7 @@
                               "coverImageUrl",
                               "coverBlurhash",
                               "categorySlug",
+                              "categoryIcon",
                               "categoryColor"
                             ]
                           }
@@ -10854,6 +11970,30 @@
                                       "nameVi": {
                                         "type": "string"
                                       },
+                                      "iconKey": {
+                                        "type": "string",
+                                        "enum": [
+                                          "cup",
+                                          "bean",
+                                          "skyline",
+                                          "bowl",
+                                          "pho",
+                                          "fish",
+                                          "cart",
+                                          "glass",
+                                          "moon",
+                                          "bed",
+                                          "house",
+                                          "sparkle",
+                                          "leaf",
+                                          "column",
+                                          "ticket",
+                                          "film",
+                                          "bag",
+                                          "dot"
+                                        ],
+                                        "description": "Sprite key for the marker and chip icon"
+                                      },
                                       "colorHex": {
                                         "type": "string"
                                       }
@@ -10863,6 +12003,7 @@
                                       "slug",
                                       "name",
                                       "nameVi",
+                                      "iconKey",
                                       "colorHex"
                                     ]
                                   },
@@ -10959,6 +12100,7 @@
                         "coverImageUrl",
                         "coverBlurhash",
                         "coverCategorySlug",
+                        "coverCategoryIcon",
                         "coverCategoryColor",
                         "stopPreviews",
                         "startsAtMin",
@@ -11128,6 +12270,33 @@
                             "null"
                           ]
                         },
+                        "coverCategoryIcon": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
+                          "description": "Sprite key for the marker and chip icon"
+                        },
                         "coverCategoryColor": {
                           "type": [
                             "string",
@@ -11161,6 +12330,30 @@
                               "categorySlug": {
                                 "type": "string"
                               },
+                              "categoryIcon": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
                               "categoryColor": {
                                 "type": "string"
                               }
@@ -11171,6 +12364,7 @@
                               "coverImageUrl",
                               "coverBlurhash",
                               "categorySlug",
+                              "categoryIcon",
                               "categoryColor"
                             ]
                           }
@@ -11255,6 +12449,30 @@
                                       "nameVi": {
                                         "type": "string"
                                       },
+                                      "iconKey": {
+                                        "type": "string",
+                                        "enum": [
+                                          "cup",
+                                          "bean",
+                                          "skyline",
+                                          "bowl",
+                                          "pho",
+                                          "fish",
+                                          "cart",
+                                          "glass",
+                                          "moon",
+                                          "bed",
+                                          "house",
+                                          "sparkle",
+                                          "leaf",
+                                          "column",
+                                          "ticket",
+                                          "film",
+                                          "bag",
+                                          "dot"
+                                        ],
+                                        "description": "Sprite key for the marker and chip icon"
+                                      },
                                       "colorHex": {
                                         "type": "string"
                                       }
@@ -11264,6 +12482,7 @@
                                       "slug",
                                       "name",
                                       "nameVi",
+                                      "iconKey",
                                       "colorHex"
                                     ]
                                   },
@@ -11360,6 +12579,7 @@
                         "coverImageUrl",
                         "coverBlurhash",
                         "coverCategorySlug",
+                        "coverCategoryIcon",
                         "coverCategoryColor",
                         "stopPreviews",
                         "startsAtMin",
@@ -11628,6 +12848,33 @@
                             "null"
                           ]
                         },
+                        "coverCategoryIcon": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
+                          "description": "Sprite key for the marker and chip icon"
+                        },
                         "coverCategoryColor": {
                           "type": [
                             "string",
@@ -11661,6 +12908,30 @@
                               "categorySlug": {
                                 "type": "string"
                               },
+                              "categoryIcon": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
                               "categoryColor": {
                                 "type": "string"
                               }
@@ -11671,6 +12942,7 @@
                               "coverImageUrl",
                               "coverBlurhash",
                               "categorySlug",
+                              "categoryIcon",
                               "categoryColor"
                             ]
                           }
@@ -11755,6 +13027,30 @@
                                       "nameVi": {
                                         "type": "string"
                                       },
+                                      "iconKey": {
+                                        "type": "string",
+                                        "enum": [
+                                          "cup",
+                                          "bean",
+                                          "skyline",
+                                          "bowl",
+                                          "pho",
+                                          "fish",
+                                          "cart",
+                                          "glass",
+                                          "moon",
+                                          "bed",
+                                          "house",
+                                          "sparkle",
+                                          "leaf",
+                                          "column",
+                                          "ticket",
+                                          "film",
+                                          "bag",
+                                          "dot"
+                                        ],
+                                        "description": "Sprite key for the marker and chip icon"
+                                      },
                                       "colorHex": {
                                         "type": "string"
                                       }
@@ -11764,6 +13060,7 @@
                                       "slug",
                                       "name",
                                       "nameVi",
+                                      "iconKey",
                                       "colorHex"
                                     ]
                                   },
@@ -11860,6 +13157,7 @@
                         "coverImageUrl",
                         "coverBlurhash",
                         "coverCategorySlug",
+                        "coverCategoryIcon",
                         "coverCategoryColor",
                         "stopPreviews",
                         "startsAtMin",
@@ -12039,6 +13337,33 @@
                             "null"
                           ]
                         },
+                        "coverCategoryIcon": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
+                          "description": "Sprite key for the marker and chip icon"
+                        },
                         "coverCategoryColor": {
                           "type": [
                             "string",
@@ -12072,6 +13397,30 @@
                               "categorySlug": {
                                 "type": "string"
                               },
+                              "categoryIcon": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
                               "categoryColor": {
                                 "type": "string"
                               }
@@ -12082,6 +13431,7 @@
                               "coverImageUrl",
                               "coverBlurhash",
                               "categorySlug",
+                              "categoryIcon",
                               "categoryColor"
                             ]
                           }
@@ -12166,6 +13516,30 @@
                                       "nameVi": {
                                         "type": "string"
                                       },
+                                      "iconKey": {
+                                        "type": "string",
+                                        "enum": [
+                                          "cup",
+                                          "bean",
+                                          "skyline",
+                                          "bowl",
+                                          "pho",
+                                          "fish",
+                                          "cart",
+                                          "glass",
+                                          "moon",
+                                          "bed",
+                                          "house",
+                                          "sparkle",
+                                          "leaf",
+                                          "column",
+                                          "ticket",
+                                          "film",
+                                          "bag",
+                                          "dot"
+                                        ],
+                                        "description": "Sprite key for the marker and chip icon"
+                                      },
                                       "colorHex": {
                                         "type": "string"
                                       }
@@ -12175,6 +13549,7 @@
                                       "slug",
                                       "name",
                                       "nameVi",
+                                      "iconKey",
                                       "colorHex"
                                     ]
                                   },
@@ -12271,6 +13646,7 @@
                         "coverImageUrl",
                         "coverBlurhash",
                         "coverCategorySlug",
+                        "coverCategoryIcon",
                         "coverCategoryColor",
                         "stopPreviews",
                         "startsAtMin",
@@ -12470,6 +13846,33 @@
                             "null"
                           ]
                         },
+                        "coverCategoryIcon": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
+                          "description": "Sprite key for the marker and chip icon"
+                        },
                         "coverCategoryColor": {
                           "type": [
                             "string",
@@ -12503,6 +13906,30 @@
                               "categorySlug": {
                                 "type": "string"
                               },
+                              "categoryIcon": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
                               "categoryColor": {
                                 "type": "string"
                               }
@@ -12513,6 +13940,7 @@
                               "coverImageUrl",
                               "coverBlurhash",
                               "categorySlug",
+                              "categoryIcon",
                               "categoryColor"
                             ]
                           }
@@ -12597,6 +14025,30 @@
                                       "nameVi": {
                                         "type": "string"
                                       },
+                                      "iconKey": {
+                                        "type": "string",
+                                        "enum": [
+                                          "cup",
+                                          "bean",
+                                          "skyline",
+                                          "bowl",
+                                          "pho",
+                                          "fish",
+                                          "cart",
+                                          "glass",
+                                          "moon",
+                                          "bed",
+                                          "house",
+                                          "sparkle",
+                                          "leaf",
+                                          "column",
+                                          "ticket",
+                                          "film",
+                                          "bag",
+                                          "dot"
+                                        ],
+                                        "description": "Sprite key for the marker and chip icon"
+                                      },
                                       "colorHex": {
                                         "type": "string"
                                       }
@@ -12606,6 +14058,7 @@
                                       "slug",
                                       "name",
                                       "nameVi",
+                                      "iconKey",
                                       "colorHex"
                                     ]
                                   },
@@ -12702,6 +14155,7 @@
                         "coverImageUrl",
                         "coverBlurhash",
                         "coverCategorySlug",
+                        "coverCategoryIcon",
                         "coverCategoryColor",
                         "stopPreviews",
                         "startsAtMin",
@@ -12855,6 +14309,33 @@
                             "null"
                           ]
                         },
+                        "coverCategoryIcon": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
+                          "description": "Sprite key for the marker and chip icon"
+                        },
                         "coverCategoryColor": {
                           "type": [
                             "string",
@@ -12888,6 +14369,30 @@
                               "categorySlug": {
                                 "type": "string"
                               },
+                              "categoryIcon": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
                               "categoryColor": {
                                 "type": "string"
                               }
@@ -12898,6 +14403,7 @@
                               "coverImageUrl",
                               "coverBlurhash",
                               "categorySlug",
+                              "categoryIcon",
                               "categoryColor"
                             ]
                           }
@@ -12982,6 +14488,30 @@
                                       "nameVi": {
                                         "type": "string"
                                       },
+                                      "iconKey": {
+                                        "type": "string",
+                                        "enum": [
+                                          "cup",
+                                          "bean",
+                                          "skyline",
+                                          "bowl",
+                                          "pho",
+                                          "fish",
+                                          "cart",
+                                          "glass",
+                                          "moon",
+                                          "bed",
+                                          "house",
+                                          "sparkle",
+                                          "leaf",
+                                          "column",
+                                          "ticket",
+                                          "film",
+                                          "bag",
+                                          "dot"
+                                        ],
+                                        "description": "Sprite key for the marker and chip icon"
+                                      },
                                       "colorHex": {
                                         "type": "string"
                                       }
@@ -12991,6 +14521,7 @@
                                       "slug",
                                       "name",
                                       "nameVi",
+                                      "iconKey",
                                       "colorHex"
                                     ]
                                   },
@@ -13087,6 +14618,7 @@
                         "coverImageUrl",
                         "coverBlurhash",
                         "coverCategorySlug",
+                        "coverCategoryIcon",
                         "coverCategoryColor",
                         "stopPreviews",
                         "startsAtMin",
@@ -13094,6 +14626,656 @@
                         "createdAt",
                         "updatedAt",
                         "stops"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/checkins": {
+      "get": {
+        "tags": [
+          "Check-ins"
+        ],
+        "summary": "Somebody's photographs, or a place's",
+        "description": "Newest first, keyset-paged on `cursor`. One of `userId` or `placeId` is required: an unfiltered list would be a global feed of every photograph on the platform, which is a product decision and a moderation surface, not something that should fall out of leaving a parameter off.\n\nOpen to read, but authenticated optionally — `canDelete` has to know who is asking, which is also why the response is `private` rather than shared-cacheable.\n\nA check-in is not a review. It carries no rating, it does not move the place's average, and there is no one-per-person rule — five evenings at the same bar are five posts. A review is a judgement other people read to decide; this is a photograph of somewhere real on a day that happened.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false,
+            "name": "userId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false,
+            "name": "placeId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false,
+            "name": "cursor",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 12
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of check-ins",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "caption": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "visitedAt": {
+                                "type": "string"
+                              },
+                              "createdAt": {
+                                "type": "string"
+                              },
+                              "images": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string",
+                                      "format": "uuid"
+                                    },
+                                    "url": {
+                                      "type": "string",
+                                      "format": "uri"
+                                    },
+                                    "width": {
+                                      "type": "integer"
+                                    },
+                                    "height": {
+                                      "type": "integer"
+                                    },
+                                    "blurhash": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "url",
+                                    "width",
+                                    "height",
+                                    "blurhash"
+                                  ]
+                                }
+                              },
+                              "place": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "district": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "province": {
+                                    "type": "string"
+                                  },
+                                  "categoryName": {
+                                    "type": "string"
+                                  },
+                                  "categoryNameVi": {
+                                    "type": "string"
+                                  },
+                                  "categoryIcon": {
+                                    "type": "string",
+                                    "enum": [
+                                      "cup",
+                                      "bean",
+                                      "skyline",
+                                      "bowl",
+                                      "pho",
+                                      "fish",
+                                      "cart",
+                                      "glass",
+                                      "moon",
+                                      "bed",
+                                      "house",
+                                      "sparkle",
+                                      "leaf",
+                                      "column",
+                                      "ticket",
+                                      "film",
+                                      "bag",
+                                      "dot"
+                                    ],
+                                    "description": "Sprite key for the marker and chip icon"
+                                  },
+                                  "categoryColor": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "district",
+                                  "province",
+                                  "categoryName",
+                                  "categoryNameVi",
+                                  "categoryIcon",
+                                  "categoryColor"
+                                ]
+                              },
+                              "author": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "avatarUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "avatarUrl"
+                                ]
+                              },
+                              "canDelete": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "caption",
+                              "visitedAt",
+                              "createdAt",
+                              "images",
+                              "place",
+                              "author",
+                              "canDelete"
+                            ]
+                          }
+                        },
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "items",
+                        "cursor",
+                        "hasMore"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Check-ins"
+        ],
+        "summary": "Post a photograph from a place",
+        "description": "`imageKeys` are storage keys from `/uploads/signature`, and each one is verified through `/uploads/confirm` inside the same transaction that writes the post — a key that fails verification takes the whole check-in with it rather than leaving a post with two of its three pictures.\n\nBetween one and six images, and at least one: a check-in with no picture is a review with no rating, and the screen it feeds is a grid of pictures.\n\n`visitedAt` is the day it happened, not the day it was posted — a photo put up on Sunday from Friday night is still Friday night. It defaults to today.\n\nThe place must be approved and not deleted. Without that check a post could point at a rejected submission and render as a row nobody else can open.\n\nA check-in is not a review. It carries no rating, it does not move the place's average, and there is no one-per-person rule — five evenings at the same bar are five posts. A review is a judgement other people read to decide; this is a photograph of somewhere real on a day that happened.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "placeId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "caption": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 300
+                  },
+                  "visitedAt": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "imageKeys": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 512
+                    },
+                    "minItems": 1,
+                    "maxItems": 6
+                  }
+                },
+                "required": [
+                  "placeId",
+                  "imageKeys"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The new check-in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "caption": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "visitedAt": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "images": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "url": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "width": {
+                                "type": "integer"
+                              },
+                              "height": {
+                                "type": "integer"
+                              },
+                              "blurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "url",
+                              "width",
+                              "height",
+                              "blurhash"
+                            ]
+                          }
+                        },
+                        "place": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "slug": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "district": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "province": {
+                              "type": "string"
+                            },
+                            "categoryName": {
+                              "type": "string"
+                            },
+                            "categoryNameVi": {
+                              "type": "string"
+                            },
+                            "categoryIcon": {
+                              "type": "string",
+                              "enum": [
+                                "cup",
+                                "bean",
+                                "skyline",
+                                "bowl",
+                                "pho",
+                                "fish",
+                                "cart",
+                                "glass",
+                                "moon",
+                                "bed",
+                                "house",
+                                "sparkle",
+                                "leaf",
+                                "column",
+                                "ticket",
+                                "film",
+                                "bag",
+                                "dot"
+                              ],
+                              "description": "Sprite key for the marker and chip icon"
+                            },
+                            "categoryColor": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "slug",
+                            "name",
+                            "district",
+                            "province",
+                            "categoryName",
+                            "categoryNameVi",
+                            "categoryIcon",
+                            "categoryColor"
+                          ]
+                        },
+                        "author": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "avatarUrl": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "avatarUrl"
+                          ]
+                        },
+                        "canDelete": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "caption",
+                        "visitedAt",
+                        "createdAt",
+                        "images",
+                        "place",
+                        "author",
+                        "canDelete"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/checkins/{id}": {
+      "delete": {
+        "tags": [
+          "Check-ins"
+        ],
+        "summary": "Delete your own check-in",
+        "description": "Author only, and a hard delete — a check-in contributes to no average and belongs to one person, so \"delete\" means the photograph is gone rather than hidden. The stored objects are left to the bucket lifecycle rule, the same treatment an abandoned upload gets.\n\nSomebody else's check-in answers 404, not 403. Distinguishing the two would turn this endpoint into a way to ask whether a given id exists.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id"
                       ]
                     },
                     "meta": {
@@ -13213,11 +15395,19 @@
                             },
                             "places": {
                               "type": "integer"
+                            },
+                            "checkIns": {
+                              "type": "integer"
+                            },
+                            "placesVisited": {
+                              "type": "integer"
                             }
                           },
                           "required": [
                             "reviews",
-                            "places"
+                            "places",
+                            "checkIns",
+                            "placesVisited"
                           ]
                         },
                         "recentReviews": {
@@ -13343,6 +15533,30 @@
                                   "nameVi": {
                                     "type": "string"
                                   },
+                                  "iconKey": {
+                                    "type": "string",
+                                    "enum": [
+                                      "cup",
+                                      "bean",
+                                      "skyline",
+                                      "bowl",
+                                      "pho",
+                                      "fish",
+                                      "cart",
+                                      "glass",
+                                      "moon",
+                                      "bed",
+                                      "house",
+                                      "sparkle",
+                                      "leaf",
+                                      "column",
+                                      "ticket",
+                                      "film",
+                                      "bag",
+                                      "dot"
+                                    ],
+                                    "description": "Sprite key for the marker and chip icon"
+                                  },
                                   "colorHex": {
                                     "type": "string"
                                   }
@@ -13352,6 +15566,7 @@
                                   "slug",
                                   "name",
                                   "nameVi",
+                                  "iconKey",
                                   "colorHex"
                                 ]
                               }
@@ -16988,6 +19203,30 @@
                                   "nameVi": {
                                     "type": "string"
                                   },
+                                  "iconKey": {
+                                    "type": "string",
+                                    "enum": [
+                                      "cup",
+                                      "bean",
+                                      "skyline",
+                                      "bowl",
+                                      "pho",
+                                      "fish",
+                                      "cart",
+                                      "glass",
+                                      "moon",
+                                      "bed",
+                                      "house",
+                                      "sparkle",
+                                      "leaf",
+                                      "column",
+                                      "ticket",
+                                      "film",
+                                      "bag",
+                                      "dot"
+                                    ],
+                                    "description": "Sprite key for the marker and chip icon"
+                                  },
                                   "colorHex": {
                                     "type": "string"
                                   }
@@ -16997,6 +19236,7 @@
                                   "slug",
                                   "name",
                                   "nameVi",
+                                  "iconKey",
                                   "colorHex"
                                 ]
                               },
@@ -17319,6 +19559,30 @@
                                     "nameVi": {
                                       "type": "string"
                                     },
+                                    "iconKey": {
+                                      "type": "string",
+                                      "enum": [
+                                        "cup",
+                                        "bean",
+                                        "skyline",
+                                        "bowl",
+                                        "pho",
+                                        "fish",
+                                        "cart",
+                                        "glass",
+                                        "moon",
+                                        "bed",
+                                        "house",
+                                        "sparkle",
+                                        "leaf",
+                                        "column",
+                                        "ticket",
+                                        "film",
+                                        "bag",
+                                        "dot"
+                                      ],
+                                      "description": "Sprite key for the marker and chip icon"
+                                    },
                                     "colorHex": {
                                       "type": "string"
                                     }
@@ -17328,6 +19592,7 @@
                                     "slug",
                                     "name",
                                     "nameVi",
+                                    "iconKey",
                                     "colorHex"
                                   ]
                                 },
@@ -17723,7 +19988,8 @@
                     "type": "string",
                     "enum": [
                       "place",
-                      "avatar"
+                      "avatar",
+                      "checkin"
                     ]
                   },
                   "contentType": {
@@ -22239,6 +24505,26 @@
                           },
                           "iconKey": {
                             "type": "string",
+                            "enum": [
+                              "cup",
+                              "bean",
+                              "skyline",
+                              "bowl",
+                              "pho",
+                              "fish",
+                              "cart",
+                              "glass",
+                              "moon",
+                              "bed",
+                              "house",
+                              "sparkle",
+                              "leaf",
+                              "column",
+                              "ticket",
+                              "film",
+                              "bag",
+                              "dot"
+                            ],
                             "description": "Sprite key for the marker and chip icon"
                           },
                           "colorHex": {
@@ -22363,8 +24649,27 @@
                   },
                   "iconKey": {
                     "type": "string",
-                    "minLength": 1,
-                    "maxLength": 40
+                    "enum": [
+                      "cup",
+                      "bean",
+                      "skyline",
+                      "bowl",
+                      "pho",
+                      "fish",
+                      "cart",
+                      "glass",
+                      "moon",
+                      "bed",
+                      "house",
+                      "sparkle",
+                      "leaf",
+                      "column",
+                      "ticket",
+                      "film",
+                      "bag",
+                      "dot"
+                    ],
+                    "description": "Sprite key for the marker and chip icon"
                   },
                   "colorHex": {
                     "type": "string",
@@ -22424,6 +24729,26 @@
                         },
                         "iconKey": {
                           "type": "string",
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
                           "description": "Sprite key for the marker and chip icon"
                         },
                         "colorHex": {
@@ -22561,8 +24886,27 @@
                   },
                   "iconKey": {
                     "type": "string",
-                    "minLength": 1,
-                    "maxLength": 40
+                    "enum": [
+                      "cup",
+                      "bean",
+                      "skyline",
+                      "bowl",
+                      "pho",
+                      "fish",
+                      "cart",
+                      "glass",
+                      "moon",
+                      "bed",
+                      "house",
+                      "sparkle",
+                      "leaf",
+                      "column",
+                      "ticket",
+                      "film",
+                      "bag",
+                      "dot"
+                    ],
+                    "description": "Sprite key for the marker and chip icon"
                   },
                   "colorHex": {
                     "type": "string",
@@ -22618,6 +24962,26 @@
                         },
                         "iconKey": {
                           "type": "string",
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
                           "description": "Sprite key for the marker and chip icon"
                         },
                         "colorHex": {

@@ -10,6 +10,16 @@ export const API_PREFIX = '/api/v1';
 const SERVER_BASE = process.env.API_INTERNAL_URL ?? 'http://localhost:4000';
 const isServer = typeof window === 'undefined';
 
+/**
+ * The absolute API base, for a client with no proxy under it.
+ *
+ * Empty on the web, where the relative path rides the Next rewrite. Set for
+ * the iOS build, which is a static bundle served from `capacitor://localhost`
+ * — there is no Next server in the app, so the WebView has to reach the API
+ * directly. Inlined at build time, which is why it is `NEXT_PUBLIC_`.
+ */
+const CLIENT_BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
+
 interface SuccessBody<T> {
   success: true;
   data: T;
@@ -106,7 +116,7 @@ async function refreshAccessToken(): Promise<boolean> {
 }
 
 function buildUrl(path: string, query?: RequestOptions['query']): string {
-  const base = isServer ? `${SERVER_BASE}${API_PREFIX}` : API_PREFIX;
+  const base = isServer ? `${SERVER_BASE}${API_PREFIX}` : `${CLIENT_BASE}${API_PREFIX}`;
   const url = `${base}${path.startsWith('/') ? path : `/${path}`}`;
 
   if (!query) return url;

@@ -9,6 +9,7 @@ import { LocaleSwitcher } from '@/i18n/LocaleSwitcher';
 import { useSessionStore } from '../store';
 import { logout } from '../api';
 import { BackButton } from '@/components/ui/BackButton';
+import { useGoBack } from '@/lib/navigation/useGoBack';
 
 /**
  * Everything the profile screen used to be.
@@ -22,6 +23,7 @@ export function AccountSettingsScreen() {
   const router = useRouter();
   const { user, isInitializing, clear } = useSessionStore();
   const queryClient = useQueryClient();
+  const goBack = useGoBack('/profile');
 
   const signOut = async () => {
     await logout();
@@ -35,11 +37,7 @@ export function AccountSettingsScreen() {
   return (
     <div className="px-safe pb-10">
       <header className="pt-safe-float px-5">
-        <BackButton
-          onClick={() => {
-            router.push('/profile');
-          }}
-        />
+        <BackButton onClick={goBack} />
         <h1 className="text-ink mt-1 text-title leading-tight font-semibold tracking-tight">
           {t('profile.settingsTitle')}
         </h1>

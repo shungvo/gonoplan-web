@@ -25,6 +25,7 @@ import type { TranslateFn } from '@/i18n/translate';
 import type { CollectionKey } from '@/features/recommendations/api';
 import { categoryName } from '@/features/categories/name';
 import { CategoryGlyph } from '@/features/categories/CategoryGlyph';
+import { Avatar } from '@/components/ui/Avatar';
 import { cn } from '@/lib/utils/cn';
 
 /**
@@ -57,7 +58,7 @@ function SectionHeading({
         <button
           type="button"
           onClick={onViewAll}
-          className="text-primary shrink-0 text-sm font-medium underline decoration-border underline-offset-4"
+          className="text-primary decoration-border shrink-0 text-sm font-medium underline underline-offset-4"
         >
           {viewAllLabel}
         </button>
@@ -78,7 +79,11 @@ const FALLBACK_ORIGIN = { latitude: 10.7769, longitude: 106.7009 };
  * knowing who is reading. `fallback` covers the rails the API omits — an
  * account-only one for a guest, an evening one before evening.
  */
-function railTitle(t: TranslateFn, rail: { key: CollectionKey } | undefined, fallback: CollectionKey): string {
+function railTitle(
+  t: TranslateFn,
+  rail: { key: CollectionKey } | undefined,
+  fallback: CollectionKey,
+): string {
   return t(`collection.${rail?.key ?? fallback}.title`);
 }
 
@@ -157,15 +162,26 @@ export function HomeScreen() {
       */}
       <header className="pt-safe-float px-5">
         <div className="flex items-center gap-3">
+          {/*
+            Signed out is not an avatar with a missing photograph — there is
+            nobody to draw. It keeps the generic figure and its own tinted
+            disc; `Avatar` only takes over once there is a person, and then it
+            shows their picture if they have set one.
+
+            The shadow stays on the wrapper either way, so the control reads as
+            the same object in both states.
+          */}
           <Link
             href="/profile"
             aria-label={user ? t('home.signedInAs', { name: user.name }) : t('common.signIn')}
-            className="bg-primary-tint text-primary flex size-11 shrink-0 items-center justify-center rounded-full text-base font-semibold shadow-sm"
+            className="shrink-0 rounded-full shadow-sm"
           >
             {user ? (
-              user.name.trim().charAt(0).toUpperCase()
+              <Avatar name={user.name} url={user.avatarUrl} size="lg" />
             ) : (
-              <User className="size-5" aria-hidden />
+              <span className="bg-primary-tint text-primary flex size-11 items-center justify-center rounded-full">
+                <User className="size-5" aria-hidden />
+              </span>
             )}
           </Link>
 
@@ -196,12 +212,10 @@ export function HomeScreen() {
           onClick={() => {
             router.push('/search');
           }}
-          className="bg-surface mt-4 flex h-12 w-full items-center gap-3 rounded-full px-4 text-left shadow-md press-surface"
+          className="bg-surface press-surface mt-4 flex h-12 w-full items-center gap-3 rounded-full px-4 text-left shadow-md"
         >
           <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
-          <span className="text-ink-subtle truncate text-md">
-            {t('home.searchPlaceholder')}
-          </span>
+          <span className="text-ink-subtle text-md truncate">{t('home.searchPlaceholder')}</span>
         </button>
       </header>
 
@@ -221,24 +235,24 @@ export function HomeScreen() {
       )}
 
       {!feedIsEmpty && (
-      <section className="mt-5" aria-label={railTitle(t, featured, 'recommended-for-you')}>
-        <SectionHeading
-          title={railTitle(t, featured, 'recommended-for-you')}
-          viewAllLabel={t('home.viewAll')}
-          onViewAll={() => {
-            router.push('/explore');
-          }}
-        />
-        <PlaceCardStack
-          className="mt-3"
-          places={featured?.places}
-          isPending={collections.isPending}
-          onSelect={(place) => {
-            track(place.id, 'CLICK', 'HOME_FEED');
-            setSelectedPlaceId(place.id);
-          }}
-        />
-      </section>
+        <section className="mt-5" aria-label={railTitle(t, featured, 'recommended-for-you')}>
+          <SectionHeading
+            title={railTitle(t, featured, 'recommended-for-you')}
+            viewAllLabel={t('home.viewAll')}
+            onViewAll={() => {
+              router.push('/explore');
+            }}
+          />
+          <PlaceCardStack
+            className="mt-3"
+            places={featured?.places}
+            isPending={collections.isPending}
+            onSelect={(place) => {
+              track(place.id, 'CLICK', 'HOME_FEED');
+              setSelectedPlaceId(place.id);
+            }}
+          />
+        </section>
       )}
 
       {/* Categories, between the suggestion and the list.
@@ -247,28 +261,28 @@ export function HomeScreen() {
           Each chip lands on Explore already filtered rather than filtering in
           place, because the answer is a list and this screen is not one. */}
       {!feedIsEmpty && (
-      <section className="mt-7" aria-label={t('home.categories')}>
-        <SectionHeading
-          title={t('home.categories')}
-          viewAllLabel={t('home.viewAll')}
-          onViewAll={() => {
-            router.push('/explore');
-          }}
-        />
-        <div className="mt-3 flex snap-x snap-mandatory scroll-pl-5 scrollbar-none gap-2 overflow-x-auto px-5 pb-1">
-          {/* The tree's roots are the top-level categories — flattening would
+        <section className="mt-7" aria-label={t('home.categories')}>
+          <SectionHeading
+            title={t('home.categories')}
+            viewAllLabel={t('home.viewAll')}
+            onViewAll={() => {
+              router.push('/explore');
+            }}
+          />
+          <div className="mt-3 flex snap-x snap-mandatory scroll-pl-5 scrollbar-none gap-2 overflow-x-auto px-5 pb-1">
+            {/* The tree's roots are the top-level categories — flattening would
               mix subcategories in and make the row twice as long for no gain. */}
-          {categories.data
-            ? categories.data.map((category) => (
-                <button
-                  key={category.id}
-                  type="button"
-                  onClick={() => {
-                    router.push(`/explore?category=${category.slug}`);
-                  }}
-                  className="border-border bg-surface text-ink inline-flex h-11 shrink-0 snap-start items-center gap-2 rounded-full border px-4 text-sm font-medium press-soft"
-                >
-                  {/*
+            {categories.data
+              ? categories.data.map((category) => (
+                  <button
+                    key={category.id}
+                    type="button"
+                    onClick={() => {
+                      router.push(`/explore?category=${category.slug}`);
+                    }}
+                    className="border-border bg-surface text-ink press-soft inline-flex h-11 shrink-0 snap-start items-center gap-2 rounded-full border px-4 text-sm font-medium"
+                  >
+                    {/*
                     The category's own glyph, in the category's own colour.
 
                     A coloured dot is a legend without a key: it says these
@@ -277,54 +291,54 @@ export function HomeScreen() {
                     map pins and in search, so the shape is worth something
                     before the word is read.
                   */}
-                  <CategoryGlyph
-                    slug={category.slug}
-                    color={category.colorHex}
-                    className="size-[1.125rem] shrink-0"
-                    strokeWidth={2}
+                    <CategoryGlyph
+                      iconKey={category.iconKey}
+                      color={category.colorHex}
+                      className="size-[1.125rem] shrink-0"
+                      strokeWidth={2}
+                    />
+                    {categoryName(category, locale)}
+                  </button>
+                ))
+              : Array.from({ length: 5 }, (_, index) => (
+                  <div
+                    key={index}
+                    className="bg-surface-sunken h-11 w-28 shrink-0 animate-pulse rounded-full"
                   />
-                  {categoryName(category, locale)}
-                </button>
-              ))
-            : Array.from({ length: 5 }, (_, index) => (
-                <div
-                  key={index}
-                  className="bg-surface-sunken h-11 w-28 shrink-0 animate-pulse rounded-full"
-                />
-              ))}
-        </div>
-      </section>
+                ))}
+          </div>
+        </section>
       )}
 
       {!feedIsEmpty && (
-      <section className="mt-7" aria-label={railTitle(t, nearby, 'popular-near-you')}>
-        <SectionHeading
-          title={railTitle(t, nearby, 'popular-near-you')}
-          // Says so out loud when the search had to widen, rather than
-          // silently showing places an hour away as if they were nearby.
-          note={
-            nearby?.widened
-              ? t('home.withinRadius', { distance: formatDistance(nearby.radiusMeters, locale) })
-              : undefined
-          }
-          viewAllLabel={t('home.viewAll')}
-          onViewAll={() => {
-            router.push('/explore');
-          }}
-        />
-        <PlaceGrid
-          className="mt-3"
-          places={nearby?.places.slice(0, 4)}
-          isPending={collections.isPending}
-          onSelect={(place) => {
-            track(place.id, 'CLICK', 'HOME_FEED');
-            setSelectedPlaceId(place.id);
-          }}
-          onRequireAuth={() => {
-            setAuthOpen(true);
-          }}
-        />
-      </section>
+        <section className="mt-7" aria-label={railTitle(t, nearby, 'popular-near-you')}>
+          <SectionHeading
+            title={railTitle(t, nearby, 'popular-near-you')}
+            // Says so out loud when the search had to widen, rather than
+            // silently showing places an hour away as if they were nearby.
+            note={
+              nearby?.widened
+                ? t('home.withinRadius', { distance: formatDistance(nearby.radiusMeters, locale) })
+                : undefined
+            }
+            viewAllLabel={t('home.viewAll')}
+            onViewAll={() => {
+              router.push('/explore');
+            }}
+          />
+          <PlaceGrid
+            className="mt-3"
+            places={nearby?.places.slice(0, 4)}
+            isPending={collections.isPending}
+            onSelect={(place) => {
+              track(place.id, 'CLICK', 'HOME_FEED');
+              setSelectedPlaceId(place.id);
+            }}
+            onRequireAuth={() => {
+              setAuthOpen(true);
+            }}
+          />
+        </section>
       )}
 
       <section className="mt-7 px-5" aria-label={t('home.map')}>
@@ -340,18 +354,18 @@ export function HomeScreen() {
           API sends "Hidden gems" instead, and the heading follows the data
           rather than claiming an evening that has not arrived. */}
       {!feedIsEmpty && (
-      <div className="mt-7">
-        <PlaceRail
-          title={railTitle(t, tonight, 'good-for-tonight')}
-          places={tonight?.places}
-          isPending={collections.isPending}
-          onSelect={(place) => {
-            track(place.id, 'CLICK', 'HOME_FEED');
-            setSelectedPlaceId(place.id);
-          }}
-          emptyMessage={t('home.nothingOpen')}
-        />
-      </div>
+        <div className="mt-7">
+          <PlaceRail
+            title={railTitle(t, tonight, 'good-for-tonight')}
+            places={tonight?.places}
+            isPending={collections.isPending}
+            onSelect={(place) => {
+              track(place.id, 'CLICK', 'HOME_FEED');
+              setSelectedPlaceId(place.id);
+            }}
+            emptyMessage={t('home.nothingOpen')}
+          />
+        </div>
       )}
 
       {/* Only shown once we know where the user is — until then the label would

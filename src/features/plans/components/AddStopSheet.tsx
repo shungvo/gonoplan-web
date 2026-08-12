@@ -155,7 +155,7 @@ function AddStopBody({
                       url={place.coverImageUrl}
                       blurhash={place.coverBlurhash}
                       name={place.name}
-                      categorySlug={place.category.slug}
+                      categoryIconKey={place.category.iconKey}
                       categoryColor={place.category.colorHex}
                       sizes="48px"
                       fallbackSize="sm"

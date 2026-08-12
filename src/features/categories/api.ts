@@ -11,6 +11,15 @@ import type { components } from '@/types/api';
 export type Category = components['schemas']['Category'];
 export type CategoryTreeNode = components['schemas']['CategoryTreeNode'];
 
+/**
+ * The icon vocabulary, as a union of literals.
+ *
+ * Derived from the contract rather than re-listed here, so the glyph table in
+ * `CategoryGlyph` is checked against what the API will actually accept. When a
+ * shape is added server-side this stops compiling until it is drawn.
+ */
+export type CategoryIconKey = Category['iconKey'];
+
 export function fetchCategories(): Promise<CategoryTreeNode[]> {
   return api.get<CategoryTreeNode[]>('/categories', { withAuth: false });
 }
