@@ -103,7 +103,16 @@ export function OverviewScreen() {
             />
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-5">
+          {/*
+            Five across only once there is room for five.
+
+            At the `lg` breakpoint a fifth column puts each card at 134px, and
+            "Người dùng hoạt động" over "đã đăng nhập tuần này" then wraps to
+            four lines — the card grows taller than the queue cards above it
+            while saying less. Three across until 1280px, where the container
+            stops growing and five fit at a comfortable 230px.
+          */}
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
             <Stat
               label={t('overview.users')}
               value={totals.users}

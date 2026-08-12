@@ -625,7 +625,8 @@ export const en = {
   'moderation.targetType.PLACE': 'place',
   'moderation.targetType.REVIEW': 'review',
   'moderation.targetType.USER': 'account',
-  'moderation.openReports': '{count} open reports on this target',
+  // Not "on this target": the badge is drawn on the target's own card.
+  'moderation.openReports': '{count} open reports',
   'reportReason.SPAM': 'spam or fake',
   'reportReason.INAPPROPRIATE': 'inappropriate',
   'reportReason.INCORRECT_INFO': 'wrong information',

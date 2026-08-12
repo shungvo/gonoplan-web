@@ -181,7 +181,20 @@ export function UsersScreen() {
 
           return (
             <Card key={user.id}>
-              <div className="flex flex-wrap items-start justify-between gap-3">
+              {/*
+                Who they are on one line, what can be done to them on the next.
+
+                These shared a row until the list went to two columns, held
+                apart by `shrink-0` on the controls — which at half the width
+                stopped being "do not squeeze these" and became "let these run
+                out of the card", taking the page's horizontal scrollbar with
+                them. Six controls never fit beside a name and an email at
+                540px, so they no longer try.
+
+                The status badge stays up here: it is a label on the person,
+                not a thing to press, and it is two words wide.
+              */}
+              <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
                   <span className="bg-primary-tint text-primary flex size-10 shrink-0 items-center justify-center rounded-full font-semibold">
                     {user.name.trim().charAt(0).toUpperCase()}
@@ -202,97 +215,105 @@ export function UsersScreen() {
                         submissions: user._count.submittedPlaces,
                       })}
                     </p>
+
+                    {/* The page everyone else sees. A moderator handling a
+                        report about a person could read their row here and not
+                        the thing being complained about.
+
+                        Up here with the name rather than in the row of
+                        buttons: it says who they are, not what to do to them —
+                        and it was the longest item in that row, the one that
+                        pushed Delete onto a line of its own. */}
+                    {user.status === 'ACTIVE' && (
+                      <Link
+                        href={`/u/${user.id}`}
+                        target="_blank"
+                        className="text-primary mt-1 inline-flex items-center gap-1 text-xs font-medium"
+                      >
+                        {t('users.viewPublicProfile')}
+                        <ExternalLink className="size-3" aria-hidden />
+                      </Link>
+                    )}
                   </div>
                 </div>
 
-                <div className="flex shrink-0 items-center gap-2">
-                  {/* The page everyone else sees. A moderator handling a report
-                      about a person could read their row here and not the
-                      thing being complained about. */}
-                  {user.status === 'ACTIVE' && (
-                    <Link
-                      href={`/u/${user.id}`}
-                      target="_blank"
-                      className="text-primary inline-flex items-center gap-1 text-xs font-medium"
-                    >
-                      {t('users.viewPublicProfile')}
-                      <ExternalLink className="size-3" aria-hidden />
-                    </Link>
-                  )}
-                  <StatusBadge status={user.status} />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setExpandedId(isExpanded ? null : user.id);
-                    }}
-                  >
-                    {isExpanded ? t('users.hide') : t('users.history')}
-                  </Button>
+                <StatusBadge status={user.status} />
+              </div>
 
-                  {/* Both refusals are enforced by the server; hiding the
+              {/* Wrapping, not `shrink-0`: which controls appear depends on the
+                  person — an admin gets one, an ordinary user four — so the row
+                  has to survive its widest case rather than the common one. */}
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setExpandedId(isExpanded ? null : user.id);
+                  }}
+                >
+                  {isExpanded ? t('users.hide') : t('users.history')}
+                </Button>
+
+                {/* Both refusals are enforced by the server; hiding the
                       buttons is so a moderator is never offered an action that
                       is going to fail. */}
-                  {!isSelf &&
-                    !isAdmin &&
-                    user.status !== 'DELETED' &&
-                    (user.status === 'BANNED' ? (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        isLoading={unban.isPending}
-                        onClick={() => {
-                          unban.mutate(user.id);
-                        }}
-                      >
-                        {t('users.reinstate')}
-                      </Button>
-                    ) : (
-                      <Button
-                        size="sm"
-                        variant="danger"
-                        onClick={() => {
-                          setBanTarget(user);
-                        }}
-                      >
-                        {t('users.ban')}
-                      </Button>
-                    ))}
-
-                  {/* Only USER and REVIEWER are interchangeable here. Owners
-                      come from verification and admins are not grantable from
-                      this screen, so neither is offered a toggle that would
-                      400. */}
-                  {!isSelf && (user.role === 'USER' || user.role === 'REVIEWER') && (
+                {!isSelf &&
+                  !isAdmin &&
+                  user.status !== 'DELETED' &&
+                  (user.status === 'BANNED' ? (
                     <Button
                       size="sm"
                       variant="secondary"
-                      isLoading={changeRole.isPending}
+                      isLoading={unban.isPending}
                       onClick={() => {
-                        changeRole.mutate({
-                          user,
-                          next: user.role === 'REVIEWER' ? 'USER' : 'REVIEWER',
-                        });
+                        unban.mutate(user.id);
                       }}
                     >
-                      {user.role === 'REVIEWER'
-                        ? t('users.removeBadge')
-                        : t('users.makeReviewer')}
+                      {t('users.reinstate')}
                     </Button>
-                  )}
-
-                  {!isSelf && !isAdmin && user.status !== 'DELETED' && (
+                  ) : (
                     <Button
                       size="sm"
                       variant="danger"
                       onClick={() => {
-                        setDeleteTarget(user);
+                        setBanTarget(user);
                       }}
                     >
-                      {t('common.delete')}
+                      {t('users.ban')}
                     </Button>
-                  )}
-                </div>
+                  ))}
+
+                {/* Only USER and REVIEWER are interchangeable here. Owners
+                      come from verification and admins are not grantable from
+                      this screen, so neither is offered a toggle that would
+                      400. */}
+                {!isSelf && (user.role === 'USER' || user.role === 'REVIEWER') && (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    isLoading={changeRole.isPending}
+                    onClick={() => {
+                      changeRole.mutate({
+                        user,
+                        next: user.role === 'REVIEWER' ? 'USER' : 'REVIEWER',
+                      });
+                    }}
+                  >
+                    {user.role === 'REVIEWER' ? t('users.removeBadge') : t('users.makeReviewer')}
+                  </Button>
+                )}
+
+                {!isSelf && !isAdmin && user.status !== 'DELETED' && (
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    onClick={() => {
+                      setDeleteTarget(user);
+                    }}
+                  >
+                    {t('common.delete')}
+                  </Button>
+                )}
               </div>
 
               {isExpanded && (
@@ -352,11 +373,11 @@ export function UsersScreen() {
                         </div>
                       )}
 
-                      <h4 className="text-ink mt-4 text-sm font-semibold">{t('users.moderationHistory')}</h4>
+                      <h4 className="text-ink mt-4 text-sm font-semibold">
+                        {t('users.moderationHistory')}
+                      </h4>
                       {detail.data.history.length === 0 ? (
-                        <p className="text-ink-subtle mt-1 text-sm">
-                          {t('users.noHistory')}
-                        </p>
+                        <p className="text-ink-subtle mt-1 text-sm">{t('users.noHistory')}</p>
                       ) : (
                         <ul className="mt-2 space-y-1.5">
                           {detail.data.history.map((entry) => (

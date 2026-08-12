@@ -603,7 +603,7 @@ export const vi: Messages = {
   'moderation.targetType.PLACE': 'địa điểm',
   'moderation.targetType.REVIEW': 'đánh giá',
   'moderation.targetType.USER': 'tài khoản',
-  'moderation.openReports': '{count} báo cáo đang mở về đối tượng này',
+  'moderation.openReports': '{count} báo cáo đang mở',
   'reportReason.SPAM': 'spam hoặc giả mạo',
   'reportReason.INAPPROPRIATE': 'không phù hợp',
   'reportReason.INCORRECT_INFO': 'thông tin sai',
