@@ -53,10 +53,18 @@ export function Card({ children, className }: { children: ReactNode; className?:
  * Skeletons and empty states belong outside this, not in it — a "nothing
  * waiting" panel that occupies the left column and leaves the right one blank
  * reads as a layout that failed rather than an empty queue.
+ *
+ * `[&>*]:min-w-0` is load-bearing. A grid item's `min-width` defaults to
+ * `auto`, which floors it at its own min-content width — so a card holding
+ * anything wide grows past its track instead of shrinking, and the page picks
+ * up a horizontal scrollbar with no element visibly out of place. Measured at
+ * 390px: 350px of column, 391px of card.
  */
 export function CardGrid({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn('grid items-start gap-3 lg:grid-cols-2', className)}>{children}</div>
+    <div className={cn('grid items-start gap-3 lg:grid-cols-2 [&>*]:min-w-0', className)}>
+      {children}
+    </div>
   );
 }
 

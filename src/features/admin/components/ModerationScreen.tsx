@@ -167,7 +167,9 @@ export function ModerationScreen() {
             {places.data?.map((place) => (
               <Card key={place.id}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="min-w-0">
+                  {/* See ContentScreen: a bare `min-w-0` block is sized by its
+                      content, so the link beside it moved from card to card. */}
+                  <div className="min-w-0 flex-1 basis-56">
                     <h3 className="text-ink font-semibold">{place.name}</h3>
                     <p className="text-ink-muted mt-0.5 flex items-center gap-1.5 text-sm">
                       <MapPin className="size-3.5 shrink-0" aria-hidden />
@@ -232,7 +234,9 @@ export function ModerationScreen() {
             {revisions.data?.map((revision) => (
               <Card key={revision.id}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
+                  {/* This one had no `min-w-0` at all, so a long place name
+                      could not shrink even to the card's width. */}
+                  <div className="min-w-0 flex-1 basis-56">
                     <h3 className="text-ink font-semibold">{revision.place.name}</h3>
                     <p className="text-ink-subtle mt-0.5 text-xs">
                       {t('moderation.proposedBy', {
@@ -244,7 +248,7 @@ export function ModerationScreen() {
                   <Link
                     href={`/place/${revision.place.slug}`}
                     target="_blank"
-                    className="text-primary inline-flex items-center gap-1 text-xs font-medium"
+                    className="text-primary inline-flex shrink-0 items-center gap-1 text-xs font-medium"
                   >
                     {t('moderation.seeListing')}
                     <ExternalLink className="size-3" aria-hidden />
@@ -434,7 +438,7 @@ function ReportCard({
   return (
     <Card>
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1 basis-56">
           <div className="flex flex-wrap items-center gap-2">
             {/* The reason and the target type are enum values, not prose, so
                 they go through the catalogue like every other one. They were

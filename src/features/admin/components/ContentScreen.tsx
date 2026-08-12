@@ -190,7 +190,18 @@ export function ContentScreen() {
             {places.data?.map((place) => (
               <Card key={place.id}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="min-w-0">
+                  {/*
+                    `flex-1 basis-56`, not bare `min-w-0`.
+
+                    Without a basis this block is sized by its own content, so
+                    whether the buttons sat top-right or dropped to a line of
+                    their own depended on how long that place's name happened
+                    to be — a grid of identical cards laid out five different
+                    ways. With a basis it shrinks to 14rem first and only then
+                    wraps, so every card in the list breaks at the same width
+                    or none of them does.
+                  */}
+                  <div className="min-w-0 flex-1 basis-56">
                     <div className="flex items-center gap-2">
                       <h3 className="text-ink truncate font-semibold">{place.name}</h3>
                       <StatusBadge status={place.deletedAt ? 'DELETED' : place.status} />
@@ -273,7 +284,10 @@ export function ContentScreen() {
             {reviews.data?.map((review) => (
               <Card key={review.id}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="min-w-0">
+                  {/* Same basis as the place card above, for the same reason:
+                      a review of "Mường Thanh Luxury Đà Nẵng" pushed its
+                      buttons down while the one above it kept them up. */}
+                  <div className="min-w-0 flex-1 basis-56">
                     <p className="text-ink text-sm font-semibold">
                       {formatNumber(review.rating, locale)}★ · {review.user.name}
                       <span className="text-ink-subtle font-normal"> {t('content.reviewOn')} </span>
