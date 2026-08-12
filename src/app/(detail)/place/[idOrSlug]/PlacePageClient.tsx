@@ -81,7 +81,7 @@ export function PlacePageClient({ idOrSlug }: { idOrSlug: string }) {
             }}
             aria-label={t('detail.share')}
             disabled={!place}
-            className="flex size-10 items-center justify-center rounded-full bg-surface text-ink shadow-sm active:scale-95 disabled:opacity-50"
+            className="flex size-10 items-center justify-center rounded-full bg-surface text-ink shadow-sm press-firm disabled:opacity-50"
           >
             <Share2 className="size-[1.125rem]" aria-hidden />
           </button>

@@ -34,7 +34,7 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
       onClick={() => onSelect?.(place)}
       className={cn(
         'bg-surface w-[16.5rem] shrink-0 overflow-hidden rounded-lg text-left shadow-md',
-        'transition-transform duration-150 ease-[var(--ease-out-soft)] active:scale-[0.98]',
+        'press-surface',
         className,
       )}
     >

@@ -126,7 +126,7 @@ export function LocationChip({
       onClick={handleClick}
       className={cn(
         'inline-flex max-w-full items-center gap-1.5 rounded-full px-3 py-1.5',
-        'text-sm font-medium transition-colors active:scale-[0.98]',
+        'text-sm font-medium press-soft',
         isDenied ? 'bg-accent-tint text-accent' : 'bg-primary-tint text-primary',
       )}
     >

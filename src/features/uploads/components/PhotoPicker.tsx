@@ -133,7 +133,7 @@ export function PhotoPicker({
             }}
             className={cn(
               'border-border text-ink-subtle flex size-20 flex-col items-center justify-center gap-1',
-              'rounded-md border border-dashed active:scale-95 disabled:opacity-50',
+              'rounded-md border border-dashed press-firm disabled:opacity-50',
             )}
           >
             <ImagePlus className="size-5" aria-hidden />

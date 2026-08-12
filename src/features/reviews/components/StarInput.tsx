@@ -44,7 +44,7 @@ export function StarInput({
             }}
             className={cn(
               'flex size-11 items-center justify-center rounded-full',
-              'transition-transform duration-150 active:scale-90 disabled:opacity-50',
+              'press-firm disabled:opacity-50',
             )}
           >
             <Star

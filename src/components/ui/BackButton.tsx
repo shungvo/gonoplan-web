@@ -47,7 +47,7 @@ export function BackButton({ onClick, label, compact = false, className }: BackB
       aria-label={text}
       className={cn(
         'text-ink bg-surface inline-flex h-10 shrink-0 items-center rounded-full text-sm font-medium shadow-md',
-        'transition-transform active:scale-95',
+        'press-firm',
         compact ? 'w-10 justify-center' : 'gap-1 pr-4 pl-2.5',
         className,
       )}

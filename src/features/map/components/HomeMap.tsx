@@ -97,7 +97,7 @@ export function HomeMap({ className, selectedPlaceId = null, onSelectPlace }: Ho
           }}
           className={cn(
             'flex size-10 items-center justify-center rounded-sm shadow-md backdrop-blur-sm',
-            'transition-transform active:scale-95',
+            'press-firm',
             hasRealPosition ? 'bg-surface/90 text-primary' : 'bg-accent-tint/95 text-accent',
           )}
         >

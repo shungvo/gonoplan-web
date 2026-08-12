@@ -32,7 +32,7 @@ export function Chip({ children, selected = false, onClick, colorHex, className 
         // screens — they were the one place breaking the rule.
         'inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full px-4',
         'text-sm font-medium whitespace-nowrap',
-        'transition-[background-color,transform] duration-150 active:scale-[0.97]',
+        'press-soft',
         selected && !colorHex && 'bg-primary text-white shadow-primary',
         // Outlined rather than shadowed when unselected. A row of shadowed
         // pills over a tinted background reads as a row of raised buttons

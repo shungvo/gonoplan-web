@@ -294,7 +294,7 @@ function PlanCard({ plan, onOpen }: { plan: Plan; onOpen: () => void }) {
     <button
       type="button"
       onClick={onOpen}
-      className="bg-surface flex w-full items-stretch gap-3.5 overflow-hidden rounded-lg p-3 text-left shadow-md active:scale-[0.99]"
+      className="bg-surface flex w-full items-stretch gap-3.5 overflow-hidden rounded-lg p-3 text-left shadow-md press-surface"
     >
       <span className="bg-surface-sunken relative size-[5.5rem] shrink-0 overflow-hidden rounded-md">
         <PlaceImage

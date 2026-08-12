@@ -89,7 +89,7 @@ export function AccountSettingsScreen() {
               onClick={() => {
                 router.push('/places/new');
               }}
-              className="bg-surface mt-3 flex w-full items-center gap-2.5 rounded-lg p-3.5 text-left shadow-sm active:scale-[0.99]"
+              className="bg-surface mt-3 flex w-full items-center gap-2.5 rounded-lg p-3.5 text-left shadow-sm press-surface"
             >
               <MapPinPlus className="text-primary size-4 shrink-0" aria-hidden />
               <span className="text-ink flex-1 text-sm font-medium">{t('profile.addPlace')}</span>
@@ -103,7 +103,7 @@ export function AccountSettingsScreen() {
               onClick={() => {
                 router.push('/owner');
               }}
-              className="bg-surface mt-3 flex w-full items-center gap-2.5 rounded-lg p-3.5 text-left shadow-sm active:scale-[0.99]"
+              className="bg-surface mt-3 flex w-full items-center gap-2.5 rounded-lg p-3.5 text-left shadow-sm press-surface"
             >
               <Store className="text-primary size-4 shrink-0" aria-hidden />
               <span className="text-ink flex-1 text-sm font-medium">

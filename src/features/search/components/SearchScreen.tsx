@@ -225,7 +225,7 @@ export function SearchScreen() {
                       onClick={() => {
                         runSearch(categoryName(category, locale));
                       }}
-                      className="bg-surface flex items-center gap-3 rounded-lg p-3 text-left shadow-sm active:scale-[0.98]"
+                      className="bg-surface flex items-center gap-3 rounded-lg p-3 text-left shadow-sm press-surface"
                     >
                       <span
                         className="flex size-9 shrink-0 items-center justify-center rounded-sm"
@@ -272,7 +272,7 @@ export function SearchScreen() {
                           );
                           router.push('/');
                         }}
-                        className="bg-surface flex w-full items-center gap-3 rounded-lg p-3 text-left shadow-sm active:scale-[0.99]"
+                        className="bg-surface flex w-full items-center gap-3 rounded-lg p-3 text-left shadow-sm press-surface"
                       >
                         <span className="bg-primary-tint text-primary flex size-10 shrink-0 items-center justify-center rounded-sm">
                           <MapPin className="size-5" aria-hidden />

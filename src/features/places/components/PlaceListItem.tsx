@@ -32,7 +32,7 @@ export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps
       onClick={() => onSelect?.(place)}
       className={cn(
         'bg-surface flex w-full items-center gap-3 rounded-lg p-2.5 text-left shadow-md',
-        'transition-transform duration-150 active:scale-[0.99]',
+        'press-surface',
         className,
       )}
     >

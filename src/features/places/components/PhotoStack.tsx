@@ -151,7 +151,7 @@ export function PhotoStack({
                   go(delta);
                 }}
                 aria-label={label}
-                className="bg-surface/90 text-ink pointer-events-auto flex size-9 items-center justify-center rounded-full shadow-md backdrop-blur-sm active:scale-95"
+                className="bg-surface/90 text-ink pointer-events-auto flex size-9 items-center justify-center rounded-full shadow-md backdrop-blur-sm press-firm"
               >
                 <Icon className="size-4" aria-hidden />
               </button>

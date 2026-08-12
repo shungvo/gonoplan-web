@@ -142,7 +142,7 @@ export function ReviewCard({
             aria-pressed={review.hasVoted}
             className={cn(
               'inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-medium',
-              'transition-colors active:scale-95',
+              'press-firm',
               review.hasVoted ? 'bg-primary-tint text-primary' : 'bg-surface-sunken text-ink-muted',
             )}
           >

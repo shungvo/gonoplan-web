@@ -61,7 +61,7 @@ export function PlaceGrid({
             <button
               type="button"
               onClick={() => onSelect?.(place)}
-              className="block aspect-square w-full overflow-hidden rounded-lg shadow-md transition-transform active:scale-[0.98]"
+              className="block aspect-square w-full overflow-hidden rounded-lg shadow-md press-surface"
             >
               <PlaceImage
                 url={place.coverImageUrl}

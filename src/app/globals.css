@@ -230,6 +230,80 @@
   }
 }
 
+/*
+ * What being pressed looks like.
+ *
+ * The app had five different amounts — 0.90, 0.95, 0.97, 0.98, 0.99 — across
+ * thirty-three call sites, each typed by whoever wrote that component. Scale
+ * is proportional, so the same number is a different distance on a different
+ * object: 0.97 moves a 40px icon button by one pixel and a 320px card by ten.
+ * Five numbers chosen by eye cannot be a system, and a design system is mostly
+ * the promise that the same gesture feels the same everywhere.
+ *
+ * Three, decided by what is under the finger rather than by how it looks:
+ *
+ *   press-firm     0.92   a small raised control — icon buttons, the save toggle
+ *   press-soft     0.97   a standard control — buttons, chips, pills
+ *   press-surface  0.985  a large tappable surface — cards, list rows
+ *
+ * The factor shrinks as the object grows, and not to equalise the travel —
+ * measured, these move 1.6px, 0.7px and 2.4px per edge, which is nowhere near
+ * equal. It is because a large surface has neighbours. Three percent off a
+ * 40px button is a button being pressed; three percent off a 320px card pulls
+ * its edges five pixels clear of the cards beside it and reads as the layout
+ * jumping. The small thing can afford the movement because nothing is lined up
+ * against it.
+ *
+ * What actually carries the sense of depth is the same in all three: the gap
+ * under the object closes. It is going down toward the page rather than
+ * shrinking in place, and that is the part a scale alone never conveyed.
+ */
+@utility press-firm {
+  /* Colour is in the list too. Several of these call sites were also
+     transitioning `background-color` or `color`, and a utility that set only
+     transform and shadow would have silently dropped that. */
+  transition:
+    transform 150ms var(--ease-out-soft),
+    box-shadow 150ms var(--ease-out-soft),
+    background-color 150ms var(--ease-out-soft),
+    color 150ms var(--ease-out-soft);
+  &:active {
+    transform: scale(0.92);
+    box-shadow: var(--shadow-pressed);
+  }
+}
+
+@utility press-soft {
+  /* Colour is in the list too. Several of these call sites were also
+     transitioning `background-color` or `color`, and a utility that set only
+     transform and shadow would have silently dropped that. */
+  transition:
+    transform 150ms var(--ease-out-soft),
+    box-shadow 150ms var(--ease-out-soft),
+    background-color 150ms var(--ease-out-soft),
+    color 150ms var(--ease-out-soft);
+  &:active {
+    transform: scale(0.97);
+    box-shadow: var(--shadow-pressed);
+  }
+}
+
+@utility press-surface {
+  /* Colour is in the list too. Several of these call sites were also
+     transitioning `background-color` or `color`, and a utility that set only
+     transform and shadow would have silently dropped that. */
+  transition:
+    transform 150ms var(--ease-out-soft),
+    box-shadow 150ms var(--ease-out-soft),
+    background-color 150ms var(--ease-out-soft),
+    color 150ms var(--ease-out-soft);
+  &:active {
+    transform: scale(0.985);
+    /* One rung down, not flat: a card that is still a card while you hold it. */
+    box-shadow: var(--shadow-sm);
+  }
+}
+
 @layer utilities {
   /* Safe areas: the notch, the home indicator, and landscape bezels. */
   .pt-safe {

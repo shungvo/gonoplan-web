@@ -256,7 +256,7 @@ export function ExploreScreen() {
                 screen. `truncate` cannot do its job until the box it is in is
                 allowed to get smaller than its text.
               */
-              className="bg-surface flex h-12 min-w-0 flex-1 items-center gap-3 rounded-full px-4 text-left shadow-md active:scale-[0.99]"
+              className="bg-surface flex h-12 min-w-0 flex-1 items-center gap-3 rounded-full px-4 text-left shadow-md press-surface"
             >
               <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
               <span className="text-ink-subtle truncate text-md">
@@ -268,7 +268,7 @@ export function ExploreScreen() {
               onClick={() => {
                 setView('list');
               }}
-              className="bg-surface text-ink flex h-12 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-medium shadow-md active:scale-[0.98]"
+              className="bg-surface text-ink flex h-12 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-medium shadow-md press-soft"
             >
               <List className="size-4" aria-hidden />
               {t('explore.list')}
@@ -474,7 +474,7 @@ export function ExploreScreen() {
             onClick={() => {
               setView('map');
             }}
-            className="bg-surface text-ink flex h-11 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-medium shadow-md active:scale-[0.98]"
+            className="bg-surface text-ink flex h-11 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-medium shadow-md press-soft"
           >
             <Map className="size-4" aria-hidden />
             {t('explore.fullMap')}
@@ -497,7 +497,7 @@ export function ExploreScreen() {
           onClick={() => {
             router.push('/search');
           }}
-          className="bg-surface mt-3 flex h-12 w-full items-center gap-3 rounded-full px-4 text-left shadow-md active:scale-[0.99]"
+          className="bg-surface mt-3 flex h-12 w-full items-center gap-3 rounded-full px-4 text-left shadow-md press-surface"
         >
           <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
           <span className="text-ink-subtle text-md">{t('explore.searchPlaces')}</span>

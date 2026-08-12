@@ -232,7 +232,7 @@ export function PlaceDetailContent({
         {compact && (
           <Link
             href={`/place/${place.slug}`}
-            className="bg-surface-sunken text-ink mt-3 flex w-full items-center justify-between rounded-lg px-4 py-3.5 text-sm font-medium active:scale-[0.99]"
+            className="bg-surface-sunken text-ink mt-3 flex w-full items-center justify-between rounded-lg px-4 py-3.5 text-sm font-medium press-surface"
           >
             {t('detail.openFullPage')}
             <ChevronRight className="text-ink-subtle size-4 shrink-0" aria-hidden />
@@ -397,7 +397,7 @@ export function PlaceDetailContent({
             {place.phone && (
               <a
                 href={`tel:${place.phone}`}
-                className="border-border bg-surface text-ink inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-lg border text-md font-medium active:scale-[0.98]"
+                className="border-border bg-surface text-ink inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-lg border text-md font-medium press-soft"
               >
                 <Phone className="size-[1.125rem]" aria-hidden />
                 {t('detail.call')}

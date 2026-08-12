@@ -73,7 +73,7 @@ export function ProfileBody({ user }: { user: PublicUser }) {
               <li key={review.id}>
                 <Link
                   href={`/place/${review.place.slug}`}
-                  className="bg-surface block rounded-lg p-3.5 shadow-sm active:scale-[0.99]"
+                  className="bg-surface block rounded-lg p-3.5 shadow-sm press-surface"
                 >
                   <p className="text-ink flex items-center gap-1.5 text-sm font-semibold">
                     <Star className="fill-warning text-warning size-3.5 shrink-0" aria-hidden />
@@ -115,7 +115,7 @@ export function ProfileBody({ user }: { user: PublicUser }) {
                   href={`/place/${place.slug}`}
                   className={cn(
                     'bg-surface block overflow-hidden rounded-lg shadow-sm',
-                    'active:scale-[0.99]',
+                    'press-surface',
                   )}
                 >
                   {/*

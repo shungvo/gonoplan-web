@@ -49,7 +49,7 @@ export function SaveButton({
         aria-label={label}
         className={cn(
           'inline-flex h-12 items-center gap-2 rounded-md px-4 text-sm font-medium',
-          'transition-transform active:scale-[0.97]',
+          'press-soft',
           className,
           // Last, so it survives whatever the caller passed. See below.
           isSaved ? 'bg-primary-tint text-primary' : 'bg-surface-sunken text-ink',
@@ -69,7 +69,7 @@ export function SaveButton({
       aria-label={label}
       className={cn(
         'flex size-10 items-center justify-center rounded-full shadow-md backdrop-blur-md',
-        'transition-transform active:scale-90',
+        'press-firm',
         className,
         /*
          * The colours come last, after the caller's overrides, because they

@@ -196,7 +196,7 @@ export function HomeScreen() {
           onClick={() => {
             router.push('/search');
           }}
-          className="bg-surface mt-4 flex h-12 w-full items-center gap-3 rounded-full px-4 text-left shadow-md active:scale-[0.99]"
+          className="bg-surface mt-4 flex h-12 w-full items-center gap-3 rounded-full px-4 text-left shadow-md press-surface"
         >
           <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
           <span className="text-ink-subtle truncate text-md">
@@ -266,7 +266,7 @@ export function HomeScreen() {
                   onClick={() => {
                     router.push(`/explore?category=${category.slug}`);
                   }}
-                  className="border-border bg-surface text-ink inline-flex h-11 shrink-0 snap-start items-center gap-2 rounded-full border px-4 text-sm font-medium transition-transform active:scale-[0.97]"
+                  className="border-border bg-surface text-ink inline-flex h-11 shrink-0 snap-start items-center gap-2 rounded-full border px-4 text-sm font-medium press-soft"
                 >
                   {/*
                     The category's own glyph, in the category's own colour.

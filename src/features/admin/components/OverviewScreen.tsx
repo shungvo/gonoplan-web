@@ -405,7 +405,7 @@ function QueueCard({
   return (
     <Link
       href={href}
-      className="bg-surface group rounded-lg p-4 shadow-sm transition-transform active:scale-[0.99]"
+      className="bg-surface group rounded-lg p-4 shadow-sm press-surface"
     >
       <p className="text-ink-subtle text-xs font-medium">{label}</p>
       <p
