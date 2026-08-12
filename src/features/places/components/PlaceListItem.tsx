@@ -15,6 +15,17 @@ import type { PlaceCard as PlaceCardDto } from '../api';
 export interface PlaceListItemProps {
   place: PlaceCardDto;
   onSelect?: (place: PlaceCardDto) => void;
+  /**
+   * `row` is the compact horizontal form, for the strip over the full map.
+   *
+   * Not a smaller version of the card — a different shape for a different
+   * constraint. On the map every pixel the card takes is a pixel of the thing
+   * the user opened the map to see, so the photograph goes back to a square
+   * beside the text instead of a 16:10 above it. The facts are the same and
+   * in the same order; only the arrangement differs, which is why this is a
+   * variant rather than a second component that would drift.
+   */
+  layout?: 'card' | 'row';
   className?: string;
 }
 
@@ -32,9 +43,83 @@ export interface PlaceListItemProps {
  * that used to hold four competing facts is three lines that each say one
  * thing: whether you can go now, what it is called and where, and how far.
  */
-export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps) {
+export function PlaceListItem({
+  place,
+  onSelect,
+  layout = 'card',
+  className,
+}: PlaceListItemProps) {
   const t = useT();
   const locale = useLocale();
+
+  const openLine = (
+    <p
+      className={cn(
+        'flex items-center gap-1.5 text-2xs font-bold tracking-wide uppercase',
+        place.isOpenNow ? 'text-primary' : 'text-ink-subtle',
+      )}
+    >
+      <Clock className="size-3.5 shrink-0" aria-hidden />
+      {place.isOpenNow && place.closesAt
+        ? t('place.openUntil', { time: place.closesAt })
+        : place.isOpenNow
+          ? t('place.openNow')
+          : t('place.closedNow')}
+    </p>
+  );
+
+  const distanceLine = place.distanceM !== null && (
+    <span className="text-primary flex items-center gap-1 text-sm font-medium">
+      <MapPin className="size-3.5 shrink-0" aria-hidden />
+      {formatDistance(place.distanceM, locale)}
+    </span>
+  );
+
+  if (layout === 'row') {
+    return (
+      <button
+        type="button"
+        onClick={() => onSelect?.(place)}
+        className={cn(
+          'bg-surface flex w-full items-center gap-3 rounded-lg p-2.5 text-left',
+          'press-surface',
+          className,
+        )}
+      >
+        <span className="bg-surface-sunken relative size-[4.5rem] shrink-0 overflow-hidden rounded-sm">
+          <PlaceImage
+            url={place.coverImageUrl}
+            blurhash={place.coverBlurhash}
+            name={place.name}
+            categorySlug={place.category.slug}
+            categoryColor={place.category.colorHex}
+            sizes="72px"
+            fallbackSize="sm"
+          />
+        </span>
+
+        <span className="min-w-0 flex-1">
+          {openLine}
+          {/* No `block` beside `line-clamp-1`: the clamp works by setting `display:
+              -webkit-box`, and `block` is the same property landing later. The name
+              wrapped to three lines on the map strip because of it. */}
+          <span className="text-ink mt-0.5 line-clamp-1 text-md leading-snug font-bold">
+            {place.name}
+          </span>
+          <span className="text-ink-muted mt-0.5 line-clamp-1 text-xs">
+            {fullAddress(place)}
+          </span>
+          <span className="mt-1 flex items-center gap-2.5">
+            <span className="text-ink inline-flex items-center gap-1 text-xs font-semibold">
+              <Star className="fill-warning text-warning size-3.5" aria-hidden />
+              {formatRating(place.averageRating, locale)}
+            </span>
+            {distanceLine}
+          </span>
+        </span>
+      </button>
+    );
+  }
 
   return (
     <button
@@ -79,19 +164,7 @@ export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps
         Open first, because it is the only line that can rule the place out —
         the rest is worth reading only if you can actually go.
       */}
-      <p
-        className={cn(
-          'mt-2.5 flex items-center gap-1.5 text-2xs font-bold tracking-wide uppercase',
-          place.isOpenNow ? 'text-primary' : 'text-ink-subtle',
-        )}
-      >
-        <Clock className="size-3.5 shrink-0" aria-hidden />
-        {place.isOpenNow && place.closesAt
-          ? t('place.openUntil', { time: place.closesAt })
-          : place.isOpenNow
-            ? t('place.openNow')
-            : t('place.closedNow')}
-      </p>
+      <div className="mt-2.5">{openLine}</div>
 
       <h3 className="text-ink mt-1 line-clamp-1 text-base leading-snug font-bold">{place.name}</h3>
 
@@ -101,12 +174,7 @@ export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps
       <p className="text-ink-muted mt-0.5 line-clamp-1 text-sm">{fullAddress(place)}</p>
 
       <div className="mt-1.5 flex items-center gap-3">
-        {place.distanceM !== null && (
-          <span className="text-primary flex items-center gap-1 text-sm font-medium">
-            <MapPin className="size-3.5 shrink-0" aria-hidden />
-            {formatDistance(place.distanceM, locale)}
-          </span>
-        )}
+        {distanceLine}
         <PriceRange value={place.priceRange} />
       </div>
     </button>

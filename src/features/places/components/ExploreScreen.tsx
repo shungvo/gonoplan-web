@@ -367,14 +367,15 @@ export function ExploreScreen() {
             </p>
           ) : (
             <div className="flex snap-x snap-mandatory scroll-pl-4 scrollbar-none gap-3 overflow-x-auto px-4">
-              {/* The horizontal row, not the tall card used in the rails.
-                  A 4:3 photo card eats 40% of the screen, and on a map screen
-                  every pixel the card takes is a pixel of map the user came
-                  here for. */}
+              {/* `layout="row"`, not the tall card the list below uses.
+                  A 16:10 photo card eats 40% of the screen, and on a map
+                  screen every pixel the card takes is a pixel of the map the
+                  user came here for. */}
               {placesInView.map((place) => (
                 <div key={place.id} className="relative snap-start">
                   <PlaceListItem
                     place={place}
+                    layout="row"
                     onSelect={() => {
                       setSelectedPlaceId(place.id);
                     }}
