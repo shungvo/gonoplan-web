@@ -5,6 +5,7 @@ import { BadgeCheck, MapPin, Star } from 'lucide-react';
 import { Rating } from '@/components/ui/Rating';
 import { PlaceImage } from '@/features/places/components/PlaceImage';
 import { categoryName } from '@/features/categories/name';
+import { categorySolid } from '@/features/categories/color';
 import { fullAddress } from '@/features/places/address';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { formatDate, formatNumber, formatRating } from '@/i18n/format';
@@ -134,7 +135,7 @@ export function ProfileBody({ user }: { user: PublicUser }) {
                     />
                     <span
                       className="absolute top-2.5 left-2.5 rounded-full px-2.5 py-1 text-[0.625rem] font-semibold text-white"
-                      style={{ backgroundColor: `${place.category.colorHex}e6` }}
+                      style={{ backgroundColor: categorySolid(place.category.colorHex) }}
                     >
                       {categoryName(place.category, locale)}
                     </span>

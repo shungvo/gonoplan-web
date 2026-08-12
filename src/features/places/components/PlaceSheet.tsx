@@ -12,6 +12,7 @@ import { findCachedPlace, type PlacePreview } from '../cache';
 import { usePlaceDetail } from '../hooks/usePlaces';
 import { useLocationStore } from '@/features/location/store';
 import { categoryName } from '@/features/categories/name';
+import { categorySolid } from '@/features/categories/color';
 import { ApiError } from '@/lib/api/errors';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
@@ -346,7 +347,7 @@ function PlaceSheetSkeleton({ preview }: { preview: PlacePreview | null }) {
         <>
           <span
             className="mb-1.5 inline-flex rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold text-white"
-            style={{ backgroundColor: `${preview.category.colorHex}e6` }}
+            style={{ backgroundColor: categorySolid(preview.category.colorHex) }}
           >
             {categoryName(preview.category, locale)}
           </span>

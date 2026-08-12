@@ -20,6 +20,7 @@ import {
 } from '../api';
 import { Card, CardGrid, PageHeader, QueueEmpty, RowSkeleton, TimeAgo } from './primitives';
 import { ReasonDialog } from './ReasonDialog';
+import { categorySolid } from '@/features/categories/color';
 
 type Tab = 'categories' | 'demand';
 
@@ -369,7 +370,7 @@ function CategoryRow({
     <div className="flex flex-wrap items-center gap-3">
       <span
         className="size-5 shrink-0 rounded-full"
-        style={{ backgroundColor: category.colorHex }}
+        style={{ backgroundColor: categorySolid(category.colorHex) }}
         aria-hidden
       />
       <div className="min-w-0 flex-1">

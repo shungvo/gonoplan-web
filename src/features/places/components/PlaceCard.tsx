@@ -6,6 +6,7 @@ import { PlaceImage } from './PlaceImage';
 import { Rating, PriceRange } from '@/components/ui/Rating';
 import { formatDistance } from '@/lib/geo/grid';
 import { categoryName } from '@/features/categories/name';
+import { categorySolid } from '@/features/categories/color';
 import { cn } from '@/lib/utils/cn';
 import type { PlaceCard as PlaceCardDto } from '../api';
 
@@ -51,7 +52,7 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
 
         <span
           className="absolute top-2.5 left-2.5 rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold text-white backdrop-blur-sm"
-          style={{ backgroundColor: `${place.category.colorHex}e6` }}
+          style={{ backgroundColor: categorySolid(place.category.colorHex) }}
         >
           {categoryName(place.category, locale)}
         </span>

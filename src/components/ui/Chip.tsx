@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { categoryInk, categoryTint } from '@/features/categories/color';
 import { cn } from '@/lib/utils/cn';
 
 export interface ChipProps {
@@ -14,7 +15,10 @@ export interface ChipProps {
 
 /** Filter chip (§41). Always a real button, so it is reachable by keyboard. */
 export function Chip({ children, selected = false, onClick, colorHex, className }: ChipProps) {
-  const tint = selected && colorHex ? { backgroundColor: `${colorHex}1a`, color: colorHex } : undefined;
+  const tint =
+    selected && colorHex
+      ? { backgroundColor: categoryTint(colorHex), color: categoryInk(colorHex) }
+      : undefined;
 
   return (
     <button

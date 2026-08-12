@@ -7,6 +7,7 @@ import { Rating, PriceRange } from '@/components/ui/Rating';
 import { SaveButton } from '@/features/favorites/components/SaveButton';
 import { formatDistance } from '@/lib/geo/grid';
 import { categoryName } from '@/features/categories/name';
+import { categorySolid } from '@/features/categories/color';
 import { cn } from '@/lib/utils/cn';
 import type { PlaceCard as PlaceCardDto } from '../api';
 
@@ -70,11 +71,12 @@ export function PlaceGrid({
                 categoryColor={place.category.colorHex}
                 sizes="(max-width: 640px) 45vw, 220px"
                 fallbackSize="md"
+                className="rounded-md"
               />
 
               <span
                 className="absolute top-2.5 left-2.5 rounded-full px-2.5 py-1 text-[0.625rem] font-semibold text-white"
-                style={{ backgroundColor: `${place.category.colorHex}e6` }}
+                style={{ backgroundColor: categorySolid(place.category.colorHex) }}
               >
                 {categoryName(place.category, locale)}
               </span>

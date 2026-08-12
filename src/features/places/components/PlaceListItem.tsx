@@ -7,6 +7,7 @@ import { formatDistance } from '@/lib/geo/grid';
 import { categoryName } from '@/features/categories/name';
 import { cn } from '@/lib/utils/cn';
 import type { PlaceCard as PlaceCardDto } from '../api';
+import { categorySolid } from '@/features/categories/color';
 
 export interface PlaceListItemProps {
   place: PlaceCardDto;
@@ -30,7 +31,7 @@ export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps
       type="button"
       onClick={() => onSelect?.(place)}
       className={cn(
-        'bg-surface flex w-full items-center gap-3 rounded-lg p-2.5 text-left shadow-sm',
+        'bg-surface flex w-full items-center gap-3 rounded-lg p-2.5 text-left shadow-md',
         'transition-transform duration-150 active:scale-[0.99]',
         className,
       )}
@@ -60,7 +61,7 @@ export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps
         <p className="text-ink-muted mt-0.5 flex items-center gap-1.5 text-xs">
           <span
             className="inline-block size-1.5 shrink-0 rounded-full"
-            style={{ backgroundColor: place.category.colorHex }}
+            style={{ backgroundColor: categorySolid(place.category.colorHex) }}
             aria-hidden
           />
           <span className="truncate">{categoryName(place.category, locale)}</span>

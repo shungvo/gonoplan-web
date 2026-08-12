@@ -17,6 +17,7 @@ import { searchCities } from '@/features/location/cities';
 import { useDebouncedValue } from '@/lib/hooks/useDebouncedValue';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { categoryName } from '@/features/categories/name';
+import { categoryTint } from '@/features/categories/color';
 import { queryKeys } from '@/lib/query/keys';
 import { useRecentSearches } from '../store';
 import { fetchPopularSearches } from '../api';
@@ -228,7 +229,7 @@ export function SearchScreen() {
                     >
                       <span
                         className="flex size-9 shrink-0 items-center justify-center rounded-sm"
-                        style={{ backgroundColor: `${category.colorHex}1f` }}
+                        style={{ backgroundColor: categoryTint(category.colorHex) }}
                       >
                         <CategoryGlyph
                           slug={category.slug}
