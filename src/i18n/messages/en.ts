@@ -817,6 +817,7 @@ export const en = {
   'plans.emptyBody': 'Start with a day and add the places you want to fit into it.',
   'plans.stopCount': { one: '{count} place', other: '{count} places' },
   'plans.noDate': 'No date yet',
+  'plans.andMore': '+{count} more',
   'plans.createTitle': 'Name the day',
   'plans.titleLabel': 'Title',
   'plans.titlePlaceholder': 'Sunday in District 1',

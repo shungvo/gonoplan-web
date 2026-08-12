@@ -791,6 +791,7 @@ export const vi: Messages = {
   'plans.emptyBody': 'Bắt đầu bằng một ngày rồi thêm những nơi bạn muốn nhét vào đó.',
   'plans.stopCount': '{count} địa điểm',
   'plans.noDate': 'Chưa chọn ngày',
+  'plans.andMore': '+{count} nữa',
   'plans.createTitle': 'Đặt tên cho ngày này',
   'plans.titleLabel': 'Tiêu đề',
   'plans.titlePlaceholder': 'Chủ nhật ở Quận 1',

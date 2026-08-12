@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CalendarDays, Plus } from 'lucide-react';
+import { CalendarDays, Clock, MapPin, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { fieldClass } from '@/components/ui/field';
@@ -17,6 +17,7 @@ import { useLocale, useT } from '@/i18n/I18nProvider';
 import { useErrorMessage } from '@/i18n/useErrorMessage';
 import { formatDate } from '@/i18n/format';
 import { usePlans, useCreatePlan } from '../hooks/usePlans';
+import { formatTimeOfDay } from '../time';
 import { PlanEditorScreen } from './PlanEditorScreen';
 import type { Plan } from '../api';
 
@@ -280,50 +281,114 @@ function NewPlanForm({ onCreated }: { onCreated: (id: string) => void }) {
  *
  * It was a 20px-tall row: a title, a line of grey, a chevron. Days are the
  * thing this tab is *for*, and they read as list items in a settings screen —
- * so the card is 112px, raised on `shadow-md` rather than the hairline
- * `shadow-sm` the rows carried, and it leads with a photograph.
+ * so the card is raised on `shadow-md` and leads with a photograph.
  *
- * The photograph is the first stop's, chosen by the API. Nobody uploads a
- * picture for a plan; the plan is already made of places that have them.
+ * And it now says what is *in* the day rather than only how many things are.
+ * "3 địa điểm" is a number; a row of the three photographs is the day itself,
+ * and it is the difference between recognising last Sunday's plan and having
+ * to open it to find out which one it was. The hours come with them, because
+ * "10:00 – 18:00" is the other half of what a day is.
  */
 function PlanCard({ plan, onOpen }: { plan: Plan; onOpen: () => void }) {
   const t = useT();
   const locale = useLocale();
 
+  const extra = plan.stopCount - plan.stopPreviews.length;
+
   return (
     <button
       type="button"
       onClick={onOpen}
-      className="bg-surface flex w-full items-stretch gap-3.5 overflow-hidden rounded-lg p-3 text-left shadow-md press-surface"
+      className="bg-surface block w-full overflow-hidden rounded-lg p-3.5 text-left shadow-md press-surface"
     >
-      <span className="bg-surface-sunken relative size-[5.5rem] shrink-0 overflow-hidden rounded-md">
-        <PlaceImage
-          url={plan.coverImageUrl}
-          blurhash={plan.coverBlurhash}
-          name={plan.title}
-          categorySlug={plan.coverCategorySlug ?? 'other'}
-          categoryColor={plan.coverCategoryColor ?? '#0f6ccd'}
-          sizes="88px"
-          fallbackSize="sm"
-        />
-      </span>
-
-      <span className="flex min-w-0 flex-1 flex-col justify-center">
-        <span className="text-ink truncate font-semibold">{plan.title}</span>
-        <span className="text-ink-subtle mt-0.5 block text-xs">
-          {plan.date ? formatDate(plan.date, locale) : t('plans.noDate')} ·{' '}
-          {t('plans.stopCount', { count: plan.stopCount })}
+      <span className="flex items-start gap-3.5">
+        <span className="bg-surface-sunken relative size-[5.5rem] shrink-0 overflow-hidden rounded-md">
+          <PlaceImage
+            url={plan.coverImageUrl}
+            blurhash={plan.coverBlurhash}
+            name={plan.title}
+            categorySlug={plan.coverCategorySlug ?? 'other'}
+            categoryColor={plan.coverCategoryColor ?? '#18181b'}
+            sizes="88px"
+            fallbackSize="sm"
+          />
         </span>
 
-        {/* The day's own description, when there is one. Two lines: enough to
-            tell two Sundays apart, not enough to turn the list back into a
-            wall of text. */}
-        {plan.note && (
-          <span className="text-ink-muted mt-1.5 line-clamp-2 text-xs leading-relaxed">
-            {plan.note}
+        <span className="flex min-w-0 flex-1 flex-col">
+          <span className="text-ink truncate font-bold">{plan.title}</span>
+
+          <span className="text-ink-subtle mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs">
+            <span className="inline-flex items-center gap-1">
+              <CalendarDays className="size-3.5 shrink-0" aria-hidden />
+              {plan.date ? formatDate(plan.date, locale) : t('plans.noDate')}
+            </span>
+
+            {/* Only once somebody has put a time on a stop. An empty clock on
+                every undated draft is chrome pretending to be information. */}
+            {plan.startsAtMin !== null && (
+              <span className="inline-flex items-center gap-1 tabular-nums">
+                <Clock className="size-3.5 shrink-0" aria-hidden />
+                {formatTimeOfDay(plan.startsAtMin, locale)}
+                {plan.endsAtMin !== null &&
+                  plan.endsAtMin !== plan.startsAtMin &&
+                  ` – ${formatTimeOfDay(plan.endsAtMin, locale)}`}
+              </span>
+            )}
+
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="size-3.5 shrink-0" aria-hidden />
+              {t('plans.stopCount', { count: plan.stopCount })}
+            </span>
           </span>
-        )}
+
+          {/* The day's own description, when there is one. Two lines: enough to
+              tell two Sundays apart, not enough to turn the list back into a
+              wall of text. */}
+          {plan.note && (
+            <span className="text-ink-muted mt-1.5 line-clamp-2 text-xs leading-relaxed">
+              {plan.note}
+            </span>
+          )}
+        </span>
       </span>
+
+      {/*
+        The stops themselves, as a row of thumbnails.
+
+        Overlapped rather than spaced: a stack reads as "these belong to one
+        thing", where a spaced row reads as four separate items and invites a
+        tap on each. The white ring is what keeps two dark photographs from
+        merging into one shape.
+      */}
+      {plan.stopPreviews.length > 0 && (
+        <span className="mt-3 flex items-center gap-2">
+          <span className="flex items-center -space-x-2">
+            {plan.stopPreviews.map((stop) => (
+              <span
+                key={stop.id}
+                title={stop.name}
+                className="bg-surface-sunken ring-surface relative size-9 overflow-hidden rounded-full ring-2"
+              >
+                <PlaceImage
+                  url={stop.coverImageUrl}
+                  blurhash={stop.coverBlurhash}
+                  name={stop.name}
+                  categorySlug={stop.categorySlug}
+                  categoryColor={stop.categoryColor}
+                  sizes="36px"
+                  fallbackSize="sm"
+                />
+              </span>
+            ))}
+          </span>
+
+          {extra > 0 && (
+            <span className="text-ink-subtle text-xs font-medium tabular-nums">
+              {t('plans.andMore', { count: extra })}
+            </span>
+          )}
+        </span>
+      )}
     </button>
   );
 }

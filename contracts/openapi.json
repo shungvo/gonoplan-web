@@ -1173,6 +1173,59 @@
               "null"
             ]
           },
+          "stopPreviews": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "coverImageUrl": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "coverBlurhash": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "categorySlug": {
+                  "type": "string"
+                },
+                "categoryColor": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "coverImageUrl",
+                "coverBlurhash",
+                "categorySlug",
+                "categoryColor"
+              ]
+            }
+          },
+          "startsAtMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "endsAtMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
           "createdAt": {
             "type": "string"
           },
@@ -1191,6 +1244,9 @@
           "coverBlurhash",
           "coverCategorySlug",
           "coverCategoryColor",
+          "stopPreviews",
+          "startsAtMin",
+          "endsAtMin",
           "createdAt",
           "updatedAt"
         ]
@@ -1244,6 +1300,59 @@
           "coverCategoryColor": {
             "type": [
               "string",
+              "null"
+            ]
+          },
+          "stopPreviews": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "coverImageUrl": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "coverBlurhash": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "categorySlug": {
+                  "type": "string"
+                },
+                "categoryColor": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "coverImageUrl",
+                "coverBlurhash",
+                "categorySlug",
+                "categoryColor"
+              ]
+            }
+          },
+          "startsAtMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "endsAtMin": {
+            "type": [
+              "integer",
               "null"
             ]
           },
@@ -1421,6 +1530,9 @@
           "coverBlurhash",
           "coverCategorySlug",
           "coverCategoryColor",
+          "stopPreviews",
+          "startsAtMin",
+          "endsAtMin",
           "createdAt",
           "updatedAt",
           "stops"
@@ -10022,6 +10134,59 @@
                               "null"
                             ]
                           },
+                          "stopPreviews": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "coverImageUrl": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "coverBlurhash": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "categorySlug": {
+                                  "type": "string"
+                                },
+                                "categoryColor": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "name",
+                                "coverImageUrl",
+                                "coverBlurhash",
+                                "categorySlug",
+                                "categoryColor"
+                              ]
+                            }
+                          },
+                          "startsAtMin": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "endsAtMin": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
                           "createdAt": {
                             "type": "string"
                           },
@@ -10040,6 +10205,9 @@
                           "coverBlurhash",
                           "coverCategorySlug",
                           "coverCategoryColor",
+                          "stopPreviews",
+                          "startsAtMin",
+                          "endsAtMin",
                           "createdAt",
                           "updatedAt"
                         ]
@@ -10184,6 +10352,59 @@
                         "coverCategoryColor": {
                           "type": [
                             "string",
+                            "null"
+                          ]
+                        },
+                        "stopPreviews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "coverImageUrl": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "coverBlurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "categorySlug": {
+                                "type": "string"
+                              },
+                              "categoryColor": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "coverImageUrl",
+                              "coverBlurhash",
+                              "categorySlug",
+                              "categoryColor"
+                            ]
+                          }
+                        },
+                        "startsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "endsAtMin": {
+                          "type": [
+                            "integer",
                             "null"
                           ]
                         },
@@ -10361,6 +10582,9 @@
                         "coverBlurhash",
                         "coverCategorySlug",
                         "coverCategoryColor",
+                        "stopPreviews",
+                        "startsAtMin",
+                        "endsAtMin",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -10509,6 +10733,59 @@
                             "null"
                           ]
                         },
+                        "stopPreviews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "coverImageUrl": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "coverBlurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "categorySlug": {
+                                "type": "string"
+                              },
+                              "categoryColor": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "coverImageUrl",
+                              "coverBlurhash",
+                              "categorySlug",
+                              "categoryColor"
+                            ]
+                          }
+                        },
+                        "startsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "endsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -10683,6 +10960,9 @@
                         "coverBlurhash",
                         "coverCategorySlug",
                         "coverCategoryColor",
+                        "stopPreviews",
+                        "startsAtMin",
+                        "endsAtMin",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -10854,6 +11134,59 @@
                             "null"
                           ]
                         },
+                        "stopPreviews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "coverImageUrl": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "coverBlurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "categorySlug": {
+                                "type": "string"
+                              },
+                              "categoryColor": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "coverImageUrl",
+                              "coverBlurhash",
+                              "categorySlug",
+                              "categoryColor"
+                            ]
+                          }
+                        },
+                        "startsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "endsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -11028,6 +11361,9 @@
                         "coverBlurhash",
                         "coverCategorySlug",
                         "coverCategoryColor",
+                        "stopPreviews",
+                        "startsAtMin",
+                        "endsAtMin",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -11298,6 +11634,59 @@
                             "null"
                           ]
                         },
+                        "stopPreviews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "coverImageUrl": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "coverBlurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "categorySlug": {
+                                "type": "string"
+                              },
+                              "categoryColor": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "coverImageUrl",
+                              "coverBlurhash",
+                              "categorySlug",
+                              "categoryColor"
+                            ]
+                          }
+                        },
+                        "startsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "endsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -11472,6 +11861,9 @@
                         "coverBlurhash",
                         "coverCategorySlug",
                         "coverCategoryColor",
+                        "stopPreviews",
+                        "startsAtMin",
+                        "endsAtMin",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -11653,6 +12045,59 @@
                             "null"
                           ]
                         },
+                        "stopPreviews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "coverImageUrl": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "coverBlurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "categorySlug": {
+                                "type": "string"
+                              },
+                              "categoryColor": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "coverImageUrl",
+                              "coverBlurhash",
+                              "categorySlug",
+                              "categoryColor"
+                            ]
+                          }
+                        },
+                        "startsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "endsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -11827,6 +12272,9 @@
                         "coverBlurhash",
                         "coverCategorySlug",
                         "coverCategoryColor",
+                        "stopPreviews",
+                        "startsAtMin",
+                        "endsAtMin",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -12028,6 +12476,59 @@
                             "null"
                           ]
                         },
+                        "stopPreviews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "coverImageUrl": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "coverBlurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "categorySlug": {
+                                "type": "string"
+                              },
+                              "categoryColor": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "coverImageUrl",
+                              "coverBlurhash",
+                              "categorySlug",
+                              "categoryColor"
+                            ]
+                          }
+                        },
+                        "startsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "endsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -12202,6 +12703,9 @@
                         "coverBlurhash",
                         "coverCategorySlug",
                         "coverCategoryColor",
+                        "stopPreviews",
+                        "startsAtMin",
+                        "endsAtMin",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -12357,6 +12861,59 @@
                             "null"
                           ]
                         },
+                        "stopPreviews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "coverImageUrl": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "coverBlurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "categorySlug": {
+                                "type": "string"
+                              },
+                              "categoryColor": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "coverImageUrl",
+                              "coverBlurhash",
+                              "categorySlug",
+                              "categoryColor"
+                            ]
+                          }
+                        },
+                        "startsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "endsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -12531,6 +13088,9 @@
                         "coverBlurhash",
                         "coverCategorySlug",
                         "coverCategoryColor",
+                        "stopPreviews",
+                        "startsAtMin",
+                        "endsAtMin",
                         "createdAt",
                         "updatedAt",
                         "stops"

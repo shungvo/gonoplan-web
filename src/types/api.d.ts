@@ -2547,6 +2547,17 @@ export interface paths {
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
                                 coverCategoryColor: string | null;
+                                stopPreviews: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    categorySlug: string;
+                                    categoryColor: string;
+                                }[];
+                                startsAtMin: number | null;
+                                endsAtMin: number | null;
                                 createdAt: string;
                                 updatedAt: string;
                             }[];
@@ -2616,6 +2627,17 @@ export interface paths {
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
                                 coverCategoryColor: string | null;
+                                stopPreviews: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    categorySlug: string;
+                                    categoryColor: string;
+                                }[];
+                                startsAtMin: number | null;
+                                endsAtMin: number | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -2744,6 +2766,17 @@ export interface paths {
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
                                 coverCategoryColor: string | null;
+                                stopPreviews: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    categorySlug: string;
+                                    categoryColor: string;
+                                }[];
+                                startsAtMin: number | null;
+                                endsAtMin: number | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -2919,6 +2952,17 @@ export interface paths {
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
                                 coverCategoryColor: string | null;
+                                stopPreviews: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    categorySlug: string;
+                                    categoryColor: string;
+                                }[];
+                                startsAtMin: number | null;
+                                endsAtMin: number | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3055,6 +3099,17 @@ export interface paths {
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
                                 coverCategoryColor: string | null;
+                                stopPreviews: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    categorySlug: string;
+                                    categoryColor: string;
+                                }[];
+                                startsAtMin: number | null;
+                                endsAtMin: number | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3199,6 +3254,17 @@ export interface paths {
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
                                 coverCategoryColor: string | null;
+                                stopPreviews: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    categorySlug: string;
+                                    categoryColor: string;
+                                }[];
+                                startsAtMin: number | null;
+                                endsAtMin: number | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3339,6 +3405,17 @@ export interface paths {
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
                                 coverCategoryColor: string | null;
+                                stopPreviews: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    categorySlug: string;
+                                    categoryColor: string;
+                                }[];
+                                startsAtMin: number | null;
+                                endsAtMin: number | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3454,6 +3531,17 @@ export interface paths {
                                 coverBlurhash: string | null;
                                 coverCategorySlug: string | null;
                                 coverCategoryColor: string | null;
+                                stopPreviews: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    categorySlug: string;
+                                    categoryColor: string;
+                                }[];
+                                startsAtMin: number | null;
+                                endsAtMin: number | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -9243,6 +9331,17 @@ export interface components {
             coverBlurhash: string | null;
             coverCategorySlug: string | null;
             coverCategoryColor: string | null;
+            stopPreviews: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                coverImageUrl: string | null;
+                coverBlurhash: string | null;
+                categorySlug: string;
+                categoryColor: string;
+            }[];
+            startsAtMin: number | null;
+            endsAtMin: number | null;
             createdAt: string;
             updatedAt: string;
         };
@@ -9258,6 +9357,17 @@ export interface components {
             coverBlurhash: string | null;
             coverCategorySlug: string | null;
             coverCategoryColor: string | null;
+            stopPreviews: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                coverImageUrl: string | null;
+                coverBlurhash: string | null;
+                categorySlug: string;
+                categoryColor: string;
+            }[];
+            startsAtMin: number | null;
+            endsAtMin: number | null;
             createdAt: string;
             updatedAt: string;
             stops: {
