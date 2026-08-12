@@ -20,6 +20,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { fieldClass } from '@/components/ui/field';
 import { PlaceImage } from '@/features/places/components/PlaceImage';
 import { categoryName } from '@/features/categories/name';
+import { categorySolid } from '@/features/categories/color';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { useErrorMessage } from '@/i18n/useErrorMessage';
 import { formatDate } from '@/i18n/format';
@@ -145,7 +146,7 @@ export function PlanEditorScreen({
             updatePlan.mutate({ title: event.target.value.slice(0, 120) });
           }}
           aria-label={t('plans.titleLabel')}
-          className="text-ink mt-1 w-full bg-transparent text-title leading-tight font-semibold tracking-tight outline-none"
+          className="text-ink text-title mt-1 w-full bg-transparent leading-tight font-semibold tracking-tight outline-none"
         />
 
         {editingDate ? (
@@ -225,12 +226,37 @@ export function PlanEditorScreen({
             description={t('plan.emptyBody')}
           />
         ) : (
-          <ol>
+          /*
+            A timeline, not a stack of cards.
+
+            The stops are an *order* — that is the whole point of a plan — and
+            a plain list only implies it. A numbered marker with a line running
+            through it states it, and gives the travel-time gap somewhere to
+            live that reads as "between these two" rather than as another row.
+          */
+          <ol className="relative">
             {stops.map((stop, index) => {
               const previous = index > 0 ? stops[index - 1] : undefined;
 
               return (
-                <li key={stop.id}>
+                <li key={stop.id} className="relative pl-9">
+                  {/* The thread. Drawn from every marker except the last, so
+                      the line ends at the last stop rather than trailing off
+                      into the Add button. */}
+                  {index < stops.length - 1 && (
+                    <span
+                      className="bg-border absolute top-8 bottom-0 left-[0.9375rem] w-px"
+                      aria-hidden
+                    />
+                  )}
+
+                  <span
+                    className="bg-ink text-2xs absolute top-4 left-0 z-10 flex size-8 items-center justify-center rounded-full font-bold text-white tabular-nums"
+                    aria-hidden
+                  >
+                    {index + 1}
+                  </span>
+
                   {/* The hop from the stop above. Only drawn when both ends
                       have coordinates to measure between. */}
                   {previous && !previous.place.isUnavailable && !stop.place.isUnavailable && (
@@ -310,31 +336,35 @@ function StopCard({
   };
 
   return (
-    <div className="bg-surface rounded-lg p-3 shadow-sm">
+    <div className="bg-surface my-2 rounded-lg p-3.5 shadow-sm">
+      {/*
+        Text first, photograph on the right.
+        A 56px square on the left pushed the name into a column narrow enough
+        that "Ho Chi Minh City Museum of Fine Arts" arrived truncated, on the
+        one screen where the name is the whole point. Moving it right lets the
+        text take the full measure and turns the picture into what it should
+        be: a reminder of where you are going, not a bullet.
+      */}
       <div className="flex gap-3">
-        <div className="bg-surface-sunken relative size-14 shrink-0 overflow-hidden rounded-md">
-          <PlaceImage
-            url={stop.place.coverImageUrl}
-            blurhash={stop.place.coverBlurhash}
-            name={stop.place.name}
-            categorySlug={stop.place.category.slug}
-            categoryColor={stop.place.category.colorHex}
-            sizes="56px"
-            fallbackSize="sm"
-          />
-        </div>
-
         <div className="min-w-0 flex-1">
           <Link
             href={`/place/${stop.place.slug}`}
-            className="text-primary block truncate text-md font-semibold"
+            className="text-ink text-md block leading-snug font-bold"
           >
             {stop.place.name}
           </Link>
-          <p className="text-ink-subtle mt-0.5 truncate text-xs">
-            {categoryName(stop.place.category, locale)} ·{' '}
+
+          {/* The category as a tag rather than a line of grey text: it is one
+              of a fixed set, and a pill says so where prose does not. */}
+          <span
+            className="text-2xs mt-1.5 inline-flex items-center rounded-full px-2.5 py-1 font-semibold text-white"
+            style={{ backgroundColor: categorySolid(stop.place.category.colorHex) }}
+          >
+            {categoryName(stop.place.category, locale)}
+          </span>
+          <span className="text-ink-subtle ml-2 text-xs">
             {stop.place.district ?? stop.place.province}
-          </p>
+          </span>
 
           {/* Stated, never hidden. A stop that vanished from a day somebody
             arranged, with nothing to explain it, is the worse outcome. */}
@@ -368,40 +398,16 @@ function StopCard({
           </button>
         </div>
 
-        <div className="flex shrink-0 flex-col items-center gap-0.5">
-          <button
-            type="button"
-            disabled={isFirst}
-            aria-label={t('plan.moveUp')}
-            onClick={() => {
-              onMove(index, -1);
-            }}
-            className="text-ink-subtle flex size-8 items-center justify-center rounded-full disabled:opacity-30"
-          >
-            <ChevronUp className="size-4" aria-hidden />
-          </button>
-          <button
-            type="button"
-            disabled={isLast}
-            aria-label={t('plan.moveDown')}
-            onClick={() => {
-              onMove(index, 1);
-            }}
-            className="text-ink-subtle flex size-8 items-center justify-center rounded-full disabled:opacity-30"
-          >
-            <ChevronDown className="size-4" aria-hidden />
-          </button>
-          <button
-            type="button"
-            aria-label={t('plan.removeStop')}
-            disabled={removeStop.isPending}
-            onClick={() => {
-              removeStop.mutate(stop.id);
-            }}
-            className="text-ink-subtle hover:text-danger flex size-8 items-center justify-center rounded-full"
-          >
-            <Trash2 className="size-4" aria-hidden />
-          </button>
+        <div className="bg-surface-sunken relative size-[4.5rem] shrink-0 overflow-hidden rounded-md">
+          <PlaceImage
+            url={stop.place.coverImageUrl}
+            blurhash={stop.place.coverBlurhash}
+            name={stop.place.name}
+            categorySlug={stop.place.category.slug}
+            categoryColor={stop.place.category.colorHex}
+            sizes="72px"
+            fallbackSize="sm"
+          />
         </div>
       </div>
 
@@ -468,6 +474,46 @@ function StopCard({
         }}
         className="mt-2.5"
       />
+
+      {/* The controls, on their own row under the content.
+          They were a vertical column of three between the text and the edge,
+          which cost 32px of the name's width on every card to hold buttons
+          nobody presses while reading. */}
+      <div className="border-border mt-3 flex items-center gap-0.5 border-t pt-2">
+        <button
+          type="button"
+          disabled={isFirst}
+          aria-label={t('plan.moveUp')}
+          onClick={() => {
+            onMove(index, -1);
+          }}
+          className="text-ink-subtle flex size-8 items-center justify-center rounded-full disabled:opacity-30"
+        >
+          <ChevronUp className="size-4" aria-hidden />
+        </button>
+        <button
+          type="button"
+          disabled={isLast}
+          aria-label={t('plan.moveDown')}
+          onClick={() => {
+            onMove(index, 1);
+          }}
+          className="text-ink-subtle flex size-8 items-center justify-center rounded-full disabled:opacity-30"
+        >
+          <ChevronDown className="size-4" aria-hidden />
+        </button>
+        <button
+          type="button"
+          aria-label={t('plan.removeStop')}
+          disabled={removeStop.isPending}
+          onClick={() => {
+            removeStop.mutate(stop.id);
+          }}
+          className="text-ink-subtle hover:text-danger ml-auto flex size-8 items-center justify-center rounded-full"
+        >
+          <Trash2 className="size-4" aria-hidden />
+        </button>
+      </div>
     </div>
   );
 }
