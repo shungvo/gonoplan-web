@@ -53,7 +53,7 @@ export function ProfileScreen() {
         <BackButton onClick={goBack} />
 
         <div className="mt-3 flex items-center justify-between gap-3">
-        <h1 className="text-ink text-[1.75rem] leading-tight font-semibold tracking-tight">
+        <h1 className="text-ink text-title leading-tight font-semibold tracking-tight">
           {t('profile.title')}
         </h1>
         {user && (

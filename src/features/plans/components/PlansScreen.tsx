@@ -40,7 +40,7 @@ export function PlansScreen() {
   return (
     <div className="px-safe">
       <header className="pt-safe-float px-5">
-        <h1 className="text-ink pt-6 text-[1.75rem] leading-tight font-semibold tracking-tight">
+        <h1 className="text-ink pt-6 text-title leading-tight font-semibold tracking-tight">
           {t('plans.title')}
         </h1>
         <p className="text-ink-muted mt-1 text-sm">{t('plans.description')}</p>
@@ -233,7 +233,7 @@ function NewPlanForm({ onCreated }: { onCreated: (id: string) => void }) {
           }}
           placeholder={t('plans.titlePlaceholder')}
           autoFocus
-          className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
+          className={fieldClass('mt-1.5 h-12 px-3.5 text-md')}
         />
       </label>
 
@@ -251,7 +251,7 @@ function NewPlanForm({ onCreated }: { onCreated: (id: string) => void }) {
           onChange={(event) => {
             setDate(event.target.value);
           }}
-          className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
+          className={fieldClass('mt-1.5 h-12 px-3.5 text-md')}
         />
       </label>
 

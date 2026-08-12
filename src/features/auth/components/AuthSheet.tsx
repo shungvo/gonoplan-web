@@ -90,7 +90,7 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
               setName(event.target.value);
             }}
             autoComplete="name"
-            className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
+            className={fieldClass('mt-1.5 h-12 px-3.5 text-md')}
           />
         </label>
       )}
@@ -109,7 +109,7 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
           autoCapitalize="none"
           spellCheck={false}
           inputMode="email"
-          className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
+          className={fieldClass('mt-1.5 h-12 px-3.5 text-md')}
         />
       </label>
 
@@ -122,7 +122,7 @@ function AuthForm({ reason, onDone }: { reason?: string | undefined; onDone: () 
             setPassword(event.target.value);
           }}
           autoComplete={isRegister ? 'new-password' : 'current-password'}
-          className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
+          className={fieldClass('mt-1.5 h-12 px-3.5 text-md')}
         />
         {isRegister && (
           <span className="text-ink-subtle mt-1 block text-xs">{t('auth.passwordHint')}</span>

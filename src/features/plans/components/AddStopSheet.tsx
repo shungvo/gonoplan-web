@@ -103,7 +103,7 @@ function AddStopBody({
             }}
             placeholder={t('plan.addBySearch')}
             aria-label={t('plan.addBySearch')}
-            className="text-ink placeholder:text-ink-subtle w-full bg-transparent text-[0.9375rem] outline-none"
+            className="text-ink placeholder:text-ink-subtle w-full bg-transparent text-md outline-none"
           />
         </div>
 

@@ -114,7 +114,7 @@ export function LocationChip({
             )}
             aria-hidden
           />
-          <span className="truncate text-[0.9375rem] font-semibold text-ink">{text}</span>
+          <span className="truncate text-md font-semibold text-ink">{text}</span>
         </span>
       </button>
     );

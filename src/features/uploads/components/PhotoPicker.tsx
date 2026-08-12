@@ -137,7 +137,7 @@ export function PhotoPicker({
             )}
           >
             <ImagePlus className="size-5" aria-hidden />
-            <span className="text-[0.6875rem]">{t('picker.add')}</span>
+            <span className="text-2xs">{t('picker.add')}</span>
           </button>
         )}
       </div>

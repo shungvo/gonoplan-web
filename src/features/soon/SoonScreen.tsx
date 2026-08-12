@@ -21,7 +21,7 @@ export function SoonScreen() {
   return (
     <div className="px-safe">
       <header className="pt-safe-float px-5">
-        <h1 className="text-ink text-[1.75rem] leading-tight font-semibold tracking-tight">
+        <h1 className="text-ink text-title leading-tight font-semibold tracking-tight">
           {t('nav.soon')}
         </h1>
       </header>

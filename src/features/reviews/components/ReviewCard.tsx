@@ -49,7 +49,7 @@ export function ReviewCard({
               {review.author.name}
             </Link>
             {review.isMine && (
-              <span className="bg-primary-tint text-primary shrink-0 rounded-full px-2 py-0.5 text-[0.625rem] font-semibold">
+              <span className="bg-primary-tint text-primary shrink-0 rounded-full px-2 py-0.5 text-3xs font-semibold">
                 {t('reviews.you')}
               </span>
             )}

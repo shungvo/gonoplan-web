@@ -143,7 +143,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 {item.icon}
                 <span className="flex-1">{t(item.labelKey)}</span>
                 {item.queue === 'moderation' && pending > 0 && (
-                  <span className="bg-danger inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[0.6875rem] font-semibold text-white tabular-nums">
+                  <span className="bg-danger inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-2xs font-semibold text-white tabular-nums">
                     {pending > 99 ? '99+' : formatNumber(pending, locale)}
                   </span>
                 )}

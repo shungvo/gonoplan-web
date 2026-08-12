@@ -132,7 +132,7 @@ function ReviewForm({
         rows={5}
         disabled={pending}
         placeholder={t('write.contentPlaceholder')}
-        className={fieldClass('mt-2 resize-none p-3.5 text-[0.9375rem] leading-relaxed')}
+        className={fieldClass('mt-2 resize-none p-3.5 text-md leading-relaxed')}
       />
       <p className="text-ink-subtle mt-1 text-right text-xs">
         {content.length}/{MAX_LENGTH}

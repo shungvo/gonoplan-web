@@ -115,7 +115,7 @@ export function PlaceDetailContent({
               className="aspect-[4/3] max-h-[38dvh] w-full rounded-lg shadow-md"
             />
             <span
-              className="absolute top-3 left-3 rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold text-white"
+              className="absolute top-3 left-3 rounded-full px-2.5 py-1 text-2xs font-semibold text-white"
               style={{ backgroundColor: categorySolid(place.category.colorHex) }}
             >
               {categoryName(place.category, locale)}
@@ -139,7 +139,7 @@ export function PlaceDetailContent({
                   said here or not at all. */}
               {compact && (
                 <span
-                  className="mb-1.5 inline-flex rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold text-white"
+                  className="mb-1.5 inline-flex rounded-full px-2.5 py-1 text-2xs font-semibold text-white"
                   style={{ backgroundColor: categorySolid(place.category.colorHex) }}
                 >
                   {categoryName(place.category, locale)}
@@ -173,7 +173,7 @@ export function PlaceDetailContent({
             {place.priceRange && (
               <div className="shrink-0 text-right">
                 <PriceRange value={place.priceRange} className="text-lg" />
-                <p className="text-ink-subtle text-[0.6875rem]">{t('detail.typical')}</p>
+                <p className="text-ink-subtle text-2xs">{t('detail.typical')}</p>
               </div>
             )}
           </div>
@@ -397,7 +397,7 @@ export function PlaceDetailContent({
             {place.phone && (
               <a
                 href={`tel:${place.phone}`}
-                className="border-border bg-surface text-ink inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-lg border text-[0.9375rem] font-medium active:scale-[0.98]"
+                className="border-border bg-surface text-ink inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-lg border text-md font-medium active:scale-[0.98]"
               >
                 <Phone className="size-[1.125rem]" aria-hidden />
                 {t('detail.call')}

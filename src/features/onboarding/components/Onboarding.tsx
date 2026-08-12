@@ -101,7 +101,7 @@ export function Onboarding() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25 }}
         >
-          <span className="bg-primary-tint text-primary mx-auto flex size-20 items-center justify-center rounded-2xl">
+          <span className="bg-primary-tint text-primary mx-auto flex size-20 items-center justify-center rounded-lg">
             {isLocationStep ? (
               <MapPin className="size-9" aria-hidden />
             ) : (
@@ -112,7 +112,7 @@ export function Onboarding() {
           <h1 className="text-ink mt-6 text-2xl leading-tight font-semibold tracking-tight">
             {isLocationStep ? t('onboarding.locationTitle') : panel && t(panel.titleKey)}
           </h1>
-          <p className="text-ink-muted mx-auto mt-3 max-w-sm text-[0.9375rem] leading-relaxed">
+          <p className="text-ink-muted mx-auto mt-3 max-w-sm text-md leading-relaxed">
             {isLocationStep ? t('onboarding.locationBody') : panel && t(panel.bodyKey)}
           </p>
         </motion.div>

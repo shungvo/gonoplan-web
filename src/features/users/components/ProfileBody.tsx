@@ -134,7 +134,7 @@ export function ProfileBody({ user }: { user: PublicUser }) {
                       fallbackSize="md"
                     />
                     <span
-                      className="absolute top-2.5 left-2.5 rounded-full px-2.5 py-1 text-[0.625rem] font-semibold text-white"
+                      className="absolute top-2.5 left-2.5 rounded-full px-2.5 py-1 text-3xs font-semibold text-white"
                       style={{ backgroundColor: categorySolid(place.category.colorHex) }}
                     >
                       {categoryName(place.category, locale)}
@@ -142,7 +142,7 @@ export function ProfileBody({ user }: { user: PublicUser }) {
                   </div>
 
                   <span className="block p-3.5">
-                    <span className="text-ink block text-[0.9375rem] leading-snug font-semibold">
+                    <span className="text-ink block text-md leading-snug font-semibold">
                       {place.name}
                     </span>
 

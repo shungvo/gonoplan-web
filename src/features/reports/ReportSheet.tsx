@@ -209,7 +209,7 @@ function ReportForm({ target, onDone }: { target: ReportTarget; onDone: () => vo
           }}
           rows={3}
           placeholder={t('report.detailsPlaceholder')}
-          className={fieldClass('mt-1.5 resize-none p-3.5 text-[0.9375rem] leading-relaxed')}
+          className={fieldClass('mt-1.5 resize-none p-3.5 text-md leading-relaxed')}
         />
       </label>
 

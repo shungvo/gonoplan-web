@@ -49,7 +49,7 @@ export function AuditScreen() {
             <li key={entry.id} className="flex flex-wrap items-start gap-3 px-5 py-3.5">
               <span
                 className={cn(
-                  'shrink-0 rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold',
+                  'shrink-0 rounded-full px-2 py-0.5 text-2xs font-semibold',
                   ACTION_TONE[entry.action] ?? 'bg-surface-sunken text-ink-muted',
                 )}
               >

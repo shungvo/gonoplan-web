@@ -178,7 +178,7 @@ export function AddressAutocomplete({
           setHighlight(-1);
         }}
         onKeyDown={onKeyDown}
-        className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
+        className={fieldClass('h-12 px-3.5 text-md')}
       />
 
       {(suggestions.isFetching || resolving) && (

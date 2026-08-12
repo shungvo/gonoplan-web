@@ -117,7 +117,7 @@ export function SearchScreen() {
               enterKeyHint="search"
               placeholder={t('search.placeholder')}
               aria-label={t('search.label')}
-              className="text-ink placeholder:text-ink-subtle w-full bg-transparent text-[0.9375rem] outline-none"
+              className="text-ink placeholder:text-ink-subtle w-full bg-transparent text-md outline-none"
             />
             {query.length > 0 && (
               <button
@@ -168,7 +168,7 @@ export function SearchScreen() {
                         className="flex min-w-0 flex-1 items-center gap-3 py-2.5 text-left"
                       >
                         <Clock className="text-ink-subtle size-4 shrink-0" aria-hidden />
-                        <span className="text-ink truncate text-[0.9375rem]">{item}</span>
+                        <span className="text-ink truncate text-md">{item}</span>
                       </button>
                       <button
                         type="button"
@@ -278,7 +278,7 @@ export function SearchScreen() {
                           <MapPin className="size-5" aria-hidden />
                         </span>
                         <span className="min-w-0">
-                          <span className="text-ink block truncate text-[0.9375rem] font-medium">
+                          <span className="text-ink block truncate text-md font-medium">
                             {city.name}
                           </span>
                           <span className="text-ink-muted block truncate text-xs">

@@ -42,7 +42,7 @@ export function SavedScreen() {
             router.push('/profile');
           }}
         />
-        <h1 className="text-ink mt-1 text-[1.75rem] leading-tight font-semibold tracking-tight">
+        <h1 className="text-ink mt-1 text-title leading-tight font-semibold tracking-tight">
           {t('saved.title')}
         </h1>
         {isAuthenticated && places.length > 0 && (

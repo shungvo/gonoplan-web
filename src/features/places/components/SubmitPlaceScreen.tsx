@@ -272,7 +272,7 @@ export function SubmitPlaceScreen() {
               setName(event.target.value.slice(0, 120));
             }}
             placeholder={t('submit.namePlaceholder')}
-            className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
+            className={fieldClass('h-12 px-3.5 text-md')}
           />
         </Field>
 
@@ -344,7 +344,7 @@ export function SubmitPlaceScreen() {
               onChange={(event) => {
                 setProvince(event.target.value.slice(0, 100));
               }}
-              className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
+              className={fieldClass('h-12 px-3.5 text-md')}
             />
           </Field>
           <Field optionalLabel={t('common.optional')} label={t('submit.district')} htmlFor="place-district">
@@ -355,7 +355,7 @@ export function SubmitPlaceScreen() {
                 setDistrict(event.target.value.slice(0, 100));
               }}
               placeholder={t('submit.districtPlaceholder')}
-              className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
+              className={fieldClass('h-12 px-3.5 text-md')}
             />
           </Field>
         </div>
@@ -368,7 +368,7 @@ export function SubmitPlaceScreen() {
               setWard(event.target.value.slice(0, 100));
             }}
             placeholder={t('submit.wardPlaceholder')}
-            className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
+            className={fieldClass('h-12 px-3.5 text-md')}
           />
         </Field>
 
@@ -492,7 +492,7 @@ export function SubmitPlaceScreen() {
                 setPhone(event.target.value.slice(0, 30));
               }}
               placeholder={t('submit.phonePlaceholder')}
-              className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
+              className={fieldClass('h-12 px-3.5 text-md')}
             />
           </Field>
           <Field optionalLabel={t('common.optional')} label={t('submit.website')} htmlFor="place-website">
@@ -504,7 +504,7 @@ export function SubmitPlaceScreen() {
                 setWebsite(event.target.value.slice(0, 300));
               }}
               placeholder="https://…"
-              className={fieldClass('h-12 px-3.5 text-[0.9375rem]')}
+              className={fieldClass('h-12 px-3.5 text-md')}
             />
           </Field>
         </div>

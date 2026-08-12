@@ -107,7 +107,7 @@ export function OwnerScreen() {
           className="mt-3"
         />
 
-        <h1 className="text-ink mt-1 text-[1.75rem] leading-tight font-semibold tracking-tight">
+        <h1 className="text-ink mt-1 text-title leading-tight font-semibold tracking-tight">
           {t('owner.title')}
         </h1>
       </header>
@@ -159,7 +159,7 @@ export function OwnerScreen() {
                 </div>
                 <span
                   className={cn(
-                    'shrink-0 rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold',
+                    'shrink-0 rounded-full px-2.5 py-1 text-2xs font-semibold',
                     STATUS_STYLE[dashboard.data.profile.status] ?? 'bg-surface-sunken text-ink',
                   )}
                 >
@@ -218,7 +218,7 @@ export function OwnerScreen() {
                   // Sizes to its content with a floor, and caps at 99+. A fixed
                   // circle clipped "540" to "540" with the edges cut off, which
                   // is worse than no number.
-                  <span className="bg-danger ml-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[0.625rem] font-semibold text-white tabular-nums">
+                  <span className="bg-danger ml-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-3xs font-semibold text-white tabular-nums">
                     {dashboard.data.totals.unanswered > 99
                       ? '99+'
                       : formatNumber(dashboard.data.totals.unanswered, locale)}
@@ -246,7 +246,7 @@ export function OwnerScreen() {
                       </div>
                       <span
                         className={cn(
-                          'shrink-0 rounded-full px-2 py-0.5 text-[0.625rem] font-semibold',
+                          'shrink-0 rounded-full px-2 py-0.5 text-3xs font-semibold',
                           STATUS_STYLE[place.status] ?? 'bg-surface-sunken text-ink',
                         )}
                       >

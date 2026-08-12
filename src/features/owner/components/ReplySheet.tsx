@@ -84,7 +84,7 @@ function ReplyForm({ review, onDone }: { review: OwnerReview; onDone: () => void
         rows={5}
         aria-label={t('reply.label')}
         placeholder={t('reply.placeholder')}
-        className={fieldClass('mt-3 resize-none p-3.5 text-[0.9375rem] leading-relaxed')}
+        className={fieldClass('mt-3 resize-none p-3.5 text-md leading-relaxed')}
       />
       <p className="text-ink-subtle mt-1 text-right text-xs">
         {content.length}/{MAX_LENGTH}

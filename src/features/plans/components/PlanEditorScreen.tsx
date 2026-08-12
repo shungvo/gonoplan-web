@@ -145,7 +145,7 @@ export function PlanEditorScreen({
             updatePlan.mutate({ title: event.target.value.slice(0, 120) });
           }}
           aria-label={t('plans.titleLabel')}
-          className="text-ink mt-1 w-full bg-transparent text-[1.75rem] leading-tight font-semibold tracking-tight outline-none"
+          className="text-ink mt-1 w-full bg-transparent text-title leading-tight font-semibold tracking-tight outline-none"
         />
 
         {editingDate ? (
@@ -327,7 +327,7 @@ function StopCard({
         <div className="min-w-0 flex-1">
           <Link
             href={`/place/${stop.place.slug}`}
-            className="text-primary block truncate text-[0.9375rem] font-semibold"
+            className="text-primary block truncate text-md font-semibold"
           >
             {stop.place.name}
           </Link>

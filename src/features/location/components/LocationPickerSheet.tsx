@@ -195,7 +195,7 @@ export function LocationPickerSheet({ open, onOpenChange }: LocationPickerSheetP
             }}
             placeholder={t('location.searchPlaceholder')}
             aria-label={t('location.searchPlaceholder')}
-            className="text-ink placeholder:text-ink-subtle w-full bg-transparent text-[0.9375rem] outline-none"
+            className="text-ink placeholder:text-ink-subtle w-full bg-transparent text-md outline-none"
           />
           {suggestions.isFetching && (
             <LoaderCircle className="text-ink-subtle size-4 shrink-0 animate-spin" aria-hidden />
@@ -291,7 +291,7 @@ function Row({
         {icon}
       </span>
       <span className="min-w-0">
-        <span className="text-ink block truncate text-[0.9375rem] font-medium">{primary}</span>
+        <span className="text-ink block truncate text-md font-medium">{primary}</span>
         {secondary && (
           <span className="text-ink-muted block truncate text-sm">{secondary}</span>
         )}

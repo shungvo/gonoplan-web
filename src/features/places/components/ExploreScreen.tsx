@@ -259,7 +259,7 @@ export function ExploreScreen() {
               className="bg-surface flex h-12 min-w-0 flex-1 items-center gap-3 rounded-full px-4 text-left shadow-md active:scale-[0.99]"
             >
               <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
-              <span className="text-ink-subtle truncate text-[0.9375rem]">
+              <span className="text-ink-subtle truncate text-md">
                 {label ? t('explore.searchAround', { label }) : t('explore.searchPlaces')}
               </span>
             </button>
@@ -466,7 +466,7 @@ export function ExploreScreen() {
           stay legible over whatever the map happens to show. */}
       <header className="pt-safe-float relative z-10 px-5">
         <div className="flex items-center gap-2">
-          <h1 className="text-ink flex-1 text-[1.75rem] leading-tight font-semibold tracking-tight drop-shadow-[0_1px_2px_rgb(255_255_255/0.9)]">
+          <h1 className="text-ink flex-1 text-title leading-tight font-semibold tracking-tight drop-shadow-[0_1px_2px_rgb(255_255_255/0.9)]">
             {t('explore.title')}
           </h1>
           <button
@@ -500,7 +500,7 @@ export function ExploreScreen() {
           className="bg-surface mt-3 flex h-12 w-full items-center gap-3 rounded-full px-4 text-left shadow-md active:scale-[0.99]"
         >
           <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
-          <span className="text-ink-subtle text-[0.9375rem]">{t('explore.searchPlaces')}</span>
+          <span className="text-ink-subtle text-md">{t('explore.searchPlaces')}</span>
         </button>
       </header>
 

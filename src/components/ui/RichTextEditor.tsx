@@ -165,7 +165,7 @@ export function RichTextEditor({
           rows={rows}
           disabled={disabled}
           placeholder={placeholder}
-          className={fieldClass('resize-none p-3.5 text-[0.9375rem] leading-relaxed')}
+          className={fieldClass('resize-none p-3.5 text-md leading-relaxed')}
         />
       )}
 

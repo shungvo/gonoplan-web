@@ -42,7 +42,7 @@ export function LocaleSwitcher() {
               option === locale ? 'text-primary font-medium' : 'text-ink',
             )}
           >
-            <span className="text-[0.9375rem]">{LOCALE_LABELS[option]}</span>
+            <span className="text-md">{LOCALE_LABELS[option]}</span>
             {option === locale && <Check className="size-4 shrink-0" aria-hidden />}
           </button>
         ))}

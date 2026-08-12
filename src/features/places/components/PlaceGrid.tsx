@@ -75,14 +75,14 @@ export function PlaceGrid({
               />
 
               <span
-                className="absolute top-2.5 left-2.5 rounded-full px-2.5 py-1 text-[0.625rem] font-semibold text-white"
+                className="absolute top-2.5 left-2.5 rounded-full px-2.5 py-1 text-3xs font-semibold text-white"
                 style={{ backgroundColor: categorySolid(place.category.colorHex) }}
               >
                 {categoryName(place.category, locale)}
               </span>
 
               {place.isOpenNow && (
-                <span className="bg-surface/90 text-success absolute bottom-2.5 left-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[0.625rem] font-semibold backdrop-blur-sm">
+                <span className="bg-surface/90 text-success absolute bottom-2.5 left-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1 text-3xs font-semibold backdrop-blur-sm">
                   <Clock className="size-2.5" aria-hidden />
                   {t('place.openNow')}
                 </span>
@@ -105,7 +105,7 @@ export function PlaceGrid({
             onClick={() => onSelect?.(place)}
             className="mt-2 block w-full text-left"
           >
-            <h3 className="text-primary line-clamp-2 text-[0.875rem] leading-snug font-semibold">
+            <h3 className="text-primary line-clamp-2 text-sm leading-snug font-semibold">
               {place.name}
             </h3>
 

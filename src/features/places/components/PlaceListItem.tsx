@@ -54,7 +54,7 @@ export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps
             thing the row exists to show — "Ho Chi Minh City Museum of Fine
             Arts" arrived as "Ho Chi Minh City Museum of Fin…". "Open" is one
             word and reads fine next to the category instead. */}
-        <h3 className="text-primary line-clamp-2 text-[0.9375rem] leading-snug font-semibold">
+        <h3 className="text-primary line-clamp-2 text-md leading-snug font-semibold">
           {place.name}
         </h3>
 

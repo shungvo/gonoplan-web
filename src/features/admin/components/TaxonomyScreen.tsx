@@ -383,7 +383,7 @@ function CategoryRow({
           {category.name}
           <span className="text-ink-subtle font-normal"> · {category.nameVi}</span>
           {!category.isActive && (
-            <span className="bg-surface-sunken text-ink-subtle ml-2 rounded-full px-2 py-0.5 text-[0.6875rem]">
+            <span className="bg-surface-sunken text-ink-subtle ml-2 rounded-full px-2 py-0.5 text-2xs">
               {t('taxonomy.retired')}
             </span>
           )}

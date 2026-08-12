@@ -199,7 +199,7 @@ export function HomeScreen() {
           className="bg-surface mt-4 flex h-12 w-full items-center gap-3 rounded-full px-4 text-left shadow-md active:scale-[0.99]"
         >
           <Search className="text-ink-subtle size-4 shrink-0" aria-hidden />
-          <span className="text-ink-subtle truncate text-[0.9375rem]">
+          <span className="text-ink-subtle truncate text-md">
             {t('home.searchPlaceholder')}
           </span>
         </button>

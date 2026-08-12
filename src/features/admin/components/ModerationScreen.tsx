@@ -445,14 +445,14 @@ function ReportCard({
                 rendered raw — `toLowerCase()` is a translation strategy that
                 works in exactly one language, and this queue is meant to be
                 readable in two. */}
-            <span className="bg-surface-sunken text-ink-muted inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold">
+            <span className="bg-surface-sunken text-ink-muted inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-2xs font-semibold">
               {t(`reportReason.${report.reason}`)}
             </span>
             <span className="text-ink-subtle text-xs">
               {t(`moderation.targetType.${report.targetType}`)} · <TimeAgo iso={report.createdAt} />
             </span>
             {report.openReportsOnTarget > 1 && (
-              <span className="bg-danger/10 text-danger rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold">
+              <span className="bg-danger/10 text-danger rounded-full px-2 py-0.5 text-2xs font-semibold">
                 {t('moderation.openReports', { count: report.openReportsOnTarget })}
               </span>
             )}

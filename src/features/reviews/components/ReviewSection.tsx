@@ -90,7 +90,7 @@ export function ReviewSection({ placeId, placeName }: { placeId: string; placeNa
 
               return (
                 <div key={star} className="flex items-center gap-2">
-                  <span className="text-ink-subtle w-2 text-right text-[0.625rem]">
+                  <span className="text-ink-subtle w-2 text-right text-3xs">
                     {formatNumber(star, locale)}
                   </span>
                   <span className="bg-surface-sunken h-1.5 flex-1 overflow-hidden rounded-full">
@@ -99,7 +99,7 @@ export function ReviewSection({ placeId, placeName }: { placeId: string; placeNa
                       style={{ width: `${String(percent)}%` }}
                     />
                   </span>
-                  <span className="text-ink-subtle w-6 text-[0.625rem]">
+                  <span className="text-ink-subtle w-6 text-3xs">
                     {formatNumber(count, locale)}
                   </span>
                 </div>

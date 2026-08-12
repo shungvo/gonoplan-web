@@ -63,7 +63,7 @@ export function RegisterBusinessForm({ onRegistered }: { onRegistered: () => voi
           onChange={(event) => {
             setBusinessName(event.target.value);
           }}
-          className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
+          className={fieldClass('mt-1.5 h-12 px-3.5 text-md')}
         />
       </label>
 
@@ -81,7 +81,7 @@ export function RegisterBusinessForm({ onRegistered }: { onRegistered: () => voi
           }}
           autoCapitalize="none"
           inputMode="email"
-          className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
+          className={fieldClass('mt-1.5 h-12 px-3.5 text-md')}
         />
       </label>
 
@@ -98,7 +98,7 @@ export function RegisterBusinessForm({ onRegistered }: { onRegistered: () => voi
             setBusinessPhone(event.target.value);
           }}
           inputMode="tel"
-          className={fieldClass('mt-1.5 h-12 px-3.5 text-[0.9375rem]')}
+          className={fieldClass('mt-1.5 h-12 px-3.5 text-md')}
         />
       </label>
 

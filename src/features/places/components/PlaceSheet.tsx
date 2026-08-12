@@ -346,7 +346,7 @@ function PlaceSheetSkeleton({ preview }: { preview: PlacePreview | null }) {
       {preview ? (
         <>
           <span
-            className="mb-1.5 inline-flex rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold text-white"
+            className="mb-1.5 inline-flex rounded-full px-2.5 py-1 text-2xs font-semibold text-white"
             style={{ backgroundColor: categorySolid(preview.category.colorHex) }}
           >
             {categoryName(preview.category, locale)}

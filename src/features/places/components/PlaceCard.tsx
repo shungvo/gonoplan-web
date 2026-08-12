@@ -51,7 +51,7 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
         />
 
         <span
-          className="absolute top-2.5 left-2.5 rounded-full px-2.5 py-1 text-[0.6875rem] font-semibold text-white backdrop-blur-sm"
+          className="absolute top-2.5 left-2.5 rounded-full px-2.5 py-1 text-2xs font-semibold text-white backdrop-blur-sm"
           style={{ backgroundColor: categorySolid(place.category.colorHex) }}
         >
           {categoryName(place.category, locale)}
@@ -60,7 +60,7 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
         {/* Only shown when open. A "Closed" badge on every card at 2am makes the
             whole screen look shut; absence reads as neutral. */}
         {place.isOpenNow && (
-          <span className="bg-surface/90 text-success absolute top-2.5 right-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[0.6875rem] font-semibold backdrop-blur-sm">
+          <span className="bg-surface/90 text-success absolute top-2.5 right-2.5 inline-flex items-center gap-1 rounded-full px-2 py-1 text-2xs font-semibold backdrop-blur-sm">
             <Clock className="size-3" aria-hidden />
             {t('place.openNow')}
           </span>
@@ -68,7 +68,7 @@ export function PlaceCard({ place, onSelect, priority = false, className }: Plac
       </div>
 
       <div className="p-3.5">
-        <h3 className="text-primary truncate text-[0.9375rem] leading-snug font-semibold">
+        <h3 className="text-primary truncate text-md leading-snug font-semibold">
           {place.name}
         </h3>
 

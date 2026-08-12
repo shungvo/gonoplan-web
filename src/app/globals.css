@@ -63,6 +63,25 @@
      than only separating stacked rows. */
   --color-border: #e6ecf4;
 
+  /* ─── Type ──────────────────────────────────────────────────────────── */
+  /* Four steps Tailwind's default scale does not have, and which the app was
+     reaching for as arbitrary values sixty-eight times: `text-[0.9375rem]`
+     thirty-seven times alone. That is not an exception, it is a scale — one
+     that existed in practice, was never declared, and so could drift a
+     sixteenth of a rem every time somebody typed it again.
+
+     Named here so the call sites say which step they mean rather than how many
+     rem it happens to be, and so changing a step is one line instead of a
+     find-and-replace across thirty-seven files. */
+  --text-3xs: 0.625rem; /* 10px — the grid card's category pill */
+  --text-3xs--line-height: 1.4;
+  --text-2xs: 0.6875rem; /* 11px — badges, status pills */
+  --text-2xs--line-height: 1.45;
+  --text-md: 0.9375rem; /* 15px — card and list titles, between sm and base */
+  --text-md--line-height: 1.4;
+  --text-title: 1.75rem; /* 28px — a screen's own heading */
+  --text-title--line-height: 1.15;
+
   /* ─── Radii ─────────────────────────────────────────────────────────── */
   /* Generous. The soft, rounded silhouette is most of what separates this
      look from a stock dashboard — cards read as physical tiles rather than

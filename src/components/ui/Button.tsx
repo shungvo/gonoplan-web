@@ -28,7 +28,7 @@ const SIZES: Record<Size, string> = {
   // Never below 44px tall: Apple's minimum comfortable touch target, and the
   // difference between a button people hit and one they hit near.
   sm: 'h-11 px-4 text-sm rounded-sm gap-1.5',
-  md: 'h-12 px-5 text-[0.9375rem] rounded-md gap-2',
+  md: 'h-12 px-5 text-md rounded-md gap-2',
   lg: 'h-14 px-6 text-base rounded-lg gap-2',
 };
 
