@@ -131,7 +131,10 @@ export function BottomSheet({
     >
       <Drawer.Portal>
         <Drawer.Overlay
-          className="fixed inset-0 z-50 bg-ink/40 backdrop-blur-[2px] transition-opacity"
+          // Dims the app, not the browser page. On a desktop the app is a
+          // centred column, and a scrim that also darkened the gutters would
+          // say the sheet belongs to the window rather than to the app.
+          className="fixed inset-y-0 inset-x-0 z-50 mx-auto max-w-app bg-ink/40 backdrop-blur-[2px] transition-opacity"
           style={{ opacity: dimmed ? 1 : 0, pointerEvents: dimmed ? 'auto' : 'none' }}
         />
 
@@ -140,7 +143,7 @@ export function BottomSheet({
           // :focus-visible rule would then ring the whole sheet. Children keep
           // their own rings.
           className={cn(
-            'px-safe fixed inset-x-0 bottom-0 z-50 flex flex-col rounded-t-xl bg-surface shadow-sheet focus:outline-none',
+            'px-safe fixed inset-x-0 bottom-0 z-50 mx-auto flex max-w-app flex-col rounded-t-xl bg-surface shadow-sheet focus:outline-none',
             // A resizable sheet is sized by its snap point, so it needs a fixed
             // height to measure against; a content sheet grows to fit and stops
             // short of the top.

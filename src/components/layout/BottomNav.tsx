@@ -58,7 +58,10 @@ export function BottomNav() {
          a selector must not depend on prose. */
       data-nav="main"
       className={cn(
-        'fixed inset-x-0 bottom-0 z-40',
+        // Centred on the app column, not the monitor. `inset-x-0` alone left the
+        // nav pill floating in the middle of a 1440px page with the content
+        // 480px away on the left.
+        'fixed inset-x-0 bottom-0 z-40 mx-auto max-w-app',
         // The gradient fades content out beneath the floating bar instead of
         // letting it collide with it — cleaner than an opaque block.
         'bg-gradient-to-t from-background via-background/90 to-transparent pt-4',

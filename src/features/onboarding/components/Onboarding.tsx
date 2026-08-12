@@ -54,7 +54,7 @@ export function Onboarding() {
   const panel = PANELS[step];
 
   return (
-    <div className="bg-background px-safe fixed inset-0 z-50 flex flex-col">
+    <div className="bg-background px-safe fixed inset-y-0 inset-x-0 z-50 mx-auto flex max-w-app flex-col">
       <div className="pt-safe-float flex items-center justify-between px-5">
         {/*
           A language toggle on the very first screen.

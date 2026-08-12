@@ -213,7 +213,7 @@ function Backdrop({
         <motion.div
           // `overflow-hidden` because the photograph inside is deliberately
           // wider than the viewport for the length of the movement.
-          className="pointer-events-auto fixed inset-0 z-40 overflow-hidden"
+          className="pointer-events-auto fixed inset-y-0 inset-x-0 z-40 mx-auto max-w-app overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

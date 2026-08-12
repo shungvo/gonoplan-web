@@ -84,7 +84,7 @@ export function Toaster() {
       role="region"
       aria-label={t('toast.regionLabel')}
       className={cn(
-        'px-safe pt-safe-float pointer-events-none fixed inset-x-0 top-0 bottom-auto z-50',
+        'px-safe pt-safe-float pointer-events-none fixed inset-x-0 top-0 bottom-auto z-50 mx-auto max-w-app',
         // Undoes the popover UA stylesheet, which centres the element in the
         // viewport and gives it a border, padding and an opaque background.
         'm-0 h-auto max-h-none w-auto max-w-none overflow-visible border-0 bg-transparent p-0',

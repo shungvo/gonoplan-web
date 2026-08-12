@@ -175,6 +175,28 @@
   --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
 
   /* ─── Layout ────────────────────────────────────────────────────────── */
+  /*
+   * How wide the app is allowed to get.
+   *
+   * This is a phone app that runs in a browser, and on a 1440px monitor it was
+   * stretching the whole mobile layout to 1440px: a rail card meant to be
+   * two-thirds of a screen became a sixth of one, the category chips spread
+   * into a thin line, and 14px type sat on a canvas built for 16. Nothing was
+   * broken in the sense of overlapping — it was just a phone screen pulled
+   * four times too wide, which is worse, because it looks like a mistake
+   * rather than a decision.
+   *
+   * 30rem is the width the layout was designed against plus a little air. Any
+   * `fixed` overlay has to be constrained to it too — a sheet spanning the
+   * monitor while its content column is 480px is the same bug wearing a
+   * different hat.
+   *
+   * In the `--container-*` namespace, not `--width-*`: that is the one Tailwind
+   * v4 builds `max-w-*` from. Declared under the wrong namespace it produces no
+   * utility at all and every `max-w-app` silently does nothing, which is
+   * exactly how the first attempt at this failed.
+   */
+  --container-app: 30rem;
   /* The bottom nav's own height, measured rather than guessed: `pt-4` (16px)
      over a pill of `p-1.5` + a 48px tab (60px). 4.5rem was 4px short of that,
      so every screen using `.pb-nav` let its last row slide under the bar. */

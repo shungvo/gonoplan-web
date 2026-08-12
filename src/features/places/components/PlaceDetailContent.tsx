@@ -392,7 +392,7 @@ export function PlaceDetailContent({
         With no phone number, directions simply takes the full width.
       */}
       {!compact && (
-        <div className="pb-safe-float px-safe border-border bg-surface/95 fixed inset-x-0 bottom-0 z-30 border-t px-4 pt-3 backdrop-blur-md">
+        <div className="pb-safe-float px-safe border-border bg-surface/95 fixed inset-x-0 bottom-0 z-30 mx-auto max-w-app border-t px-4 pt-3 backdrop-blur-md">
           <div className="mx-auto flex max-w-lg gap-2">
             {place.phone && (
               <a

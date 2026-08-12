@@ -215,7 +215,7 @@ export function ExploreScreen() {
         there is nothing here to fade — over a fixed map it is just a white
         wash across the bottom, which is the same complaint one layer down.
       */
-      <div data-immersive className="bg-background fixed inset-0 z-20">
+      <div data-immersive className="bg-background fixed inset-y-0 inset-x-0 z-20 mx-auto max-w-app">
         <MapCanvas
           className="map-immersive absolute inset-0"
           /*
@@ -359,7 +359,7 @@ export function ExploreScreen() {
             was `pb-7` (28px), and it did exactly that. */}
         <div
           ref={measureBottomOverlay}
-          className="absolute inset-x-0 bottom-[var(--nav-clearance)] pb-11"
+          className="absolute inset-x-0 bottom-[var(--nav-clearance)] pb-3"
         >
           {placesInView.length === 0 ? (
             <p className="bg-surface/95 text-ink-muted mx-4 rounded-lg px-4 py-3 text-center text-sm shadow-md backdrop-blur-md">
@@ -380,7 +380,7 @@ export function ExploreScreen() {
                       setSelectedPlaceId(place.id);
                     }}
                     className={cn(
-                      'w-[19rem] shadow-md',
+                      'w-[19rem]',
                       // Room for the route button, which is positioned over
                       // this card rather than inside it. Without it the button
                       // sat on top of the distance — "120 m" arrived as "12"
@@ -449,7 +449,7 @@ export function ExploreScreen() {
         below anything given a `z-10` of its own — so the chrome that has to
         sit over the map now says so explicitly, one class each.
       */}
-      <div className="fixed inset-x-0 top-0 z-0" style={mapStripStyle}>
+      <div className="fixed inset-x-0 top-0 z-0 mx-auto max-w-app" style={mapStripStyle}>
         <MapCanvas
           className="map-tucked absolute inset-0"
           showZoomControls={false}
