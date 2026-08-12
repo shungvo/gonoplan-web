@@ -1,4 +1,5 @@
 import { Fragment, type ReactNode } from 'react';
+import { Camera, Globe, MapPin, Video, type LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 
 /**
@@ -19,8 +20,82 @@ import { cn } from '@/lib/utils/cn';
  * written before this keep working untouched.
  */
 
-/** Bold, italic, and links. Ordered so `**` is tried before `*`. */
-const INLINE = /(\*\*[^*]+\*\*|\*[^*]+\*|\[[^\]]+\]\([^)\s]+\))/g;
+/**
+ * Bold, italic, markdown links, and bare URLs.
+ *
+ * Ordered so `**` is tried before `*`, and so `[label](url)` is tried before
+ * the bare-URL rule — otherwise the URL inside a markdown link would match on
+ * its own and the label would be orphaned.
+ *
+ * Bare URLs are here because people paste them. Before this the grammar only
+ * knew `[label](url)`, which is what the toolbar emits — so a TikTok link
+ * pasted straight into a description rendered as grey text that could not be
+ * clicked, and looked like the app had swallowed it.
+ */
+const INLINE =
+  /(\*\*[^*]+\*\*|\*[^*]+\*|\[[^\]]+\]\([^)\s]+\)|https?:\/\/[^\s<>]+)/g;
+
+/** Sentence punctuation that follows a pasted URL rather than belonging to it. */
+const TRAILING = /[.,;:!?'"]+$/;
+
+/**
+ * What a link looks like, decided from its own hostname.
+ *
+ * No favicon fetch. A favicon means every reader's browser announcing to
+ * TikTok that they are looking at this page, and a broken image wherever the
+ * site does not serve one — for a decoration. The app already answers this
+ * question for places with no photograph, with a glyph drawn from what the
+ * thing *is*, and a link is the same problem.
+ *
+ * The icons say what you will get rather than whose service it is: a video, a
+ * photograph, a map. That is the part a reader is deciding on — and it also
+ * means there is no brand mark here to keep up to date or to be wrong about.
+ */
+const FACES: Array<{ host: RegExp; icon: LucideIcon }> = [
+  { host: /(^|\.)(tiktok\.com|youtube\.com|youtu\.be|fb\.watch)$/, icon: Video },
+  { host: /(^|\.)instagram\.com$/, icon: Camera },
+  { host: /(^|\.)(google\.[a-z.]+|goo\.gl)$/, icon: MapPin },
+];
+
+/** The hostname without `www.`, and the icon that goes with it. */
+function linkFace(href: string): { host: string; Icon: LucideIcon } | null {
+  let host: string;
+  try {
+    host = new URL(href).hostname.replace(/^www\./, '');
+  } catch {
+    return null;
+  }
+
+  return { host, Icon: FACES.find((face) => face.host.test(host))?.icon ?? Globe };
+}
+
+/**
+ * A link with nothing but a URL to show for itself.
+ *
+ * A raw "https://www.tiktok.com/@someone/video/7361029…" is forty characters
+ * of noise carrying one useful word, so the chip shows the icon and the host
+ * and drops the rest. The whole URL is still in `href` and in the title, which
+ * is where a reader who wants it will look.
+ */
+function LinkChip({ href }: { href: string }) {
+  const face = linkFace(href);
+  if (!face) return <Fragment>{href}</Fragment>;
+
+  const { host, Icon } = face;
+
+  return (
+    <a
+      href={href}
+      title={href}
+      target="_blank"
+      rel="noopener noreferrer nofollow ugc"
+      className="border-border bg-surface text-ink press-soft my-0.5 inline-flex max-w-full items-center gap-1.5 rounded-full border px-2.5 py-1 align-middle text-xs font-medium"
+    >
+      <Icon className="text-ink-muted size-3.5 shrink-0" aria-hidden />
+      <span className="truncate">{host}</span>
+    </a>
+  );
+}
 
 function renderInline(text: string, keyPrefix: string): ReactNode[] {
   return text.split(INLINE).map((part, index) => {
@@ -32,6 +107,25 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
 
     if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
       return <em key={key}>{part.slice(1, -1)}</em>;
+    }
+
+    /*
+     * A bare URL, pasted rather than written as a link.
+     *
+     * The trailing punctuation is split off first: "…xem ở https://x.com/a."
+     * ends a sentence, and the full stop is the sentence's, not the URL's.
+     * Swallowing it produces a 404 that looks like the app mangled the link.
+     */
+    if (/^https?:\/\//i.test(part)) {
+      const trailing = TRAILING.exec(part)?.[0] ?? '';
+      const href = trailing ? part.slice(0, -trailing.length) : part;
+
+      return (
+        <Fragment key={key}>
+          <LinkChip href={href} />
+          {trailing}
+        </Fragment>
+      );
     }
 
     const link = /^\[([^\]]+)\]\(([^)\s]+)\)$/.exec(part);
@@ -47,14 +141,23 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
       const safe = /^https?:\/\//i.test(link[2]);
       if (!safe) return <Fragment key={key}>{part}</Fragment>;
 
+      /*
+       * The author's words, not the hostname. Somebody who wrote
+       * "[thực đơn](https://…)" chose that word on purpose, and replacing it
+       * with "tiktok.com" would be the app overruling them. The icon comes
+       * along so it still reads as leaving the app.
+       */
+      const face = linkFace(link[2]);
+
       return (
         <a
           key={key}
           href={link[2]}
           target="_blank"
           rel="noopener noreferrer nofollow ugc"
-          className="text-primary underline underline-offset-2"
+          className="text-primary inline-flex items-baseline gap-1 underline underline-offset-2"
         >
+          {face && <face.Icon className="size-3.5 shrink-0 translate-y-0.5" aria-hidden />}
           {link[1]}
         </a>
       );
@@ -172,3 +275,6 @@ export function RichText({ source, className }: { source: string; className?: st
     </div>
   );
 }
+
+/** Exported for the tests; the component goes through `renderInline`. */
+export const __testing = { linkFace, TRAILING, INLINE };
