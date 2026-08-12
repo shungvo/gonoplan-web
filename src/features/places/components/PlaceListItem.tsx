@@ -82,9 +82,16 @@ export function PlaceListItem({ place, onSelect, className }: PlaceListItemProps
   );
 }
 
+/**
+ * Same elevation as the real row.
+ *
+ * It was `shadow-sm` against the row's `shadow-md` — a skeleton one level
+ * below the thing it stands in for, so every card rose a step the moment its
+ * data arrived.
+ */
 export function PlaceListItemSkeleton() {
   return (
-    <div className="bg-surface flex w-full items-center gap-3 rounded-lg p-2.5 shadow-sm">
+    <div className="bg-surface flex w-full items-center gap-3 rounded-lg p-2.5 shadow-md">
       <div className="bg-surface-sunken size-[4.5rem] shrink-0 animate-pulse rounded-sm" />
       <div className="flex-1 space-y-2">
         <div className="bg-surface-sunken h-4 w-2/3 animate-pulse rounded" />

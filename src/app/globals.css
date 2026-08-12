@@ -121,7 +121,31 @@
   --shadow-xl:
     0 0 0 1px rgb(19 66 116 / 0.08), 0 8px 18px rgb(19 66 116 / 0.06),
     0 28px 56px rgb(19 66 116 / 0.12);
+  /*
+   * The ladder, and what decides which rung something is on.
+   *
+   * Elevation is *role*, never screen. The same object has to sit at the same
+   * height everywhere or the material stops being a material — a place card
+   * was `md` in the rail and its own skeleton was `sm`, so the card rose by a
+   * level the moment its data arrived.
+   *
+   *   0  inset      inputs, wells, image placeholders     no shadow, sunken fill
+   *   1  shadow-sm  a surface resting on the page         panels, review cards
+   *   2  shadow-md  something you can pick up             tappable cards, floating controls
+   *   3  shadow-lg  an overlay anchored to content        autocomplete, toasts, the nav
+   *   4  shadow-xl  modal                                 dialogs
+   *      shadow-sheet                                     bottom sheets (shadow points up)
+   *
+   * A filled button gets a shadow in its own colour rather than the neutral
+   * navy: a coloured surface lit from above throws a shadow tinted by itself,
+   * and a grey one under a red button reads as a sticker on glass.
+   */
   --shadow-primary: 0 8px 24px rgb(15 108 205 / 0.3);
+  --shadow-danger: 0 8px 24px rgb(242 84 91 / 0.28);
+  /* Pressed: the object goes down toward the page, so the gap under it closes.
+     Scale alone moves the shape and leaves the shadow behind it, which reads
+     as the button shrinking rather than being pushed. */
+  --shadow-pressed: 0 0 0 1px rgb(19 66 116 / 0.08), 0 1px 2px rgb(19 66 116 / 0.06);
   /* Two layers, like the others: a tight contact shadow that separates the
      sheet's edge from whatever is behind it, and a wide ambient one that makes
      it read as lifted. A single soft shadow at this size just looks like haze. */

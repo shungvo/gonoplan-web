@@ -15,13 +15,25 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANTS: Record<Variant, string> = {
-  // The coloured shadow is what makes the primary CTA read as a raised
-  // physical object rather than a flat rectangle — the soft-3D direction
-  // in §16, without reaching for glassmorphism.
-  primary: 'bg-primary text-white shadow-primary hover:bg-primary/90 active:bg-primary/95',
-  secondary: 'bg-surface text-ink border border-border shadow-sm hover:bg-surface-sunken',
+  /*
+   * A filled button is a raised object; an outlined one rests on the page; a
+   * ghost is painted on it. Each variant's shadow is that sentence.
+   *
+   * `danger` used to have no shadow at all — the same shape and the same
+   * emphasis as `primary`, sitting flat while primary floated. Two buttons
+   * side by side in a dialog, made of different material. It now gets the
+   * same treatment in its own colour.
+   *
+   * Pressing drops a filled button to `shadow-pressed`: the gap under it
+   * closes as it goes down. Scale alone moved the shape and left the shadow
+   * where it was, which reads as shrinking rather than being pushed.
+   */
+  primary:
+    'bg-primary text-white shadow-primary hover:bg-primary/90 active:bg-primary/95 active:shadow-pressed',
+  secondary:
+    'bg-surface text-ink border border-border shadow-sm hover:bg-surface-sunken active:shadow-pressed',
   ghost: 'bg-transparent text-ink-muted hover:bg-surface-sunken',
-  danger: 'bg-danger text-white hover:bg-danger/90',
+  danger: 'bg-danger text-white shadow-danger hover:bg-danger/90 active:shadow-pressed',
 };
 
 const SIZES: Record<Size, string> = {
