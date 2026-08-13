@@ -1,3 +1,4 @@
+import { readStoredRefreshToken, storeRefreshToken } from '@/lib/auth/refreshTokenStore';
 import { ApiError, type ApiErrorBody } from './errors';
 
 export const API_PREFIX = '/api/v1';
@@ -92,17 +93,42 @@ let refreshPromise: Promise<boolean> | null = null;
 async function refreshAccessToken(): Promise<boolean> {
   refreshPromise ??= (async () => {
     try {
-      const response = await fetch(`${API_PREFIX}/auth/refresh`, {
+      /*
+       * The native app presents the token it stored; the browser sends an
+       * empty body and lets its cookie do the work.
+       *
+       * Through `buildUrl` like every other call. This used to hardcode the
+       * relative `${API_PREFIX}/auth/refresh`, which is correct on the web —
+       * same origin, proxied by Next — and resolves against
+       * `capacitor://localhost` in the app, where nothing is listening. Refresh
+       * was the one request that never reached the API.
+       */
+      const stored = await readStoredRefreshToken();
+
+      const response = await fetch(buildUrl('/auth/refresh'), {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(stored === null ? {} : { refreshToken: stored }),
       });
+
       if (!response.ok) {
         setAccessToken(null);
+        // Only a refusal clears the stored token. A 500 or a captive portal is
+        // a bad minute, not a revoked session, and discarding the token there
+        // would sign the user out for walking into a lift.
+        if (response.status === 401) await storeRefreshToken(null);
         return false;
       }
-      const body = (await response.json()) as SuccessBody<{ accessToken: string }>;
+
+      const body = (await response.json()) as SuccessBody<{
+        accessToken: string;
+        refreshToken?: string;
+      }>;
+
       setAccessToken(body.data.accessToken);
+      // Rotated on every use, so the new one must replace the old immediately.
+      if (body.data.refreshToken !== undefined) await storeRefreshToken(body.data.refreshToken);
       return true;
     } catch {
       setAccessToken(null);

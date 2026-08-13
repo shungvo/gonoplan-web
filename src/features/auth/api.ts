@@ -1,14 +1,33 @@
 import { api, setAccessToken } from '@/lib/api/client';
+import { ApiError } from '@/lib/api/errors';
+import { readStoredRefreshToken, storeRefreshToken } from '@/lib/auth/refreshTokenStore';
 import type { components } from '@/types/api';
 import type { SessionUser } from './store';
 
 export type AuthResult = components['schemas']['AuthResult'];
 
-function adopt(result: AuthResult): SessionUser {
+async function adopt(result: AuthResult): Promise<SessionUser> {
   // The access token lives in a module closure, never localStorage — an XSS
   // payload can read storage but not a closure (docs/02-api.md §2).
   setAccessToken(result.accessToken);
+
+  // Only ever present for the native shell, and only it has somewhere safe to
+  // put this. On the web the field is absent and the call does nothing.
+  if (result.refreshToken !== undefined) await storeRefreshToken(result.refreshToken);
+
   return result.user as SessionUser;
+}
+
+/**
+ * The body `/auth/refresh` and `/auth/logout` expect.
+ *
+ * Native sends the token it stored. The web sends nothing and lets the browser
+ * attach the cookie — a body of `undefined` rather than `{}` so the request
+ * stays byte-identical to what it always sent.
+ */
+async function presentedSession(): Promise<{ refreshToken: string } | undefined> {
+  const stored = await readStoredRefreshToken();
+  return stored === null ? undefined : { refreshToken: stored };
 }
 
 export async function register(input: {
@@ -24,31 +43,48 @@ export async function login(input: { email: string; password: string }): Promise
 }
 
 /**
- * Restores a session from the HttpOnly refresh cookie.
+ * Restores a session from whatever this build durably holds.
  *
  * Called once on load. The access token is deliberately not persisted, so
- * every page load starts signed out until this resolves — the cookie is the
- * only durable part of the session, and JavaScript cannot read it.
+ * every launch starts signed out until this resolves. On the web the durable
+ * part is the HttpOnly cookie, which JavaScript cannot read; in the app it is
+ * the Keychain.
  *
  * Returns null rather than throwing: no session is the normal state for a
  * first-time visitor, not an error.
  */
 export async function restoreSession(): Promise<SessionUser | null> {
   try {
-    return adopt(await api.post<AuthResult>('/auth/refresh', undefined, { withAuth: false }));
-  } catch {
+    return await adopt(
+      await api.post<AuthResult>('/auth/refresh', await presentedSession(), { withAuth: false }),
+    );
+  } catch (error) {
     setAccessToken(null);
+
+    /*
+     * Discard the stored token only when the server actually rejected it.
+     *
+     * Restoring runs at launch, which is exactly when a phone is most likely
+     * to have no usable network yet. Clearing on any failure would turn a
+     * cold start in a lift into a permanent sign-out, and the user would have
+     * no idea why they had to log in again.
+     */
+    if (error instanceof ApiError && error.status === 401) await storeRefreshToken(null);
+
     return null;
   }
 }
 
 export async function logout(): Promise<void> {
   try {
-    await api.post('/auth/logout', undefined, { withAuth: false });
+    // Sent so the server can revoke the session rather than leave it live
+    // until it expires — the cookie path gets this for free.
+    await api.post('/auth/logout', await presentedSession(), { withAuth: false });
   } finally {
     // Cleared even if the request fails — the user asked to be signed out, and
     // the local session must not survive that.
     setAccessToken(null);
+    await storeRefreshToken(null);
   }
 }
 

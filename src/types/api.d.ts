@@ -194,6 +194,8 @@ export interface paths {
                                     homeLongitude: number | null;
                                     createdAt: string;
                                 };
+                                /** @description Native clients only. Store in the Keychain; never in web storage. */
+                                refreshToken?: string;
                             };
                             meta?: {
                                 cursor?: string | null;
@@ -300,6 +302,8 @@ export interface paths {
                                     homeLongitude: number | null;
                                     createdAt: string;
                                 };
+                                /** @description Native clients only. Store in the Keychain; never in web storage. */
+                                refreshToken?: string;
                             };
                             meta?: {
                                 cursor?: string | null;
@@ -398,6 +402,8 @@ export interface paths {
                                     homeLongitude: number | null;
                                     createdAt: string;
                                 };
+                                /** @description Native clients only. Store in the Keychain; never in web storage. */
+                                refreshToken?: string;
                             };
                             meta?: {
                                 cursor?: string | null;
@@ -9596,6 +9602,8 @@ export interface components {
                 homeLongitude: number | null;
                 createdAt: string;
             };
+            /** @description Native clients only. Store in the Keychain; never in web storage. */
+            refreshToken?: string;
         };
         Category: {
             /** Format: uuid */

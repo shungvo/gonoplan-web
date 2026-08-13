@@ -17,6 +17,7 @@
     "prebuild": "node scripts/copy-maplibre-worker.mjs"
   },
   "dependencies": {
+    "@aparajita/capacitor-secure-storage": "^8.0.0",
     "@capacitor/core": "^8.5.0",
     "@capacitor/preferences": "^8.0.1",
     "@hookform/resolvers": "^5.7.1",
