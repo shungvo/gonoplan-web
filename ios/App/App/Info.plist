@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Gonoplan dùng vị trí của bạn để xếp các địa điểm theo khoảng cách và hiện bạn đang ở đâu trên bản đồ. Không bật cũng dùng được — bạn chỉ cần tự chọn một khu vực.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Để bạn chọn ảnh đã chụp khi đăng bài từ một địa điểm hoặc viết đánh giá.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Để bạn chụp ảnh ngay tại chỗ khi đăng bài từ một địa điểm.</string>
   <key>CAPACITOR_DEBUG</key>
 	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
