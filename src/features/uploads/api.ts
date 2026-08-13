@@ -50,8 +50,23 @@ export class UploadError extends Error {}
  * The server reports `hasExif` on confirm, so this is checkable rather than
  * merely claimed.
  */
-async function reencode(file: File): Promise<Blob> {
-  const bitmap = await createImageBitmap(file);
+async function reencode(file: File): Promise<{ blob: Blob; type: AcceptedType }> {
+  /*
+   * `imageOrientation: 'from-image'` is the half of this that is easy to miss.
+   *
+   * A phone does not rotate the sensor data — it stores the frame as captured
+   * and records which way up it was in an EXIF tag. Re-encoding drops that tag,
+   * so a portrait photo re-encoded without applying it first is baked sideways
+   * *permanently*: the orientation it needed has just been deleted.
+   *
+   * The default for this option changed from `none` to `from-image` partway
+   * through the spec's life, so leaving it out means depending on which
+   * browser, and which version, is running. Saying it costs nothing.
+   *
+   * It never surfaced here because the seeded photographs come from Wikimedia
+   * already upright. It would have surfaced on the first real upload.
+   */
+  const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
 
   const scale = Math.min(1, MAX_DIMENSION / Math.max(bitmap.width, bitmap.height));
   const width = Math.round(bitmap.width * scale);
@@ -67,14 +82,29 @@ async function reencode(file: File): Promise<Blob> {
   context.drawImage(bitmap, 0, 0, width, height);
   bitmap.close();
 
+  /*
+   * PNG stays PNG, everything else becomes JPEG.
+   *
+   * Canvas re-encoding strips metadata either way, so both are safe. What
+   * differs is alpha: a canvas is transparent, and encoding transparency as
+   * JPEG fills it with black. Sending every PNG through JPEG put a black
+   * rectangle behind any avatar with a transparent background — visible, and
+   * nothing to do with the privacy problem this function exists for.
+   *
+   * PNG is the exception rather than the default because it is two to five
+   * times the size for a photograph, and photographs are most of what this
+   * uploads.
+   */
+  const type: AcceptedType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+
   const blob = await new Promise<Blob | null>((resolve) => {
     // JPEG at 0.85: past that the file grows faster than anyone can see the
-    // difference on a phone screen.
-    canvas.toBlob(resolve, 'image/jpeg', 0.85);
+    // difference on a phone screen. Ignored for PNG, which is lossless.
+    canvas.toBlob(resolve, type, 0.85);
   });
 
   if (!blob) throw new UploadError('Could not process that image.');
-  return blob;
+  return { blob, type };
 }
 
 /**
@@ -88,15 +118,23 @@ export async function uploadImage(file: File, purpose: UploadPurpose): Promise<U
     throw new UploadError('Photos must be JPEG, PNG or WebP.');
   }
 
-  if (file.size > MAX_BYTES) {
+  const { blob, type } = await reencode(file);
+
+  /*
+   * The ceiling is checked against the re-encoded bytes, which are the bytes
+   * the bucket will hold — not against the file the user picked.
+   *
+   * Checking the original rejected a 20 MB camera photo that compresses to
+   * under one, telling someone their photograph was too large when the thing
+   * about to be uploaded was a twentieth of the limit.
+   */
+  if (blob.size > MAX_BYTES) {
     throw new UploadError('That photo is too large — 8 MB is the limit.');
   }
 
-  const blob = await reencode(file);
-
   const signature = await api.post<UploadSignature>('/uploads/signature', {
     purpose,
-    contentType: 'image/jpeg',
+    contentType: type,
     sizeBytes: blob.size,
   });
 
