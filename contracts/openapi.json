@@ -18214,7 +18214,7 @@
           "Geo"
         ],
         "summary": "A route between two points",
-        "description": "Proxied. The routing provider is reached with a server-side REST key that never leaves the API (§6) — shipping it to the browser is the usual way these quotas get drained. Responses are cached for an hour keyed on coordinates rounded to about eleven metres, and the endpoint sits on its own rate-limit tier because every call costs a metered upstream request.\n\nThe shape is normalised: distance in metres, duration in seconds, a GeoJSON LineString and plain-text steps. No vendor field reaches the client, so changing provider is a config branch rather than a client rewrite. `isFallbackProvider` is true when the keyless development router answered, which never happens in production.",
+        "description": "Proxied. The routing provider is reached with a server-side REST key that never leaves the API (§6) — shipping it to the browser is the usual way these quotas get drained. Responses are cached for an hour keyed on coordinates rounded to about eleven metres, and the endpoint sits on its own rate-limit tier because every call costs a metered upstream request.\n\nThe shape is normalised: distance in metres, duration in seconds, a GeoJSON LineString and plain-text steps. No vendor field reaches the client, so changing provider is a config branch rather than a client rewrite. `isFallbackProvider` is true when the keyless OpenStreetMap router answered rather than the metered one — a deployment may choose it (`ROUTING_PROVIDER=osrm`), so clients must not read it as \"development\".",
         "parameters": [
           {
             "schema": {

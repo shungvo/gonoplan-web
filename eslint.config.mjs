@@ -25,6 +25,11 @@ const eslintConfig = defineConfig([
     // reports every finding twice, at a path nobody edits, and drags its build
     // output and vendored bundles in with it.
     ".claude/worktrees/**",
+    // Where `cap sync` copies `out/`. Same minified chunks, a second time,
+    // under a path `**/out/**` does not match — 8,600 findings in code nobody
+    // wrote by hand. Capacitor's own .gitignore already excludes it from the
+    // repo; this excludes it from the lint.
+    "ios/App/App/public/**",
   ]),
 ]);
 

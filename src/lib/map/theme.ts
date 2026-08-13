@@ -1,4 +1,4 @@
-import type { Map as MapLibreMap } from 'maplibre-gl';
+import type { ExpressionSpecification, Map as MapLibreMap } from 'maplibre-gl';
 
 /**
  * Recolours the basemap to match the app.
@@ -196,4 +196,70 @@ export function applyMapTheme(map: MapLibreMap): { styled: number; skipped: numb
   }
 
   return { styled, skipped };
+}
+
+/**
+ * The label a Vietnamese app should be reading.
+ *
+ * `name` is OSM's local name, so in Vietnam it is already Vietnamese — it leads
+ * for that reason, with `name:vi` ahead of it only for the features that carry
+ * an explicit tag. `name:latin` is last and exists so a feature that has
+ * nothing else still draws something.
+ */
+const LOCAL_NAME: ExpressionSpecification = [
+  'coalesce',
+  ['get', 'name:vi'],
+  ['get', 'name'],
+  ['get', 'name:latin'],
+];
+
+/**
+ * True when this layer's text is a place's name rather than something else.
+ *
+ * A style also draws road shields from `ref` and addresses from `housenumber`.
+ * Rewriting those to a name does not mislabel them — it blanks them, because
+ * a motorway shield has no `name`, and missing labels read as missing data
+ * rather than as a bug anyone would think to look for.
+ */
+function drawsAName(field: unknown): boolean {
+  return JSON.stringify(field ?? null).includes('name');
+}
+
+/**
+ * Puts the basemap's labels into Vietnamese.
+ *
+ * OpenMapTiles-schema styles — OpenFreeMap's Liberty among them — default their
+ * labels to `name:latin`, and for Vietnam that resolves to the English exonym
+ * often enough to notice: "Saigon River" and "Pasteur Street" sitting in an app
+ * whose every other string is Vietnamese. The tiles carry the Vietnamese name
+ * too; the style simply does not ask for it.
+ *
+ * Called only for the keyless basemap, because it is only the keyless basemap
+ * that has the problem — a vendor selling maps of Vietnam ships Vietnamese
+ * labels already, and rewriting a `text-field` on tiles whose properties we
+ * have not seen risks blanking every label on the map.
+ *
+ * Guarded per layer for the same reason `applyMapTheme` is: this is someone
+ * else's style, and one layer that refuses a write must not cost the others
+ * theirs.
+ */
+export function localiseMapLabels(map: MapLibreMap): { localised: number; skipped: number } {
+  const layers = map.getStyle().layers ?? [];
+  let localised = 0;
+  let skipped = 0;
+
+  for (const layer of layers) {
+    if (layer.type !== 'symbol') continue;
+    if (!layer.layout || !('text-field' in layer.layout)) continue;
+    if (!drawsAName(layer.layout['text-field'])) continue;
+
+    try {
+      map.setLayoutProperty(layer.id, 'text-field', LOCAL_NAME);
+      localised += 1;
+    } catch {
+      skipped += 1;
+    }
+  }
+
+  return { localised, skipped };
 }

@@ -39,7 +39,10 @@ export interface MapStyleSource {
   styleUrl: string;
   /** Shown in the corner. Tile providers require this; it is not optional. */
   attribution: string;
-  /** True when running on the keyless development fallback. */
+  /**
+   * True on the keyless community basemap — whether the build chose it or fell
+   * back to it. It describes the tiles, not how the decision was reached.
+   */
   isFallback: boolean;
   providerName: string;
 }

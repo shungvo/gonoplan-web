@@ -13,7 +13,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 import { resolveMapStyleProvider } from '@/lib/map/providers';
 import { ensureMapWorker } from '@/lib/map/worker';
-import { applyMapTheme } from '@/lib/map/theme';
+import { applyMapTheme, localiseMapLabels } from '@/lib/map/theme';
 import {
   CLUSTER_IMAGE_LARGE,
   CLUSTER_IMAGE_MEDIUM,
@@ -350,6 +350,17 @@ export function MapCanvas({
         if (themed.styled === 0) {
           console.warn('[map] basemap theme matched no layers — provider schema may have changed');
         }
+      }
+
+      /*
+       * The keyless basemap labels in English often enough to jar — "Saigon
+       * River" in an app that says "Sông Sài Gòn" everywhere else. A vendor
+       * selling maps of Vietnam does not have that problem, so this is scoped
+       * to the basemap that does rather than run over tiles we cannot check.
+       */
+      if (style.isFallback) {
+        const localised = localiseMapLabels(map);
+        if (process.env.NODE_ENV !== 'production') console.info('[map] labels', localised);
       }
 
       /*
