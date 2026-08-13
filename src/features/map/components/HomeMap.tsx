@@ -5,7 +5,6 @@ import { LocateFixed, MapPinOff } from 'lucide-react';
 import { MapView } from './MapView';
 import { LocationPickerSheet } from '@/features/location/components/LocationPickerSheet';
 import { useLocationStore, useShouldAutoLocate } from '@/features/location/store';
-import { nearestCity } from '@/features/location/cities';
 import { cn } from '@/lib/utils/cn';
 
 /** Ho Chi Minh City — where the map opens before any location is resolved. */
@@ -26,7 +25,7 @@ export interface HomeMapProps {
 }
 
 export function HomeMap({ className, selectedPlaceId = null, onSelectPlace }: HomeMapProps) {
-  const { status, source, coordinates, label, requestLocation, setLabel } = useLocationStore();
+  const { status, source, coordinates, requestLocation } = useLocationStore();
   const shouldAutoLocate = useShouldAutoLocate();
 
   useEffect(() => {
@@ -53,15 +52,6 @@ export function HomeMap({ className, selectedPlaceId = null, onSelectPlace }: Ho
     // Closing it is a decision: do not offer it again unprompted.
     if (!open) setDismissed(true);
   };
-
-  // Label a GPS fix from the local city list rather than a metered reverse
-  // geocode. Phase 6 upgrades this to the cached /geo/reverse proxy for
-  // district-level precision; a city name is enough to be useful today.
-  useEffect(() => {
-    if (!coordinates || label) return;
-    const city = nearestCity(coordinates);
-    if (city) setLabel(city.name);
-  }, [coordinates, label, setLabel]);
 
   const center = useMemo(
     () => coordinates ?? FALLBACK_CENTER,

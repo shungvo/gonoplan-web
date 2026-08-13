@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { ChevronDown, MapPin, LoaderCircle, MapPinOff } from 'lucide-react';
 import { useLocationStore, useShouldAutoLocate } from '../store';
+import { useLocationLabel } from '../useLocationLabel';
 import { useOnboardingPending } from '@/features/onboarding/store';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { formatNumber } from '@/i18n/format';
@@ -32,6 +33,10 @@ export function LocationChip({
   const { status, source, coordinates, label, requestLocation } = useLocationStore();
   const onboarding = useOnboardingPending();
   const shouldAutoLocate = useShouldAutoLocate();
+
+  // Turns the fix into an address. No-op unless there is a GPS position with
+  // nothing to call it yet, so the several chips on a screen share one lookup.
+  useLocationLabel();
 
   useEffect(() => {
     // Only auto-prompt from a cold start. Re-asking after a denial is both
