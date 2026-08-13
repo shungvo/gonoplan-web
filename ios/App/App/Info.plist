@@ -8,40 +8,6 @@
 	<string>Để bạn chọn ảnh đã chụp khi đăng bài từ một địa điểm hoặc viết đánh giá.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Để bạn chụp ảnh ngay tại chỗ khi đăng bài từ một địa điểm.</string>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Bản dựng thử nghiệm kết nối tới máy chủ Gonoplan đang chạy trên máy tính của bạn trong cùng mạng Wi-Fi.</string>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<!--
-			The API and the image bucket run over plain HTTP on the development
-			machine, and iOS blocks cleartext by default. On the simulator this
-			never came up: it shares the Mac's network stack, so the requests
-			were local in a way ATS did not object to.
-
-			This was `NSAllowsLocalNetworking` first, on the belief that it
-			exempts the private IPv4 ranges. It does not — it covers unqualified
-			host names and `.local`, and a connection to a bare address like
-			10.10.0.169 needs an arbitrary-loads key. On the device the map kept
-			working, because those tiles are HTTPS to the internet, while every
-			API call died.
-
-			`InWebContent` is the narrow form of that key: it loosens ATS for
-			loads the WKWebView makes and leaves native NSURLSession traffic
-			protected. Everything this app requests — the API, the images —
-			comes from the web layer, so nothing needs the blanket version.
-
-			It has to stand alone. Setting `NSAllowsArbitraryLoads` beside any
-			granular key makes iOS 10 and later ignore the blanket one and honour
-			only the granular keys, so "adding" it would quietly change nothing —
-			which is a confusing hour for whoever tries it next.
-
-			Development only. A shipped build talks to an HTTPS API and wants
-			none of this — delete the whole dict rather than leave it, or App
-			Review asks why cleartext is enabled.
-		-->
-		<key>NSAllowsArbitraryLoadsInWebContent</key>
-		<true/>
-	</dict>
   <key>CAPACITOR_DEBUG</key>
 	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
