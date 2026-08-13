@@ -10,10 +10,12 @@ import type { ExpressionSpecification, Map as MapLibreMap } from 'maplibre-gl';
  * style file drifts from `globals.css` silently, whereas this reads like what
  * it is: our tokens, applied to someone else's cartography.
  *
- * The matching is on the OpenMapTiles schema — `water`, `landcover`,
- * `building`, `transportation`, `poi` — which is what both providers serve, so
- * the same rules land on both. Anything unmatched keeps the style's own colour
- * rather than being guessed at.
+ * Matching is by role, against the source-layer names of both schemas the app
+ * can load — OpenMapTiles for the keyless basemap, Goong's own for the vendor
+ * one. They share nothing: this file used to claim otherwise and was wrong,
+ * which cost the shipping basemap its palette until a real key made the
+ * difference visible. Anything unmatched keeps the style's own colour rather
+ * than being guessed at.
  */
 
 /**
@@ -50,6 +52,31 @@ const THEME = {
 } as const;
 
 /**
+ * Two schemas, one set of roles.
+ *
+ * The file header used to say both providers serve OpenMapTiles. They do not.
+ * Goong ships its own schema — water is `ocean` and `riversandlakes`, roads are
+ * `streets`, buildings are `VN_Building`, places are `vietnam_administrator`,
+ * and POIs are `point_map` — so a palette written against OpenMapTiles names
+ * landed almost entirely on the development basemap and did close to nothing on
+ * the one that ships.
+ *
+ * That went unnoticed because it cannot be seen without a key. `applyMapTheme`
+ * returning a count was meant to catch exactly this, and the first time anyone
+ * could read that count was the first time a real key existed.
+ *
+ * Listing both vendors' names against a role, rather than branching on which
+ * provider loaded, keeps the rule where it belongs: a layer *is* water, and
+ * which company drew it is not the palette's business.
+ */
+const WATER_LAYERS = new Set(['water', 'waterway', 'ocean', 'riversandlakes']);
+const GREENERY_LAYERS = new Set(['park', 'forest', 'landcover_natural']);
+const LANDUSE_LAYERS = new Set(['landuse', 'landuser', 'landcover_human_made']);
+const BUILDING_LAYERS = new Set(['building', 'VN_Building']);
+const ROAD_LAYERS = new Set(['transportation', 'streets']);
+const WATER_LABEL_LAYERS = new Set(['water_name', 'rivernames', 'lakenames']);
+
+/**
  * Source layers whose labels we drop entirely.
  *
  * The basemap's own points of interest are the direct competitor of the pins
@@ -58,8 +85,24 @@ const THEME = {
  * symbols are ours. Grab, Google and Apple all suppress the base POI layer at
  * this zoom for exactly that reason. Place names stay: they are orientation,
  * not clutter.
+ *
+ * Goong's half of this list is not a guess: its POIs live in `point_map`, with
+ * stations, airports, peaks and street trees each in their own layer. Without
+ * them the Explore map drew a Burberry icon and a "Catwalk Night Spot" label
+ * over the top of our own markers.
  */
-const SUPPRESSED_SOURCE_LAYERS = new Set(['poi', 'aerodrome_label', 'mountain_peak']);
+const SUPPRESSED_SOURCE_LAYERS = new Set([
+  // OpenMapTiles
+  'poi',
+  'aerodrome_label',
+  'mountain_peak',
+  // Goong
+  'point_map',
+  'rail_station',
+  'airport',
+  'mountain',
+  'trees',
+]);
 
 /** Layers that draw the outline beneath a road rather than the road itself. */
 function isCasing(layerId: string): boolean {
@@ -77,8 +120,13 @@ function isMajorRoad(layerId: string): boolean {
  * Giving both the same ink flattens the map into a wall of text — the road
  * names are only ever answering "which street is this", so they recede.
  */
+/** `undefined` never matches a set, so the guard reads the same everywhere. */
+function inSet(set: ReadonlySet<string>, sourceLayer: string | undefined): boolean {
+  return sourceLayer !== undefined && set.has(sourceLayer);
+}
+
 function labelColour(layerId: string, sourceLayer: string | undefined): string {
-  if (sourceLayer === 'water_name' || /water|waterway|marine/i.test(layerId)) {
+  if (inSet(WATER_LABEL_LAYERS, sourceLayer) || /water|waterway|marine/i.test(layerId)) {
     return THEME.waterLabel;
   }
   if (/road|highway|street|transportation/i.test(layerId)) return THEME.inkMuted;
@@ -86,34 +134,38 @@ function labelColour(layerId: string, sourceLayer: string | undefined): string {
 }
 
 function fillColour(layerId: string, sourceLayer: string | undefined): string | null {
-  if (sourceLayer === 'water' || /water|ocean|sea|river|lake/i.test(layerId)) return THEME.water;
-  if (sourceLayer === 'building' || /building/i.test(layerId)) return THEME.building;
-  if (sourceLayer === 'park' || /park|wood|forest|grass|garden|pitch|golf/i.test(layerId)) {
+  if (inSet(WATER_LAYERS, sourceLayer) || /water|ocean|sea|river|lake/i.test(layerId)) {
+    return THEME.water;
+  }
+  if (inSet(BUILDING_LAYERS, sourceLayer) || /building/i.test(layerId)) return THEME.building;
+  if (inSet(GREENERY_LAYERS, sourceLayer) || /park|wood|forest|grass|garden|pitch|golf/i.test(layerId)) {
     return THEME.greenery;
   }
   if (sourceLayer === 'landcover') {
     return /sand|beach|desert/i.test(layerId) ? THEME.sand : THEME.greenery;
   }
-  if (sourceLayer === 'landuse') return THEME.landuse;
-  if (sourceLayer === 'transportation') return isMajorRoad(layerId) ? THEME.trunk : THEME.road;
+  if (inSet(LANDUSE_LAYERS, sourceLayer)) return THEME.landuse;
+  if (inSet(ROAD_LAYERS, sourceLayer)) return isMajorRoad(layerId) ? THEME.trunk : THEME.road;
   return null;
 }
 
 function lineColour(layerId: string, sourceLayer: string | undefined): string | null {
-  if (
-    sourceLayer === 'water' ||
-    sourceLayer === 'waterway' ||
-    /water|river|stream/i.test(layerId)
-  ) {
+  if (inSet(WATER_LAYERS, sourceLayer) || /water|river|stream/i.test(layerId)) {
     return THEME.water;
   }
   if (sourceLayer === 'boundary' || /boundary|admin|border/i.test(layerId)) return THEME.boundary;
   if (/rail|transit|subway|ferry|aerialway/i.test(layerId)) return THEME.rail;
-  if (sourceLayer === 'transportation' || /road|highway|street|bridge|tunnel/i.test(layerId)) {
+  if (inSet(ROAD_LAYERS, sourceLayer) || /road|highway|street|bridge|tunnel/i.test(layerId)) {
     if (isCasing(layerId)) return isMajorRoad(layerId) ? THEME.trunkCasing : THEME.roadCasing;
     return isMajorRoad(layerId) ? THEME.trunk : THEME.road;
   }
-  if (sourceLayer === 'building') return THEME.buildingOutline;
+  if (inSet(BUILDING_LAYERS, sourceLayer)) return THEME.buildingOutline;
+  /*
+   * Goong draws its landuse borders as lines in `landuser`. Left unmatched they
+   * kept the vendor's own tone, which is the one visible seam a fill-only
+   * palette leaves behind.
+   */
+  if (inSet(LANDUSE_LAYERS, sourceLayer)) return THEME.landuse;
   return null;
 }
 
@@ -125,11 +177,20 @@ function lineColour(layerId: string, sourceLayer: string | undefined): string | 
  * cannot overwrite, and one such layer must not take the whole basemap down
  * with it. A failure here costs one layer its colour, nothing more.
  *
- * Returns the number of layers it could not touch, so a caller can tell "the
- * theme applied" from "the theme silently did nothing" — the second is what a
- * schema change on the provider's side would look like.
+ * Returns what it touched against what it saw, so a caller can tell "the theme
+ * applied" from "the theme silently did nothing" — the second is what an
+ * unfamiliar provider schema looks like from the outside.
+ *
+ * `total` is here because `styled === 0` turned out to be too weak a test. On
+ * Goong the id regexes caught the roads while every source-layer check missed,
+ * so the count was reassuringly non-zero on a map that had barely been themed
+ * at all. A ratio catches that; a zero check does not.
  */
-export function applyMapTheme(map: MapLibreMap): { styled: number; skipped: number } {
+export function applyMapTheme(map: MapLibreMap): {
+  styled: number;
+  skipped: number;
+  total: number;
+} {
   const layers = map.getStyle().layers ?? [];
   let styled = 0;
   let skipped = 0;
@@ -195,7 +256,7 @@ export function applyMapTheme(map: MapLibreMap): { styled: number; skipped: numb
     }
   }
 
-  return { styled, skipped };
+  return { styled, skipped, total: layers.length };
 }
 
 /**

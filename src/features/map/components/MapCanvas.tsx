@@ -347,8 +347,13 @@ export function MapCanvas({
        */
       if (process.env.NODE_ENV !== 'production') {
         console.info('[map] theme', themed);
-        if (themed.styled === 0) {
-          console.warn('[map] basemap theme matched no layers — provider schema may have changed');
+        // A third is well below either provider's real coverage, and well above
+        // what the id regexes alone can reach — which is the state Goong was in
+        // while the palette looked like it was working.
+        if (themed.total > 0 && themed.styled / themed.total < 0.33) {
+          console.warn(
+            `[map] basemap theme reached only ${String(themed.styled)}/${String(themed.total)} layers — this provider's source-layer names are probably not in theme.ts`,
+          );
         }
       }
 
