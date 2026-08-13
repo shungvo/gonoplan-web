@@ -8,6 +8,30 @@
 	<string>Để bạn chọn ảnh đã chụp khi đăng bài từ một địa điểm hoặc viết đánh giá.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Để bạn chụp ảnh ngay tại chỗ khi đăng bài từ một địa điểm.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Bản dựng thử nghiệm kết nối tới máy chủ Gonoplan đang chạy trên máy tính của bạn trong cùng mạng Wi-Fi.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<!--
+			The API and the image bucket run over plain HTTP on the development
+			machine, and iOS blocks cleartext by default. On the simulator this
+			never came up: it shares the Mac's network stack, so the requests
+			were local in a way ATS did not object to.
+
+			`NSAllowsLocalNetworking` rather than `NSAllowsArbitraryLoads`. It
+			exempts only private-range addresses — 10/8, 172.16/12, 192.168/16,
+			169.254/16 — and .local names, which is exactly the Mac on the desk
+			and nothing on the internet. Arbitrary loads would switch ATS off
+			for every host the app ever talks to, which is a different and much
+			larger decision to make by accident.
+
+			Still development-only. A shipped build talks to an HTTPS API and
+			does not need this key at all — delete it rather than leave it, or
+			the App Store review asks why it is there.
+		-->
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
   <key>CAPACITOR_DEBUG</key>
 	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
