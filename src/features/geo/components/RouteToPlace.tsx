@@ -84,7 +84,7 @@ export function RouteToPlace({
                 }}
                 aria-pressed={mode === value}
                 className={cn(
-                  'flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-medium transition-colors',
+                  'tap-44 flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-medium transition-colors',
                   mode === value ? 'bg-surface text-ink shadow-sm' : 'text-ink-subtle',
                 )}
               >

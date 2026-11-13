@@ -149,6 +149,10 @@ export function PlaceGallery({
                 aria-label={t('photos.position', { current: position + 1, total, name })}
                 aria-current={position === index}
                 className={cn(
+                  // The dot stays 6px; the invisible box around it is what a thumb hits.
+                  // It reaches 44px tall but only into half the gap on each side, so
+                  // neighbouring dots never claim each other's taps.
+                  "relative before:absolute before:-inset-x-[3px] before:-inset-y-[19px] before:content-['']",
                   'pointer-events-auto h-1.5 rounded-full shadow-[0_1px_3px_rgb(0_0_0/0.5)] transition-all',
                   position === index ? 'w-5 bg-white' : 'w-1.5 bg-white/60',
                 )}

@@ -54,7 +54,7 @@ export function ProfileScreen() {
           <Link
             href="/profile/settings"
             aria-label={t('profile.settings')}
-            className="text-ink-muted flex size-10 items-center justify-center rounded-full"
+            className="text-ink-muted flex size-11 items-center justify-center rounded-full"
           >
             <Settings className="size-5" aria-hidden />
           </Link>

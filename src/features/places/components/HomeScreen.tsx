@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { Search, User } from 'lucide-react';
+import { CloudOff, Search, User } from 'lucide-react';
 import { AuthSheet } from '@/features/auth/components/AuthSheet';
 import { HomeMap } from '@/features/map/components/HomeMap';
 import { LocationChip } from '@/features/location/components/LocationChip';
@@ -26,6 +26,8 @@ import type { CollectionKey } from '@/features/recommendations/api';
 import { categoryName } from '@/features/categories/name';
 import { CategoryGlyph } from '@/features/categories/CategoryGlyph';
 import { Avatar } from '@/components/ui/Avatar';
+import { Button } from '@/components/ui/Button';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { cn } from '@/lib/utils/cn';
 
 /**
@@ -58,7 +60,7 @@ function SectionHeading({
         <button
           type="button"
           onClick={onViewAll}
-          className="text-primary decoration-border shrink-0 text-sm font-medium underline underline-offset-4"
+          className="tap-44 text-primary decoration-border shrink-0 text-sm font-medium underline underline-offset-4"
         >
           {viewAllLabel}
         </button>
@@ -150,6 +152,21 @@ export function HomeScreen() {
     collections.data !== undefined &&
     collections.data.every((collection) => collection.places.length === 0);
 
+  /*
+   * The request failed and there is nothing older to show.
+   *
+   * Only `isPending` was ever checked, so a failure looked like this: the
+   * skeletons vanish, three headings stay, and nothing sits under them. No
+   * message and no way to ask again, on the first screen of the app, in the
+   * one situation — a bad connection — a phone is in every day.
+   *
+   * `data === undefined` keeps a failed *refresh* out of this. If the last
+   * good feed is still in the cache it stays on screen; replacing places the
+   * reader can use with an apology would be the worse outcome.
+   */
+  const feedFailed = collections.isError && collections.data === undefined;
+  const feedUnavailable = feedIsEmpty || feedFailed;
+
   return (
     <div className="px-safe">
       {/*
@@ -225,6 +242,28 @@ export function HomeScreen() {
         are looking for; on open, a specific suggestion is the faster route to
         a decision. The map is still one scroll away for anyone who wants it.
       */}
+      {feedFailed && (
+        <EmptyState
+          className="mt-6"
+          icon={<CloudOff className="size-7" aria-hidden />}
+          title={t('home.loadFailedTitle')}
+          description={t('home.loadFailedBody')}
+          action={
+            <Button
+              variant="secondary"
+              size="sm"
+              isLoading={collections.isFetching}
+              onClick={() => {
+                void collections.refetch();
+                if (categories.isError) void categories.refetch();
+              }}
+            >
+              {t('common.retry')}
+            </Button>
+          }
+        />
+      )}
+
       {feedIsEmpty && (
         <NothingNearby
           className="mt-6"
@@ -234,7 +273,7 @@ export function HomeScreen() {
         />
       )}
 
-      {!feedIsEmpty && (
+      {!feedUnavailable && (
         <section className="mt-5" aria-label={railTitle(t, featured, 'recommended-for-you')}>
           <SectionHeading
             title={railTitle(t, featured, 'recommended-for-you')}
@@ -260,7 +299,7 @@ export function HomeScreen() {
           answers "what is close", and this is how you say "actually, coffee".
           Each chip lands on Explore already filtered rather than filtering in
           place, because the answer is a list and this screen is not one. */}
-      {!feedIsEmpty && (
+      {!feedUnavailable && !categories.isError && (
         <section className="mt-7" aria-label={t('home.categories')}>
           <SectionHeading
             title={t('home.categories')}
@@ -310,7 +349,7 @@ export function HomeScreen() {
         </section>
       )}
 
-      {!feedIsEmpty && (
+      {!feedUnavailable && (
         <section className="mt-7" aria-label={railTitle(t, nearby, 'popular-near-you')}>
           <SectionHeading
             title={railTitle(t, nearby, 'popular-near-you')}
@@ -353,7 +392,7 @@ export function HomeScreen() {
       {/* Late in the day this is "Good for tonight"; the rest of the time the
           API sends "Hidden gems" instead, and the heading follows the data
           rather than claiming an evening that has not arrived. */}
-      {!feedIsEmpty && (
+      {!feedUnavailable && (
         <div className="mt-7">
           <PlaceRail
             title={railTitle(t, tonight, 'good-for-tonight')}

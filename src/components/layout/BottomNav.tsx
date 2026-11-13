@@ -88,7 +88,13 @@ export function BottomNav() {
       */}
       <ul className="mx-auto flex w-fit items-center gap-1 rounded-full bg-surface p-1.5 shadow-lg">
         {NAV_ITEMS.map(({ href, labelKey, icon: Icon }) => {
-          const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href);
+          // The account screens are reached from "me" and from the avatar on
+          // Home, and have no tab of their own. Without this, opening them
+          // left all four tabs unlit — a screen that is nowhere.
+          const isActive =
+            href === '/'
+              ? pathname === '/'
+              : pathname.startsWith(href) || (href === '/me' && pathname.startsWith('/profile'));
 
           return (
             <li key={href}>

@@ -103,6 +103,9 @@ export const en = {
   'home.viewAll': 'View all',
   'home.withinRadius': 'within {distance}',
   'home.nothingOpen': 'Everything nearby is closed at the moment.',
+  'home.loadFailedTitle': 'Could not load places',
+  'home.loadFailedBody': 'Check your connection, then try again.',
+  'photos.noneFor': '{name} — no photo yet',
   'home.showingAround': 'Showing places around {label}',
 
   // Rail headings. Taken from the collection's stable `key` rather than the

@@ -104,7 +104,7 @@ export function LocationChip({
       <button
         type="button"
         onClick={handleClick}
-        className="flex min-w-0 flex-col items-center px-2"
+        className="tap-44 flex min-w-0 flex-col items-center px-2"
       >
         <span className="flex items-center gap-0.5 text-xs text-ink-muted">
           {t('location.myLocation')}
@@ -130,7 +130,7 @@ export function LocationChip({
       type="button"
       onClick={handleClick}
       className={cn(
-        'inline-flex max-w-full items-center gap-1.5 rounded-full px-3 py-1.5',
+        'tap-44 inline-flex max-w-full items-center gap-1.5 rounded-full px-3 py-1.5',
         'text-sm font-medium press-soft',
         isDenied ? 'bg-warning/10 text-warning' : 'bg-primary-tint text-primary',
       )}

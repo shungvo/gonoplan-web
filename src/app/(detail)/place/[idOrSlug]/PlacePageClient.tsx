@@ -71,7 +71,7 @@ export function PlacePageClient({ idOrSlug }: { idOrSlug: string | null }) {
               }}
               // Size and lift only. The background belongs to the button —
               // passing one here is what broke the saved state.
-              className="size-10 rounded-full shadow-sm"
+              className="size-11 rounded-full shadow-sm"
             />
           )}
           <button
@@ -81,7 +81,7 @@ export function PlacePageClient({ idOrSlug }: { idOrSlug: string | null }) {
             }}
             aria-label={t('detail.share')}
             disabled={!place}
-            className="flex size-10 items-center justify-center rounded-full bg-surface text-ink shadow-sm press-firm disabled:opacity-50"
+            className="flex size-11 items-center justify-center rounded-full bg-surface text-ink shadow-sm press-firm disabled:opacity-50"
           >
             <Share2 className="size-[1.125rem]" aria-hidden />
           </button>

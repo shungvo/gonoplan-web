@@ -46,9 +46,9 @@ export function BackButton({ onClick, label, compact = false, className }: BackB
       // say what the control does.
       aria-label={text}
       className={cn(
-        'text-ink bg-surface inline-flex h-10 shrink-0 items-center rounded-full text-sm font-medium shadow-md',
+        'text-ink bg-surface inline-flex h-11 shrink-0 items-center rounded-full text-sm font-medium shadow-md',
         'press-firm',
-        compact ? 'w-10 justify-center' : 'gap-1 pr-4 pl-2.5',
+        compact ? 'w-11 justify-center' : 'gap-1 pr-4 pl-2.5',
         className,
       )}
     >

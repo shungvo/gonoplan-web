@@ -68,7 +68,7 @@ export function SaveButton({
       aria-pressed={isSaved}
       aria-label={label}
       className={cn(
-        'flex size-10 items-center justify-center rounded-full shadow-md backdrop-blur-md',
+        'flex size-11 items-center justify-center rounded-full shadow-md backdrop-blur-md',
         'press-firm',
         className,
         /*

@@ -94,7 +94,10 @@ Each of these fixes a specific behaviour that breaks on a real phone:
   floor so floating UI isn't flush to the edge where the inset is `0`.
 - `overscroll-behavior-y: none` — stops iOS rubber-banding dragging the app.
 - `touch-action: manipulation` on buttons — removes the 300 ms tap delay.
-- Zoom stays enabled. Disabling it is an accessibility failure.
+- Pinch-zoom is off, as in a native app — this ships inside a Capacitor shell.
+  It is also what stops iOS zooming the page when a 15px input takes focus, so
+  turning it back on means raising input text to 16px first. The reasoning and
+  the accessibility cost are spelled out in `src/app/layout.tsx`.
 - Location permission is a **state machine**, not a boolean. `DENIED` is a
   designed screen; the app is fully usable without GPS.
 - iOS has no web haptics API — `navigator.vibrate` is Android-only. Never gate

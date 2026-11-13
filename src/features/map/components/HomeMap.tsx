@@ -5,6 +5,7 @@ import { LocateFixed, MapPinOff } from 'lucide-react';
 import { MapView } from './MapView';
 import { LocationPickerSheet } from '@/features/location/components/LocationPickerSheet';
 import { useLocationStore, useShouldAutoLocate } from '@/features/location/store';
+import { useT } from '@/i18n/I18nProvider';
 import { cn } from '@/lib/utils/cn';
 
 /** Ho Chi Minh City — where the map opens before any location is resolved. */
@@ -25,6 +26,7 @@ export interface HomeMapProps {
 }
 
 export function HomeMap({ className, selectedPlaceId = null, onSelectPlace }: HomeMapProps) {
+  const t = useT();
   const { status, source, coordinates, requestLocation } = useLocationStore();
   const shouldAutoLocate = useShouldAutoLocate();
 
@@ -76,7 +78,7 @@ export function HomeMap({ className, selectedPlaceId = null, onSelectPlace }: Ho
       <div className="absolute top-3 left-3 flex flex-col gap-1.5">
         <button
           type="button"
-          aria-label={hasRealPosition ? 'Centre on my location' : 'Choose your location'}
+          aria-label={hasRealPosition ? t('location.useCurrent') : t('location.choose')}
           onClick={() => {
             if (cannotLocate) {
               setOpenedManually(true);
@@ -86,7 +88,7 @@ export function HomeMap({ className, selectedPlaceId = null, onSelectPlace }: Ho
             void requestLocation();
           }}
           className={cn(
-            'flex size-10 items-center justify-center rounded-full shadow-md backdrop-blur-sm',
+            'flex size-11 items-center justify-center rounded-full shadow-md backdrop-blur-sm',
             'press-firm',
             hasRealPosition ? 'bg-surface/90 text-primary' : 'bg-warning/10 text-warning',
           )}

@@ -264,7 +264,7 @@ export function PlaceDetailContent({
               {place.phone && (
                 <a
                   href={`tel:${place.phone}`}
-                  className="bg-surface-sunken text-ink inline-flex h-10 items-center gap-2 rounded-sm px-3.5 text-sm font-medium"
+                  className="bg-surface-sunken text-ink inline-flex h-11 items-center gap-2 rounded-sm px-3.5 text-sm font-medium"
                 >
                   <Phone className="size-4" aria-hidden />
                   {t('detail.call')}
@@ -275,7 +275,7 @@ export function PlaceDetailContent({
                   href={place.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-surface-sunken text-ink inline-flex h-10 items-center gap-2 rounded-sm px-3.5 text-sm font-medium"
+                  className="bg-surface-sunken text-ink inline-flex h-11 items-center gap-2 rounded-sm px-3.5 text-sm font-medium"
                 >
                   <Globe className="size-4" aria-hidden />
                   {t('detail.website')}

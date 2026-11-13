@@ -824,7 +824,7 @@ export function MapCanvas({
             onClick={() => {
               zoomBy(1);
             }}
-            className="bg-surface/90 text-ink flex size-10 items-center justify-center rounded-full text-lg font-medium shadow-md backdrop-blur-sm press-firm"
+            className="bg-surface/90 text-ink flex size-11 items-center justify-center rounded-full text-lg font-medium shadow-md backdrop-blur-sm press-firm"
           >
             +
           </button>
@@ -834,7 +834,7 @@ export function MapCanvas({
             onClick={() => {
               zoomBy(-1);
             }}
-            className="bg-surface/90 text-ink flex size-10 items-center justify-center rounded-full text-lg font-medium shadow-md backdrop-blur-sm press-firm"
+            className="bg-surface/90 text-ink flex size-11 items-center justify-center rounded-full text-lg font-medium shadow-md backdrop-blur-sm press-firm"
           >
             −
           </button>

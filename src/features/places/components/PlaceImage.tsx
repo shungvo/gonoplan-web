@@ -1,6 +1,10 @@
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
 import { CategoryGlyph } from '@/features/categories/CategoryGlyph';
 import type { CategoryIconKey } from '@/features/categories/api';
+import { useT } from '@/i18n/I18nProvider';
 import { cn } from '@/lib/utils/cn';
 
 export interface PlaceImageProps {
@@ -40,7 +44,20 @@ export function PlaceImage({
   priority = false,
   fallbackSize = 'md',
 }: PlaceImageProps) {
-  if (url) {
+  const t = useT();
+  /*
+   * Which URL failed, rather than a boolean.
+   *
+   * A photo that does not arrive — a dead link, a bucket that is down, a
+   * connection that dropped halfway — used to leave the browser's broken-image
+   * mark with the place's name written across the card. On a phone that is not
+   * rare: it is every tunnel. Remembering the URL means a card that is reused
+   * for a different place gets a fresh attempt instead of inheriting the
+   * failure.
+   */
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+
+  if (url && url !== failedUrl) {
     return (
       <Image
         src={url}
@@ -49,6 +66,9 @@ export function PlaceImage({
         sizes={sizes}
         priority={priority}
         className={cn('object-cover', className)}
+        onError={() => {
+          setFailedUrl(url);
+        }}
       />
     );
   }
@@ -56,7 +76,7 @@ export function PlaceImage({
   return (
     <div
       role="img"
-      aria-label={`${name} — no photo yet`}
+      aria-label={t('photos.noneFor', { name })}
       className={cn('flex h-full w-full items-center justify-center', className)}
       style={{
         background: `linear-gradient(135deg, ${categoryColor}2e 0%, ${categoryColor}0f 55%, ${categoryColor}24 100%)`,

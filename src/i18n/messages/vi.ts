@@ -99,6 +99,9 @@ export const vi: Messages = {
   'home.viewAll': 'Xem tất cả',
   'home.withinRadius': 'trong {distance}',
   'home.nothingOpen': 'Quanh đây đang đóng cửa hết rồi.',
+  'home.loadFailedTitle': 'Không tải được địa điểm',
+  'home.loadFailedBody': 'Kiểm tra kết nối mạng rồi thử lại.',
+  'photos.noneFor': '{name} — chưa có ảnh',
   'home.showingAround': 'Đang xem các địa điểm quanh {label}',
 
   'collection.popular-near-you.title': 'Được ưa chuộng gần bạn',
