@@ -34,3 +34,31 @@ export const planHref = (id: string): string => `/plan?id=${encodeURIComponent(i
  */
 export const placeShareUrl = (origin: string, slug: string): string =>
   `${origin}/place/${slug}`;
+
+/**
+ * A shared plan, as the app links to it. Query string for the same reason as
+ * everything above: the token is not known at build time.
+ */
+export const sharedPlanHref = (token: string): string =>
+  `/shared?t=${encodeURIComponent(token)}`;
+
+/**
+ * The link somebody actually sends.
+ *
+ * The query form here too, unlike `placeShareUrl`. The build is a static
+ * export on every host it ships to, so a path like `/shared/<token>` has no
+ * file behind it and would 404 for exactly the person the link was for.
+ * `/shared/` is one exported page; the token rides in the query.
+ *
+ * `origin` cannot be `window.location.origin` inside the iOS app — there it is
+ * `capacitor://localhost`, which opens nothing on anybody else's phone — so
+ * `publicOrigin()` prefers the configured site.
+ */
+export const sharedPlanShareUrl = (origin: string, token: string): string =>
+  `${origin}/shared/?t=${encodeURIComponent(token)}`;
+
+/** Where the web app lives, for links that leave this device. */
+export function publicOrigin(): string {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, '');
+  return configured && configured.length > 0 ? configured : window.location.origin;
+}

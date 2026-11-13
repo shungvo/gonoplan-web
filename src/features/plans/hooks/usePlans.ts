@@ -7,6 +7,9 @@ import {
   deletePlan,
   fetchPlan,
   fetchPlans,
+  fetchSharedPlan,
+  sharePlan,
+  unsharePlan,
   removeStop,
   reorderStops,
   updatePlan,
@@ -17,6 +20,9 @@ import {
 export const planKeys = {
   all: ['plans'] as const,
   detail: (id: string) => ['plans', id] as const,
+  // Outside `['plans', …]` on purpose: signing out clears the owner's plans,
+  // and a day somebody opened from a link is not one of them.
+  shared: (token: string) => ['shared-plan', token] as const,
 };
 
 export function usePlans(enabled: boolean) {
@@ -116,5 +122,24 @@ export function useRemoveStop(planId: string) {
 export function useReorderStops(planId: string) {
   return useStopMutation(planId, (stopIds: string[]) => reorderStops(planId, stopIds), {
     inlineError: true,
+  });
+}
+
+/** Both answer with the whole plan, so they ride the same handler as a stop edit. */
+export function useSharePlan(planId: string) {
+  return useStopMutation(planId, () => sharePlan(planId), { inlineError: true });
+}
+
+export function useUnsharePlan(planId: string) {
+  return useStopMutation(planId, () => unsharePlan(planId), { inlineError: true });
+}
+
+export function useSharedPlan(token: string | null) {
+  return useQuery({
+    queryKey: planKeys.shared(token ?? ''),
+    queryFn: () => fetchSharedPlan(token ?? ''),
+    enabled: token !== null,
+    // A dead link is dead. Retrying a 404 three times only delays saying so.
+    retry: false,
   });
 }

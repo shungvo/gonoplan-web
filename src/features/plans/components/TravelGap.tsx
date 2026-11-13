@@ -22,10 +22,12 @@ export function TravelGap({
   to,
   /** Minutes the plan leaves for this hop, when both stops carry a time. */
   allowedMinutes,
+  className,
 }: {
   from: { latitude: number; longitude: number };
   to: { latitude: number; longitude: number };
   allowedMinutes: number | null;
+  className?: string;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -48,8 +50,9 @@ export function TravelGap({
   return (
     <div
       className={cn(
-        'flex items-center gap-2 py-1.5 pl-[3.25rem] text-xs',
+        'flex items-center gap-2 py-1.5 text-xs',
         tooTight ? 'text-danger' : 'text-ink-subtle',
+        className,
       )}
     >
       {tooTight ? (

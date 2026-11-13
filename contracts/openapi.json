@@ -1392,6 +1392,12 @@
               "null"
             ]
           },
+          "shareToken": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "createdAt": {
             "type": "string"
           },
@@ -1414,6 +1420,7 @@
           "stopPreviews",
           "startsAtMin",
           "endsAtMin",
+          "shareToken",
           "createdAt",
           "updatedAt"
         ]
@@ -1572,6 +1579,12 @@
           "endsAtMin": {
             "type": [
               "integer",
+              "null"
+            ]
+          },
+          "shareToken": {
+            "type": [
+              "string",
               "null"
             ]
           },
@@ -1778,6 +1791,7 @@
           "stopPreviews",
           "startsAtMin",
           "endsAtMin",
+          "shareToken",
           "createdAt",
           "updatedAt",
           "stops"
@@ -1959,6 +1973,381 @@
           "crossesMidnight",
           "note",
           "place"
+        ]
+      },
+      "SharedPlan": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "stopCount": {
+            "type": "integer"
+          },
+          "coverImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverBlurhash": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverCategorySlug": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coverCategoryIcon": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "cup",
+              "bean",
+              "skyline",
+              "bowl",
+              "pho",
+              "fish",
+              "cart",
+              "glass",
+              "moon",
+              "bed",
+              "house",
+              "sparkle",
+              "leaf",
+              "column",
+              "ticket",
+              "film",
+              "bag",
+              "dot"
+            ],
+            "description": "Sprite key for the marker and chip icon"
+          },
+          "coverCategoryColor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "stopPreviews": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "coverImageUrl": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "coverBlurhash": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "categorySlug": {
+                  "type": "string"
+                },
+                "categoryIcon": {
+                  "type": "string",
+                  "enum": [
+                    "cup",
+                    "bean",
+                    "skyline",
+                    "bowl",
+                    "pho",
+                    "fish",
+                    "cart",
+                    "glass",
+                    "moon",
+                    "bed",
+                    "house",
+                    "sparkle",
+                    "leaf",
+                    "column",
+                    "ticket",
+                    "film",
+                    "bag",
+                    "dot"
+                  ],
+                  "description": "Sprite key for the marker and chip icon"
+                },
+                "categoryColor": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "coverImageUrl",
+                "coverBlurhash",
+                "categorySlug",
+                "categoryIcon",
+                "categoryColor"
+              ]
+            }
+          },
+          "startsAtMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "endsAtMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "stops": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "sortOrder": {
+                  "type": "integer"
+                },
+                "startsAtMin": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "endsAtMin": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "crossesMidnight": {
+                  "type": "boolean"
+                },
+                "note": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "place": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "nameVi": {
+                          "type": "string"
+                        },
+                        "iconKey": {
+                          "type": "string",
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
+                          "description": "Sprite key for the marker and chip icon"
+                        },
+                        "colorHex": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "slug",
+                        "name",
+                        "nameVi",
+                        "iconKey",
+                        "colorHex"
+                      ]
+                    },
+                    "latitude": {
+                      "type": "number"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "address": {
+                      "type": "string"
+                    },
+                    "district": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "province": {
+                      "type": "string"
+                    },
+                    "priceRange": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "enum": [
+                        "BUDGET",
+                        "MODERATE",
+                        "EXPENSIVE",
+                        "LUXURY"
+                      ]
+                    },
+                    "averageRating": {
+                      "type": "number"
+                    },
+                    "reviewCount": {
+                      "type": "integer"
+                    },
+                    "coverImageUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "coverBlurhash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "isUnavailable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "slug",
+                    "name",
+                    "category",
+                    "latitude",
+                    "longitude",
+                    "address",
+                    "district",
+                    "province",
+                    "priceRange",
+                    "averageRating",
+                    "reviewCount",
+                    "coverImageUrl",
+                    "coverBlurhash",
+                    "isUnavailable"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "sortOrder",
+                "startsAtMin",
+                "endsAtMin",
+                "crossesMidnight",
+                "note",
+                "place"
+              ]
+            }
+          },
+          "owner": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "avatarUrl": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "avatarUrl"
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "date",
+          "timezone",
+          "note",
+          "stopCount",
+          "coverImageUrl",
+          "coverBlurhash",
+          "coverCategorySlug",
+          "coverCategoryIcon",
+          "coverCategoryColor",
+          "stopPreviews",
+          "startsAtMin",
+          "endsAtMin",
+          "updatedAt",
+          "stops",
+          "owner"
         ]
       },
       "CheckIn": {
@@ -11188,6 +11577,12 @@
                               "null"
                             ]
                           },
+                          "shareToken": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
                           "createdAt": {
                             "type": "string"
                           },
@@ -11210,6 +11605,7 @@
                           "stopPreviews",
                           "startsAtMin",
                           "endsAtMin",
+                          "shareToken",
                           "createdAt",
                           "updatedAt"
                         ]
@@ -11462,6 +11858,12 @@
                             "null"
                           ]
                         },
+                        "shareToken": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -11665,6 +12067,7 @@
                         "stopPreviews",
                         "startsAtMin",
                         "endsAtMin",
+                        "shareToken",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -11918,6 +12321,12 @@
                             "null"
                           ]
                         },
+                        "shareToken": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -12121,6 +12530,7 @@
                         "stopPreviews",
                         "startsAtMin",
                         "endsAtMin",
+                        "shareToken",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -12397,6 +12807,12 @@
                             "null"
                           ]
                         },
+                        "shareToken": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -12600,6 +13016,7 @@
                         "stopPreviews",
                         "startsAtMin",
                         "endsAtMin",
+                        "shareToken",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -12975,6 +13392,12 @@
                             "null"
                           ]
                         },
+                        "shareToken": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -13178,6 +13601,7 @@
                         "stopPreviews",
                         "startsAtMin",
                         "endsAtMin",
+                        "shareToken",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -13464,6 +13888,12 @@
                             "null"
                           ]
                         },
+                        "shareToken": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -13667,6 +14097,7 @@
                         "stopPreviews",
                         "startsAtMin",
                         "endsAtMin",
+                        "shareToken",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -13973,6 +14404,12 @@
                             "null"
                           ]
                         },
+                        "shareToken": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -14176,6 +14613,7 @@
                         "stopPreviews",
                         "startsAtMin",
                         "endsAtMin",
+                        "shareToken",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -14436,6 +14874,12 @@
                             "null"
                           ]
                         },
+                        "shareToken": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
                         "createdAt": {
                           "type": "string"
                         },
@@ -14639,6 +15083,7 @@
                         "stopPreviews",
                         "startsAtMin",
                         "endsAtMin",
+                        "shareToken",
                         "createdAt",
                         "updatedAt",
                         "stops"
@@ -14672,6 +15117,1366 @@
           },
           "401": {
             "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans/{id}/share": {
+      "post": {
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Turn on a plan’s public link",
+        "description": "Answers with the plan, now carrying a `shareToken`. The client builds the URL from it — the API does not know which origin the app is served from.\n\nIdempotent: a plan that is already shared keeps its token, so reopening the share sheet does not break a link that was sent yesterday.\n\nEvery route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The plan, with its share token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "date": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "timezone": {
+                          "type": "string"
+                        },
+                        "note": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "stopCount": {
+                          "type": "integer"
+                        },
+                        "coverImageUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverBlurhash": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategorySlug": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategoryIcon": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
+                          "description": "Sprite key for the marker and chip icon"
+                        },
+                        "coverCategoryColor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "stopPreviews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "coverImageUrl": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "coverBlurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "categorySlug": {
+                                "type": "string"
+                              },
+                              "categoryIcon": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
+                              "categoryColor": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "coverImageUrl",
+                              "coverBlurhash",
+                              "categorySlug",
+                              "categoryIcon",
+                              "categoryColor"
+                            ]
+                          }
+                        },
+                        "startsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "endsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "shareToken": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "stops": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "sortOrder": {
+                                "type": "integer"
+                              },
+                              "startsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "endsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "crossesMidnight": {
+                                "type": "boolean"
+                              },
+                              "note": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "place": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "category": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                      },
+                                      "slug": {
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "nameVi": {
+                                        "type": "string"
+                                      },
+                                      "iconKey": {
+                                        "type": "string",
+                                        "enum": [
+                                          "cup",
+                                          "bean",
+                                          "skyline",
+                                          "bowl",
+                                          "pho",
+                                          "fish",
+                                          "cart",
+                                          "glass",
+                                          "moon",
+                                          "bed",
+                                          "house",
+                                          "sparkle",
+                                          "leaf",
+                                          "column",
+                                          "ticket",
+                                          "film",
+                                          "bag",
+                                          "dot"
+                                        ],
+                                        "description": "Sprite key for the marker and chip icon"
+                                      },
+                                      "colorHex": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "slug",
+                                      "name",
+                                      "nameVi",
+                                      "iconKey",
+                                      "colorHex"
+                                    ]
+                                  },
+                                  "latitude": {
+                                    "type": "number"
+                                  },
+                                  "longitude": {
+                                    "type": "number"
+                                  },
+                                  "address": {
+                                    "type": "string"
+                                  },
+                                  "district": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "province": {
+                                    "type": "string"
+                                  },
+                                  "priceRange": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "enum": [
+                                      "BUDGET",
+                                      "MODERATE",
+                                      "EXPENSIVE",
+                                      "LUXURY"
+                                    ]
+                                  },
+                                  "averageRating": {
+                                    "type": "number"
+                                  },
+                                  "reviewCount": {
+                                    "type": "integer"
+                                  },
+                                  "coverImageUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "coverBlurhash": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "isUnavailable": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "category",
+                                  "latitude",
+                                  "longitude",
+                                  "address",
+                                  "district",
+                                  "province",
+                                  "priceRange",
+                                  "averageRating",
+                                  "reviewCount",
+                                  "coverImageUrl",
+                                  "coverBlurhash",
+                                  "isUnavailable"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "sortOrder",
+                              "startsAtMin",
+                              "endsAtMin",
+                              "crossesMidnight",
+                              "note",
+                              "place"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "date",
+                        "timezone",
+                        "note",
+                        "stopCount",
+                        "coverImageUrl",
+                        "coverBlurhash",
+                        "coverCategorySlug",
+                        "coverCategoryIcon",
+                        "coverCategoryColor",
+                        "stopPreviews",
+                        "startsAtMin",
+                        "endsAtMin",
+                        "shareToken",
+                        "createdAt",
+                        "updatedAt",
+                        "stops"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Turn off a plan’s public link",
+        "description": "Clears the token. The old link stops working at once and stays dead: sharing again mints a different one. Stopping has to take the day away from the people who already hold the link, or it means nothing.\n\nEvery route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The plan, private again",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "date": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "timezone": {
+                          "type": "string"
+                        },
+                        "note": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "stopCount": {
+                          "type": "integer"
+                        },
+                        "coverImageUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverBlurhash": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategorySlug": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategoryIcon": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
+                          "description": "Sprite key for the marker and chip icon"
+                        },
+                        "coverCategoryColor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "stopPreviews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "coverImageUrl": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "coverBlurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "categorySlug": {
+                                "type": "string"
+                              },
+                              "categoryIcon": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
+                              "categoryColor": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "coverImageUrl",
+                              "coverBlurhash",
+                              "categorySlug",
+                              "categoryIcon",
+                              "categoryColor"
+                            ]
+                          }
+                        },
+                        "startsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "endsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "shareToken": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "stops": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "sortOrder": {
+                                "type": "integer"
+                              },
+                              "startsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "endsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "crossesMidnight": {
+                                "type": "boolean"
+                              },
+                              "note": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "place": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "category": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                      },
+                                      "slug": {
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "nameVi": {
+                                        "type": "string"
+                                      },
+                                      "iconKey": {
+                                        "type": "string",
+                                        "enum": [
+                                          "cup",
+                                          "bean",
+                                          "skyline",
+                                          "bowl",
+                                          "pho",
+                                          "fish",
+                                          "cart",
+                                          "glass",
+                                          "moon",
+                                          "bed",
+                                          "house",
+                                          "sparkle",
+                                          "leaf",
+                                          "column",
+                                          "ticket",
+                                          "film",
+                                          "bag",
+                                          "dot"
+                                        ],
+                                        "description": "Sprite key for the marker and chip icon"
+                                      },
+                                      "colorHex": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "slug",
+                                      "name",
+                                      "nameVi",
+                                      "iconKey",
+                                      "colorHex"
+                                    ]
+                                  },
+                                  "latitude": {
+                                    "type": "number"
+                                  },
+                                  "longitude": {
+                                    "type": "number"
+                                  },
+                                  "address": {
+                                    "type": "string"
+                                  },
+                                  "district": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "province": {
+                                    "type": "string"
+                                  },
+                                  "priceRange": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "enum": [
+                                      "BUDGET",
+                                      "MODERATE",
+                                      "EXPENSIVE",
+                                      "LUXURY"
+                                    ]
+                                  },
+                                  "averageRating": {
+                                    "type": "number"
+                                  },
+                                  "reviewCount": {
+                                    "type": "integer"
+                                  },
+                                  "coverImageUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "coverBlurhash": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "isUnavailable": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "category",
+                                  "latitude",
+                                  "longitude",
+                                  "address",
+                                  "district",
+                                  "province",
+                                  "priceRange",
+                                  "averageRating",
+                                  "reviewCount",
+                                  "coverImageUrl",
+                                  "coverBlurhash",
+                                  "isUnavailable"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "sortOrder",
+                              "startsAtMin",
+                              "endsAtMin",
+                              "crossesMidnight",
+                              "note",
+                              "place"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "date",
+                        "timezone",
+                        "note",
+                        "stopCount",
+                        "coverImageUrl",
+                        "coverBlurhash",
+                        "coverCategorySlug",
+                        "coverCategoryIcon",
+                        "coverCategoryColor",
+                        "stopPreviews",
+                        "startsAtMin",
+                        "endsAtMin",
+                        "shareToken",
+                        "createdAt",
+                        "updatedAt",
+                        "stops"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plans/shared/{token}": {
+      "get": {
+        "tags": [
+          "Plans"
+        ],
+        "summary": "A shared plan, by its link",
+        "description": "The only plan route with no session. The token is the permission: anyone holding it can read the day, its stops and the owner’s notes on them, and nothing else about the account.\n\nA revoked link, a deleted plan and a token that never existed all answer 404 — telling them apart would confirm that a guessed token was once real. `no-store`, so revoking a link is not undone by a cache.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{22}$"
+            },
+            "required": true,
+            "name": "token",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The day, read-only",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "string"
+                        },
+                        "date": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "timezone": {
+                          "type": "string"
+                        },
+                        "note": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "stopCount": {
+                          "type": "integer"
+                        },
+                        "coverImageUrl": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverBlurhash": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategorySlug": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "coverCategoryIcon": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "enum": [
+                            "cup",
+                            "bean",
+                            "skyline",
+                            "bowl",
+                            "pho",
+                            "fish",
+                            "cart",
+                            "glass",
+                            "moon",
+                            "bed",
+                            "house",
+                            "sparkle",
+                            "leaf",
+                            "column",
+                            "ticket",
+                            "film",
+                            "bag",
+                            "dot"
+                          ],
+                          "description": "Sprite key for the marker and chip icon"
+                        },
+                        "coverCategoryColor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "stopPreviews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "coverImageUrl": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "coverBlurhash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "categorySlug": {
+                                "type": "string"
+                              },
+                              "categoryIcon": {
+                                "type": "string",
+                                "enum": [
+                                  "cup",
+                                  "bean",
+                                  "skyline",
+                                  "bowl",
+                                  "pho",
+                                  "fish",
+                                  "cart",
+                                  "glass",
+                                  "moon",
+                                  "bed",
+                                  "house",
+                                  "sparkle",
+                                  "leaf",
+                                  "column",
+                                  "ticket",
+                                  "film",
+                                  "bag",
+                                  "dot"
+                                ],
+                                "description": "Sprite key for the marker and chip icon"
+                              },
+                              "categoryColor": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "coverImageUrl",
+                              "coverBlurhash",
+                              "categorySlug",
+                              "categoryIcon",
+                              "categoryColor"
+                            ]
+                          }
+                        },
+                        "startsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "endsAtMin": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ]
+                        },
+                        "updatedAt": {
+                          "type": "string"
+                        },
+                        "stops": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "sortOrder": {
+                                "type": "integer"
+                              },
+                              "startsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "endsAtMin": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ]
+                              },
+                              "crossesMidnight": {
+                                "type": "boolean"
+                              },
+                              "note": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "place": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "category": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                      },
+                                      "slug": {
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "nameVi": {
+                                        "type": "string"
+                                      },
+                                      "iconKey": {
+                                        "type": "string",
+                                        "enum": [
+                                          "cup",
+                                          "bean",
+                                          "skyline",
+                                          "bowl",
+                                          "pho",
+                                          "fish",
+                                          "cart",
+                                          "glass",
+                                          "moon",
+                                          "bed",
+                                          "house",
+                                          "sparkle",
+                                          "leaf",
+                                          "column",
+                                          "ticket",
+                                          "film",
+                                          "bag",
+                                          "dot"
+                                        ],
+                                        "description": "Sprite key for the marker and chip icon"
+                                      },
+                                      "colorHex": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "slug",
+                                      "name",
+                                      "nameVi",
+                                      "iconKey",
+                                      "colorHex"
+                                    ]
+                                  },
+                                  "latitude": {
+                                    "type": "number"
+                                  },
+                                  "longitude": {
+                                    "type": "number"
+                                  },
+                                  "address": {
+                                    "type": "string"
+                                  },
+                                  "district": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "province": {
+                                    "type": "string"
+                                  },
+                                  "priceRange": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "enum": [
+                                      "BUDGET",
+                                      "MODERATE",
+                                      "EXPENSIVE",
+                                      "LUXURY"
+                                    ]
+                                  },
+                                  "averageRating": {
+                                    "type": "number"
+                                  },
+                                  "reviewCount": {
+                                    "type": "integer"
+                                  },
+                                  "coverImageUrl": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "coverBlurhash": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "isUnavailable": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "slug",
+                                  "name",
+                                  "category",
+                                  "latitude",
+                                  "longitude",
+                                  "address",
+                                  "district",
+                                  "province",
+                                  "priceRange",
+                                  "averageRating",
+                                  "reviewCount",
+                                  "coverImageUrl",
+                                  "coverBlurhash",
+                                  "isUnavailable"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "sortOrder",
+                              "startsAtMin",
+                              "endsAtMin",
+                              "crossesMidnight",
+                              "note",
+                              "place"
+                            ]
+                          }
+                        },
+                        "owner": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "avatarUrl": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "avatarUrl"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "title",
+                        "date",
+                        "timezone",
+                        "note",
+                        "stopCount",
+                        "coverImageUrl",
+                        "coverBlurhash",
+                        "coverCategorySlug",
+                        "coverCategoryIcon",
+                        "coverCategoryColor",
+                        "stopPreviews",
+                        "startsAtMin",
+                        "endsAtMin",
+                        "updatedAt",
+                        "stops",
+                        "owner"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
             "content": {
               "application/json": {
                 "schema": {

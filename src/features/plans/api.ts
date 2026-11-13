@@ -4,6 +4,7 @@ import type { components } from '@/types/api';
 export type Plan = components['schemas']['Plan'];
 export type PlanDetail = components['schemas']['PlanDetail'];
 export type PlanStop = components['schemas']['PlanStop'];
+export type SharedPlan = components['schemas']['SharedPlan'];
 
 export interface CreatePlanInput {
   title: string;
@@ -66,4 +67,25 @@ export function reorderStops(planId: string, stopIds: string[]): Promise<PlanDet
     method: 'PUT',
     body: { stopIds },
   }).then((result) => result.data);
+}
+
+/** Turns the public link on. Safe to call twice — the token does not change. */
+export function sharePlan(id: string): Promise<PlanDetail> {
+  return api.post<PlanDetail>(`/plans/${id}/share`);
+}
+
+/** Turns it off. The old link is dead for good; sharing again mints a new one. */
+export function unsharePlan(id: string): Promise<PlanDetail> {
+  return api.delete<PlanDetail>(`/plans/${id}/share`);
+}
+
+/**
+ * A plan, by the token in its link.
+ *
+ * `withAuth: false` — the reader is usually somebody with no account at all,
+ * and the token is the whole permission. Sending a session along would only
+ * add a refresh round trip for a signed-out visitor before the day appears.
+ */
+export function fetchSharedPlan(token: string): Promise<SharedPlan> {
+  return api.get<SharedPlan>(`/plans/shared/${encodeURIComponent(token)}`, { withAuth: false });
 }

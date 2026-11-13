@@ -2605,6 +2605,7 @@ export interface paths {
                                 }[];
                                 startsAtMin: number | null;
                                 endsAtMin: number | null;
+                                shareToken: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                             }[];
@@ -2695,6 +2696,7 @@ export interface paths {
                                 }[];
                                 startsAtMin: number | null;
                                 endsAtMin: number | null;
+                                shareToken: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -2849,6 +2851,7 @@ export interface paths {
                                 }[];
                                 startsAtMin: number | null;
                                 endsAtMin: number | null;
+                                shareToken: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3050,6 +3053,7 @@ export interface paths {
                                 }[];
                                 startsAtMin: number | null;
                                 endsAtMin: number | null;
+                                shareToken: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3212,6 +3216,7 @@ export interface paths {
                                 }[];
                                 startsAtMin: number | null;
                                 endsAtMin: number | null;
+                                shareToken: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3382,6 +3387,7 @@ export interface paths {
                                 }[];
                                 startsAtMin: number | null;
                                 endsAtMin: number | null;
+                                shareToken: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3548,6 +3554,7 @@ export interface paths {
                                 }[];
                                 startsAtMin: number | null;
                                 endsAtMin: number | null;
+                                shareToken: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3689,6 +3696,7 @@ export interface paths {
                                 }[];
                                 startsAtMin: number | null;
                                 endsAtMin: number | null;
+                                shareToken: string | null;
                                 createdAt: string;
                                 updatedAt: string;
                                 stops: {
@@ -3769,6 +3777,430 @@ export interface paths {
                 };
             };
         };
+        trace?: never;
+    };
+    "/plans/{id}/share": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Turn on a plan’s public link
+         * @description Answers with the plan, now carrying a `shareToken`. The client builds the URL from it — the API does not know which origin the app is served from.
+         *
+         *     Idempotent: a plan that is already shared keeps its token, so reopening the share sheet does not break a link that was sent yesterday.
+         *
+         *     Every route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The plan, with its share token */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                date: string | null;
+                                timezone: string;
+                                note: string | null;
+                                stopCount: number;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                                coverCategorySlug: string | null;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string|null}
+                                 */
+                                coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
+                                coverCategoryColor: string | null;
+                                stopPreviews: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    categorySlug: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
+                                    categoryColor: string;
+                                }[];
+                                startsAtMin: number | null;
+                                endsAtMin: number | null;
+                                shareToken: string | null;
+                                createdAt: string;
+                                updatedAt: string;
+                                stops: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    sortOrder: number;
+                                    startsAtMin: number | null;
+                                    endsAtMin: number | null;
+                                    crossesMidnight: boolean;
+                                    note: string | null;
+                                    place: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        category: {
+                                            /** Format: uuid */
+                                            id: string;
+                                            slug: string;
+                                            name: string;
+                                            nameVi: string;
+                                            /**
+                                             * @description Sprite key for the marker and chip icon
+                                             * @enum {string}
+                                             */
+                                            iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
+                                            colorHex: string;
+                                        };
+                                        latitude: number;
+                                        longitude: number;
+                                        address: string;
+                                        district: string | null;
+                                        province: string;
+                                        /** @enum {string|null} */
+                                        priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                        averageRating: number;
+                                        reviewCount: number;
+                                        coverImageUrl: string | null;
+                                        coverBlurhash: string | null;
+                                        isUnavailable: boolean;
+                                    };
+                                }[];
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        /**
+         * Turn off a plan’s public link
+         * @description Clears the token. The old link stops working at once and stays dead: sharing again mints a different one. Stopping has to take the day away from the people who already hold the link, or it means nothing.
+         *
+         *     Every route is scoped to the caller. A plan belonging to somebody else answers 404 rather than 403 — distinguishing the two would turn this into a way to ask whether a given id belongs to anybody.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The plan, private again */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** Format: uuid */
+                                id: string;
+                                title: string;
+                                date: string | null;
+                                timezone: string;
+                                note: string | null;
+                                stopCount: number;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                                coverCategorySlug: string | null;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string|null}
+                                 */
+                                coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
+                                coverCategoryColor: string | null;
+                                stopPreviews: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    categorySlug: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
+                                    categoryColor: string;
+                                }[];
+                                startsAtMin: number | null;
+                                endsAtMin: number | null;
+                                shareToken: string | null;
+                                createdAt: string;
+                                updatedAt: string;
+                                stops: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    sortOrder: number;
+                                    startsAtMin: number | null;
+                                    endsAtMin: number | null;
+                                    crossesMidnight: boolean;
+                                    note: string | null;
+                                    place: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        category: {
+                                            /** Format: uuid */
+                                            id: string;
+                                            slug: string;
+                                            name: string;
+                                            nameVi: string;
+                                            /**
+                                             * @description Sprite key for the marker and chip icon
+                                             * @enum {string}
+                                             */
+                                            iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
+                                            colorHex: string;
+                                        };
+                                        latitude: number;
+                                        longitude: number;
+                                        address: string;
+                                        district: string | null;
+                                        province: string;
+                                        /** @enum {string|null} */
+                                        priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                        averageRating: number;
+                                        reviewCount: number;
+                                        coverImageUrl: string | null;
+                                        coverBlurhash: string | null;
+                                        isUnavailable: boolean;
+                                    };
+                                }[];
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/plans/shared/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A shared plan, by its link
+         * @description The only plan route with no session. The token is the permission: anyone holding it can read the day, its stops and the owner’s notes on them, and nothing else about the account.
+         *
+         *     A revoked link, a deleted plan and a token that never existed all answer 404 — telling them apart would confirm that a guessed token was once real. `no-store`, so revoking a link is not undone by a cache.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    token: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The day, read-only */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                title: string;
+                                date: string | null;
+                                timezone: string;
+                                note: string | null;
+                                stopCount: number;
+                                coverImageUrl: string | null;
+                                coverBlurhash: string | null;
+                                coverCategorySlug: string | null;
+                                /**
+                                 * @description Sprite key for the marker and chip icon
+                                 * @enum {string|null}
+                                 */
+                                coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
+                                coverCategoryColor: string | null;
+                                stopPreviews: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    name: string;
+                                    coverImageUrl: string | null;
+                                    coverBlurhash: string | null;
+                                    categorySlug: string;
+                                    /**
+                                     * @description Sprite key for the marker and chip icon
+                                     * @enum {string}
+                                     */
+                                    categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
+                                    categoryColor: string;
+                                }[];
+                                startsAtMin: number | null;
+                                endsAtMin: number | null;
+                                updatedAt: string;
+                                stops: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    sortOrder: number;
+                                    startsAtMin: number | null;
+                                    endsAtMin: number | null;
+                                    crossesMidnight: boolean;
+                                    note: string | null;
+                                    place: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        slug: string;
+                                        name: string;
+                                        category: {
+                                            /** Format: uuid */
+                                            id: string;
+                                            slug: string;
+                                            name: string;
+                                            nameVi: string;
+                                            /**
+                                             * @description Sprite key for the marker and chip icon
+                                             * @enum {string}
+                                             */
+                                            iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
+                                            colorHex: string;
+                                        };
+                                        latitude: number;
+                                        longitude: number;
+                                        address: string;
+                                        district: string | null;
+                                        province: string;
+                                        /** @enum {string|null} */
+                                        priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                                        averageRating: number;
+                                        reviewCount: number;
+                                        coverImageUrl: string | null;
+                                        coverBlurhash: string | null;
+                                        isUnavailable: boolean;
+                                    };
+                                }[];
+                                owner: {
+                                    name: string;
+                                    avatarUrl: string | null;
+                                };
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/checkins": {
@@ -9855,6 +10287,7 @@ export interface components {
             }[];
             startsAtMin: number | null;
             endsAtMin: number | null;
+            shareToken: string | null;
             createdAt: string;
             updatedAt: string;
         };
@@ -9891,6 +10324,7 @@ export interface components {
             }[];
             startsAtMin: number | null;
             endsAtMin: number | null;
+            shareToken: string | null;
             createdAt: string;
             updatedAt: string;
             stops: {
@@ -9972,6 +10406,83 @@ export interface components {
                 coverImageUrl: string | null;
                 coverBlurhash: string | null;
                 isUnavailable: boolean;
+            };
+        };
+        SharedPlan: {
+            title: string;
+            date: string | null;
+            timezone: string;
+            note: string | null;
+            stopCount: number;
+            coverImageUrl: string | null;
+            coverBlurhash: string | null;
+            coverCategorySlug: string | null;
+            /**
+             * @description Sprite key for the marker and chip icon
+             * @enum {string|null}
+             */
+            coverCategoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot" | null;
+            coverCategoryColor: string | null;
+            stopPreviews: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                coverImageUrl: string | null;
+                coverBlurhash: string | null;
+                categorySlug: string;
+                /**
+                 * @description Sprite key for the marker and chip icon
+                 * @enum {string}
+                 */
+                categoryIcon: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
+                categoryColor: string;
+            }[];
+            startsAtMin: number | null;
+            endsAtMin: number | null;
+            updatedAt: string;
+            stops: {
+                /** Format: uuid */
+                id: string;
+                sortOrder: number;
+                startsAtMin: number | null;
+                endsAtMin: number | null;
+                crossesMidnight: boolean;
+                note: string | null;
+                place: {
+                    /** Format: uuid */
+                    id: string;
+                    slug: string;
+                    name: string;
+                    category: {
+                        /** Format: uuid */
+                        id: string;
+                        slug: string;
+                        name: string;
+                        nameVi: string;
+                        /**
+                         * @description Sprite key for the marker and chip icon
+                         * @enum {string}
+                         */
+                        iconKey: "cup" | "bean" | "skyline" | "bowl" | "pho" | "fish" | "cart" | "glass" | "moon" | "bed" | "house" | "sparkle" | "leaf" | "column" | "ticket" | "film" | "bag" | "dot";
+                        colorHex: string;
+                    };
+                    latitude: number;
+                    longitude: number;
+                    address: string;
+                    district: string | null;
+                    province: string;
+                    /** @enum {string|null} */
+                    priceRange: "BUDGET" | "MODERATE" | "EXPENSIVE" | "LUXURY" | null;
+                    averageRating: number;
+                    reviewCount: number;
+                    coverImageUrl: string | null;
+                    coverBlurhash: string | null;
+                    isUnavailable: boolean;
+                };
+            }[];
+            owner: {
+                name: string;
+                avatarUrl: string | null;
             };
         };
         CheckIn: {

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { CalendarDays, Clock, MapPin, Plus } from 'lucide-react';
+import { CalendarDays, Clock, Lightbulb, Link2, MapPin, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { fieldClass } from '@/components/ui/field';
@@ -16,22 +16,30 @@ import { PlaceSheet } from '@/features/places/components/PlaceSheet';
 import { useLocale, useT } from '@/i18n/I18nProvider';
 import { useErrorMessage } from '@/i18n/useErrorMessage';
 import { formatDate } from '@/i18n/format';
+import { cn } from '@/lib/utils/cn';
+import { useNow } from '@/lib/utils/useNow';
 import { usePlans, useCreatePlan } from '../hooks/usePlans';
 import { formatTimeOfDay } from '../time';
+import { dateTileParts, daysBetween, groupPlans, todayIn } from '../day';
 import { PlanEditorScreen } from './PlanEditorScreen';
+import { PlanCover, coverChipClass } from './PlanCover';
 import type { Plan } from '../api';
 
 /**
  * The Plan tab.
  *
- * A list of days, newest first, and one button. Everything about arranging a
- * day lives one screen in — this one only has to answer "which day?".
+ * It answers "which day?" — and the answer is almost always the next one. So
+ * the tab leads with that day, large, and files the rest under what they are:
+ * days still ahead, ideas with no date, days already gone. It used to be one
+ * column sorted by date, where next Saturday, a half-formed idea and a trip
+ * from last month all had the same weight.
  */
 export function PlansScreen() {
   const t = useT();
   const router = useRouter();
   const params = useSearchParams();
   const isAuthenticated = useIsAuthenticated();
+  const now = useNow();
   const [composing, setComposing] = useState(false);
   /*
    * Seeded from `?id=`, which is how a plan is linked to.
@@ -47,58 +55,120 @@ export function PlansScreen() {
   const plans = usePlans(isAuthenticated);
   const saved = useSavedPlaces();
 
+  const grouped = groupPlans(plans.data ?? [], now);
+  const open = (plan: Plan) => {
+    setOpenPlanId(plan.id);
+  };
+
   return (
     <div className="px-safe">
-      <header className="pt-safe-float px-5">
-        <h1 className="text-ink text-title pt-6 leading-tight font-semibold tracking-tight">
-          {t('plans.title')}
-        </h1>
-        <p className="text-ink-muted mt-1 text-sm">{t('plans.description')}</p>
+      <header className="pt-safe-float flex items-end justify-between gap-3 px-5">
+        <div className="min-w-0">
+          <h1 className="text-ink text-title pt-6 leading-tight font-semibold tracking-tight">
+            {t('plans.title')}
+          </h1>
+          <p className="text-ink-muted mt-1 text-sm">{t('plans.description')}</p>
+        </div>
+
+        {/*
+          Making a day, from the header.
+
+          It was a full-width black bar above the list — the heaviest thing on
+          the screen, and it pushed the plans you came for below it. A round
+          button in the corner is where every list on a phone keeps "new", and
+          it leaves the top of the screen to the next day.
+        */}
+        {isAuthenticated && (
+          <button
+            type="button"
+            onClick={() => {
+              setComposing(true);
+            }}
+            aria-label={t('plans.new')}
+            className="bg-primary shadow-primary press-firm flex size-11 shrink-0 items-center justify-center rounded-full text-white"
+          >
+            <Plus className="size-5" aria-hidden />
+          </button>
+        )}
       </header>
 
-      {/*
-        The saved places, across the top.
+      {!isAuthenticated && (
+        <EmptyState
+          className="mt-6"
+          icon={<CalendarDays className="size-7" aria-hidden />}
+          title={t('plans.signedOutTitle')}
+          description={t('plans.signedOutBody')}
+          action={
+            <Button
+              onClick={() => {
+                router.push('/profile');
+              }}
+            >
+              {t('common.signIn')}
+            </Button>
+          }
+        />
+      )}
 
-        A plan is built out of places somebody has already decided they want to
-        go to, and until now those lived two taps away under the profile while
-        this screen offered a blank "add a place" search. Putting them here
-        makes the shortlist the raw material it already was.
-      */}
-      {/*
-        The saved places, as a deck.
+      {isAuthenticated && plans.isPending && (
+        <div className="mt-5 space-y-3 px-5">
+          <div className="bg-surface-sunken h-56 animate-pulse rounded-xl" />
+          <div className="bg-surface-sunken h-20 animate-pulse rounded-lg" />
+          <div className="bg-surface-sunken h-20 animate-pulse rounded-lg" />
+        </div>
+      )}
 
-        A rail invites scanning, and this is not a list to scan — it is the
-        shortlist a day gets built from, one place at a time: "this one, or the
-        next?". The same shape the home screen uses for recommendations, and
-        the same component, because two decks that drift apart is two decks.
+      {isAuthenticated && plans.data?.length === 0 && (
+        <EmptyState
+          className="mt-6"
+          icon={<CalendarDays className="size-7" aria-hidden />}
+          title={t('plans.emptyTitle')}
+          description={t('plans.emptyBody')}
+          action={
+            <Button
+              leadingIcon={<Plus className="size-4" aria-hidden />}
+              onClick={() => {
+                setComposing(true);
+              }}
+            >
+              {t('plans.new')}
+            </Button>
+          }
+        />
+      )}
+
+      {grouped.next && (
+        <div className="mt-5 px-5">
+          <NextPlanCard plan={grouped.next} now={now} onOpen={open} />
+        </div>
+      )}
+
+      <PlanSection title={t('plans.section.upcoming')} plans={grouped.upcoming} onOpen={open} />
+      <PlanSection title={t('plans.section.ideas')} plans={grouped.ideas} onOpen={open} />
+
+      {/*
+        The shortlist, between what is planned and what is over.
+
+        A plan is built out of places somebody has already decided they want
+        to go to. It led the screen before, above the plans themselves, which
+        made the tab open on a deck of places rather than on a day. Here it is
+        raw material again: under the days you are still shaping, above the
+        ones you are finished with.
+
+        A deck rather than a rail, because this is not a list to scan — it is
+        "this one, or the next?", one place at a time, and the same component
+        the home screen uses so the two cannot drift apart.
       */}
       {isAuthenticated && (saved.data?.data.length ?? 0) > 0 && (
-        /*
-          The shortlist, on a raised plate.
-
-          The two halves of this screen ran into each other with nothing but a
-          margin between them. Giving one of them a surface is what separates
-          them; which one gets it decides what the screen is about, and this is
-          the deck — the thing you are choosing from — so it is the deck that
-          is lifted and the plans that lie on the page.
-
-          `shadow-md` on a panel is a step above the ladder's own answer for
-          one, which is `shadow-sm`. Stated rather than hidden: at `sm` this
-          plate would sit *below* the `shadow-md` plan cards further down, and
-          a block that is supposed to lead the screen cannot be the lowest
-          thing on it. The cards inside keep their own `shadow-lg`, so the
-          reading is page → plate → deck, three planes against the plans' two.
-
-          `px-0` on the stack because the plate already carries the inset —
-          the component pads itself for a screen edge that is no longer there.
-        */
         <section
-          className="bg-surface mx-5 mt-5 rounded-xl p-4 shadow-md"
+          className="bg-surface mx-5 mt-7 rounded-xl p-4 shadow-md"
           aria-label={t('plan.savedRail')}
         >
           <h2 className="text-ink text-sm font-semibold">{t('plan.savedRail')}</h2>
 
           <PlaceCardStack
+            // `px-0`: the plate already carries the inset the component adds
+            // for a screen edge that is no longer there.
             className="mt-3 px-0"
             places={saved.data?.data}
             onSelect={(place) => {
@@ -108,87 +178,8 @@ export function PlansScreen() {
         </section>
       )}
 
-      {/*
-        The plans, on the page.
+      <PlanSection title={t('plans.section.past')} plans={grouped.past} onOpen={open} faded />
 
-        No surface of their own, deliberately: the plate above is what makes
-        the two halves read as two, and giving both of them one would put the
-        boundary back where it was — between two blocks that look the same.
-        These are cards on the ground, under a raised shortlist.
-
-        The heading is new either way. The saved deck has been labelled since
-        it arrived and this list never was, so a named section flowed straight
-        into an unnamed one, which was half of what made them run together.
-      */}
-      <section className="mt-6 px-5">
-        {isAuthenticated && (
-          <h2 className="text-ink mb-3 text-sm font-semibold">{t('plans.yours')}</h2>
-        )}
-
-        {!isAuthenticated && (
-          <EmptyState
-            icon={<CalendarDays className="size-7" aria-hidden />}
-            title={t('plans.signedOutTitle')}
-            description={t('plans.signedOutBody')}
-            action={
-              <Button
-                onClick={() => {
-                  router.push('/profile');
-                }}
-              >
-                {t('common.signIn')}
-              </Button>
-            }
-          />
-        )}
-
-        {isAuthenticated && (
-          <>
-            <Button
-              fullWidth
-              leadingIcon={<Plus className="size-4" aria-hidden />}
-              onClick={() => {
-                setComposing(true);
-              }}
-            >
-              {t('plans.new')}
-            </Button>
-
-            {plans.isPending && (
-              <div className="mt-4 space-y-3">
-                {Array.from({ length: 3 }, (_, index) => (
-                  <div key={index} className="bg-surface h-28 animate-pulse rounded-lg shadow-md" />
-                ))}
-              </div>
-            )}
-
-            {plans.data?.length === 0 && (
-              <EmptyState
-                icon={<CalendarDays className="size-7" aria-hidden />}
-                title={t('plans.emptyTitle')}
-                description={t('plans.emptyBody')}
-              />
-            )}
-
-            <ul className="mt-4 space-y-3">
-              {plans.data?.map((plan) => (
-                <li key={plan.id}>
-                  <PlanCard
-                    plan={plan}
-                    onOpen={() => {
-                      setOpenPlanId(plan.id);
-                    }}
-                  />
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </section>
-
-      {/* Clearance under the last card. The section has no surface to bleed to
-          the bottom of the screen any more, so this is back to being a plain
-          spacer above the nav's own clearance. */}
       <div className="h-6" />
 
       <BottomSheet open={composing} onOpenChange={setComposing}>
@@ -330,119 +321,254 @@ function NewPlanForm({ onCreated }: { onCreated: (id: string) => void }) {
   );
 }
 
-/**
- * A day, as a card you can see.
- *
- * It was a 20px-tall row: a title, a line of grey, a chevron. Days are the
- * thing this tab is *for*, and they read as list items in a settings screen —
- * so the card is raised on `shadow-md` and leads with a photograph.
- *
- * And it now says what is *in* the day rather than only how many things are.
- * "3 địa điểm" is a number; a row of the three photographs is the day itself,
- * and it is the difference between recognising last Sunday's plan and having
- * to open it to find out which one it was. The hours come with them, because
- * "10:00 – 18:00" is the other half of what a day is.
- */
-function PlanCard({ plan, onOpen }: { plan: Plan; onOpen: () => void }) {
+/** "Today", "Tomorrow", "In 5 days" — how far off the day is, in words. */
+function useCountdown(): (plan: Plan, now: number) => string | null {
   const t = useT();
+
+  return (plan, now) => {
+    if (plan.date === null) return null;
+
+    const days = daysBetween(todayIn(plan.timezone, now), plan.date);
+    if (days === 0) return t('plans.phase.today');
+    if (days === 1) return t('plans.phase.tomorrow');
+    return days > 1 ? t('plans.phase.inDays', { count: days }) : null;
+  };
+}
+
+/** `09:00 – 18:00`, or just the start when the day has no end yet. */
+function useDaySpan(): (plan: Plan) => string | null {
   const locale = useLocale();
 
-  const extra = plan.stopCount - plan.stopPreviews.length;
+  return (plan) => {
+    if (plan.startsAtMin === null) return null;
+
+    const start = formatTimeOfDay(plan.startsAtMin, locale);
+    return plan.endsAtMin !== null && plan.endsAtMin !== plan.startsAtMin
+      ? `${start} – ${formatTimeOfDay(plan.endsAtMin, locale)}`
+      : start;
+  };
+}
+
+/**
+ * The next day, as the thing the tab opens on.
+ *
+ * The same cover the plan itself opens with, so tapping it is the picture
+ * growing into the day rather than a list row being swapped for a screen.
+ * The countdown is the one fact a list row could not carry: not "15 August"
+ * but "in 3 days", which is what somebody glancing at this tab wants to know.
+ */
+function NextPlanCard({
+  plan,
+  now,
+  onOpen,
+}: {
+  plan: Plan;
+  now: number;
+  onOpen: (plan: Plan) => void;
+}) {
+  const t = useT();
+  const locale = useLocale();
+  const countdown = useCountdown()(plan, now);
+  const span = useDaySpan()(plan);
 
   return (
     <button
       type="button"
-      onClick={onOpen}
-      className="bg-surface press-surface block w-full overflow-hidden rounded-lg p-3.5 text-left shadow-md"
+      onClick={() => {
+        onOpen(plan);
+      }}
+      className="press-surface block w-full overflow-hidden rounded-xl text-left shadow-lg"
     >
-      <span className="flex items-start gap-3.5">
-        <span className="bg-surface-sunken relative size-[5.5rem] shrink-0 overflow-hidden rounded-md">
-          <PlaceImage
-            url={plan.coverImageUrl}
-            blurhash={plan.coverBlurhash}
-            name={plan.title}
-            categoryIconKey={plan.coverCategoryIcon ?? 'dot'}
-            categoryColor={plan.coverCategoryColor ?? '#18181b'}
-            sizes="88px"
-            fallbackSize="sm"
-          />
-        </span>
-
-        <span className="flex min-w-0 flex-1 flex-col">
-          <span className="text-ink truncate font-bold">{plan.title}</span>
-
-          <span className="text-ink-subtle mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs">
-            <span className="inline-flex items-center gap-1">
-              <CalendarDays className="size-3.5 shrink-0" aria-hidden />
-              {plan.date ? formatDate(plan.date, locale) : t('plans.noDate')}
-            </span>
-
-            {/* Only once somebody has put a time on a stop. An empty clock on
-                every undated draft is chrome pretending to be information. */}
-            {plan.startsAtMin !== null && (
-              <span className="inline-flex items-center gap-1 tabular-nums">
-                <Clock className="size-3.5 shrink-0" aria-hidden />
-                {formatTimeOfDay(plan.startsAtMin, locale)}
-                {plan.endsAtMin !== null &&
-                  plan.endsAtMin !== plan.startsAtMin &&
-                  ` – ${formatTimeOfDay(plan.endsAtMin, locale)}`}
+      <PlanCover
+        plan={plan}
+        top={
+          <>
+            {countdown && (
+              <span className={cn(coverChipClass, 'bg-white text-ink backdrop-blur-none')}>
+                {countdown}
               </span>
             )}
+            {plan.shareToken !== null && (
+              <span className={cn(coverChipClass, 'ml-auto')}>
+                <Link2 className="size-3.5" aria-hidden />
+                <span className="sr-only">{t('plans.shared')}</span>
+              </span>
+            )}
+          </>
+        }
+      >
+        <span className="block text-2xl leading-tight font-bold tracking-tight">{plan.title}</span>
 
-            <span className="inline-flex items-center gap-1">
-              <MapPin className="size-3.5 shrink-0" aria-hidden />
-              {t('plans.stopCount', { count: plan.stopCount })}
+        <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-white/85">
+          {plan.date && (
+            <span className="inline-flex items-center gap-1.5">
+              <CalendarDays className="size-4 shrink-0" aria-hidden />
+              {formatDate(plan.date, locale)}
             </span>
-          </span>
-
-          {/* The day's own description, when there is one. Two lines: enough to
-              tell two Sundays apart, not enough to turn the list back into a
-              wall of text. */}
-          {plan.note && (
-            <span className="text-ink-muted mt-1.5 line-clamp-2 text-xs leading-relaxed">
-              {plan.note}
+          )}
+          {span && (
+            <span className="inline-flex items-center gap-1.5 tabular-nums">
+              <Clock className="size-4 shrink-0" aria-hidden />
+              {span}
             </span>
           )}
         </span>
-      </span>
 
-      {/*
-        The stops themselves, as a row of thumbnails.
-
-        Overlapped rather than spaced: a stack reads as "these belong to one
-        thing", where a spaced row reads as four separate items and invites a
-        tap on each. The white ring is what keeps two dark photographs from
-        merging into one shape.
-      */}
-      {plan.stopPreviews.length > 0 && (
-        <span className="mt-3 flex items-center gap-2">
-          <span className="flex items-center -space-x-2">
-            {plan.stopPreviews.map((stop) => (
-              <span
-                key={stop.id}
-                title={stop.name}
-                className="bg-surface-sunken ring-surface relative size-9 overflow-hidden rounded-full ring-2"
-              >
-                <PlaceImage
-                  url={stop.coverImageUrl}
-                  blurhash={stop.coverBlurhash}
-                  name={stop.name}
-                  categoryIconKey={stop.categoryIcon}
-                  categoryColor={stop.categoryColor}
-                  sizes="36px"
-                  fallbackSize="sm"
-                />
-              </span>
-            ))}
+        <span className="mt-3 flex items-center justify-between gap-3">
+          <StopThumbs plan={plan} ring="ring-black/40" />
+          <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-white/85">
+            <MapPin className="size-4" aria-hidden />
+            {t('plans.stopCount', { count: plan.stopCount })}
           </span>
+        </span>
+      </PlanCover>
+    </button>
+  );
+}
 
-          {extra > 0 && (
-            <span className="text-ink-subtle text-xs font-medium tabular-nums">
-              {t('plans.andMore', { count: extra })}
-            </span>
-          )}
+function PlanSection({
+  title,
+  plans,
+  onOpen,
+  faded = false,
+}: {
+  title: string;
+  plans: Plan[];
+  onOpen: (plan: Plan) => void;
+  /** Days already gone: still there, no longer competing with what is ahead. */
+  faded?: boolean;
+}) {
+  // A heading over nothing is worse than no heading. Most people have no past
+  // plans the first week and no ideas ever; those sections simply are not
+  // there until they have something in them.
+  if (plans.length === 0) return null;
+
+  return (
+    <section className="mt-7 px-5" aria-label={title}>
+      <h2 className="text-ink-muted text-xs font-semibold tracking-wide uppercase">{title}</h2>
+      <ul className={cn('mt-3 space-y-2.5', faded && 'opacity-70')}>
+        {plans.map((plan) => (
+          <li key={plan.id}>
+            <PlanRow plan={plan} onOpen={onOpen} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/**
+ * A day, as a row that leads with its date.
+ *
+ * The rows used to lead with a photograph, the same as a place card — but what
+ * tells two plans apart is *when* they are, and that was a line of 12px grey
+ * under the title. A calendar tile puts the date where the eye lands first and
+ * lets the photographs do what they are good at: showing what is in the day.
+ */
+function PlanRow({ plan, onOpen }: { plan: Plan; onOpen: (plan: Plan) => void }) {
+  const t = useT();
+  const locale = useLocale();
+  const span = useDaySpan()(plan);
+  const tile = plan.date ? dateTileParts(plan.date, locale) : null;
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        onOpen(plan);
+      }}
+      className="bg-surface press-surface flex w-full items-center gap-3.5 rounded-lg p-3 text-left shadow-md"
+    >
+      {tile ? (
+        <span className="bg-primary-tint flex size-14 shrink-0 flex-col items-center justify-center rounded-md">
+          <span className="text-ink-muted text-2xs leading-none font-semibold uppercase">
+            {tile.month}
+          </span>
+          <span className="text-ink mt-0.5 text-xl leading-none font-bold tabular-nums">
+            {tile.day}
+          </span>
+          <span className="text-ink-subtle text-2xs mt-0.5 leading-none">{tile.weekday}</span>
+        </span>
+      ) : (
+        // No date is a state, not a gap: a dashed tile with a bulb in it says
+        // "an idea" where an empty calendar would say "something is missing".
+        <span
+          className="border-border text-ink-subtle flex size-14 shrink-0 items-center justify-center rounded-md border-2 border-dashed"
+          aria-hidden
+        >
+          <Lightbulb className="size-5" />
         </span>
       )}
+
+      <span className="min-w-0 flex-1">
+        <span className="flex items-center gap-1.5">
+          <span className="text-ink text-md truncate font-bold">{plan.title}</span>
+          {plan.shareToken !== null && (
+            <>
+              <Link2 className="text-ink-subtle size-3.5 shrink-0" aria-hidden />
+              <span className="sr-only">{t('plans.shared')}</span>
+            </>
+          )}
+        </span>
+
+        <span className="text-ink-subtle mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-xs">
+          {span && <span className="tabular-nums">{span}</span>}
+          <span>{t('plans.stopCount', { count: plan.stopCount })}</span>
+        </span>
+
+        {plan.stopPreviews.length > 0 && (
+          <span className="mt-2 block">
+            <StopThumbs plan={plan} ring="ring-surface" small />
+          </span>
+        )}
+      </span>
     </button>
+  );
+}
+
+/**
+ * The stops themselves, as a row of thumbnails.
+ *
+ * Overlapped rather than spaced: a stack reads as "these belong to one thing",
+ * where a spaced row reads as four separate items and invites a tap on each.
+ * The ring is what keeps two dark photographs from merging into one shape.
+ */
+function StopThumbs({ plan, ring, small = false }: { plan: Plan; ring: string; small?: boolean }) {
+  const t = useT();
+  const extra = plan.stopCount - plan.stopPreviews.length;
+
+  if (plan.stopPreviews.length === 0) return <span />;
+
+  return (
+    <span className="flex items-center gap-2">
+      <span className="flex items-center -space-x-2">
+        {plan.stopPreviews.map((stop) => (
+          <span
+            key={stop.id}
+            className={cn(
+              'bg-surface-sunken relative overflow-hidden rounded-full ring-2',
+              small ? 'size-7' : 'size-9',
+              ring,
+            )}
+          >
+            <PlaceImage
+              url={stop.coverImageUrl}
+              blurhash={stop.coverBlurhash}
+              name={stop.name}
+              categoryIconKey={stop.categoryIcon}
+              categoryColor={stop.categoryColor}
+              sizes="36px"
+              fallbackSize="sm"
+            />
+          </span>
+        ))}
+      </span>
+
+      {extra > 0 && (
+        <span className="text-xs font-medium tabular-nums opacity-80">
+          {t('plans.andMore', { count: extra })}
+        </span>
+      )}
+    </span>
   );
 }
