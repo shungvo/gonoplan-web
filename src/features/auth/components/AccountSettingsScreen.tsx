@@ -10,6 +10,7 @@ import { useSessionStore } from '../store';
 import { logout } from '../api';
 import { BackButton } from '@/components/ui/BackButton';
 import { useGoBack } from '@/lib/navigation/useGoBack';
+import { clearOfflineApiCache } from '@/features/pwa/serviceWorker';
 
 /**
  * Everything the profile screen used to be.
@@ -31,6 +32,8 @@ export function AccountSettingsScreen() {
     // Everything cached was fetched as the signed-in user; leaving it would
     // show the next visitor someone else's saves.
     queryClient.clear();
+    // The same, for the copies the service worker keeps for offline use.
+    clearOfflineApiCache();
     router.push('/');
   };
 

@@ -948,4 +948,14 @@ export const en = {
   'ownerStatus.APPROVED': 'approved',
   'ownerStatus.REJECTED': 'rejected',
   'ownerStatus.SUSPENDED': 'suspended',
+
+  // ─── Offline and install ──────────────────────────────────────────────────
+  'pwa.offline.badge': 'Offline',
+  'pwa.offline.title': 'You are offline',
+  'pwa.offline.body': 'This page is not saved on this device. It will load when you reconnect.',
+  'pwa.install.title': 'Install Gonoplan',
+  'pwa.install.body': 'Add it to your home screen. It opens faster, even on a weak connection.',
+  'pwa.install.iosBody': 'Tap Share, then “Add to Home Screen”.',
+  'pwa.install.action': 'Install',
+  'pwa.install.dismiss': 'Not now',
 } as const satisfies Record<string, Message>;

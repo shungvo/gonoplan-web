@@ -1,5 +1,7 @@
 import { BottomNav } from '@/components/layout/BottomNav';
 import { OnboardingGate } from '@/features/onboarding/components/OnboardingGate';
+import { InstallPrompt } from '@/features/pwa/components/InstallPrompt';
+import { OfflineNotice } from '@/features/pwa/components/OfflineNotice';
 
 /**
  * The mobile app shell.
@@ -20,6 +22,10 @@ export default function AppLayout({ children }: LayoutProps<'/'>) {
       <div className="border-border bg-app-backdrop relative flex h-dvh w-full max-w-app flex-col overflow-hidden sm:border-x">
         <main className="flex-1 overflow-y-auto overscroll-contain pb-nav">{children}</main>
         <BottomNav />
+        {/* Both float just above the nav, and never together: the install
+            card hides itself while offline. */}
+        <OfflineNotice />
+        <InstallPrompt />
         {/* Over the shell rather than in front of a route, so a first-run
             visitor who lands on a shared place link still gets it — and still
             lands on that place once it is done. */}

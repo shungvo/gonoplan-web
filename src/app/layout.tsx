@@ -3,6 +3,7 @@ import { Geist } from 'next/font/google';
 import { QueryProvider } from '@/lib/query/QueryProvider';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { getLocale, getT } from '@/i18n/server';
+import { ServiceWorkerRegistrar } from '@/features/pwa/components/ServiceWorkerRegistrar';
 import './globals.css';
 
 const geist = Geist({ variable: '--font-geist-sans', subsets: ['latin', 'vietnamese'] });
@@ -91,6 +92,10 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
         <I18nProvider locale={locale}>
           <QueryProvider>{children}</QueryProvider>
         </I18nProvider>
+        {/* At the root, so the admin shell and the offline page get the worker
+            too — whichever route somebody lands on first is the one that has
+            to install it. */}
+        <ServiceWorkerRegistrar />
       </body>
     </html>
   );

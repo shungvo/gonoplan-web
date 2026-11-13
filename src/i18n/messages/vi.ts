@@ -922,4 +922,14 @@ export const vi: Messages = {
   'ownerStatus.APPROVED': 'đã duyệt',
   'ownerStatus.REJECTED': 'bị từ chối',
   'ownerStatus.SUSPENDED': 'bị tạm ngưng',
+
+  // ─── Offline and install ──────────────────────────────────────────────────
+  'pwa.offline.badge': 'Ngoại tuyến',
+  'pwa.offline.title': 'Bạn đang ngoại tuyến',
+  'pwa.offline.body': 'Trang này chưa được lưu trên thiết bị. Trang sẽ tải khi có mạng trở lại.',
+  'pwa.install.title': 'Cài đặt Gonoplan',
+  'pwa.install.body': 'Thêm vào màn hình chính. Ứng dụng mở nhanh hơn, kể cả khi mạng yếu.',
+  'pwa.install.iosBody': 'Nhấn Chia sẻ, rồi chọn “Thêm vào Màn hình chính”.',
+  'pwa.install.action': 'Cài đặt',
+  'pwa.install.dismiss': 'Để sau',
 };
