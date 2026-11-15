@@ -130,6 +130,9 @@
             "type": "string",
             "format": "email"
           },
+          "emailVerified": {
+            "type": "boolean"
+          },
           "name": {
             "type": "string"
           },
@@ -195,6 +198,7 @@
         "required": [
           "id",
           "email",
+          "emailVerified",
           "name",
           "avatarUrl",
           "bio",
@@ -227,6 +231,9 @@
               "email": {
                 "type": "string",
                 "format": "email"
+              },
+              "emailVerified": {
+                "type": "boolean"
               },
               "name": {
                 "type": "string"
@@ -293,6 +300,7 @@
             "required": [
               "id",
               "email",
+              "emailVerified",
               "name",
               "avatarUrl",
               "bio",
@@ -6113,6 +6121,9 @@
                               "type": "string",
                               "format": "email"
                             },
+                            "emailVerified": {
+                              "type": "boolean"
+                            },
                             "name": {
                               "type": "string"
                             },
@@ -6178,6 +6189,7 @@
                           "required": [
                             "id",
                             "email",
+                            "emailVerified",
                             "name",
                             "avatarUrl",
                             "bio",
@@ -6328,6 +6340,9 @@
                               "type": "string",
                               "format": "email"
                             },
+                            "emailVerified": {
+                              "type": "boolean"
+                            },
                             "name": {
                               "type": "string"
                             },
@@ -6393,6 +6408,7 @@
                           "required": [
                             "id",
                             "email",
+                            "emailVerified",
                             "name",
                             "avatarUrl",
                             "bio",
@@ -6517,6 +6533,9 @@
                               "type": "string",
                               "format": "email"
                             },
+                            "emailVerified": {
+                              "type": "boolean"
+                            },
                             "name": {
                               "type": "string"
                             },
@@ -6582,6 +6601,7 @@
                           "required": [
                             "id",
                             "email",
+                            "emailVerified",
                             "name",
                             "avatarUrl",
                             "bio",
@@ -6790,6 +6810,430 @@
         }
       }
     },
+    "/auth/forgot-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Email a password-reset link",
+        "description": "Answers the same whether or not the address has an account — otherwise this is an endpoint that tells anyone which emails are registered. If there is an active account, a single-use link valid for an hour is sent to it, and any earlier unused link stops working.\n\nAt most one email per account per minute, on top of the per-caller limit.\n\n503 `EMAIL_NOT_CONFIGURED` when the server has no way to send mail; that answer does not depend on the address either.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 254,
+                    "format": "email"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Accepted. Says nothing about whether the address is registered.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "sent": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        }
+                      },
+                      "required": [
+                        "sent"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "This server cannot send email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Set a new password from an emailed link",
+        "description": "Takes the `token` from the link and a new password. On success **every session on the account is ended**, including the caller's — the usual reason to reset is that somebody else may know the old password, and they may be signed in. The caller is not signed in by this; they sign in with the password they just chose.\n\nAlso marks the address verified, since following a link sent to it proves the same thing.\n\n400 `AUTH_LINK_INVALID` for a link that was never issued, has been used, has expired, or belongs to an account that is not active — one answer for all four.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{43}$"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 128
+                  }
+                },
+                "required": [
+                  "token",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed, all sessions ended",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "reset": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        }
+                      },
+                      "required": [
+                        "reset"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/verify-email/send": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Email a verification link to the signed-in account",
+        "description": "One is sent automatically at registration; this is \"send it again\". `alreadyVerified` is true, and nothing is sent, for an account that has no need of one. `sent` is false when one went out less than a minute ago.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Whether a message was sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "sent": {
+                          "type": "boolean"
+                        },
+                        "alreadyVerified": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "sent",
+                        "alreadyVerified"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "This server cannot send email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/verify-email": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Confirm an address from an emailed link",
+        "description": "No session needed — the link may be opened on a different device from the one that signed up. Following the same link twice succeeds both times: mail clients prefetch and people double-tap, and the address is verified either way.\n\nPOST, with the token in the body, so the secret is not left in access logs and a scanner fetching the URL cannot use it up.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_-]{43}$"
+                  }
+                },
+                "required": [
+                  "token"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The address is verified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "verified": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        }
+                      },
+                      "required": [
+                        "verified"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "hasMore": {
+                          "type": "boolean"
+                        },
+                        "total": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/me": {
       "get": {
         "tags": [
@@ -6825,6 +7269,9 @@
                         "email": {
                           "type": "string",
                           "format": "email"
+                        },
+                        "emailVerified": {
+                          "type": "boolean"
                         },
                         "name": {
                           "type": "string"
@@ -6891,6 +7338,7 @@
                       "required": [
                         "id",
                         "email",
+                        "emailVerified",
                         "name",
                         "avatarUrl",
                         "bio",
@@ -7018,6 +7466,9 @@
                           "type": "string",
                           "format": "email"
                         },
+                        "emailVerified": {
+                          "type": "boolean"
+                        },
                         "name": {
                           "type": "string"
                         },
@@ -7083,6 +7534,7 @@
                       "required": [
                         "id",
                         "email",
+                        "emailVerified",
                         "name",
                         "avatarUrl",
                         "bio",

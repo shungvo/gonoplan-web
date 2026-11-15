@@ -105,3 +105,36 @@ export function updateProfile(input: {
 }): Promise<SessionUser> {
   return api.patch<SessionUser>('/auth/me', input);
 }
+
+/**
+ * Asks for a reset link.
+ *
+ * Resolves the same way for an address with an account and one without — the
+ * server will not say which, and neither should anything built on this.
+ */
+export async function forgotPassword(email: string): Promise<void> {
+  await api.post('/auth/forgot-password', { email }, { withAuth: false });
+}
+
+/**
+ * Sets a new password from the token in an emailed link.
+ *
+ * The server ends every session on the account, this device's included, so
+ * the local one is cleared here too rather than left to fail on its next
+ * refresh.
+ */
+export async function resetPassword(token: string, password: string): Promise<void> {
+  await api.post('/auth/reset-password', { token, password }, { withAuth: false });
+  setAccessToken(null);
+  await storeRefreshToken(null);
+}
+
+/** Follows a verification link. No session needed — it may be another device. */
+export async function verifyEmail(token: string): Promise<void> {
+  await api.post('/auth/verify-email', { token }, { withAuth: false });
+}
+
+/** "Send the verification email again", for the signed-in account. */
+export function sendVerificationEmail(): Promise<{ sent: boolean; alreadyVerified: boolean }> {
+  return api.post<{ sent: boolean; alreadyVerified: boolean }>('/auth/verify-email/send');
+}

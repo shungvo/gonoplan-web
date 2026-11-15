@@ -180,6 +180,7 @@ export interface paths {
                                     id: string;
                                     /** Format: email */
                                     email: string;
+                                    emailVerified: boolean;
                                     name: string;
                                     avatarUrl: string | null;
                                     bio: string | null;
@@ -288,6 +289,7 @@ export interface paths {
                                     id: string;
                                     /** Format: email */
                                     email: string;
+                                    emailVerified: boolean;
                                     name: string;
                                     avatarUrl: string | null;
                                     bio: string | null;
@@ -388,6 +390,7 @@ export interface paths {
                                     id: string;
                                     /** Format: email */
                                     email: string;
+                                    emailVerified: boolean;
                                     name: string;
                                     avatarUrl: string | null;
                                     bio: string | null;
@@ -539,6 +542,330 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/forgot-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Email a password-reset link
+         * @description Answers the same whether or not the address has an account — otherwise this is an endpoint that tells anyone which emails are registered. If there is an active account, a single-use link valid for an hour is sent to it, and any earlier unused link stops working.
+         *
+         *     At most one email per account per minute, on top of the per-caller limit.
+         *
+         *     503 `EMAIL_NOT_CONFIGURED` when the server has no way to send mail; that answer does not depend on the address either.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: email */
+                        email: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Accepted. Says nothing about whether the address is registered. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @enum {boolean} */
+                                sent: true;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description This server cannot send email */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/reset-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Set a new password from an emailed link
+         * @description Takes the `token` from the link and a new password. On success **every session on the account is ended**, including the caller's — the usual reason to reset is that somebody else may know the old password, and they may be signed in. The caller is not signed in by this; they sign in with the password they just chose.
+         *
+         *     Also marks the address verified, since following a link sent to it proves the same thing.
+         *
+         *     400 `AUTH_LINK_INVALID` for a link that was never issued, has been used, has expired, or belongs to an account that is not active — one answer for all four.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        token: string;
+                        password: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Password changed, all sessions ended */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @enum {boolean} */
+                                reset: true;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/verify-email/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Email a verification link to the signed-in account
+         * @description One is sent automatically at registration; this is "send it again". `alreadyVerified` is true, and nothing is sent, for an account that has no need of one. `sent` is false when one went out less than a minute ago.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Whether a message was sent */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                sent: boolean;
+                                alreadyVerified: boolean;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description This server cannot send email */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/verify-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm an address from an emailed link
+         * @description No session needed — the link may be opened on a different device from the one that signed up. Following the same link twice succeeds both times: mail clients prefetch and people double-tap, and the address is verified either way.
+         *
+         *     POST, with the token in the body, so the secret is not left in access logs and a scanner fetching the URL cannot use it up.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        token: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description The address is verified */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                            data: {
+                                /** @enum {boolean} */
+                                verified: true;
+                            };
+                            meta?: {
+                                cursor?: string | null;
+                                hasMore?: boolean;
+                                total?: number;
+                            };
+                        };
+                    };
+                };
+                /** @description Validation failed */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Rate limit exceeded */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/me": {
         parameters: {
             query?: never;
@@ -570,6 +897,7 @@ export interface paths {
                                 id: string;
                                 /** Format: email */
                                 email: string;
+                                emailVerified: boolean;
                                 name: string;
                                 avatarUrl: string | null;
                                 bio: string | null;
@@ -645,6 +973,7 @@ export interface paths {
                                 id: string;
                                 /** Format: email */
                                 email: string;
+                                emailVerified: boolean;
                                 name: string;
                                 avatarUrl: string | null;
                                 bio: string | null;
@@ -9997,6 +10326,7 @@ export interface components {
             id: string;
             /** Format: email */
             email: string;
+            emailVerified: boolean;
             name: string;
             avatarUrl: string | null;
             bio: string | null;
@@ -10020,6 +10350,7 @@ export interface components {
                 id: string;
                 /** Format: email */
                 email: string;
+                emailVerified: boolean;
                 name: string;
                 avatarUrl: string | null;
                 bio: string | null;

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { Bookmark, CalendarDays, ChevronRight, Settings, User } from 'lucide-react';
 import { AuthSheet } from './AuthSheet';
+import { VerifyEmailBanner } from './VerifyEmailBanner';
 import { BackButton } from '@/components/ui/BackButton';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -122,6 +123,8 @@ export function ProfileScreen() {
             </nav>
 
             <p className="text-ink-subtle mt-3 text-xs">{t('profile.publicNotice')}</p>
+
+            <VerifyEmailBanner />
 
             <div className="mt-5">
               {profile.isPending && (
