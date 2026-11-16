@@ -236,6 +236,10 @@ Each of these fixes something that breaks on a real phone:
 
 ## More
 
-The architecture, data model, API reference, platform decisions and deployment
-guide are in the `docs/` folder of `gonoplan-api`. Start with
-`00-architecture.md`.
+- **[`docs/architecture.md`](docs/architecture.md)** — how the front end works:
+  screens, data flow, sessions, offline, the design system, iOS.
+- The project-wide docs are in the `docs/` folder of `gonoplan-api`: local
+  setup (`06-development.md`), conventions for both repositories
+  (`07-conventions.md`), what each API module does (`08-backend.md`),
+  infrastructure and known gaps (`09-operations.md`), and the original design
+  (`00`–`05`). Start at its `README.md`.
