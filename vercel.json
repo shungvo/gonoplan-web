@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "routes": [
+    {
+      "src": "/api/v1/(.*)",
+      "dest": "https://gonoplan-api.onrender.com/api/v1/$1",
+      "transforms": [
+        {
+          "type": "request.headers",
+          "op": "set",
+          "target": { "key": "x-gonoplan-proxy" },
+          "args": "$GONOPLAN_PROXY_SECRET",
+          "env": ["GONOPLAN_PROXY_SECRET"]
+        }
+      ]
+    }
+  ]
+}

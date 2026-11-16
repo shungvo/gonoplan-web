@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 import { readStoredRefreshToken, storeRefreshToken } from '@/lib/auth/refreshTokenStore';
 import { ApiError, type ApiErrorBody } from './errors';
 
@@ -12,14 +13,28 @@ const SERVER_BASE = process.env.API_INTERNAL_URL ?? 'http://localhost:4000';
 const isServer = typeof window === 'undefined';
 
 /**
- * The absolute API base, for a client with no proxy under it.
+ * Where the client sends API requests.
  *
- * Empty on the web, where the relative path rides the Next rewrite. Set for
- * the iOS build, which is a static bundle served from `capacitor://localhost`
- * — there is no Next server in the app, so the WebView has to reach the API
- * directly. Inlined at build time, which is why it is `NEXT_PUBLIC_`.
+ * **In a browser, always the app's own origin** (`/api/v1/...`, relative).
+ * Under `next dev` the rewrite in next.config.ts forwards it; on Vercel,
+ * `vercel.json` does. That is what keeps the session alive: the refresh token
+ * is an HttpOnly, `SameSite=Lax` cookie, and a browser only sends that back to
+ * the site that set it. When the built web app called the API on its own
+ * origin (`vercel.app` → `onrender.com`), the cookie was cross-site, never
+ * returned, and every reload started signed out.
+ *
+ * **In the iOS app, the absolute `NEXT_PUBLIC_API_URL`.** The bundle is served
+ * from `capacitor://localhost`; there is nothing behind that origin to proxy
+ * through, so the WebView calls the API directly and keeps its refresh token
+ * in the Keychain instead of a cookie.
+ *
+ * Decided at runtime, not by build flag, so the same `out/` is right in both
+ * places — and a `NEXT_PUBLIC_API_URL` left set on the web project can no
+ * longer quietly move the browser back onto the cross-site path.
  */
-const CLIENT_BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
+function clientBase(): string {
+  return Capacitor.isNativePlatform() ? (process.env.NEXT_PUBLIC_API_URL ?? '') : '';
+}
 
 interface SuccessBody<T> {
   success: true;
@@ -142,7 +157,7 @@ async function refreshAccessToken(): Promise<boolean> {
 }
 
 function buildUrl(path: string, query?: RequestOptions['query']): string {
-  const base = isServer ? `${SERVER_BASE}${API_PREFIX}` : `${CLIENT_BASE}${API_PREFIX}`;
+  const base = isServer ? `${SERVER_BASE}${API_PREFIX}` : `${clientBase()}${API_PREFIX}`;
   const url = `${base}${path.startsWith('/') ? path : `/${path}`}`;
 
   if (!query) return url;

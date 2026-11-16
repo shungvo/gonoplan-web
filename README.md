@@ -111,14 +111,16 @@ npm run dev
 ```
 
 Open `http://localhost:3000`. During development `next dev` proxies `/api/v1/*`
-to the API, so the browser stays on one origin.
+to the API, so the browser stays on one origin. In production `vercel.json`
+does the same, and `node scripts/serve-out.mjs` does it for a local build.
 
 ### Environment
 
 | Variable | What it is for |
 |---|---|
 | `API_INTERNAL_URL` | Where `next dev` forwards `/api/v1/*`. Defaults to `http://localhost:4000` |
-| `NEXT_PUBLIC_API_URL` | The API origin a **built** app calls directly. Leave empty in `.env.local`; set it in `.env.production.local` |
+| `NEXT_PUBLIC_API_URL` | The API origin the **iOS app** calls. A browser ignores it and calls `/api/v1` on its own origin. Set it in `.env.production.local` |
+| `GONOPLAN_PROXY_SECRET` | A **Vercel project variable** (not a build variable): sent by the `vercel.json` proxy so the API can rate-limit per visitor. Same value as the API's `PROXY_SECRET` |
 | `NEXT_PUBLIC_MAP_PROVIDER` | `goong` or `openfreemap`. `openfreemap` needs no key at all |
 | `NEXT_PUBLIC_GOONG_MAPTILES_KEY` | Goong's public **maptiles** key only. The REST key belongs in the API and never here |
 | `NEXT_PUBLIC_SITE_URL` | Where the web app is served. The iOS build must set it, or shared-plan links point at `capacitor://localhost` |

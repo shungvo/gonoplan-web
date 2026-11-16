@@ -17,11 +17,12 @@ const API_INTERNAL_URL = process.env.API_INTERNAL_URL ?? 'http://localhost:4000'
  * artefact everywhere, which is the whole reason Capacitor can wrap it.
  *
  * What goes with SSR: the `rewrites` proxy below stops applying to builds
- * (`next dev` still honours it), so a built client talks to the API directly
- * and needs `NEXT_PUBLIC_API_URL` set. That in turn is why the session can no
- * longer ride an HttpOnly cookie — see `gonoplan-api/src/modules/auth/
- * cookies.ts`, which explains why a cross-origin API forces `sameSite: 'none'`
- * and Safari ITP blocks it.
+ * (`next dev` still honours it). The hosted web app gets the same proxy from
+ * its host instead — `vercel.json` forwards `/api/v1/*` to the API — so the
+ * browser still only ever talks to its own origin and the refresh cookie stays
+ * first-party. Only the iOS app, which has nothing behind
+ * `capacitor://localhost` to proxy through, calls the API directly at
+ * `NEXT_PUBLIC_API_URL` (see `src/lib/api/client.ts`).
  */
 const nextConfig: NextConfig = {
   output: 'export',
@@ -48,8 +49,9 @@ const nextConfig: NextConfig = {
    * requests and a first-party SameSite=Lax cookie. It also removes the need
    * for permissive CORS. Cost: one hop through Vercel's edge.
    *
-   * Once a custom domain exists (api.gonoplan.com + app.gonoplan.com), this
-   * can be dropped in favour of talking to the API directly.
+   * Development only: a static export has no rewrites. The hosted app gets
+   * the same proxy from `vercel.json`, and `scripts/serve-out.mjs` gives a
+   * local build one.
    */
   async rewrites() {
     return [

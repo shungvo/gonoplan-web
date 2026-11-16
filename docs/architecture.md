@@ -15,15 +15,25 @@ JavaScript, and assets. There is no server at runtime.
 | | Web | iOS |
 |---|---|---|
 | Served from | Vercel (any static host works) | bundled into the app by Capacitor (`capacitor://localhost`) |
-| API reached | directly at `NEXT_PUBLIC_API_URL` | directly at `NEXT_PUBLIC_API_URL` |
+| API reached | `/api/v1` on its own origin; `vercel.json` proxies it to the API | directly at `NEXT_PUBLIC_API_URL` |
 | Refresh token | HttpOnly cookie set by the API | Keychain (`@aparajita/capacitor-secure-storage`) |
 | Service worker | registered | not registered — the files are already on the device |
 | Basemap | Goong or OpenFreeMap | OpenFreeMap (a key inside an `.ipa` cannot be restricted) |
 
-During development `next dev` serves the same app and **proxies** `/api/v1/*`
-to `API_INTERNAL_URL` (`next.config.ts` rewrites), so the browser stays on one
-origin and the cookie is first-party. Rewrites do not exist in a static
-export, which is why a build needs `NEXT_PUBLIC_API_URL`.
+**In a browser the app only ever talks to its own origin.** The refresh token
+is an HttpOnly `SameSite=Lax` cookie, and a browser only returns that to the
+site that set it; when the built app called the API on another site, every
+reload signed the user out. So something always proxies `/api/v1/*`:
+
+- `next dev` — the rewrite in `next.config.ts`, to `API_INTERNAL_URL`;
+- Vercel — `vercel.json`, to the Render API, adding `x-gonoplan-proxy` from the
+  `GONOPLAN_PROXY_SECRET` project variable so the API can trust the visitor's
+  address for rate limits;
+- a local build — `scripts/serve-out.mjs`, which mimics Vercel.
+
+`src/lib/api/client.ts` decides at runtime: relative in a browser, absolute
+(`NEXT_PUBLIC_API_URL`) only inside the native shell, which has nothing behind
+`capacitor://localhost` to proxy through.
 
 Consequences of having no server:
 
